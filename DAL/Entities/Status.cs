@@ -1,0 +1,30 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
+
+namespace CTS_BE.DAL.Entities;
+
+[Table("status", Schema = "cts_master")]
+public partial class Status
+{
+    [Key]
+    [Column("id")]
+    public int Id { get; set; }
+
+    [Column("name", TypeName = "character varying")]
+    public string Name { get; set; } = null!;
+
+    [Column("slug", TypeName = "character varying")]
+    public string Slug { get; set; } = null!;
+
+    /// <summary>
+    /// 1 = token flow 
+    /// </summary>
+    [Column("type")]
+    public short Type { get; set; }
+
+    [InverseProperty("Status")]
+    public virtual ICollection<TokenFlow> TokenFlows { get; set; } = new List<TokenFlow>();
+}
