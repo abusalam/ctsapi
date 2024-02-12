@@ -17,29 +17,8 @@ namespace CTS_BE.Controllers
             _tokenService = tokenService;
             _claimService = claimService;   
         }
-        [HttpGet("GetTokens")]
-        public async Task<APIResponse<IEnumerable<TokenList>>> Tokens()
-        {
-            APIResponse<IEnumerable<TokenList>> response = new();
-            string userScope = _claimService.GetScope();
-            string userRole = _claimService.GetRole();
-            try
-            {
-                IEnumerable<TokenList> tokenLists = await _tokenService.Tokens(userScope, StatusManager.GetStatus(userRole, (int)Enum.StatusType.ReturnMemo));
-                response.apiResponseStatus = Enum.APIResponseStatus.Success;
-                response.result = tokenLists;
-                response.Message = "Data Collect Successfully";
-                return response;
-            }
-            catch (Exception ex)
-            {
-                response.apiResponseStatus = Enum.APIResponseStatus.Error;
-                response.Message = ex.Message;
-                return response;
-            }
-        }
         [HttpPost("Generate")]
-        public async Task<APIResponse<string>> GenerateReturnMemo(ReturnMemoBillDetailsDTO returnMemoBillDetailsDTO)
+        public async Task<APIResponse<string>> GenerateReturnMemo(ReturnMemoTokenDetailsDTO returnMemoTokenDetailsDTO)
         {
             APIResponse<string> response = new();
             string userScope = _claimService.GetScope();
@@ -47,14 +26,14 @@ namespace CTS_BE.Controllers
             string userRole = _claimService.GetRole();
             try
             {
-                TokenDetailsDto tokenDetailsDto = await _tokenService.TokenDeatisById(returnMemoBillDetailsDTO.TokenId);
-                if (!StatusManager.GetStatus(userRole, (int)Enum.StatusType.ReturnMemo).Contains((int)tokenDetailsDto.StatusId))
+                TokenDetailsDto tokenDetailsDto = await _tokenService.TokenDeatisById(returnMemoTokenDetailsDTO.TokenId);
+                if (tokenDetailsDto.StatusId!= (int) Enum.TokenStatus.ObjectedbyTreasuryOfficer)
                 {
                     response.apiResponseStatus = Enum.APIResponseStatus.Info;
                     response.Message = "Invalid Bill!";
                     return response;
                 }
-                if(await _tokenService.GenerateReturnMemo(returnMemoBillDetailsDTO.TokenId, returnMemoBillDetailsDTO.ReferenceNo, userId, 0))
+                if(await _tokenService.GenerateReturnMemo(returnMemoTokenDetailsDTO.TokenId, returnMemoTokenDetailsDTO.ReferenceNo, userId, 0))
                 {
                     response.apiResponseStatus = Enum.APIResponseStatus.Success;
                     response.result = "DONE";
@@ -65,6 +44,68 @@ namespace CTS_BE.Controllers
                 response.Message = "Invalid Bill!";
                 return response;
 
+            }
+            catch (Exception ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = ex.Message;
+                return response;
+            }
+        }
+        [HttpGet("ReturnMemoBillDetails/{tokenID}")]
+        public async Task<APIResponse<ReturnMemoBillDetailsDTO>> ReturnMemoBillDetails(long tokenId)
+        {
+            APIResponse<ReturnMemoBillDetailsDTO> response = new();
+            string userScope = _claimService.GetScope();
+            long userId = _claimService.GetUserId();
+            string userRole = _claimService.GetRole();
+            try
+            {
+                TokenDetailsDto tokenDetailsDto = await _tokenService.TokenDeatisById(tokenId);
+                if (!StatusManager.GetStatus(userRole, (int)Enum.StatusType.ReturnMemo).Contains((int)tokenDetailsDto.StatusId))
+                {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Info;
+                    response.Message = "Invalid Bill!";
+                    return response;
+                }
+                ReturnMemoBillDetailsDTO returnMemoBillDetailsDTO = await _tokenService.ReturnMemoBillDetails(tokenDetailsDto.TokenId);
+                if (returnMemoBillDetailsDTO!=null)
+                {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                    response.result = returnMemoBillDetailsDTO;
+                    response.Message = "Return Memo Generate ";
+                    return response;
+                }
+                response.apiResponseStatus = Enum.APIResponseStatus.Info;
+                response.Message = "Invalid Bill!";
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = ex.Message;
+                return response;
+            }
+        }
+        [HttpGet("ReturnMemoCount")]
+        public async Task<APIResponse<ReturnMemoCountDTO>> ReturnMemoCount()
+        {
+            APIResponse<ReturnMemoCountDTO> response = new();
+            string userScope = _claimService.GetScope();
+            long userId = _claimService.GetUserId();
+            string userRole = _claimService.GetRole();
+            try
+            {
+                ReturnMemoCountDTO returnMemoCountDTO = new ReturnMemoCountDTO
+                {
+                    AwatingReturnMemo = await _tokenService.TokenCountByStatus(userScope,StatusManager.GetStatus(userRole, "awating-return-memo")),
+                    GeneratedReturnMemo = await _tokenService.TokenCountByStatus(userScope,StatusManager.GetStatus(userRole, "generated-return-memo"))
+                };
+                response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                response.result = returnMemoCountDTO;
+                response.Message = "";
+                return response;
             }
             catch (Exception ex)
             {

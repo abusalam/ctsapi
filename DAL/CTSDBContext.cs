@@ -67,7 +67,7 @@ public partial class CTSDBContext : DbContext
     public virtual DbSet<Treasury> Treasuries { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-       => optionsBuilder.UseNpgsql("Name=ConnectionStrings:DBConnection");
+        => optionsBuilder.UseNpgsql("Name=ConnectionStrings:DBConnection");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -269,6 +269,10 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.DdoCode).IsFixedLength();
             entity.Property(e => e.ReferenceNo).IsFixedLength();
             entity.Property(e => e.TreasuryCode).IsFixedLength();
+
+            entity.HasOne(d => d.Bill).WithMany(p => p.Tokens)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("tp_bill_bill_id_fky");
 
             entity.HasOne(d => d.TokenFlow).WithMany(p => p.Tokens).HasConstraintName("token_token_flow_id_fkey");
         });

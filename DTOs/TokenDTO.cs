@@ -18,17 +18,24 @@
         public string CurrentStatusSlug { get; set; }
         public string DdoCode { get; set; }
     }
+    public class TokenListQueryParameters
+    {
+        public string ListType { get; set; }
+    }
     public class TokenCount
     {
+        public int NewBills { get; set; }
         public int AllTokens { get; set; }
         public int BillCheckingPending { get; set; }
         public int ReturnMemoPending { get; set; }
     }
     public class TokenDetailsDto
     {
+        public long TokenId { get; set; }
         public long TokenNumber { get; set; }
         public DateOnly TokenDate { get; set; }
         public string ReferenceNo { get; set; }
+        public long BillId { get; set; }
         public string Status { get; set; }
         public int? StatusId { get; set; }
     }

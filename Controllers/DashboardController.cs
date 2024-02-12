@@ -1,4 +1,5 @@
 ﻿using CTS_BE.BAL.Interfaces;
+using CTS_BE.BAL.Interfaces.billing;
 using CTS_BE.DTOs;
 using CTS_BE.Helper;
 using CTS_BE.Helper.Authentication;
@@ -12,10 +13,12 @@ namespace CTS_BE.Controllers
     {
         private readonly ITokenService _tokenService;
         protected readonly IClaimService _claimService;
-        public DashboardController(ITokenService tokenService, IClaimService claimService)
+        protected readonly ITpBillService _tpBillService;
+        public DashboardController(ITokenService tokenService, IClaimService claimService, ITpBillService tpBillService)
         {
             _tokenService = tokenService;
-            _claimService = claimService;   
+            _claimService = claimService;
+            _tpBillService = tpBillService;
         }
         [HttpGet("count")]
         public async Task<APIResponse<TokenCount>> Count()
@@ -27,6 +30,7 @@ namespace CTS_BE.Controllers
                 string userScope = _claimService.GetScope();
                 TokenCount tokenCount = new TokenCount
                 {
+                    NewBills = await _tpBillService.CountNewBills(),
                     AllTokens = await _tokenService.AllTokensCount(),
                     BillCheckingPending = await _tokenService.TokenCountByStatus(userScope, StatusManager.GetStatus(userRole, (int)Enum.StatusType.BillChecking)),
                     ReturnMemoPending = await _tokenService.TokenCountByStatus(userScope, StatusManager.GetStatus(userRole, (int)Enum.StatusType.ReturnMemo)),

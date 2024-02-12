@@ -24,27 +24,6 @@ namespace CTS_BE.Controllers
             _tokenHasObjectionService = tokenHasObjectionService;
             _claimService = claimService;
         }
-        [HttpGet("GetTokens")]
-        public async Task<APIResponse<IEnumerable<TokenList>>> Tokens()
-        {
-            APIResponse<IEnumerable<TokenList>> response = new();
-            string userScope = _claimService.GetScope();
-            string userRole = _claimService.GetRole();
-            try
-            {
-                IEnumerable<TokenList> tokenLists = await _tokenService.Tokens(userScope, StatusManager.GetStatus(userRole, (int)Enum.StatusType.BillChecking));
-                response.apiResponseStatus = Enum.APIResponseStatus.Success;
-                response.result = tokenLists;
-                response.Message = "Data Collect Successfully";
-                return response;
-            }
-            catch (Exception ex)
-            {
-                response.apiResponseStatus = Enum.APIResponseStatus.Error;
-                response.Message = ex.Message;
-                return response;
-            }
-        }
         [HttpGet("GetBillDetails/{tokenId}")]
         public async Task<APIResponse<BillCheckingBillDetailsDto>> BillDetails(long tokenId)
         {
@@ -65,7 +44,8 @@ namespace CTS_BE.Controllers
                 //    response.Message = "This bill has been checked!";
                 //    return response;
                 //}
-                BillDetailsDetailsByRef billDetailsByRef = await _tpBillService.BillDetailsByRefNo(tokenDetailsDto.ReferenceNo);
+                // BillDetailsDetailsByRef billDetailsByRef = await _tpBillService.BillDetailsByRefNo(tokenDetailsDto.ReferenceNo);
+                BillDetailsDetailsByRef billDetailsByRef = await _tpBillService.BillDetailsByBillId(tokenDetailsDto.BillId);
                 if (billDetailsByRef == null)
                 {
                     response.apiResponseStatus = Enum.APIResponseStatus.Error;

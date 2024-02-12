@@ -20,8 +20,10 @@ namespace CTS_BE.BAL.Services
             TokenDetailsDto tokenDetailsDto = (TokenDetailsDto) await _TokenRepository.GetSingleSelectedColumnByConditionAsync(entity=>entity.Id==tokenId,
                 entity=> new TokenDetailsDto
                 {
+                    TokenId = entity.Id,
                     TokenNumber = entity.TokenNumber,
                     ReferenceNo = entity.ReferenceNo,
+                    BillId = entity.BillId,
                     TokenDate = entity.TokenDate,
                     Status =  entity.TokenFlow.Status.Name,
                     StatusId = entity.TokenFlow.Status.Id
@@ -75,7 +77,31 @@ namespace CTS_BE.BAL.Services
         {
             return _TokenRepository.CountWithCondition(entity => entity.TreasuryCode == treasuryCode && tokenStatus.Contains(entity.TokenFlow.StatusId));
         }
-
+        public async Task<ReturnMemoBillDetailsDTO> ReturnMemoBillDetails(long tokenId)
+        {
+            ReturnMemoBillDetailsDTO returnMemoBillDetailsDTO =(ReturnMemoBillDetailsDTO) await _TokenRepository.GetSingleSelectedColumnByConditionAsync(entity => entity.Id == tokenId, entity => new ReturnMemoBillDetailsDTO
+            {
+                TokenId = entity.Id,
+                TokenNumber = entity.TokenNumber,
+                TokenDate = entity.TokenDate,
+                BillNo = entity.Bill.BillNo,
+                BillDate = entity.Bill.BillDate,
+                DdoCode = entity.Bill.DdoCode,
+                GrossAmount = entity.Bill.GrossAmount,
+                HOAChain = new HOAChain
+                {
+                    Demand = entity.Bill.Demand,
+                    MajorHead = entity.Bill.MajorHead,
+                    SubMajorHead = entity.Bill.SubMajorHead,
+                    MinorHead = entity.Bill.MinorHead,
+                    SchemeHead = entity.Bill.SchemeHead,
+                    VotedCharged = entity.Bill.VotedCharged,
+                    DetailHead = entity.Bill.DetailHead,
+                },
+                NetAmount = entity.Bill.NetAmount
+            });
+            return returnMemoBillDetailsDTO;
+        }
         public async Task<bool> GenerateReturnMemo(long tokenId, string referenceNo, long userId, int ownType)
         {
             return await _TokenRepository.GenerateReturnMemo(tokenId,referenceNo,userId,ownType);

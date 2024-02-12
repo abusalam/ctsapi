@@ -65,6 +65,28 @@ namespace CTS_BE.Controllers
                 return response;
             }
         }
+        [HttpGet("GetTokens")]
+        public async Task<APIResponse<IEnumerable<TokenList>>> Tokens([FromQuery]TokenListQueryParameters tokenListQueryParameters)
+        {
+            APIResponse<IEnumerable<TokenList>> response = new();
+            string userScope = _claimService.GetScope();
+            string userRole = _claimService.GetRole();
+            string listType = tokenListQueryParameters.ListType;
+            try
+            {
+                IEnumerable<TokenList> tokenLists = await _tokenService.Tokens(userScope, StatusManager.GetStatus(userRole, listType));
+                response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                response.result = tokenLists;
+                response.Message = "Data Collect Successfully";
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = ex.Message;
+                return response;
+            }
+        }
         //[HttpGet("GetNumberOfToken")]
         //public async Task<APIResponse<TokenCount>> NumberOfToken()
         //{

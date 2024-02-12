@@ -10,6 +10,7 @@ namespace CTS_BE.BAL.Interfaces
         public Task<IEnumerable<TokenList>> Tokens(string treasuryCode, List<int> tokenStatus);
         public Task<int> TokenCountByStatus(string treasuryCode, List<int> tokenStatus);
         public Task<int> AllTokensCount();
+        public Task<ReturnMemoBillDetailsDTO> ReturnMemoBillDetails(long tokenId);
         public Task<bool> GenerateReturnMemo(long tokenId, string referenceNo, long userId, int ownType);
     }
 }

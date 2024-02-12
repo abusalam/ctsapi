@@ -34,9 +34,18 @@ namespace CTS_BE.DAL.Repositories.billing
                 IEnumerable<BillsListDTO> results = connection.Query<BillsListDTO>(sql).ToList();
                 return results;
             }
-
-            
         }
-
+        public async Task<int> NewBillCount(string treasuryCode)
+        {
+            using (var connection = new NpgsqlConnection(_config.GetConnectionString("DBConnection")))
+            {
+                string sql = $@"SELECT tp.bill_id
+                            FROM billing.""TP_Bill"" tp
+                            LEFT JOIN cts.token tkn ON tkn.reference_no = tp.reference_no
+                            WHERE tp.status = 3 AND tkn.reference_no IS NULL AND  tp.treasury_code = '{treasuryCode}'";
+                int results = connection.Query<BillsListDTO>(sql).Count();
+                return results;
+            }
+        }
     }
 }
