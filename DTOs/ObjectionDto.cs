@@ -18,7 +18,7 @@
         public int? ObjectionId { get; set; }
         public long? ObjectionBy {get; set; }
         public string ObjectionType { get; set; }
-        public string ObjectionRemark { get; set; }
+        public string? ObjectionRemark { get; set; }
         public bool? IsOverruled { get; set; }
         public string? OverruledBy { get; set; }
     }

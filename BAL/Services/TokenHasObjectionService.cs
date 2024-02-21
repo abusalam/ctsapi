@@ -31,7 +31,7 @@ namespace CTS_BE.BAL
                 ObjectionId = entity.GobalObjectionId,
                 ObjectionType = (entity.GobalObjectionId != null) ? "Global" : "Local",
                 ObjectionBy = entity.ObjectedBy,
-                ObjectionRemark = entity.ObjectionRemark,
+                ObjectionRemark = (entity.OverruledBy != null) ? entity.OverruledRemarks : entity.ObjectionRemark,
                 IsOverruled = (entity.OverruledBy !=null)? true:false,
                 OverruledBy = entity.OverruledBy.ToString(),
             });
