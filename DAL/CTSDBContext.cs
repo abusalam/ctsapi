@@ -22,6 +22,20 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<AllotmentTransaction> AllotmentTransactions { get; set; }
 
+    public virtual DbSet<BillCurrentStatusMaster> BillCurrentStatusMasters { get; set; }
+
+    public virtual DbSet<BillstatusMaster> BillstatusMasters { get; set; }
+
+    public virtual DbSet<BtDetail> BtDetails { get; set; }
+
+    public virtual DbSet<BtDetailMaster> BtDetailMasters { get; set; }
+
+    public virtual DbSet<ClaimForHoaMapping> ClaimForHoaMappings { get; set; }
+
+    public virtual DbSet<CpinMaster> CpinMasters { get; set; }
+
+    public virtual DbSet<CpinVenderMst> CpinVenderMsts { get; set; }
+
     public virtual DbSet<Ddo> Ddos { get; set; }
 
     public virtual DbSet<DdoAllotmentActualrelease> DdoAllotmentActualreleases { get; set; }
@@ -32,7 +46,11 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<DdoWalletActualrelease> DdoWalletActualreleases { get; set; }
 
+    public virtual DbSet<DemandMajorMapping> DemandMajorMappings { get; set; }
+
     public virtual DbSet<Department> Departments { get; set; }
+
+    public virtual DbSet<DetailHead> DetailHeads { get; set; }
 
     public virtual DbSet<District> Districts { get; set; }
 
@@ -42,11 +60,27 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<LocalObjection> LocalObjections { get; set; }
 
+    public virtual DbSet<MajorHead> MajorHeads { get; set; }
+
+    public virtual DbSet<MinorHead> MinorHeads { get; set; }
+
+    public virtual DbSet<OperatorCode> OperatorCodes { get; set; }
+
+    public virtual DbSet<RbiIfscStock> RbiIfscStocks { get; set; }
+
+    public virtual DbSet<Sao> Saos { get; set; }
+
+    public virtual DbSet<SchemeHead> SchemeHeads { get; set; }
+
     public virtual DbSet<State> States { get; set; }
 
     public virtual DbSet<Status> Statuses { get; set; }
 
     public virtual DbSet<SubDetailHead> SubDetailHeads { get; set; }
+
+    public virtual DbSet<SubDetailHead1> SubDetailHeads1 { get; set; }
+
+    public virtual DbSet<SubMajorHead> SubMajorHeads { get; set; }
 
     public virtual DbSet<Token> Tokens { get; set; }
 
@@ -63,6 +97,8 @@ public partial class CTSDBContext : DbContext
     public virtual DbSet<TpSubdetailInfo> TpSubdetailInfos { get; set; }
 
     public virtual DbSet<TrMaster> TrMasters { get; set; }
+
+    public virtual DbSet<TrMasterContent> TrMasterContents { get; set; }
 
     public virtual DbSet<Treasury> Treasuries { get; set; }
 
@@ -113,6 +149,48 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.SenderSaoDdoCode).IsFixedLength();
             entity.Property(e => e.SubdetailHead).IsFixedLength();
             entity.Property(e => e.SubmajorHead).IsFixedLength();
+        });
+
+        modelBuilder.Entity<BillCurrentStatusMaster>(entity =>
+        {
+            entity.HasKey(e => e.StatusId).HasName("bill_current_status_master_pkey");
+
+            entity.Property(e => e.StatusId).ValueGeneratedNever();
+        });
+
+        modelBuilder.Entity<BtDetail>(entity =>
+        {
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
+            entity.Property(e => e.CreatedBy).IsFixedLength();
+            entity.Property(e => e.Demand).IsFixedLength();
+            entity.Property(e => e.Detailhead).IsFixedLength();
+            entity.Property(e => e.Major).IsFixedLength();
+            entity.Property(e => e.Minorhead).IsFixedLength();
+            entity.Property(e => e.Planstatus).IsFixedLength();
+            entity.Property(e => e.Schemehead).IsFixedLength();
+            entity.Property(e => e.Subdetail).IsFixedLength();
+            entity.Property(e => e.Submajor).IsFixedLength();
+        });
+
+        modelBuilder.Entity<BtDetailMaster>(entity =>
+        {
+            entity.HasKey(e => e.Code).HasName("bt_detail_master_pkey");
+
+            entity.Property(e => e.Code).ValueGeneratedNever();
+        });
+
+        modelBuilder.Entity<CpinMaster>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("cpin_master_pkey");
+        });
+
+        modelBuilder.Entity<CpinVenderMst>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("cpin_vender_mst_pkey");
+
+            entity.HasOne(d => d.CpinMst).WithMany(p => p.CpinVenderMsts)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("Fk_cpin");
         });
 
         modelBuilder.Entity<Ddo>(entity =>
@@ -210,6 +288,27 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.UpdatedAt).HasDefaultValueSql("now()");
         });
 
+        modelBuilder.Entity<DemandMajorMapping>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("demand_major_mapping_pkey");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.DemandCode).IsFixedLength();
+            entity.Property(e => e.MajorHeadCode).IsFixedLength();
+
+            entity.HasOne(d => d.DemandCodeNavigation).WithMany(p => p.DemandMajorMappings)
+                .HasPrincipalKey(p => p.DemandCode)
+                .HasForeignKey(d => d.DemandCode)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_demand_code");
+
+            entity.HasOne(d => d.MajorHeadCodeNavigation).WithMany(p => p.DemandMajorMappings)
+                .HasPrincipalKey(p => p.Code)
+                .HasForeignKey(d => d.MajorHeadCode)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("Fk_major_head_code");
+        });
+
         modelBuilder.Entity<Department>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("department_pkey");
@@ -217,6 +316,14 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Code).IsFixedLength();
             entity.Property(e => e.DemandCode).IsFixedLength();
+        });
+
+        modelBuilder.Entity<DetailHead>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("detail_head_pkey");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Code).IsFixedLength();
         });
 
         modelBuilder.Entity<FinancialYear>(entity =>
@@ -239,6 +346,50 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.TreasuryCode).IsFixedLength();
         });
 
+        modelBuilder.Entity<MajorHead>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("major_head_pkey");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Code).IsFixedLength();
+        });
+
+        modelBuilder.Entity<MinorHead>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("minor_head_pkey");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Code).IsFixedLength();
+
+            entity.HasOne(d => d.SubMajor).WithMany(p => p.MinorHeads).HasConstraintName("FK_sub_major_head");
+        });
+
+        modelBuilder.Entity<Sao>(entity =>
+        {
+            entity.Property(e => e.Code).IsFixedLength();
+            entity.Property(e => e.Name).IsFixedLength();
+            entity.Property(e => e.NextLevelCode).IsFixedLength();
+        });
+
+        modelBuilder.Entity<SchemeHead>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("scheme_head_pkey");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Code).IsFixedLength();
+            entity.Property(e => e.DemandCode).IsFixedLength();
+
+            entity.HasOne(d => d.DemandCodeNavigation).WithMany(p => p.SchemeHeads)
+                .HasPrincipalKey(p => p.DemandCode)
+                .HasForeignKey(d => d.DemandCode)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("Fk_demand");
+
+            entity.HasOne(d => d.MinorHead).WithMany(p => p.SchemeHeads)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("Fk_minor_head_id");
+        });
+
         modelBuilder.Entity<State>(entity =>
         {
             entity.Property(e => e.ActiveFlag).HasDefaultValueSql("true");
@@ -259,6 +410,26 @@ public partial class CTSDBContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Code).IsFixedLength();
+        });
+
+        modelBuilder.Entity<SubDetailHead1>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("sub_detail_head_pkey");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Code).IsFixedLength();
+
+            entity.HasOne(d => d.DetailHead).WithMany(p => p.SubDetailHead1s).HasConstraintName("FK_Detail_head");
+        });
+
+        modelBuilder.Entity<SubMajorHead>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("sub_major_head_pkey");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Code).IsFixedLength();
+
+            entity.HasOne(d => d.MajorHead).WithMany(p => p.SubMajorHeads).HasConstraintName("Fk_MajorHead");
         });
 
         modelBuilder.Entity<Token>(entity =>
