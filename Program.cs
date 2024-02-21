@@ -15,6 +15,8 @@ using CTS_BE.DAL.Repositories.master;
 using CTS_BE.DAL.Interfaces.master;
 using CTS_BE.Middlewares;
 using CTS_BE.Helper.Authentication;
+using CTS_BE.BAL.Services.paymandate;
+using CTS_BE.BAL.Interfaces.paymandate;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,6 +48,8 @@ builder.Services.AddTransient<IGobalObjectionService, GobalObjectionService>();
 builder.Services.AddTransient<IDdoService, DdoService>();
 builder.Services.AddTransient<ITpBillService, TpBillService>();
 builder.Services.AddTransient<ITokenService, TokenService>();
+
+builder.Services.AddTransient<IPaymandateService, PaymandateService>();
 
 builder.Services.AddTransient<ITokenHelper, TokenHelper>();
 builder.Services.AddSingleton<ITokencache, Tokencache>();
@@ -84,7 +88,7 @@ app.UseHttpsRedirection();
 
 //app.UseAuthorization();
 
-app.UseAuthTokenMiddleware();
+//app.UseAuthTokenMiddleware();
 
 app.MapControllers();
 

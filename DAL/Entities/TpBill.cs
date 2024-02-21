@@ -153,6 +153,9 @@ public partial class TpBill
     public virtual Department? DemandNavigation { get; set; }
 
     [InverseProperty("Bill")]
+    public virtual ICollection<Token> Tokens { get; set; } = new List<Token>();
+
+    [InverseProperty("Bill")]
     public virtual ICollection<TpBtdetail> TpBtdetails { get; set; } = new List<TpBtdetail>();
 
     [InverseProperty("Bill")]
