@@ -49,7 +49,8 @@ namespace CTS_BE.Controllers
         public async Task<APIResponse<IEnumerable<TokenList>>> AllTokens()
         {
             APIResponse<IEnumerable<TokenList>> response = new();
-            string userScope = _claimService.GetScope();
+            //string userScope = _claimService.GetScope();
+            string userScope = "BAA";
             try
             {
                 IEnumerable<TokenList> tokenLists = await _tokenService.AllTokens(userScope);

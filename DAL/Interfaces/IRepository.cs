@@ -12,7 +12,7 @@ namespace CTS_BE.DAL.Interfaces
         Task<ICollection<T>> GetAllAsync();
 
         Task<ICollection<TResult>> GetSelectedColumnAsync<TResult>(Expression<Func<T, TResult>> selectExpression);
-        Task<ICollection<TResult>> GetSelectedColumnByConditionAsync<TResult>(Expression<Func<T, bool>> filterExpression, Expression<Func<T, TResult>> selectExpression);
+        Task<IEnumerable<TResult>> GetSelectedColumnByConditionAsync<TResult>(Expression<Func<T, bool>> filterExpression,Expression<Func<T, TResult>> selectExpression, List<(string Field, string Value, string Operator)> dynamicFilters = null);
         public Task<TResult> GetSingleSelectedColumnByConditionAsync<TResult>(Expression<Func<T, bool>> filterExpression,Expression<Func<T, TResult>> selectExpression);
 
         Task<Dictionary<TKey, List<TResult>>> GetSelectedColumnGroupByConditionAsync<TKey, TResult>(Expression<Func<T, bool>> filterExpression,Expression<Func<T, TKey>> groupByKeySelector,Expression<Func<T, TResult>> selectExpression);

@@ -41,6 +41,10 @@ namespace CTS_BE.BAL.Services
         }
         public async Task<IEnumerable<TokenList>> AllTokens(string treasuryCode)
         {
+            var filters = new List<(string Field, string Value, string Operator)>
+            {
+                ("TokenNumber", "1", "Equal")
+            };
             IEnumerable<TokenList> tokenLists = await  _TokenRepository.GetSelectedColumnByConditionAsync(entity=>entity.TreasuryCode == treasuryCode ,entity => new TokenList
             {
                 TokenId = entity.Id,
@@ -51,11 +55,16 @@ namespace CTS_BE.BAL.Services
                 FinancialYear = entity.FinancialYear,
                 ReferenceNo =  entity.ReferenceNo,
                 TokenDate = entity.TokenDate
-            });
+            },filters);
             return tokenLists;
         }
         public async Task<IEnumerable<TokenList>> Tokens(string treasuryCode, List<int> tokenStatus)
         {
+            var filters = new List<(string Field, string Value, string Operator)>
+            {
+                ("TokenNumber", "1", "Equal")
+            };
+
             IEnumerable<TokenList> tokenLists = await _TokenRepository.GetSelectedColumnByConditionAsync(entity => entity.TreasuryCode == treasuryCode && tokenStatus.Contains(entity.TokenFlow.StatusId) , entity => new TokenList
             {
                 TokenId = entity.Id,
@@ -66,7 +75,7 @@ namespace CTS_BE.BAL.Services
                 CurrentStatus = entity.TokenFlow.Status.Name,
                 CurrentStatusSlug = entity.TokenFlow.Status.Slug,
                 TokenDate = entity.TokenDate
-            });
+            },filters);
             return tokenLists;
         }
         public async Task<int> AllTokensCount()
