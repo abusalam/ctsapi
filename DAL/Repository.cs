@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using System.Linq;
 using CTS_BE.Helper;
+using CTS_BE.DTOs;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 
 namespace CTS_BE.DAL
 {
@@ -74,7 +76,7 @@ namespace CTS_BE.DAL
             return await result.ToListAsync();
         }
 
-        public async Task<IEnumerable<TResult>> GetSelectedColumnByConditionAsync<TResult>(Expression<Func<T, bool>> filterExpression, Expression<Func<T, TResult>> selectExpression, List<(string Field, string Value, string Operator)> dynamicFilters = null)
+        public async Task<ICollection<TResult>> GetSelectedColumnByConditionAsync<TResult>(Expression<Func<T, bool>> filterExpression, Expression<Func<T, TResult>> selectExpression, List<FilterParameter> dynamicFilters = null)
         {
             IQueryable<T> query = this.CTSDbContext.Set<T>().Where(filterExpression);
 
@@ -86,8 +88,7 @@ namespace CTS_BE.DAL
                     query = query.Where(dynimicFilterExpression);
                 }
             }
-            query.Select(selectExpression);
-            IEnumerable<TResult> result = (IEnumerable<TResult>) await query.ToListAsync();
+            var result = await query.Select(selectExpression).ToListAsync();
             return result;
         }
         public async Task<Dictionary<TKey, List<TResult>>> GetSelectedColumnGroupByConditionAsync<TKey, TResult>(
@@ -127,9 +128,20 @@ namespace CTS_BE.DAL
 
             return retValue;
         }
-        public int CountWithCondition(Expression<Func<T, bool>> condition)
+        public int CountWithCondition(Expression<Func<T, bool>> condition, List<FilterParameter> dynamicFilters = null)
         {
-            return this.CTSDbContext.Set<T>().Count(condition);
+            IQueryable<T> query = this.CTSDbContext.Set<T>();
+
+            if (dynamicFilters != null && dynamicFilters.Any())
+            {
+                foreach (var filter in dynamicFilters)
+                {
+                    var dynimicFilterExpression = ExpressionHelper.GetFilterExpression<T>(filter.Field, filter.Value, filter.Operator);
+                    query = query.Where(dynimicFilterExpression);
+                }
+            }
+            //var result = query.Select(selectExpression).ToListAsync();
+            return query.Count(condition);
         }
         public int Count()
         {

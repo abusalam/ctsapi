@@ -3,6 +3,7 @@ using CTS_BE.BAL.Interfaces;
 using CTS_BE.DAL.Entities;
 using CTS_BE.DAL.Interfaces;
 using CTS_BE.DTOs;
+using System.Collections.Generic;
 
 namespace CTS_BE.BAL.Services
 {
@@ -43,7 +44,9 @@ namespace CTS_BE.BAL.Services
         {
             var filters = new List<(string Field, string Value, string Operator)>
             {
-                ("TokenNumber", "1", "Equal")
+                ("TokenNumber", "2", "Equal"),
+                ("DdoCode", "BAAAEE001", "Equal"),
+                ("ReferenceNo", "2024110001862", "Equal")
             };
             IEnumerable<TokenList> tokenLists = await  _TokenRepository.GetSelectedColumnByConditionAsync(entity=>entity.TreasuryCode == treasuryCode ,entity => new TokenList
             {
@@ -55,17 +58,27 @@ namespace CTS_BE.BAL.Services
                 FinancialYear = entity.FinancialYear,
                 ReferenceNo =  entity.ReferenceNo,
                 TokenDate = entity.TokenDate
-            },filters);
+            });
             return tokenLists;
         }
-        public async Task<IEnumerable<TokenList>> Tokens(string treasuryCode, List<int> tokenStatus)
+        //public async Task<IEnumerable<TokenList>> Tokens(string treasuryCode, List<int> tokenStatus, List<FilterParameter> filters=null)
+        //{
+        //    IEnumerable<TokenList> tokenLists = await _TokenRepository.GetSelectedColumnByConditionAsync(entity => entity.TreasuryCode == treasuryCode, entity => new TokenList
+        //    {
+        //        TokenId = entity.Id,
+        //        TokenNumber = entity.TokenNumber,
+        //        DdoCode = entity.DdoCode,
+        //        FinancialYear = entity.FinancialYear,
+        //        ReferenceNo = entity.ReferenceNo,
+        //        CurrentStatus = entity.TokenFlow.Status.Name,
+        //        CurrentStatusSlug = entity.TokenFlow.Status.Slug,
+        //        TokenDate = entity.TokenDate
+        //    },filters);
+        //    return tokenLists;
+        //}
+        public async Task<DynamicListResult<IEnumerable<TokenList>>> Tokens(string treasuryCode, List<int> tokenStatus, List<FilterParameter> filters = null)
         {
-            var filters = new List<(string Field, string Value, string Operator)>
-            {
-                ("TokenNumber", "1", "Equal")
-            };
-
-            IEnumerable<TokenList> tokenLists = await _TokenRepository.GetSelectedColumnByConditionAsync(entity => entity.TreasuryCode == treasuryCode && tokenStatus.Contains(entity.TokenFlow.StatusId) , entity => new TokenList
+            IEnumerable<TokenList> tokenLists = await _TokenRepository.GetSelectedColumnByConditionAsync(entity => entity.TreasuryCode == treasuryCode && tokenStatus.Contains(entity.TokenFlow.StatusId), entity => new TokenList
             {
                 TokenId = entity.Id,
                 TokenNumber = entity.TokenNumber,
@@ -75,8 +88,64 @@ namespace CTS_BE.BAL.Services
                 CurrentStatus = entity.TokenFlow.Status.Name,
                 CurrentStatusSlug = entity.TokenFlow.Status.Slug,
                 TokenDate = entity.TokenDate
-            },filters);
-            return tokenLists;
+            }, filters);
+            DynamicListResult<IEnumerable<TokenList>> resu = new DynamicListResult<IEnumerable<TokenList>>
+            {
+                ListHeaders = new List<ListHeader>
+                {
+                    new ListHeader
+                    {
+                        Name="Token No",
+                        DataType="numeric",
+                        FieldName ="TokenNumber",
+                        IsFilterable=true,
+                        IsSortable=false,
+                    },
+                    new ListHeader
+                    {
+                        Name="DDO Code",
+                        DataType="text",
+                        FieldName ="DdoCode",
+                        IsFilterable=true,
+                        IsSortable=false,
+                    },
+                    new ListHeader
+                    {
+                        Name="Financial Year",
+                        DataType="date",
+                        FieldName ="FinancialYear",
+                        IsFilterable=true,
+                        IsSortable=false,
+                    },
+                    new ListHeader
+                    {
+                        Name="Reference No",
+                        DataType="numeric",
+                        FieldName ="ReferenceNo",
+                        IsFilterable=true,
+                        IsSortable=false,
+                    },
+                    new ListHeader
+                    {
+                        Name="Status",
+                        DataType="text",
+                        FieldName ="CurrentStatus",
+                        IsFilterable=true,
+                        IsSortable=false,
+                    },
+                    new ListHeader
+                    {
+                        Name="Token Date",
+                        DataType="date",
+                        FieldName ="TokenDate",
+                        IsFilterable=true,
+                        IsSortable=false,
+                    },
+
+                },
+                Data = tokenLists
+            };
+            return resu;
         }
         public async Task<int> AllTokensCount()
         {
@@ -85,6 +154,10 @@ namespace CTS_BE.BAL.Services
         public async Task<int> TokenCountByStatus(string treasuryCode, List<int> tokenStatus)
         {
             return _TokenRepository.CountWithCondition(entity => entity.TreasuryCode == treasuryCode && tokenStatus.Contains(entity.TokenFlow.StatusId));
+        }
+        public async Task<int> TokenCountByStatus(string treasuryCode, List<int> tokenStatus, List<FilterParameter> dynamicFilters = null)
+        {
+            return _TokenRepository.CountWithCondition(entity => entity.TreasuryCode == treasuryCode && tokenStatus.Contains(entity.TokenFlow.StatusId),dynamicFilters);
         }
         public async Task<ReturnMemoBillDetailsDTO> ReturnMemoBillDetails(long tokenId)
         {
