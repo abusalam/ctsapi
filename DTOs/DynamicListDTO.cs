@@ -6,12 +6,18 @@
         public int PageSize { get; set; } = 10;
         public int PageIndex { get; set; } = 0;
         public List<FilterParameter>? filterParameters { get; set; }
+        public SortParameter? sortParameters { get; set; }
     }    
     public class FilterParameter
     {
         public string Field { get; set; }
         public string Value { get; set; }
         public string Operator { get; set; }
+    }
+    public class SortParameter
+    {
+        public string Field { get; set; } = "";
+        public string Order { get; set; } = "ASC";
     }
     public class DynamicListResult<T>
     {

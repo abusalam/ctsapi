@@ -76,9 +76,9 @@ namespace CTS_BE.BAL.Services
         //    },filters);
         //    return tokenLists;
         //}
-        public async Task<DynamicListResult<IEnumerable<TokenList>>> Tokens(string treasuryCode, List<int> tokenStatus, List<FilterParameter> filters = null)
+        public async Task<DynamicListResult<IEnumerable<TokenList>>> Tokens(string treasuryCode, List<int> tokenStatus, List<FilterParameter> filters = null,int pageIndex=0,int pageSize=10,SortParameter sortParameters=null)
         {
-            IEnumerable<TokenList> tokenLists = await _TokenRepository.GetSelectedColumnByConditionAsync(entity => entity.TreasuryCode == treasuryCode && tokenStatus.Contains(entity.TokenFlow.StatusId), entity => new TokenList
+            IEnumerable<TokenList> tokenLists = await _TokenRepository.GetSelectedColumnByConditionAsync(entity => entity.TreasuryCode == treasuryCode, entity => new TokenList
             {
                 TokenId = entity.Id,
                 TokenNumber = entity.TokenNumber,
@@ -88,7 +88,7 @@ namespace CTS_BE.BAL.Services
                 CurrentStatus = entity.TokenFlow.Status.Name,
                 CurrentStatusSlug = entity.TokenFlow.Status.Slug,
                 TokenDate = entity.TokenDate
-            }, filters);
+            },pageIndex,pageSize,filters,(sortParameters!=null)?sortParameters.Field:null,(sortParameters!=null)?sortParameters.Order:null);
             DynamicListResult<IEnumerable<TokenList>> resu = new DynamicListResult<IEnumerable<TokenList>>
             {
                 ListHeaders = new List<ListHeader>
@@ -129,7 +129,7 @@ namespace CTS_BE.BAL.Services
                     {
                         Name="Status",
                         DataType="text",
-                        FieldName ="CurrentStatus",
+                        FieldName ="TokenFlow",
                         IsFilterable=true,
                         IsSortable=false,
                     },

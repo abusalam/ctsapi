@@ -76,7 +76,15 @@ namespace CTS_BE.DAL
             return await result.ToListAsync();
         }
 
-        public async Task<ICollection<TResult>> GetSelectedColumnByConditionAsync<TResult>(Expression<Func<T, bool>> filterExpression, Expression<Func<T, TResult>> selectExpression, List<FilterParameter> dynamicFilters = null)
+        public async Task<ICollection<TResult>> GetSelectedColumnByConditionAsync<TResult>(
+            Expression<Func<T, bool>> filterExpression, 
+            Expression<Func<T, TResult>> selectExpression, 
+            int pageIndex = 0,
+            int pageSize = 10,
+            List<FilterParameter> dynamicFilters = null,
+            string orderByField = null,
+            string orderByOrder = null
+        )
         {
             IQueryable<T> query = this.CTSDbContext.Set<T>().Where(filterExpression);
 
@@ -88,7 +96,23 @@ namespace CTS_BE.DAL
                     query = query.Where(dynimicFilterExpression);
                 }
             }
-            var result = await query.Select(selectExpression).ToListAsync();
+            // Dynamic order by expression
+            if (!string.IsNullOrWhiteSpace(orderByField))
+            {
+                var parameter = Expression.Parameter(typeof(T), "x");
+                var property = Expression.Property(parameter, orderByField);
+                var lambda = Expression.Lambda<Func<T, object>>(Expression.Convert(property, typeof(object)), parameter);
+
+                if (orderByOrder=="ASC")
+                {
+                    query = query.OrderBy(lambda);
+                }
+                else
+                {
+                    query = query.OrderByDescending(lambda);
+                }
+            }
+            var result = await query.Select(selectExpression).Skip(pageIndex * pageSize) .Take(pageSize).ToListAsync();
             return result;
         }
         public async Task<Dictionary<TKey, List<TResult>>> GetSelectedColumnGroupByConditionAsync<TKey, TResult>(

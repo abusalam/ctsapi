@@ -97,7 +97,8 @@ namespace CTS_BE.Controllers
             string listType = dynamicListQueryParameters.ListType;
             try
             {
-                DynamicListResult<IEnumerable<TokenList>> tokenLists = await _tokenService.Tokens(userScope, StatusManager.GetStatus(userRole, listType),dynamicListQueryParameters.filterParameters);
+                List<int> statuses = StatusManager.GetStatus(userRole, listType);
+                DynamicListResult<IEnumerable<TokenList>> tokenLists = await _tokenService.Tokens(userScope, statuses ,dynamicListQueryParameters.filterParameters,dynamicListQueryParameters.PageIndex,dynamicListQueryParameters.PageSize,dynamicListQueryParameters.sortParameters);
                 tokenLists.DataCount = await _tokenService.TokenCountByStatus(userScope, StatusManager.GetStatus(userRole, listType),dynamicListQueryParameters.filterParameters);
                 response.apiResponseStatus = Enum.APIResponseStatus.Success;
                 response.result = tokenLists;
