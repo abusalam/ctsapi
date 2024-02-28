@@ -74,21 +74,10 @@ namespace CTS_BE.DAL
             return await result.ToListAsync();
         }
 
-        public async Task<IEnumerable<TResult>> GetSelectedColumnByConditionAsync<TResult>(Expression<Func<T, bool>> filterExpression, Expression<Func<T, TResult>> selectExpression, List<(string Field, string Value, string Operator)> dynamicFilters = null)
+        public async Task<ICollection<TResult>> GetSelectedColumnByConditionAsync<TResult>(Expression<Func<T, bool>> filterExpression, Expression<Func<T, TResult>> selectExpression)
         {
-            IQueryable<T> query = this.CTSDbContext.Set<T>().Where(filterExpression);
-
-            if (dynamicFilters != null && dynamicFilters.Any())
-            {
-                foreach (var filter in dynamicFilters)
-                {
-                    var dynimicFilterExpression = ExpressionHelper.GetFilterExpression<T>(filter.Field, filter.Value, filter.Operator);
-                    query = query.Where(dynimicFilterExpression);
-                }
-            }
-            query.Select(selectExpression);
-            IEnumerable<TResult> result = (IEnumerable<TResult>) await query.ToListAsync();
-            return result;
+            IQueryable<TResult> result = this.CTSDbContext.Set<T>().Where(filterExpression).Select(selectExpression);
+            return await result.ToListAsync();
         }
         public async Task<Dictionary<TKey, List<TResult>>> GetSelectedColumnGroupByConditionAsync<TKey, TResult>(
             Expression<Func<T, bool>> filterExpression,
