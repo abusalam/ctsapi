@@ -23,15 +23,23 @@
     {
         public List<ListHeader> ListHeaders { get; set; }
         public T Data { get; set; }
-        public int DataCount { get; set; } 
+        public int DataCount { get; set; }
     }
     public class ListHeader
     {
         public string Name { get; set; }
         public string DataType { get; set; }
         public string FieldName { get; set; }
+        public string FilterField { get; set; }
+        public List<FilterEnum>? FilterEnums { get; set; }
         public bool IsSortable { get; set; }
         public bool IsFilterable { get; set; }
+    }
+    public class FilterEnum
+    {
+        public int Value { get; set; }
+        public string Label { get; set; }
+        public string? StyleClass { get; set; }
     }
 
 }

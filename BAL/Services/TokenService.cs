@@ -97,7 +97,8 @@ namespace CTS_BE.BAL.Services
                     {
                         Name="Token No",
                         DataType="numeric",
-                        FieldName ="TokenNumber",
+                        FieldName ="tokenNumber",
+                        FilterField ="TokenNumber",
                         IsFilterable=true,
                         IsSortable=false,
                     },
@@ -105,7 +106,8 @@ namespace CTS_BE.BAL.Services
                     {
                         Name="DDO Code",
                         DataType="text",
-                        FieldName ="DdoCode",
+                        FieldName ="ddoCode",
+                        FilterField ="DdoCode",
                         IsFilterable=true,
                         IsSortable=false,
                     },
@@ -113,7 +115,8 @@ namespace CTS_BE.BAL.Services
                     {
                         Name="Financial Year",
                         DataType="date",
-                        FieldName ="FinancialYear",
+                        FieldName ="financialYear",
+                        FilterField ="FinancialYear",
                         IsFilterable=true,
                         IsSortable=false,
                     },
@@ -121,15 +124,64 @@ namespace CTS_BE.BAL.Services
                     {
                         Name="Reference No",
                         DataType="numeric",
-                        FieldName ="ReferenceNo",
+                        FieldName ="referenceNo",
+                        FilterField ="ReferenceNo",
                         IsFilterable=true,
                         IsSortable=false,
                     },
                     new ListHeader
                     {
                         Name="Status",
-                        DataType="text",
-                        FieldName ="TokenFlow",
+                        DataType="object",
+                        FieldName ="currentStatus",
+                        FilterField ="TokenFlow.Status.Name",
+                        FilterEnums = new List<FilterEnum>
+                        {
+                            new FilterEnum
+                            {
+                                Value = (int) Enum.TokenStatus.BillReceived,
+                                Label = "Bill Received",
+                                StyleClass = "primary"
+                            },
+                            new FilterEnum
+                            {
+                                Value = (int) Enum.TokenStatus.ObjectedbyDealingAssistant,
+                                Label = "Objectedby Dealing Assistant",
+                                StyleClass = "warning"
+                            },
+                            new FilterEnum
+                            {
+                                Value = (int) Enum.TokenStatus.FrowardbyDealingAssistant,
+                                Label = "Frowardby Dealing Assistant",
+                                StyleClass = "success"
+                            },
+                            new FilterEnum
+                            {
+                                Value = (int) Enum.TokenStatus.ObjectedbyAccountant,
+                                Label = "Objected by Accountant",
+                                StyleClass = "warning"
+                            },
+                            new FilterEnum
+                            {
+                                Value = (int) Enum.TokenStatus.FrowardbyAccountant,
+                                Label = "Froward by Accountant",
+                                StyleClass = "success"
+                            },
+                            new FilterEnum
+                            {
+                                Value = (int) Enum.TokenStatus.ObjectedbyTreasuryOfficer,
+                                Label = "Objected by TreasuryOfficer",
+                                StyleClass = "warning"
+                            },
+                            new FilterEnum
+                            {
+                                Value = (int) Enum.TokenStatus.FrowardbyTreasuryOfficer,
+                                Label = "Froward by TreasuryOfficer",
+                                StyleClass = "success"
+                            },
+
+
+                        },
                         IsFilterable=true,
                         IsSortable=false,
                     },
@@ -137,7 +189,8 @@ namespace CTS_BE.BAL.Services
                     {
                         Name="Token Date",
                         DataType="date",
-                        FieldName ="TokenDate",
+                        FieldName ="tokenDate",
+                        FilterField ="TokenDate",
                         IsFilterable=true,
                         IsSortable=false,
                     },
