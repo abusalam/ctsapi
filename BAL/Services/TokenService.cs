@@ -86,7 +86,7 @@ namespace CTS_BE.BAL.Services
                 FinancialYear = entity.FinancialYear,
                 ReferenceNo = entity.ReferenceNo,
                 CurrentStatus = entity.TokenFlow.Status.Name,
-                CurrentStatusSlug = entity.TokenFlow.Status.Slug,
+                CurrentStatusId = entity.TokenFlow.Status.Id,
                 TokenDate = entity.TokenDate
             },pageIndex,pageSize,filters,(sortParameters!=null)?sortParameters.Field:null,(sortParameters!=null)?sortParameters.Order:null);
             DynamicListResult<IEnumerable<TokenList>> resu = new DynamicListResult<IEnumerable<TokenList>>
@@ -99,6 +99,15 @@ namespace CTS_BE.BAL.Services
                         DataType="numeric",
                         FieldName ="tokenNumber",
                         FilterField ="TokenNumber",
+                        IsFilterable=true,
+                        IsSortable=false,
+                    },
+                    new ListHeader
+                    {
+                        Name="Token Date",
+                        DataType="date",
+                        FieldName ="tokenDate",
+                        FilterField ="TokenDate",
                         IsFilterable=true,
                         IsSortable=false,
                     },
@@ -133,8 +142,9 @@ namespace CTS_BE.BAL.Services
                     {
                         Name="Status",
                         DataType="object",
+                        ObjectTypeValueField="currentStatusId",
                         FieldName ="currentStatus",
-                        FilterField ="TokenFlow.Status.Name",
+                        FilterField ="TokenFlow.Status.Id",
                         FilterEnums = new List<FilterEnum>
                         {
                             new FilterEnum
@@ -179,21 +189,17 @@ namespace CTS_BE.BAL.Services
                                 Label = "Froward by TreasuryOfficer",
                                 StyleClass = "success"
                             },
-
+                            new FilterEnum
+                            {
+                                Value = (int) Enum.TokenStatus.RetrunMemoGenerated,
+                                Label = "Retrun Memo Generated",
+                                StyleClass = "danger"
+                            },
 
                         },
                         IsFilterable=true,
                         IsSortable=false,
-                    },
-                    new ListHeader
-                    {
-                        Name="Token Date",
-                        DataType="date",
-                        FieldName ="tokenDate",
-                        FilterField ="TokenDate",
-                        IsFilterable=true,
-                        IsSortable=false,
-                    },
+                    }
 
                 },
                 Data = tokenLists

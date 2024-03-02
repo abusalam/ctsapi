@@ -34,6 +34,7 @@
         public List<FilterEnum>? FilterEnums { get; set; }
         public bool IsSortable { get; set; }
         public bool IsFilterable { get; set; }
+        public string? ObjectTypeValueField { get; set; }
     }
     public class FilterEnum
     {
