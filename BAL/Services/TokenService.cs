@@ -51,7 +51,7 @@ namespace CTS_BE.BAL.Services
             IEnumerable<TokenList> tokenLists = await  _TokenRepository.GetSelectedColumnByConditionAsync(entity=>entity.TreasuryCode == treasuryCode ,entity => new TokenList
             {
                 TokenId = entity.Id,
-                TokenNumber = entity.TokenNumber,
+                TokenNumberr = entity.TokenNumber,
                 DdoCode = entity.DdoCode,
                 CurrentStatus = entity.TokenFlow.Status.Name,
                 CurrentStatusSlug = entity.TokenFlow.Status.Slug,
@@ -81,7 +81,7 @@ namespace CTS_BE.BAL.Services
             IEnumerable<TokenList> tokenLists = await _TokenRepository.GetSelectedColumnByConditionAsync(entity => entity.TreasuryCode == treasuryCode, entity => new TokenList
             {
                 TokenId = entity.Id,
-                TokenNumber = entity.TokenNumber,
+                TokenNumberr = entity.TokenNumber,
                 DdoCode = entity.DdoCode,
                 FinancialYear = entity.FinancialYear,
                 ReferenceNo = entity.ReferenceNo,
@@ -91,14 +91,32 @@ namespace CTS_BE.BAL.Services
             },pageIndex,pageSize,filters,(sortParameters!=null)?sortParameters.Field:null,(sortParameters!=null)?sortParameters.Order:null);
             DynamicListResult<IEnumerable<TokenList>> resu = new DynamicListResult<IEnumerable<TokenList>>
             {
-                ListHeaders = new List<ListHeader>
+                Headers = new List<ListHeader>
                 {
                     new ListHeader
                     {
                         Name="Token No",
-                        DataType="numeric",
-                        FieldName ="tokenNumber",
+                        DataType="object",
+                        FieldName ="tokenNumberr",
                         FilterField ="TokenNumber",
+                        ObjectTypeValueField="currentStatusId",
+                        FilterEnums = new List<FilterEnum>
+                        {
+                            new FilterEnum
+                            {
+                                Value = 1,
+                                Label = "1",
+                                StyleClass = "primary"
+
+                            },
+                            new FilterEnum
+                            {
+                                 Value = 2,
+                                Label = "2",
+                                StyleClass = "primary"
+
+                            },
+                        },
                         IsFilterable=true,
                         IsSortable=false,
                     },

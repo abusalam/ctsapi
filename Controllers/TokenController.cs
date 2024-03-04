@@ -89,12 +89,11 @@ namespace CTS_BE.Controllers
         //    }
         //}
         [HttpPost("GetTokens")]
-        public async Task<APIResponse<DynamicListResult<IEnumerable<TokenList>>>> Tokens(DynamicListQueryParameters dynamicListQueryParameters)
+        public async Task<APIResponse<DynamicListResult<IEnumerable<TokenList>>>> Tokens(string listType,DynamicListQueryParameters dynamicListQueryParameters)
         {
             APIResponse<DynamicListResult<IEnumerable<TokenList>>> response = new();
             string userScope = "BAA";
             string userRole = "dealling-assistant";
-            string listType = dynamicListQueryParameters.ListType;
             try
             {
                 List<int> statuses = StatusManager.GetStatus(userRole, listType);

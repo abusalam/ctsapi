@@ -112,7 +112,7 @@ namespace CTS_BE.DAL
                     query = query.OrderByDescending(lambda);
                 }
             }
-            var result = await query.Select(selectExpression).Skip(pageIndex * pageSize) .Take(pageSize).ToListAsync();
+            var result = await query.Select(selectExpression).Skip(pageIndex * pageSize).Take(pageSize).ToListAsync();
             return result;
         }
         public async Task<Dictionary<TKey, List<TResult>>> GetSelectedColumnGroupByConditionAsync<TKey, TResult>(

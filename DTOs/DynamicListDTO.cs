@@ -21,7 +21,7 @@
     }
     public class DynamicListResult<T>
     {
-        public List<ListHeader> ListHeaders { get; set; }
+        public List<ListHeader> Headers { get; set; }
         public T Data { get; set; }
         public int DataCount { get; set; }
     }
