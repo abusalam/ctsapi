@@ -10,12 +10,13 @@
     public class TokenList
     {
         public long TokenId { get; set; }
-        public long TokenNumber { get; set; }
+        public long TokenNumberr { get; set; }
         public DateOnly TokenDate { get; set; }
         public string FinancialYear { get; set; }
         public string ReferenceNo { get; set; }
         public string CurrentStatus { get; set; }
-        public string CurrentStatusSlug { get; set; }
+        public string? CurrentStatusSlug { get; set; }
+        public int? CurrentStatusId { get; set; }
         public string DdoCode { get; set; }
     }
     public class TokenListQueryParameters

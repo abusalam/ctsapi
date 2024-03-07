@@ -66,16 +66,39 @@ namespace CTS_BE.Controllers
                 return response;
             }
         }
-        [HttpGet("GetTokens")]
-        public async Task<APIResponse<IEnumerable<TokenList>>> Tokens([FromQuery]TokenListQueryParameters tokenListQueryParameters)
+        //[HttpGet("GetTokens")]
+        //public async Task<APIResponse<IEnumerable<TokenList>>> Tokens([FromQuery]TokenListQueryParameters tokenListQueryParameters)
+        //{
+        //    APIResponse<IEnumerable<TokenList>> response = new();
+        //    string userScope = _claimService.GetScope();
+        //    string userRole = _claimService.GetRole();
+        //    string listType = tokenListQueryParameters.ListType;
+        //    try
+        //    {
+        //        IEnumerable<TokenList> tokenLists = await _tokenService.Tokens(userScope, StatusManager.GetStatus(userRole, listType));
+        //        response.apiResponseStatus = Enum.APIResponseStatus.Success;
+        //        response.result = tokenLists;
+        //        response.Message = "Data Collect Successfully";
+        //        return response;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        response.apiResponseStatus = Enum.APIResponseStatus.Error;
+        //        response.Message = ex.Message;
+        //        return response;
+        //    }
+        //}
+        [HttpPost("GetTokens")]
+        public async Task<APIResponse<DynamicListResult<IEnumerable<TokenList>>>> Tokens(string listType,DynamicListQueryParameters dynamicListQueryParameters)
         {
-            APIResponse<IEnumerable<TokenList>> response = new();
-            string userScope = _claimService.GetScope();
-            string userRole = _claimService.GetRole();
-            string listType = tokenListQueryParameters.ListType;
+            APIResponse<DynamicListResult<IEnumerable<TokenList>>> response = new();
+            string userScope = "BAA";
+            string userRole = "dealling-assistant";
             try
             {
-                IEnumerable<TokenList> tokenLists = await _tokenService.Tokens(userScope, StatusManager.GetStatus(userRole, listType));
+                List<int> statuses = StatusManager.GetStatus(userRole, listType);
+                DynamicListResult<IEnumerable<TokenList>> tokenLists = await _tokenService.Tokens(userScope, statuses ,dynamicListQueryParameters.filterParameters,dynamicListQueryParameters.PageIndex,dynamicListQueryParameters.PageSize,dynamicListQueryParameters.sortParameters);
+                tokenLists.DataCount = await _tokenService.TokenCountByStatus(userScope, StatusManager.GetStatus(userRole, listType),dynamicListQueryParameters.filterParameters);
                 response.apiResponseStatus = Enum.APIResponseStatus.Success;
                 response.result = tokenLists;
                 response.Message = "Data Collect Successfully";
