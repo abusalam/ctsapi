@@ -6,12 +6,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Entities;
 
-[Keyless]
 [Table("ddo", Schema = "master")]
+[Index("Code", Name = "ddo_code_key", IsUnique = true)]
 public partial class Ddo
 {
+    [Key]
     [Column("id")]
-    public int? Id { get; set; }
+    public int Id { get; set; }
 
     [Column("treasury_code")]
     [StringLength(3)]
@@ -22,7 +23,7 @@ public partial class Ddo
 
     [Column("code")]
     [StringLength(9)]
-    public string? Code { get; set; }
+    public string Code { get; set; } = null!;
 
     [Column("designation")]
     [StringLength(100)]
@@ -38,4 +39,6 @@ public partial class Ddo
     [Column("phone")]
     [StringLength(20)]
     public string? Phone { get; set; }
+
+    public virtual ICollection<BillDetail> BillDetails { get; set; } = new List<BillDetail>();
 }

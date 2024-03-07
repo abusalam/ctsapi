@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.DAL.Entities;
 
 [Table("tr_master", Schema = "master")]
-[Index("WbFormCode", Name = "Uk_wb_form_code", IsUnique = true)]
 public partial class TrMaster
 {
     [Key]
@@ -48,8 +47,5 @@ public partial class TrMaster
     public string? GoNo { get; set; }
 
     [InverseProperty("TrMaster")]
-    public virtual ICollection<TpBill> TpBills { get; set; } = new List<TpBill>();
-
-    [InverseProperty("TrMaster")]
-    public virtual ICollection<TpBtdetail> TpBtdetails { get; set; } = new List<TpBtdetail>();
+    public virtual ICollection<BillDetail> BillDetails { get; set; } = new List<BillDetail>();
 }

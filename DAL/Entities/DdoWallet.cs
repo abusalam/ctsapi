@@ -7,9 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.DAL.Entities;
 
 [Table("ddo_wallet", Schema = "bantan")]
-[Index("ActiveHoaId", "TreasuryCode", Name = "ddo_wallet_active_hoa_id_treasury_code_key", IsUnique = true)]
 [Index("SaoDdoCode", "DemandNo", "MajorHead", "SubmajorHead", "MinorHead", "PlanStatus", "SchemeHead", "DetailHead", "SubdetailHead", "VotedCharged", Name = "ddo_wallet_un", IsUnique = true)]
-[Index("ActiveHoaId", "TreasuryCode", Name = "hoa_id_treasury_code_idx")]
 public partial class DdoWallet
 {
     [Key]
@@ -104,13 +102,10 @@ public partial class DdoWallet
     [Column("updated_by")]
     public int UpdatedBy { get; set; }
 
-    [Required]
     [Column("active_hoa_id")]
     public long? ActiveHoaId { get; set; }
 
     [Column("treasury_code")]
     [StringLength(3)]
-    public string TreasuryCode { get; set; } = null!;
-
-    public virtual TpSubdetailInfo? TpSubdetailInfo { get; set; }
+    public string? TreasuryCode { get; set; }
 }

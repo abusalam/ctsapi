@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Entities;
 
-[Table("sub_detail_head", Schema = "billing_master")]
+[Table("sub_detail_head", Schema = "master")]
 public partial class SubDetailHead
 {
     [Key]
@@ -23,4 +23,8 @@ public partial class SubDetailHead
 
     [Column("detail_head_id")]
     public short? DetailHeadId { get; set; }
+
+    [ForeignKey("DetailHeadId")]
+    [InverseProperty("SubDetailHeads")]
+    public virtual DetailHead? DetailHead { get; set; }
 }

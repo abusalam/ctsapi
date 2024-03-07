@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.DAL.Entities;
 
 [Table("treasury", Schema = "master")]
-[Index("Code", Name = "Uk_treasury_code", IsUnique = true)]
+[Index("Code", Name = "treasury_code_key", IsUnique = true)]
 public partial class Treasury
 {
     [Key]
@@ -23,9 +23,11 @@ public partial class Treasury
 
     [Column("code")]
     [StringLength(3)]
-    public string? Code { get; set; }
+    public string Code { get; set; } = null!;
 
     [Column("name")]
     [StringLength(100)]
     public string? Name { get; set; }
+
+    public virtual ICollection<BillBtdetail> BillBtdetails { get; set; } = new List<BillBtdetail>();
 }

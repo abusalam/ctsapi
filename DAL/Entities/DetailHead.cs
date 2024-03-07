@@ -22,5 +22,5 @@ public partial class DetailHead
     public string? Name { get; set; }
 
     [InverseProperty("DetailHead")]
-    public virtual ICollection<SubDetailHead1> SubDetailHead1s { get; set; } = new List<SubDetailHead1>();
+    public virtual ICollection<SubDetailHead> SubDetailHeads { get; set; } = new List<SubDetailHead>();
 }

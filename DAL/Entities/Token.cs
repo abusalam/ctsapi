@@ -8,6 +8,7 @@ namespace CTS_BE.DAL.Entities;
 
 [Table("token", Schema = "cts")]
 [Index("BillId", Name = "fki_bill_id_fkey")]
+[Index("BillId", Name = "fki_token_bill_details_fkey")]
 [Index("TokenFlowId", Name = "fki_token_token_flow_id_fkey")]
 [Index("BillId", Name = "fki_tp_bill_bill_id_fky")]
 [Index("ReferenceNo", "ReferenceVersion", Name = "token_reference_no_reference_version_key", IsUnique = true)]
@@ -58,7 +59,7 @@ public partial class Token
 
     [ForeignKey("BillId")]
     [InverseProperty("Tokens")]
-    public virtual TpBill Bill { get; set; } = null!;
+    public virtual BillDetail Bill { get; set; } = null!;
 
     [ForeignKey("TokenFlowId")]
     [InverseProperty("Tokens")]
