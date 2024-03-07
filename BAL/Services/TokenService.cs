@@ -96,27 +96,10 @@ namespace CTS_BE.BAL.Services
                     new ListHeader
                     {
                         Name="Token No",
-                        DataType="object",
+                        DataType="text",
                         FieldName ="tokenNumberr",
                         FilterField ="TokenNumber",
                         ObjectTypeValueField="currentStatusId",
-                        FilterEnums = new List<FilterEnum>
-                        {
-                            new FilterEnum
-                            {
-                                Value = 1,
-                                Label = "1",
-                                StyleClass = "primary"
-
-                            },
-                            new FilterEnum
-                            {
-                                 Value = 2,
-                                Label = "2",
-                                StyleClass = "primary"
-
-                            },
-                        },
                         IsFilterable=true,
                         IsSortable=false,
                     },
