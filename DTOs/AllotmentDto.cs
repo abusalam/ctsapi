@@ -5,7 +5,7 @@
         public HOAChain HOAChain { get; set; }
         public decimal? AllotmentAmount { get; set; }
         public double? PreviousBalance { get; set; }
-        public double? AdjustedAmount { get; set; }
+        public decimal? AdjustedAmount { get; set; }
         public double? BalanceAmount { get; set; }
         public string? SubDetailHead { get; set; }
         public double? OverDrawalAmount { get; set; }

@@ -26,6 +26,8 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<BillSubdetailInfo> BillSubdetailInfos { get; set; }
 
+    public virtual DbSet<BtDetail> BtDetails { get; set; }
+
     public virtual DbSet<ChallanEntry> ChallanEntries { get; set; }
 
     public virtual DbSet<Ddo> Ddos { get; set; }
@@ -38,11 +40,17 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<DdoWalletActualrelease> DdoWalletActualreleases { get; set; }
 
+    public virtual DbSet<Department> Departments { get; set; }
+
     public virtual DbSet<DetailHead> DetailHeads { get; set; }
+
+    public virtual DbSet<FinancialYearMaster> FinancialYearMasters { get; set; }
 
     public virtual DbSet<GobalObjection> GobalObjections { get; set; }
 
     public virtual DbSet<LocalObjection> LocalObjections { get; set; }
+
+    public virtual DbSet<MajorHead> MajorHeads { get; set; }
 
     public virtual DbSet<Status> Statuses { get; set; }
 
@@ -66,7 +74,6 @@ public partial class CTSDBContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
        => optionsBuilder.UseNpgsql("Name=ConnectionStrings:DBConnection");
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<ActiveHoaMst>(entity =>
@@ -101,6 +108,20 @@ public partial class CTSDBContext : DbContext
 
             entity.HasOne(d => d.Bill).WithMany(p => p.BillBtdetails).HasConstraintName("Fk_bill_id");
 
+            entity.HasOne(d => d.BtSerialNavigation).WithMany(p => p.BillBtdetails)
+                .HasPrincipalKey(p => p.BtSerial)
+                .HasForeignKey(d => d.BtSerial)
+                .HasConstraintName("bill_btdetail_bt_serial_fkey");
+
+            entity.HasOne(d => d.DdoCodeNavigation).WithMany(p => p.BillBtdetails)
+                .HasPrincipalKey(p => p.Code)
+                .HasForeignKey(d => d.DdoCode)
+                .HasConstraintName("bill_btdetail_ddo_code_fkey");
+
+            entity.HasOne(d => d.FinancialYearNavigation).WithMany(p => p.BillBtdetails)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("bill_btdetail_financial_year_fkey");
+
             entity.HasOne(d => d.TreasuryCodeNavigation).WithMany(p => p.BillBtdetails)
                 .HasPrincipalKey(p => p.Code)
                 .HasForeignKey(d => d.TreasuryCode)
@@ -116,6 +137,8 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.DdoCode).IsFixedLength();
             entity.Property(e => e.Demand).IsFixedLength();
             entity.Property(e => e.DetailHead).IsFixedLength();
+            entity.Property(e => e.FormRevisionNo).HasDefaultValueSql("1");
+            entity.Property(e => e.FormVersion).HasDefaultValueSql("1");
             entity.Property(e => e.MajorHead).IsFixedLength();
             entity.Property(e => e.MinorHead).IsFixedLength();
             entity.Property(e => e.PlanStatus).IsFixedLength();
@@ -123,20 +146,49 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.SchemeHead).IsFixedLength();
             entity.Property(e => e.SubMajorHead).IsFixedLength();
             entity.Property(e => e.TreasuryCode).IsFixedLength();
+            entity.Property(e => e.VersionNo).HasDefaultValueSql("1");
 
             entity.HasOne(d => d.DdoCodeNavigation).WithMany(p => p.BillDetails)
                 .HasPrincipalKey(p => p.Code)
                 .HasForeignKey(d => d.DdoCode)
                 .HasConstraintName("bill_details_ddo_code_fkey");
 
+            entity.HasOne(d => d.DemandNavigation).WithMany(p => p.BillDetails)
+                .HasPrincipalKey(p => p.DemandCode)
+                .HasForeignKey(d => d.Demand)
+                .HasConstraintName("dept_demand_code_fkey");
+
+            entity.HasOne(d => d.DetailHeadNavigation).WithMany(p => p.BillDetails)
+                .HasPrincipalKey(p => p.Code)
+                .HasForeignKey(d => d.DetailHead)
+                .HasConstraintName("bill_details_detail_head_fkey");
+
+            entity.HasOne(d => d.FinancialYearNavigation).WithMany(p => p.BillDetails)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("bill_details_financial_year_fkey");
+
+            entity.HasOne(d => d.MajorHeadNavigation).WithMany(p => p.BillDetails)
+                .HasPrincipalKey(p => p.Code)
+                .HasForeignKey(d => d.MajorHead)
+                .HasConstraintName("bill_details_major_head_fkey");
+
             entity.HasOne(d => d.TrMaster).WithMany(p => p.BillDetails)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("TP_Bill_tr_master_id_fkey");
+
+            entity.HasOne(d => d.TreasuryCodeNavigation).WithMany(p => p.BillDetails)
+                .HasPrincipalKey(p => p.Code)
+                .HasForeignKey(d => d.TreasuryCode)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("bill_details_treasury_code_fkey");
         });
 
         modelBuilder.Entity<BillSubdetailInfo>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("TP_subdetailInfo_pkey");
+
+            entity.Property(e => e.DdoCode).IsFixedLength();
+            entity.Property(e => e.TreasuryCode).IsFixedLength();
 
             entity.HasOne(d => d.ActiveHoa).WithMany(p => p.BillSubdetailInfos)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -145,6 +197,45 @@ public partial class CTSDBContext : DbContext
             entity.HasOne(d => d.Bill).WithMany(p => p.BillSubdetailInfos)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("id");
+
+            entity.HasOne(d => d.DdoCodeNavigation).WithMany(p => p.BillSubdetailInfos)
+                .HasPrincipalKey(p => p.Code)
+                .HasForeignKey(d => d.DdoCode)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("bill_subdetail_info_ddo_code_fkey");
+
+            entity.HasOne(d => d.FinancialYearNavigation).WithMany(p => p.BillSubdetailInfos)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("bill_subdetail_info_financial_year_fkey");
+
+            entity.HasOne(d => d.TreasuryCodeNavigation).WithMany(p => p.BillSubdetailInfos)
+                .HasPrincipalKey(p => p.Code)
+                .HasForeignKey(d => d.TreasuryCode)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("bill_subdetail_info_treasury_code_fkey");
+
+            entity.HasOne(d => d.DdoWallet).WithMany(p => p.BillSubdetailInfos)
+                .HasPrincipalKey(p => new { p.ActiveHoaId, p.TreasuryCode })
+                .HasForeignKey(d => new { d.ActiveHoaId, d.TreasuryCode })
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("ddo_wallet_active_hoa_id_treasury_code_fkey");
+        });
+
+        modelBuilder.Entity<BtDetail>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("bt_details_pkey");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
+            entity.Property(e => e.CreatedBy).IsFixedLength();
+            entity.Property(e => e.Demand).IsFixedLength();
+            entity.Property(e => e.Detailhead).IsFixedLength();
+            entity.Property(e => e.Major).IsFixedLength();
+            entity.Property(e => e.Minorhead).IsFixedLength();
+            entity.Property(e => e.Planstatus).IsFixedLength();
+            entity.Property(e => e.Schemehead).IsFixedLength();
+            entity.Property(e => e.Subdetail).IsFixedLength();
+            entity.Property(e => e.Submajor).IsFixedLength();
         });
 
         modelBuilder.Entity<ChallanEntry>(entity =>
@@ -250,12 +341,30 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.UpdatedAt).HasDefaultValueSql("now()");
         });
 
+        modelBuilder.Entity<Department>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("department_pkey");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Code).IsFixedLength();
+            entity.Property(e => e.DemandCode).IsFixedLength();
+        });
+
         modelBuilder.Entity<DetailHead>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("detail_head_pkey");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Code).IsFixedLength();
+        });
+
+        modelBuilder.Entity<FinancialYearMaster>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("financial_year_master_pkey");
+
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
+            entity.Property(e => e.FinancialYear).IsFixedLength();
+            entity.Property(e => e.IsActive).HasDefaultValueSql("true");
         });
 
         modelBuilder.Entity<GobalObjection>(entity =>
@@ -271,6 +380,13 @@ public partial class CTSDBContext : DbContext
 
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
             entity.Property(e => e.TreasuryCode).IsFixedLength();
+        });
+
+        modelBuilder.Entity<MajorHead>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("major_head_pkey");
+
+            entity.Property(e => e.Code).IsFixedLength();
         });
 
         modelBuilder.Entity<Status>(entity =>
@@ -306,7 +422,7 @@ public partial class CTSDBContext : DbContext
 
             entity.HasOne(d => d.Bill).WithMany(p => p.Tokens)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("token_bill_details_fkey");
+                .HasConstraintName("tp_bill_bill_id_fky");
 
             entity.HasOne(d => d.TokenFlow).WithMany(p => p.Tokens).HasConstraintName("token_token_flow_id_fkey");
         });
@@ -355,6 +471,8 @@ public partial class CTSDBContext : DbContext
         modelBuilder.Entity<TrMaster>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("TR_Master_pkey");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
         });
 
         modelBuilder.Entity<Treasury>(entity =>

@@ -3,7 +3,7 @@ using CTS_BE.DTOs;
 
 namespace CTS_BE.DAL.Interfaces.billing
 {
-    public interface ITpBillRepository : IRepository<TpBill>
+    public interface ITpBillRepository : IRepository<BillDetail>
     {
         public Task<IEnumerable<BillsListDTO>> AllNewBills(string treasuryCode);
         public Task<int> NewBillCount(string treasuryCode);

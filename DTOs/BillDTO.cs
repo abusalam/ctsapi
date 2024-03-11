@@ -23,13 +23,13 @@
         public string? PayeeDepartment { get; set; }
         public HOAChain HOAChain { get; set; }
         public List<SubDeatilsHeadDto>? SubDeatilsHead { get; set; }
-        public double? TransferAmount { get; set; }
-        public double? GrossAmount { get; set; }
-        public double? NetAmount { get; set; }
-        public double? AgBTAmount { get; set; }
-        public double? TreasuryBTAmount { get; set; }
-        public double? TotalBTAmount { get; set; }
-        public string? SanctionNo { get; set; }
+        public decimal? TransferAmount { get; set; }
+        public decimal? GrossAmount { get; set; }
+        public decimal? NetAmount { get; set; }
+        public decimal? AgBTAmount { get; set; }
+        public decimal? TreasuryBTAmount { get; set; }
+        public decimal? TotalBTAmount { get; set; }
+        public long? SanctionNo { get; set; }
         public DateOnly? SanctionDate { get; set; }
     }
 }

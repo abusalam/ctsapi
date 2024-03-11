@@ -28,4 +28,9 @@
         BillClear = 8,
         RetrunMemoGenerated = 9
     }
+    public enum BTAmountType
+    {
+        AG=1,
+        Treasury=2,
+    }
 }

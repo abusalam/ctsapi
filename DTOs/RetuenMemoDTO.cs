@@ -19,7 +19,7 @@
         public DateOnly? BillDate { get; set; }
         public string? DdoCode { get; set; }
         public HOAChain? HOAChain  {get;set;}
-        public double? GrossAmount { get; set; }
-        public double? NetAmount { get; set; }
+        public decimal? GrossAmount { get; set; }
+        public decimal? NetAmount { get; set; }
     }
 }

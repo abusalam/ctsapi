@@ -11,7 +11,7 @@ public partial class TrMaster
 {
     [Key]
     [Column("id")]
-    public int Id { get; set; }
+    public short Id { get; set; }
 
     [Column("form_name", TypeName = "character varying")]
     public string? FormName { get; set; }

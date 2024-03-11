@@ -9,6 +9,7 @@ namespace CTS_BE.DAL.Entities;
 [Table("bill_details", Schema = "billing")]
 [Index("BillNo", "DdoCode", "FinancialYear", Name = "Uk_bill_no_ddocode_fin_yr", IsUnique = true)]
 [Index("ReferenceNo", "VersionNo", Name = "Uk_reference_no", IsUnique = true)]
+[Index("Demand", Name = "fki_dept_demand_code_fkey")]
 public partial class BillDetail
 {
     [Key]
@@ -33,7 +34,7 @@ public partial class BillDetail
     public short VersionNo { get; set; }
 
     [Column("tr_master_id")]
-    public int TrMasterId { get; set; }
+    public short TrMasterId { get; set; }
 
     [Column("payment_mode")]
     public short PaymentMode { get; set; }
@@ -96,7 +97,7 @@ public partial class BillDetail
     public DateOnly? SanctionDate { get; set; }
 
     [Column("sanction_by")]
-    public int? SanctionBy { get; set; }
+    public long? SanctionBy { get; set; }
 
     [Column("remarks")]
     [StringLength(100)]
@@ -134,6 +135,12 @@ public partial class BillDetail
     [Column("updated_at", TypeName = "timestamp without time zone")]
     public DateTime? UpdatedAt { get; set; }
 
+    [Column("form_version")]
+    public short FormVersion { get; set; }
+
+    [Column("form_revision_no")]
+    public short FormRevisionNo { get; set; }
+
     [InverseProperty("Bill")]
     public virtual ICollection<BillBtdetail> BillBtdetails { get; set; } = new List<BillBtdetail>();
 
@@ -142,10 +149,22 @@ public partial class BillDetail
 
     public virtual Ddo? DdoCodeNavigation { get; set; }
 
+    public virtual Department? DemandNavigation { get; set; }
+
+    public virtual DetailHead? DetailHeadNavigation { get; set; }
+
+    [ForeignKey("FinancialYear")]
+    [InverseProperty("BillDetails")]
+    public virtual FinancialYearMaster FinancialYearNavigation { get; set; } = null!;
+
+    public virtual MajorHead? MajorHeadNavigation { get; set; }
+
     [InverseProperty("Bill")]
     public virtual ICollection<Token> Tokens { get; set; } = new List<Token>();
 
     [ForeignKey("TrMasterId")]
     [InverseProperty("BillDetails")]
     public virtual TrMaster TrMaster { get; set; } = null!;
+
+    public virtual Treasury TreasuryCodeNavigation { get; set; } = null!;
 }

@@ -30,4 +30,8 @@ public partial class Treasury
     public string? Name { get; set; }
 
     public virtual ICollection<BillBtdetail> BillBtdetails { get; set; } = new List<BillBtdetail>();
+
+    public virtual ICollection<BillDetail> BillDetails { get; set; } = new List<BillDetail>();
+
+    public virtual ICollection<BillSubdetailInfo> BillSubdetailInfos { get; set; } = new List<BillSubdetailInfo>();
 }

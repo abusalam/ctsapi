@@ -7,7 +7,7 @@
         public string? SubMajorHead { get; set; }
         public string? MinorHead { get; set; }
         public string? SchemeHead { get; set; }
-        public string? VotedCharged { get; set; }
+        public char? VotedCharged { get; set; }
         public string? DetailHead { get; set; }
         public string? SubDetailHead { get; set; }
     }

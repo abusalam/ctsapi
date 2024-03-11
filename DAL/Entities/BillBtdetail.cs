@@ -49,9 +49,20 @@ public partial class BillBtdetail
     [Column("updated_at", TypeName = "timestamp without time zone")]
     public DateTime? UpdatedAt { get; set; }
 
+    [Column("financial_year")]
+    public short FinancialYear { get; set; }
+
     [ForeignKey("BillId")]
     [InverseProperty("BillBtdetails")]
     public virtual BillDetail? Bill { get; set; }
+
+    public virtual BtDetail? BtSerialNavigation { get; set; }
+
+    public virtual Ddo? DdoCodeNavigation { get; set; }
+
+    [ForeignKey("FinancialYear")]
+    [InverseProperty("BillBtdetails")]
+    public virtual FinancialYearMaster FinancialYearNavigation { get; set; } = null!;
 
     public virtual Treasury? TreasuryCodeNavigation { get; set; }
 }

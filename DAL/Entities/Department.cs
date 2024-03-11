@@ -8,7 +8,6 @@ namespace CTS_BE.DAL.Entities;
 
 [Table("department", Schema = "master")]
 [Index("DemandCode", Name = "Uk_demand_code", IsUnique = true)]
-[Index("DemandCode", Name = "department_demand_code_key", IsUnique = true)]
 public partial class Department
 {
     [Key]
@@ -27,9 +26,5 @@ public partial class Department
     [StringLength(2)]
     public string DemandCode { get; set; } = null!;
 
-    public virtual ICollection<DemandMajorMapping> DemandMajorMappings { get; set; } = new List<DemandMajorMapping>();
-
-    public virtual ICollection<SchemeHead> SchemeHeads { get; set; } = new List<SchemeHead>();
-
-    public virtual ICollection<TpBill> TpBills { get; set; } = new List<TpBill>();
+    public virtual ICollection<BillDetail> BillDetails { get; set; } = new List<BillDetail>();
 }

@@ -20,7 +20,7 @@ namespace CTS_BE.BAL.Services.paymandate
                 {
                     TokenId = entity.Id,
                     TokenDate = entity.TokenDate,
-                    BillNo = entity.Bill.BillNo,
+                    BillNo = entity. Bill.BillNo,
                     BillDate = entity.Bill.BillDate,
                     TRFormats = entity.Bill.TrMaster.WbFormCode,
                     BillTypes = "",

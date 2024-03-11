@@ -7,7 +7,7 @@ using Npgsql;
 
 namespace CTS_BE.DAL.Repositories.billing
 {
-    public class TpBillRepository : Repository<TpBill, CTSDBContext>, ITpBillRepository
+    public class TpBillRepository : Repository<BillDetail, CTSDBContext>, ITpBillRepository
     {
         protected readonly CTSDBContext _cTSDBContext;
         protected readonly IMapper _mapper;

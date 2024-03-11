@@ -11,7 +11,7 @@
         public string? BillModule { get; set; }
         public string? BillPeriod { get; set; }
         public short? NoOfBeneficiarie { get; set; }
-        public double? NeAmount { get; set; }
+        public decimal? NeAmount { get; set; }
         public double? ECSAmount { get; set; }
         public double? ChequeAmount { get; set; }
         public string? DetailHead { get; set; }

@@ -6,16 +6,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Entities;
 
-[Keyless]
 [Table("bt_details", Schema = "master")]
+[Index("BtSerial", Name = "bt_details_bt_serial_key", IsUnique = true)]
 [Index("Id", Name = "idx_name")]
 public partial class BtDetail
 {
+    [Key]
     [Column("id")]
-    public int? Id { get; set; }
+    public int Id { get; set; }
 
     [Column("bt_serial")]
-    public int? BtSerial { get; set; }
+    public int BtSerial { get; set; }
 
     [Column("desc", TypeName = "character varying")]
     public string? Desc { get; set; }
@@ -68,4 +69,6 @@ public partial class BtDetail
 
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime? CreatedAt { get; set; }
+
+    public virtual ICollection<BillBtdetail> BillBtdetails { get; set; } = new List<BillBtdetail>();
 }
