@@ -18,4 +18,9 @@
         public HOAChain? HeadOfAccounts { get; set; }
         public string? DDOCode { get; set; } 
     }
+    public class CreateShrtListDTO
+    {
+        public long TokenId {get; set; } 
+        public DateOnly PaymentDate { get; set; }
+    }
 }

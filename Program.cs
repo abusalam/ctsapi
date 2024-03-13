@@ -32,6 +32,7 @@ builder.Services.AddAutoMapper(typeof(Program));
 
 // Add services to the container.
 //Repositories
+builder.Services.AddTransient<IVoucherRepository, VoucherRepository>();
 builder.Services.AddTransient<ITokenFlowRepository, TokenFlowRepository>();
 builder.Services.AddTransient<ITokenHasObjectionsRepository, TokenHasObjectionRepository>();
 builder.Services.AddTransient<ILocalObjectionRepository, LocalObjectionRepository>();
@@ -41,6 +42,7 @@ builder.Services.AddTransient<ITpBillRepository, TpBillRepository>();
 builder.Services.AddTransient<ITokenRepository, TokenRepository>();
 
 //Services
+builder.Services.AddTransient<IVoucherService, VoucherService>();
 builder.Services.AddTransient<ITokenFlowService, TokenFlowService>();
 builder.Services.AddTransient<ITokenHasObjectionService, TokenHasObjectionService>();
 builder.Services.AddTransient<ILocalObjectionService, LocalObjectionService>();

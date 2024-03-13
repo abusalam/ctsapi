@@ -44,6 +44,8 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<DetailHead> DetailHeads { get; set; }
 
+    public virtual DbSet<EcsNeftDetail> EcsNeftDetails { get; set; }
+
     public virtual DbSet<FinancialYearMaster> FinancialYearMasters { get; set; }
 
     public virtual DbSet<GobalObjection> GobalObjections { get; set; }
@@ -51,6 +53,10 @@ public partial class CTSDBContext : DbContext
     public virtual DbSet<LocalObjection> LocalObjections { get; set; }
 
     public virtual DbSet<MajorHead> MajorHeads { get; set; }
+
+    public virtual DbSet<PaymentAdvice> PaymentAdvices { get; set; }
+
+    public virtual DbSet<PaymentAdviceHasBeneficiary> PaymentAdviceHasBeneficiarys { get; set; }
 
     public virtual DbSet<Status> Statuses { get; set; }
 
@@ -70,10 +76,16 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<Treasury> Treasuries { get; set; }
 
+    public virtual DbSet<VTokenDeatil> VTokenDeatils { get; set; }
+
+    public virtual DbSet<Voucher> Vouchers { get; set; }
+
     public virtual DbSet<VoucherEntry> VoucherEntries { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-       => optionsBuilder.UseNpgsql("Name=ConnectionStrings:DBConnection");
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseNpgsql("Host=localhost;Database=new_cts;Username=postgres;Password=pgsql");
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<ActiveHoaMst>(entity =>
@@ -358,6 +370,17 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.Code).IsFixedLength();
         });
 
+        modelBuilder.Entity<EcsNeftDetail>(entity =>
+        {
+            entity.Property(e => e.BankAccountNumber).IsFixedLength();
+            entity.Property(e => e.ContactNumber).IsFixedLength();
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+            entity.Property(e => e.IfscCode).IsFixedLength();
+            entity.Property(e => e.IsActive).HasDefaultValueSql("1");
+            entity.Property(e => e.PanNo).IsFixedLength();
+        });
+
         modelBuilder.Entity<FinancialYearMaster>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("financial_year_master_pkey");
@@ -387,6 +410,21 @@ public partial class CTSDBContext : DbContext
             entity.HasKey(e => e.Id).HasName("major_head_pkey");
 
             entity.Property(e => e.Code).IsFixedLength();
+        });
+
+        modelBuilder.Entity<PaymentAdvice>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("payment_advice_pkey");
+        });
+
+        modelBuilder.Entity<PaymentAdviceHasBeneficiary>(entity =>
+        {
+            entity.Property(e => e.BankAccountNumber).IsFixedLength();
+            entity.Property(e => e.ContactNumber).IsFixedLength();
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+            entity.Property(e => e.IfscCode).IsFixedLength();
+            entity.Property(e => e.PanNo).IsFixedLength();
         });
 
         modelBuilder.Entity<Status>(entity =>
@@ -483,11 +521,20 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.Code).IsFixedLength();
         });
 
+        modelBuilder.Entity<Voucher>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("voucher_pkey");
+
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
+            entity.Property(e => e.MajorHead).IsFixedLength();
+        });
+
         modelBuilder.Entity<VoucherEntry>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("voucher_entry_pkey");
 
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
+            entity.Property(e => e.LastVoucherNo).HasDefaultValueSql("1");
             entity.Property(e => e.TreasuryCode).IsFixedLength();
         });
 
