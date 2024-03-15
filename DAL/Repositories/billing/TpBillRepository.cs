@@ -27,10 +27,20 @@ namespace CTS_BE.DAL.Repositories.billing
 	                                tp.ddo_code AS ""DdoCode"",
 	                                tp.designation AS ""DdoDesignation"",
 	                                tp.bill_no AS ""BillNo"",
-	                                tp.bill_date AS ""BillDate""
+	                                tp.bill_date AS ""BillDate"",
+	                                tp.gross_amount AS ""GrossAmount"",
+	                                tp.net_amount AS ""NetAmount"",
+                                    tp.demand AS ""Demand"", 
+                                    tp.major_head AS ""MajorHead"", 
+                                    tp.sub_major_head AS ""SubMajorHead"", 
+                                    tp.minor_head AS ""MinorHead"", 
+                                    tp.scheme_head AS ""SchemeHead"", 
+                                    tp.voted_charged AS ""VotedCharged"", 
+                                    tp.detail_head AS ""DetailHead""
                             FROM billing.""TP_Bill"" tp
                             LEFT JOIN cts.token tkn ON tkn.reference_no = tp.reference_no
                             WHERE tp.status = 3 AND tkn.reference_no IS NULL AND  tp.treasury_code = '{treasuryCode}'";
+
                 IEnumerable<BillsListDTO> results = connection.Query<BillsListDTO>(sql).ToList();
                 return results;
             }

@@ -12,5 +12,6 @@ namespace CTS_BE.BAL.Interfaces
         public Task<int> AllTokensCount();
         public Task<ReturnMemoBillDetailsDTO> ReturnMemoBillDetails(long tokenId);
         public Task<bool> GenerateReturnMemo(long tokenId, string referenceNo, long userId, int ownType);
+        public Task<TokenPrintDTO> PrintByTokenId(long tokenId);
     }
 }

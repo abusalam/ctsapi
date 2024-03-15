@@ -111,5 +111,24 @@ namespace CTS_BE.Controllers
         //        return response;
         //    }
         //}
+        [HttpGet("TokenPrint/{tokenId}")]
+        public async Task<APIResponse<TokenPrintDTO>> Print(long tokenId)
+        {
+            APIResponse<TokenPrintDTO> response = new();
+            try
+            {
+                TokenPrintDTO tokenPrintDTO = await _tokenService.PrintByTokenId(tokenId); 
+                response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                response.result = tokenPrintDTO;
+                response.Message = "Data Collect Successfully";
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = ex.Message;
+                return response;
+            }
+        }
     }
 }

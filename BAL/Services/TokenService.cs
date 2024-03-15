@@ -70,6 +70,31 @@ namespace CTS_BE.BAL.Services
             });
             return tokenLists;
         }
+        public async Task<TokenPrintDTO> PrintByTokenId(long tokenId)
+        {
+            TokenPrintDTO tokenPrintDTO = await _TokenRepository.GetSingleSelectedColumnByConditionAsync(entity => entity.Id == tokenId, entity => new TokenPrintDTO
+            {
+                TokenNumber = entity.TokenNumber,
+                TokenDate = entity.TokenDate,
+                BillNo = entity.Bill.BillNo,
+                BillDate = entity.Bill.BillDate,
+                DdoCode = entity.DdoCode,
+                GrossAmount = entity.Bill.GrossAmount,
+                NetAmount = entity.Bill.NetAmount,
+                PayeeDept = entity.Bill.DemandNavigation.Name,
+                HOAChain = new HOAChain
+                {
+                    Demand = entity.Bill.Demand,
+                    MajorHead = entity.Bill.MajorHead,
+                    SubMajorHead = entity.Bill.SubMajorHead,
+                    MinorHead = entity.Bill.MinorHead,
+                    SchemeHead = entity.Bill.SchemeHead,
+                    VotedCharged = entity.Bill.VotedCharged,
+                    DetailHead = entity.Bill.DetailHead,
+                }
+            });
+            return tokenPrintDTO;
+        }
         public async Task<int> AllTokensCount()
         {
             return _TokenRepository.Count();
