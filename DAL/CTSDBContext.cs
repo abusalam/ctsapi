@@ -22,11 +22,15 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<Available> Availables { get; set; }
 
+    public virtual DbSet<Bank> Banks { get; set; }
+
     public virtual DbSet<BillBtdetail> BillBtdetails { get; set; }
 
     public virtual DbSet<BillDetail> BillDetails { get; set; }
 
     public virtual DbSet<BillSubdetailInfo> BillSubdetailInfos { get; set; }
+
+    public virtual DbSet<Branch> Branchs { get; set; }
 
     public virtual DbSet<BtDetail> BtDetails { get; set; }
 
@@ -38,7 +42,11 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<ChequeCountRecord> ChequeCountRecords { get; set; }
 
+    public virtual DbSet<ChequeEntry> ChequeEntries { get; set; }
+
     public virtual DbSet<ChequeIndent> ChequeIndents { get; set; }
+
+    public virtual DbSet<ChequeIndentDetail> ChequeIndentDetails { get; set; }
 
     public virtual DbSet<ChequeInvoice> ChequeInvoices { get; set; }
 
@@ -88,6 +96,8 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<Treasury> Treasuries { get; set; }
 
+    public virtual DbSet<TreasuryHasBranch> TreasuryHasBranches { get; set; }
+
     public virtual DbSet<VAvailable> VAvailables { get; set; }
 
     public virtual DbSet<VBillDetail> VBillDetails { get; set; }
@@ -97,8 +107,9 @@ public partial class CTSDBContext : DbContext
     public virtual DbSet<Voucher> Vouchers { get; set; }
 
     public virtual DbSet<VoucherEntry> VoucherEntries { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-   => optionsBuilder.UseNpgsql("Name=ConnectionStrings:DBConnection");
+        => optionsBuilder.UseNpgsql("Name=ConnectionStrings:DBConnection");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -122,6 +133,13 @@ public partial class CTSDBContext : DbContext
             entity.HasKey(e => e.Id).HasName("advance_voucher_details_pkey");
 
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
+        });
+
+        modelBuilder.Entity<Bank>(entity =>
+        {
+            entity.HasKey(e => new { e.Id, e.BankCode }).HasName("banks_pkey");
+
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
         });
 
         modelBuilder.Entity<BillBtdetail>(entity =>
@@ -247,6 +265,20 @@ public partial class CTSDBContext : DbContext
                 .HasConstraintName("ddo_wallet_active_hoa_id_treasury_code_fkey");
         });
 
+        modelBuilder.Entity<Branch>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("branchs_pkey");
+
+            entity.Property(e => e.MicrCode).IsFixedLength();
+            entity.Property(e => e.Pincode).IsFixedLength();
+
+            entity.HasOne(d => d.BankCodeNavigation).WithMany(p => p.Branches)
+                .HasPrincipalKey(p => p.BankCode)
+                .HasForeignKey(d => d.BankCode)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("bank_code_fkey");
+        });
+
         modelBuilder.Entity<BtDetail>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("bt_details_pkey");
@@ -286,13 +318,27 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.Utilized).HasDefaultValueSql("0");
         });
 
+        modelBuilder.Entity<ChequeEntry>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("cheque_pkey1");
+
+            entity.Property(e => e.Id).HasDefaultValueSql("nextval('cts.cheque_id_seq1'::regclass)");
+        });
+
         modelBuilder.Entity<ChequeIndent>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("cheque_pkey");
 
             entity.Property(e => e.Id).HasDefaultValueSql("nextval('cts.cheque_id_seq'::regclass)");
-            entity.Property(e => e.IsUsed).HasDefaultValueSql("false");
             entity.Property(e => e.MemoNo).IsFixedLength();
+        });
+
+        modelBuilder.Entity<ChequeIndentDetail>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("cheque_indent_details_pkey");
+
+            entity.Property(e => e.ChequeType).HasComment("1= treasury 2= others");
+            entity.Property(e => e.MicrCode).IsFixedLength();
         });
 
         modelBuilder.Entity<ChequeInvoice>(entity =>
@@ -568,6 +614,15 @@ public partial class CTSDBContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Code).IsFixedLength();
+        });
+
+        modelBuilder.Entity<TreasuryHasBranch>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("treasury_has_branch_pkey");
+
+            entity.HasOne(d => d.Branchs).WithMany(p => p.TreasuryHasBranches).HasConstraintName("branch_id_fkey");
+
+            entity.HasOne(d => d.Treasury).WithMany(p => p.TreasuryHasBranches).HasConstraintName("treasury_id_fkey");
         });
 
         modelBuilder.Entity<VBillDetail>(entity =>

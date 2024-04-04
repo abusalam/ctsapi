@@ -30,21 +30,9 @@ public partial class ChequeIndent
     [StringLength(100)]
     public string? Remarks { get; set; }
 
-    [Column("cheque_type")]
-    public short? ChequeType { get; set; }
+    [Column("created_by")]
+    public long? CreatedBy { get; set; }
 
-    [Column("quantity")]
-    public int? Quantity { get; set; }
-
-    [Column("start")]
-    public int? Start { get; set; }
-
-    [Column("end")]
-    public int? End { get; set; }
-
-    [Column("current_position")]
-    public int? CurrentPosition { get; set; }
-
-    [Column("is_used")]
-    public bool? IsUsed { get; set; }
+    [Column("created_at", TypeName = "timestamp without time zone")]
+    public DateTime? CreatedAt { get; set; }
 }
