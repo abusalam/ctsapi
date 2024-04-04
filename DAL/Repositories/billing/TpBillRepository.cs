@@ -22,15 +22,16 @@ namespace CTS_BE.DAL.Repositories.billing
         {
             using (var connection = new NpgsqlConnection(_config.GetConnectionString("DBConnection")))
             {
-                string sql = $@"SELECT tp.bill_id AS ""BillId"",
-                                    tp.reference_no AS ""ReferenceNo"",
-	                                tp.ddo_code AS ""DdoCode"",
-	                                tp.designation AS ""DdoDesignation"",
-	                                tp.bill_no AS ""BillNo"",
-	                                tp.bill_date AS ""BillDate""
-                            FROM billing.""TP_Bill"" tp
-                            LEFT JOIN cts.token tkn ON tkn.reference_no = tp.reference_no
-                            WHERE tp.status = 3 AND tkn.reference_no IS NULL AND  tp.treasury_code = '{treasuryCode}'";
+                string sql = $@"SELECT bill.bill_id AS ""BillId"",
+                                        bill.reference_no AS ""ReferenceNo"",
+                                        bill.ddo_code AS ""DdoCode"",
+                                        mddo.designation AS ""DdoDesignation"",
+                                        bill.bill_no AS ""BillNo"",
+                                        bill.bill_date AS ""BillDate""
+                                FROM billing.""bill_details"" bill
+                                JOIN master.ddo mddo ON bill.ddo_code = mddo.code
+                                LEFT JOIN cts.token tkn ON tkn.reference_no = bill.reference_no
+                                WHERE bill.status = 3 AND tkn.reference_no IS NULL AND  bill.treasury_code = '{treasuryCode}'";
                 IEnumerable<BillsListDTO> results = connection.Query<BillsListDTO>(sql).ToList();
                 return results;
             }
@@ -40,7 +41,7 @@ namespace CTS_BE.DAL.Repositories.billing
             using (var connection = new NpgsqlConnection(_config.GetConnectionString("DBConnection")))
             {
                 string sql = $@"SELECT tp.bill_id
-                            FROM billing.""TP_Bill"" tp
+                            FROM billing.""bill_details"" tp
                             LEFT JOIN cts.token tkn ON tkn.reference_no = tp.reference_no
                             WHERE tp.status = 3 AND tkn.reference_no IS NULL AND  tp.treasury_code = '{treasuryCode}'";
                 int results = connection.Query<BillsListDTO>(sql).Count();

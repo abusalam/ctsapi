@@ -24,9 +24,6 @@ public partial class Token
     [Column("token_date")]
     public DateOnly TokenDate { get; set; }
 
-    [Column("financial_year", TypeName = "character varying")]
-    public string FinancialYear { get; set; } = null!;
-
     [Column("bill_id")]
     public long BillId { get; set; }
 
@@ -56,6 +53,9 @@ public partial class Token
 
     [Column("reference_version")]
     public short? ReferenceVersion { get; set; }
+
+    [Column("financial_year_id")]
+    public short? FinancialYearId { get; set; }
 
     [ForeignKey("BillId")]
     [InverseProperty("Tokens")]

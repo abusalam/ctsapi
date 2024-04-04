@@ -15,7 +15,7 @@ namespace CTS_BE.Controllers
         {
             _tpBillService = tpBillService;
         }
-        [Authorize("permissions:can-receive-bill|roles:clerk")]
+        //[Authorize("permissions:can-receive-bill|roles:clerk")]
         [HttpGet("GetBills")]
         public async Task<APIResponse<IEnumerable<BillsListDTO>>> GetBills()
         {

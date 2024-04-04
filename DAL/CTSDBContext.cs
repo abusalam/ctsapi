@@ -20,6 +20,8 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<AdvanceVoucherDetail> AdvanceVoucherDetails { get; set; }
 
+    public virtual DbSet<Available> Availables { get; set; }
+
     public virtual DbSet<BillBtdetail> BillBtdetails { get; set; }
 
     public virtual DbSet<BillDetail> BillDetails { get; set; }
@@ -28,7 +30,17 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<BtDetail> BtDetails { get; set; }
 
+    public virtual DbSet<Challan> Challans { get; set; }
+
     public virtual DbSet<ChallanEntry> ChallanEntries { get; set; }
+
+    public virtual DbSet<ChequeCount> ChequeCounts { get; set; }
+
+    public virtual DbSet<ChequeCountRecord> ChequeCountRecords { get; set; }
+
+    public virtual DbSet<ChequeIndent> ChequeIndents { get; set; }
+
+    public virtual DbSet<ChequeInvoice> ChequeInvoices { get; set; }
 
     public virtual DbSet<Ddo> Ddos { get; set; }
 
@@ -76,15 +88,17 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<Treasury> Treasuries { get; set; }
 
+    public virtual DbSet<VAvailable> VAvailables { get; set; }
+
+    public virtual DbSet<VBillDetail> VBillDetails { get; set; }
+
     public virtual DbSet<VTokenDeatil> VTokenDeatils { get; set; }
 
     public virtual DbSet<Voucher> Vouchers { get; set; }
 
     public virtual DbSet<VoucherEntry> VoucherEntries { get; set; }
-
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql("Host=localhost;Database=new_cts;Username=postgres;Password=pgsql");
+   => optionsBuilder.UseNpgsql("Name=ConnectionStrings:DBConnection");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -250,12 +264,42 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.Submajor).IsFixedLength();
         });
 
+        modelBuilder.Entity<Challan>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("challan_pkey");
+
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
+        });
+
         modelBuilder.Entity<ChallanEntry>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("challan_entry_pkey");
 
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
             entity.Property(e => e.TreasuryCode).IsFixedLength();
+        });
+
+        modelBuilder.Entity<ChequeCount>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("cheque_count_pkey");
+
+            entity.Property(e => e.Utilized).HasDefaultValueSql("0");
+        });
+
+        modelBuilder.Entity<ChequeIndent>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("cheque_pkey");
+
+            entity.Property(e => e.Id).HasDefaultValueSql("nextval('cts.cheque_id_seq'::regclass)");
+            entity.Property(e => e.IsUsed).HasDefaultValueSql("false");
+            entity.Property(e => e.MemoNo).IsFixedLength();
+        });
+
+        modelBuilder.Entity<ChequeInvoice>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("cheque_invoice_pkey");
+
+            entity.Property(e => e.MicrNo).IsFixedLength();
         });
 
         modelBuilder.Entity<Ddo>(entity =>
@@ -415,6 +459,11 @@ public partial class CTSDBContext : DbContext
         modelBuilder.Entity<PaymentAdvice>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("payment_advice_pkey");
+
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
+            entity.Property(e => e.Status)
+                .HasDefaultValueSql("1")
+                .HasComment("1=sortlist 2=paymandate");
         });
 
         modelBuilder.Entity<PaymentAdviceHasBeneficiary>(entity =>
@@ -519,6 +568,21 @@ public partial class CTSDBContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Code).IsFixedLength();
+        });
+
+        modelBuilder.Entity<VBillDetail>(entity =>
+        {
+            entity.Property(e => e.BillNo).IsFixedLength();
+            entity.Property(e => e.DdoCode).IsFixedLength();
+            entity.Property(e => e.Demand).IsFixedLength();
+            entity.Property(e => e.DetailHead).IsFixedLength();
+            entity.Property(e => e.MajorHead).IsFixedLength();
+            entity.Property(e => e.MinorHead).IsFixedLength();
+            entity.Property(e => e.PlanStatus).IsFixedLength();
+            entity.Property(e => e.ReferenceNo).IsFixedLength();
+            entity.Property(e => e.SchemeHead).IsFixedLength();
+            entity.Property(e => e.SubMajorHead).IsFixedLength();
+            entity.Property(e => e.TreasuryCode).IsFixedLength();
         });
 
         modelBuilder.Entity<Voucher>(entity =>

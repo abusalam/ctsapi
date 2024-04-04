@@ -73,4 +73,10 @@ public partial class PaymentAdviceHasBeneficiary
 
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime? CreatedAt { get; set; }
+
+    [Column("entity_id")]
+    public long? EntityId { get; set; }
+
+    [Column("financial_year_id")]
+    public short? FinancialYearId { get; set; }
 }

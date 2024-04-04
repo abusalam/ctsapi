@@ -98,7 +98,7 @@ namespace CTS_BE.Controllers
             {
                 List<int> statuses = StatusManager.GetStatus(userRole, listType);
                 DynamicListResult<IEnumerable<TokenList>> tokenLists = await _tokenService.Tokens(userScope, statuses ,dynamicListQueryParameters.filterParameters,dynamicListQueryParameters.PageIndex,dynamicListQueryParameters.PageSize,dynamicListQueryParameters.sortParameters);
-                tokenLists.DataCount = await _tokenService.TokenCountByStatus(userScope, StatusManager.GetStatus(userRole, listType),dynamicListQueryParameters.filterParameters);
+                tokenLists.DataCount = await _tokenService.TokenCountByStatus(userScope, statuses, dynamicListQueryParameters.filterParameters);
                 response.apiResponseStatus = Enum.APIResponseStatus.Success;
                 response.result = tokenLists;
                 response.Message = "Data Collect Successfully";

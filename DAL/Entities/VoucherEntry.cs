@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.DAL.Entities;
 
 [Table("voucher_entry", Schema = "cts")]
-[Index("LastVoucherNo", "TreasuryCode", "Month", "FinancialYearId", "MajorHead", Name = "voucher_entry_last_voucher_no_treasury_code_month_financial_key", IsUnique = true)]
+[Index("TreasuryCode", "Month", "FinancialYearId", "MajorHead", Name = "voucher_entry_treasury_code_month_financial_year_id_major_h_key", IsUnique = true)]
 public partial class VoucherEntry
 {
     [Key]

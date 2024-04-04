@@ -49,7 +49,7 @@ namespace CTS_BE.BAL.Services
                 DdoCode = entity.DdoCode,
                 CurrentStatus = entity.TokenFlow.Status.Name,
                 CurrentStatusSlug = entity.TokenFlow.Status.Slug,
-                FinancialYear = entity.FinancialYear,
+                FinancialYear = entity.FinancialYearId.ToString(),
                 ReferenceNo =  entity.ReferenceNo,
                 TokenDate = entity.TokenDate
             });
@@ -72,12 +72,12 @@ namespace CTS_BE.BAL.Services
         //}
         public async Task<DynamicListResult<IEnumerable<TokenList>>> Tokens(string treasuryCode, List<int> tokenStatus, List<FilterParameter> filters = null,int pageIndex=0,int pageSize=10,SortParameter sortParameters=null)
         {
-            IEnumerable<TokenList> tokenLists = await _TokenRepository.GetSelectedColumnByConditionAsync(entity => entity.TreasuryCode == treasuryCode, entity => new TokenList
+            IEnumerable<TokenList> tokenLists = await _TokenRepository.GetSelectedColumnByConditionAsync(entity => entity.TreasuryCode == treasuryCode && tokenStatus.Contains(entity.TokenFlow.StatusId), entity => new TokenList
             {
                 TokenId = entity.Id,
                 TokenNumberr = entity.TokenNumber,
                 DdoCode = entity.DdoCode,
-                FinancialYear = entity.FinancialYear,
+                FinancialYear = entity.FinancialYearId.ToString(),
                 ReferenceNo = entity.ReferenceNo,
                 CurrentStatus = entity.TokenFlow.Status.Name,
                 CurrentStatusId = entity.TokenFlow.Status.Id,

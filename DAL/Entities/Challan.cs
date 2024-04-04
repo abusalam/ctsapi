@@ -6,40 +6,38 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Entities;
 
-[Table("voucher", Schema = "cts")]
-public partial class Voucher
+[Table("challan", Schema = "cts")]
+public partial class Challan
 {
     [Key]
     [Column("id")]
     public long Id { get; set; }
 
-    [Column("voucher_no")]
+    [Column("challan_no")]
     [MaxLength(1)]
-    public char VoucherNo { get; set; }
+    public char ChallanNo { get; set; }
 
-    [Column("voucher_date")]
-    public DateOnly VoucherDate { get; set; }
+    [Column("challan_date")]
+    public DateOnly ChallanDate { get; set; }
 
     [Column("token_id")]
     public long TokenId { get; set; }
 
-    [Column("major_head")]
-    [StringLength(4)]
-    public string MajorHead { get; set; } = null!;
+    [Column("active_hoa_id")]
+    public long ActiveHoaId { get; set; }
 
     [Column("amount")]
-    [Precision(10, 2)]
     public decimal Amount { get; set; }
 
-    [Column("created_at", TypeName = "timestamp without time zone")]
-    public DateTime CreatedAt { get; set; }
+    [Column("financial_year")]
+    public short FinancialYear { get; set; }
 
     [Column("created_by")]
     public long CreatedBy { get; set; }
 
+    [Column("created_at")]
+    public TimeOnly CreatedAt { get; set; }
+
     [Column("payment_advice_id")]
     public long? PaymentAdviceId { get; set; }
-
-    [Column("financial_year_id")]
-    public short FinancialYearId { get; set; }
 }

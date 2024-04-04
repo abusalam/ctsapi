@@ -18,4 +18,22 @@ public partial class PaymentAdvice
 
     [Column("paymandate_date")]
     public DateOnly PaymandateDate { get; set; }
+
+    /// <summary>
+    /// 1=sortlist 2=paymandate
+    /// </summary>
+    [Column("status")]
+    public short Status { get; set; }
+
+    [Column("financial_year_id")]
+    public short FinancialYearId { get; set; }
+
+    [Column("payment_status")]
+    public short PaymentStatus { get; set; }
+
+    [Column("created_at")]
+    public DateTime CreatedAt { get; set; }
+
+    [Column("created_by")]
+    public long CreatedBy { get; set; }
 }
