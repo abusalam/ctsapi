@@ -50,6 +50,8 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<ChequeInvoice> ChequeInvoices { get; set; }
 
+    public virtual DbSet<ChequeInvoiceDetail> ChequeInvoiceDetails { get; set; }
+
     public virtual DbSet<Ddo> Ddos { get; set; }
 
     public virtual DbSet<DdoAllotmentActualrelease> DdoAllotmentActualreleases { get; set; }
@@ -330,6 +332,7 @@ public partial class CTSDBContext : DbContext
             entity.HasKey(e => e.Id).HasName("cheque_pkey");
 
             entity.Property(e => e.Id).HasDefaultValueSql("nextval('cts.cheque_id_seq'::regclass)");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
             entity.Property(e => e.MemoNo).IsFixedLength();
         });
 
@@ -345,7 +348,12 @@ public partial class CTSDBContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("cheque_invoice_pkey");
 
-            entity.Property(e => e.MicrNo).IsFixedLength();
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
+        });
+
+        modelBuilder.Entity<ChequeInvoiceDetail>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("cheque_invoice_details_pkey");
         });
 
         modelBuilder.Entity<Ddo>(entity =>

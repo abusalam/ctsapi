@@ -10,10 +10,14 @@ namespace CTS_BE.Controllers
     public class ChequeController : Controller
     {
         private readonly IChequeEntryService _chequeEntryService;
+        private readonly IChequeIndentService _chequeIndentService;
+        private readonly IChequeInvoiceService _chequeInvoiceService;
 
-        public ChequeController(IChequeEntryService chequeEntryService)
+        public ChequeController(IChequeEntryService chequeEntryService, IChequeIndentService chequeIndentService, IChequeInvoiceService chequeInvoiceService)
         {
             _chequeEntryService = chequeEntryService;
+            _chequeIndentService = chequeIndentService;
+            _chequeInvoiceService = chequeInvoiceService;
         }
         [HttpPost("new-cheque-entry")]
         public async Task<APIResponse<string>> ChequeEntry(ChequeEntryDTO chequeEntryDTO)
@@ -108,8 +112,60 @@ namespace CTS_BE.Controllers
             APIResponse<string> response = new();
             try
             {
+                if (await _chequeIndentService.Insert(chequeIndentDTO))
+                {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.Message = "Cheque indent successfully!";
+                    return response;
+                }
                 response.apiResponseStatus = Enum.APIResponseStatus.Error;
                 response.Message = "Cheque indent faild!";
+                return response;
+            }
+            catch (Exception Ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = Ex.Message;
+                return response;
+            }
+        }
+        [HttpPost("cheque-indent-approve")]
+        public async Task<APIResponse<string>> ChequeIndentApprove(long indentId)
+        {
+            APIResponse<string> response = new();
+            try
+            {
+                if (true)
+                {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.Message = "Cheque indent approve successfully!";
+                    return response;
+                }
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = "Cheque indent approve faild!";
+                return response;
+            }
+            catch (Exception Ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = Ex.Message;
+                return response;
+            }
+        }
+        [HttpPost("cheque-indent-invoice")]
+        public async Task<APIResponse<string>> ChequeIndentApprove(ChequeInvoiceDTO  chequeInvoiceDTO)
+        {
+            APIResponse<string> response = new();
+            try
+            {
+                if (await _chequeInvoiceService.InsertIndentInvoice(chequeInvoiceDTO))
+                {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.Message = "Cheque invoice successfully!";
+                    return response;
+                }
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = "Cheque invoice faild!";
                 return response;
             }
             catch (Exception Ex)

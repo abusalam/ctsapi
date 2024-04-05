@@ -35,4 +35,13 @@ public partial class ChequeIndent
 
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime? CreatedAt { get; set; }
+
+    [Column("status")]
+    public short? Status { get; set; }
+
+    [Column("approve_by")]
+    public long? ApproveBy { get; set; }
+
+    [Column("approve_at", TypeName = "timestamp without time zone")]
+    public DateTime? ApproveAt { get; set; }
 }

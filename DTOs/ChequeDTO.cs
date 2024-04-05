@@ -41,4 +41,19 @@ namespace CTS_BE.DTOs
         public string MicrCode { get; set; }    
         public short Quantity { get; set; }
     }
+    public class ChequeInvoiceDTO
+    {
+        public long ChequeIndentId { get; set; }
+        public string InvoiceDate{ get; set; }
+        public string InvoiceNumber{ get; set; }
+        public List<ChequeInvoiceDeatilsDTO> ChequeInvoiceDeatils { get; set; }
+    }
+    public class ChequeInvoiceDeatilsDTO
+    {
+        public long ChequeIndentDetailId { get; set; }
+        public long ChequeEntryId { get; set; }
+        public short Start { get; set; }
+        public string End { get; set; }
+        public short Quantity { get; set; }
+    }
 }

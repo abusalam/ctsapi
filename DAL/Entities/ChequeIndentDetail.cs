@@ -28,4 +28,7 @@ public partial class ChequeIndentDetail
 
     [Column("quantity")]
     public int? Quantity { get; set; }
+
+    [Column("approve_quantity")]
+    public int? ApproveQuantity { get; set; }
 }

@@ -32,6 +32,10 @@ builder.Services.AddAutoMapper(typeof(Program));
 
 // Add services to the container.
 //Repositories
+builder.Services.AddTransient<IChequeInvoiceRepository, ChequeInvoiceRepository>();
+builder.Services.AddTransient<IBranchRepository, BranchRepository>();
+builder.Services.AddTransient<IBankRepository, BankRepository>();
+builder.Services.AddTransient<IChequeIndentRepository, ChequeIndentRepository>();
 builder.Services.AddTransient<IChequeEntryRepository, ChequeEntryRepository>();
 builder.Services.AddTransient<IVoucherRepository, VoucherRepository>();
 builder.Services.AddTransient<ITokenFlowRepository, TokenFlowRepository>();
@@ -43,6 +47,10 @@ builder.Services.AddTransient<ITpBillRepository, TpBillRepository>();
 builder.Services.AddTransient<ITokenRepository, TokenRepository>();
 
 //Services
+builder.Services.AddTransient<IChequeInvoiceService, ChequeInvoiceService>();
+builder.Services.AddTransient<IBranchService, BranchService>();
+builder.Services.AddTransient<IBankService, BankService>();
+builder.Services.AddTransient<IChequeIndentService, ChequeIndentService>();
 builder.Services.AddTransient<IChequeEntryService, ChequeEntryService>();
 builder.Services.AddTransient<IVoucherService, VoucherService>();
 builder.Services.AddTransient<ITokenFlowService, TokenFlowService>();

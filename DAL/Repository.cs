@@ -75,7 +75,14 @@ namespace CTS_BE.DAL
             IQueryable<TResult> result = this.CTSDbContext.Set<T>().Select(selectExpression);
             return await result.ToListAsync();
         }
+        public async Task<ICollection<TResult>> GetSelectedColumnByConditionAsync<TResult>(Expression<Func<T, bool>> filterExpression, Expression<Func<T, TResult>> selectExpression)
+        {
+            IQueryable<TResult> result = this.CTSDbContext.Set<T>()
+                                    .Where(filterExpression)
+                                    .Select(selectExpression);
 
+            return await result.ToListAsync();
+        }
         public async Task<ICollection<TResult>> GetSelectedColumnByConditionAsync<TResult>(
             Expression<Func<T, bool>> filterExpression, 
             Expression<Func<T, TResult>> selectExpression, 

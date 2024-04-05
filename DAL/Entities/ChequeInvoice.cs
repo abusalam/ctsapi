@@ -25,10 +25,9 @@ public partial class ChequeInvoice
     [Column("cheque_indent_id")]
     public long? ChequeIndentId { get; set; }
 
-    [Column("micr_no")]
-    [StringLength(9)]
-    public string? MicrNo { get; set; }
+    [Column("created_by")]
+    public long? CreatedBy { get; set; }
 
-    [Column("quantity")]
-    public short? Quantity { get; set; }
+    [Column("created_at", TypeName = "timestamp without time zone")]
+    public DateTime? CreatedAt { get; set; }
 }
