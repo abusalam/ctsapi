@@ -14,7 +14,7 @@ namespace CTS_BE.DTOs
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (Start < End)
+            if (Start >= End)
             {
                 yield return new ValidationResult("Start must be less than End", new[] { nameof(Start), nameof(End) });
             }

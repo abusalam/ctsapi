@@ -20,5 +20,20 @@ namespace CTS_BE.BAL
             string indentData = JSONHelper.ObjectToJson(chequeIndentDTO);
             return await _ChequeIndentRepository.InsertIndent(indentData);
         }
+        public async Task<bool> ApproveRejectIndent(long userId,short status)
+        {
+            ChequeIndent chequeIndent = new ChequeIndent
+            {
+                Status = status,
+                ApprovedRejectedBy = userId,
+                ApprovedRejectedAt = DateTime.Now,
+            };
+            if (_ChequeIndentRepository.Add(chequeIndent))
+            {
+                _ChequeIndentRepository.SaveChangesManaged();
+                return true;
+            }
+            return false;
+        }
     }
 }

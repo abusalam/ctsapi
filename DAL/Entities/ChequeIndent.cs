@@ -36,12 +36,15 @@ public partial class ChequeIndent
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime? CreatedAt { get; set; }
 
+    /// <summary>
+    /// 1 = new indent , 2 =  approve by TO , 3= Reject by TO
+    /// </summary>
     [Column("status")]
     public short? Status { get; set; }
 
-    [Column("approve_by")]
-    public long? ApproveBy { get; set; }
+    [Column("approved_rejected_by")]
+    public long? ApprovedRejectedBy { get; set; }
 
-    [Column("approve_at", TypeName = "timestamp without time zone")]
-    public DateTime? ApproveAt { get; set; }
+    [Column("approved_rejected_at", TypeName = "timestamp without time zone")]
+    public DateTime? ApprovedRejectedAt { get; set; }
 }

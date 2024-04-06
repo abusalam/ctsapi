@@ -1,6 +1,7 @@
 ﻿using CTS_BE.BAL.Interfaces;
 using CTS_BE.DTOs;
 using CTS_BE.Helper;
+using CTS_BE.Helper.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CTS_BE.Controllers
@@ -12,12 +13,14 @@ namespace CTS_BE.Controllers
         private readonly IChequeEntryService _chequeEntryService;
         private readonly IChequeIndentService _chequeIndentService;
         private readonly IChequeInvoiceService _chequeInvoiceService;
+        private readonly IClaimService _claimService;
 
-        public ChequeController(IChequeEntryService chequeEntryService, IChequeIndentService chequeIndentService, IChequeInvoiceService chequeInvoiceService)
+        public ChequeController(IChequeEntryService chequeEntryService, IChequeIndentService chequeIndentService, IChequeInvoiceService chequeInvoiceService, IClaimService claimService)
         {
             _chequeEntryService = chequeEntryService;
             _chequeIndentService = chequeIndentService;
             _chequeInvoiceService = chequeInvoiceService;
+            _claimService = claimService;
         }
         [HttpPost("new-cheque-entry")]
         public async Task<APIResponse<string>> ChequeEntry(ChequeEntryDTO chequeEntryDTO)
@@ -43,7 +46,7 @@ namespace CTS_BE.Controllers
                 return response;
             }
         }
-        [HttpGet("all-cheques")]
+        [HttpPatch("all-cheques")]
         public async Task<APIResponse<DynamicListResult<IEnumerable<ChequeListDTO>>>> ChequeList(DynamicListQueryParameters dynamicListQueryParameters)
         {
             APIResponse<DynamicListResult<IEnumerable<ChequeListDTO>>> response = new();
@@ -129,13 +132,14 @@ namespace CTS_BE.Controllers
                 return response;
             }
         }
-        [HttpPost("cheque-indent-approve")]
+        [HttpPut("cheque-indent-approve")]
         public async Task<APIResponse<string>> ChequeIndentApprove(long indentId)
         {
             APIResponse<string> response = new();
             try
             {
-                if (true)
+                long userId = _claimService.GetUserId();
+                if (await _chequeIndentService.ApproveRejectIndent(userId,(short)Enum.IndentStatus.ApproveByTO))
                 {
                     response.apiResponseStatus = Enum.APIResponseStatus.Error;
                     response.Message = "Cheque indent approve successfully!";
@@ -143,6 +147,30 @@ namespace CTS_BE.Controllers
                 }
                 response.apiResponseStatus = Enum.APIResponseStatus.Error;
                 response.Message = "Cheque indent approve faild!";
+                return response;
+            }
+            catch (Exception Ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = Ex.Message;
+                return response;
+            }
+        }
+        [HttpPut("cheque-indent-reject")]
+        public async Task<APIResponse<string>> ChequeIndentReject(long indentId)
+        {
+            APIResponse<string> response = new();
+            try
+            {
+                long userId = _claimService.GetUserId();
+                if (await _chequeIndentService.ApproveRejectIndent(userId, (short)Enum.IndentStatus.RejectByTO))
+                {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.Message = "Cheque indent reject successfully!";
+                    return response;
+                }
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = "Cheque indent reject faild!";
                 return response;
             }
             catch (Exception Ex)

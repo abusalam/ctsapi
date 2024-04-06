@@ -334,6 +334,7 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.Id).HasDefaultValueSql("nextval('cts.cheque_id_seq'::regclass)");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
             entity.Property(e => e.MemoNo).IsFixedLength();
+            entity.Property(e => e.Status).HasComment("1 = new indent , 2 =  approve by TO , 3= Reject by TO");
         });
 
         modelBuilder.Entity<ChequeIndentDetail>(entity =>
