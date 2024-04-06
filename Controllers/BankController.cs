@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CTS_BE.Controllers
 {
-    [Route("v1/api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class BankController : ControllerBase
     {

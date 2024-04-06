@@ -26,7 +26,7 @@ namespace CTS_BE.BAL
         }
         public async Task<BranchDeatilsDTO> GetBranchByBranchCode(short branchCode)
         {
-            BranchDeatilsDTO branchDetails = (BranchDeatilsDTO)await _BranchRepository.GetSelectedColumnByConditionAsync(entity => entity.BranchCode == branchCode && entity.IsActive,
+            BranchDeatilsDTO branchDetails = (BranchDeatilsDTO)await _BranchRepository.GetSingleSelectedColumnByConditionAsync(entity => entity.BranchCode == branchCode && entity.IsActive,
                 entity => new BranchDeatilsDTO
                 {
                     BranchName = entity.BranchName,
