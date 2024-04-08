@@ -31,6 +31,7 @@ namespace CTS_BE.BAL
                 {
                     BranchName = entity.BranchName,
                     MircCode = entity.MicrCode,
+                    BranchAddress = entity.Address,
                 });
             return branchDetails;
         }
