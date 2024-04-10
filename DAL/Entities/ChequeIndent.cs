@@ -47,4 +47,7 @@ public partial class ChequeIndent
 
     [Column("approved_rejected_at", TypeName = "timestamp without time zone")]
     public DateTime? ApprovedRejectedAt { get; set; }
+
+    [InverseProperty("ChequeIndent")]
+    public virtual ICollection<ChequeIndentDetail> ChequeIndentDetails { get; set; } = new List<ChequeIndentDetail>();
 }

@@ -343,6 +343,10 @@ public partial class CTSDBContext : DbContext
 
             entity.Property(e => e.ChequeType).HasComment("1= treasury 2= others");
             entity.Property(e => e.MicrCode).IsFixedLength();
+
+            entity.HasOne(d => d.ChequeIndent).WithMany(p => p.ChequeIndentDetails)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("cheque_indent_details-cheque_indent_id-fkey");
         });
 
         modelBuilder.Entity<ChequeInvoice>(entity =>

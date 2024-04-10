@@ -20,6 +20,17 @@ namespace CTS_BE.BAL
             string indentData = JSONHelper.ObjectToJson(chequeIndentDTO);
             return await _ChequeIndentRepository.InsertIndent(indentData);
         }
+        public async Task<IEnumerable<ChequeIndentListDTO>> ChequeIndentList(DynamicListQueryParameters dynamicListQueryParameters)
+        {
+           return await  _ChequeIndentRepository.GetSelectedColumnByConditionAsync(entity=>true,entity=> new ChequeIndentListDTO
+            {
+                IndentDate = entity.IndentDate,
+                IndentId = entity.IndentId,
+                MemoDate = entity.MemoDate,
+                MemoNo = entity.MemoNo,
+                Remarks = entity.Remarks
+            },dynamicListQueryParameters);
+        }
         public async Task<bool> ApproveRejectIndent(long userId,short status)
         {
             ChequeIndent chequeIndent = new ChequeIndent

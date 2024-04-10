@@ -117,12 +117,84 @@ namespace CTS_BE.Controllers
             {
                 if (await _chequeIndentService.Insert(chequeIndentDTO))
                 {
-                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
                     response.Message = "Cheque indent successfully!";
                     return response;
                 }
                 response.apiResponseStatus = Enum.APIResponseStatus.Error;
                 response.Message = "Cheque indent faild!";
+                return response;
+            }
+            catch (Exception Ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = Ex.Message;
+                return response;
+            }
+        }
+        [HttpPatch("cheque-indent-list")]
+        public async Task<APIResponse<DynamicListResult<IEnumerable<ChequeIndentListDTO>>>> ListOfChequeIndent(DynamicListQueryParameters dynamicListQueryParameters)
+        {
+            APIResponse < DynamicListResult < IEnumerable <ChequeIndentListDTO>>> response = new();
+            try
+            {
+
+                DynamicListResult<IEnumerable<ChequeIndentListDTO>> result = new DynamicListResult<IEnumerable<ChequeIndentListDTO>>
+                {
+                    Headers = new List<ListHeader>
+                    {
+                        new ListHeader
+                        {
+                            Name ="Indent Id",
+                            DataType = "numeric",
+                            FieldName = "IndentId",
+                            FilterField = "IndentId",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Indent Date",
+                            DataType = "date",
+                            FieldName = "IndentDate",
+                            FilterField = "IndentDate",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Memo Number",
+                            DataType = "text",
+                            FieldName = "MemoNo",
+                            FilterField = "MemoNo",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="MemoDate",
+                            DataType = "date",
+                            FieldName = "MemoDate",
+                            FilterField = "MemoDate",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Remarks",
+                            DataType = "text",
+                            FieldName = "Remarks",
+                            FilterField = "Remarks",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                    },
+                    Data = await _chequeIndentService.ChequeIndentList(dynamicListQueryParameters),
+                    DataCount = 1
+                };
+                response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                response.Message ="";
+                response.result = result;
                 return response;
             }
             catch (Exception Ex)

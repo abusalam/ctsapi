@@ -22,6 +22,11 @@ namespace CTS_BE.DAL.Interfaces
             List<FilterParameter> dynamicFilters = null,
             string orderByField = null,
             string orderByOrder = null);
+        public Task<ICollection<TResult>> GetSelectedColumnByConditionAsync<TResult>(
+            Expression<Func<T, bool>> filterExpression,
+            Expression<Func<T, TResult>> selectExpression,
+            DynamicListQueryParameters dynamicListQueryParameters
+        );
         public Task<TResult> GetSingleSelectedColumnByConditionAsync<TResult>(Expression<Func<T, bool>> filterExpression,Expression<Func<T, TResult>> selectExpression);
 
         Task<Dictionary<TKey, List<TResult>>> GetSelectedColumnGroupByConditionAsync<TKey, TResult>(Expression<Func<T, bool>> filterExpression,Expression<Func<T, TKey>> groupByKeySelector,Expression<Func<T, TResult>> selectExpression);

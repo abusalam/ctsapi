@@ -27,6 +27,14 @@ namespace CTS_BE.DTOs
         public int End { get; set; }
         public int Quantity { get; set; }
     }
+    public class ChequeIndentListDTO
+    {
+        public int? IndentId { get; set; }
+        public DateOnly? IndentDate { get; set; }
+        public string? MemoNo { get; set; }
+        public DateOnly? MemoDate { get; set; }
+        public string? Remarks { get; set; }
+    }
     public class ChequeIndentDTO
     {
         public string IndentDate { get; set; }

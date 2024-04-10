@@ -84,6 +84,46 @@ namespace CTS_BE.DAL
             return await result.ToListAsync();
         }
         public async Task<ICollection<TResult>> GetSelectedColumnByConditionAsync<TResult>(
+            Expression<Func<T, bool>> filterExpression,
+            Expression<Func<T, TResult>> selectExpression,
+            DynamicListQueryParameters dynamicListQueryParameters
+        )
+        {
+            int pageIndex = dynamicListQueryParameters.PageIndex;
+            int pageSize = dynamicListQueryParameters.PageSize;
+            List<FilterParameter> dynamicFilters = dynamicListQueryParameters.filterParameters;
+            string orderByField = (dynamicListQueryParameters.sortParameters != null) ? dynamicListQueryParameters.sortParameters.Field : null;
+            string orderByOrder = (dynamicListQueryParameters.sortParameters != null) ? dynamicListQueryParameters.sortParameters.Order : null;
+            IQueryable<T> query = this.CTSDbContext.Set<T>().Where(filterExpression);
+
+            if (dynamicFilters != null && dynamicFilters.Any())
+            {
+                foreach (var filter in dynamicFilters)
+                {
+                    var dynimicFilterExpression = ExpressionHelper.GetFilterExpression<T>(filter.Field, filter.Value, filter.Operator);
+                    query = query.Where(dynimicFilterExpression);
+                }
+            }
+            // Dynamic order by expression
+            if (!string.IsNullOrWhiteSpace(orderByField))
+            {
+                var parameter = Expression.Parameter(typeof(T), "x");
+                var property = Expression.Property(parameter, orderByField);
+                var lambda = Expression.Lambda<Func<T, object>>(Expression.Convert(property, typeof(object)), parameter);
+
+                if (orderByOrder == "ASC")
+                {
+                    query = query.OrderBy(lambda);
+                }
+                else
+                {
+                    query = query.OrderByDescending(lambda);
+                }
+            }
+            var result = await query.Select(selectExpression).Skip(pageIndex * pageSize).Take(pageSize).ToListAsync();
+            return result;
+        }
+        public async Task<ICollection<TResult>> GetSelectedColumnByConditionAsync<TResult>(
             Expression<Func<T, bool>> filterExpression, 
             Expression<Func<T, TResult>> selectExpression, 
             int pageIndex = 0,
