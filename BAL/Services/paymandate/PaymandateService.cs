@@ -44,5 +44,9 @@ namespace CTS_BE.BAL.Services.paymandate
                 });
             return payMandateShortListDTO;
         }
+        public async Task<bool> NewShortList(long loggendInUserId, List<NewShortlistDTO> newShortlistDTO)
+        {
+           return await _tokenRepository.PaymandateShortList(loggendInUserId,  Helper.JSONHelper.ObjectToJson(newShortlistDTO));
+        }
     }
 }
