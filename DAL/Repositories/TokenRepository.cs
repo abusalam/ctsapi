@@ -57,5 +57,20 @@ namespace CTS_BE.DAL.Repositories
             int isDone = (Int16)_outputParameter.Value;
             return (isDone == 0) ? false : true;
         }
+        public async Task<bool> PaymandateShortList(long loggedinUserId,string paymentData)
+        {
+            var _userId = new NpgsqlParameter("@in_loggedin_user_id",NpgsqlTypes.NpgsqlDbType.Bigint);
+            var _paymandate_paylod = new NpgsqlParameter("@in_paymandate_paylod",NpgsqlTypes.NpgsqlDbType.Jsonb);
+            var _outputParameter = new NpgsqlParameter("@is_done_out", NpgsqlTypes.NpgsqlDbType.Smallint);
+            _userId.Value = loggedinUserId;
+            _paymandate_paylod.Value = paymentData;
+            _outputParameter.Direction = ParameterDirection.InputOutput;
+            _outputParameter.Value = 0;
+            var parameters = new[] {_userId, _paymandate_paylod,_outputParameter};
+            var commandText = "CALL  cts.paymandate(@in_loggedin_user_id,@in_paymandate_paylod,@is_done_out)";
+            await _context.Database.ExecuteSqlRawAsync(commandText,parameters);
+            int isDone = (Int16)_outputParameter.Value;
+            return (isDone == 0) ? false : true;
+        }
     }
 }

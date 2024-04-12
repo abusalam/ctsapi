@@ -55,6 +55,24 @@ namespace CTS_BE.Controllers
                 }
                 response.apiResponseStatus = Enum.APIResponseStatus.Error;
                 response.Message = "Sortlisted Faild";
+            
+            }
+        }
+        [HttpPost("newShortList")]
+
+        public async Task<APIResponse<string>> NewShortlist(List<NewShortlistDTO> newShortlistDTO)
+        {
+            APIResponse<string> response = new APIResponse<string>();
+            try
+            {
+                if (await _paymandateService.NewShortList(1,newShortlistDTO))
+                {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                    response.Message = "Paymandate Shortlisted Successfully.";
+                    return response;
+                }
+                response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                response.Message = "Shortlist Faild.";
                 return response;
             }
             catch (Exception Ex)
