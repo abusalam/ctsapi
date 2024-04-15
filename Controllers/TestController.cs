@@ -15,172 +15,186 @@ namespace CTS_BE.Controllers
         public void GenerateXML()
         {
             string filePath = "example.xml";
-            using (XmlWriter xml = XmlWriter.Create(filePath))
+            XmlWriterSettings settings = new XmlWriterSettings
             {
-                xml.WriteStartDocument();
-                xml.WriteStartElement("Root");
-                xml.WriteStartElement("RequestPayload"); //<RequestPayload>
-                xml.WriteStartElement("AppHdr"); //<AppHdr>
-                xml.WriteStartElement("Fr"); //<Fr>
-                xml.WriteStartElement("OrgId"); //<OrgId>
-                xml.WriteStartElement("Id"); //<Id>
-                xml.WriteStartElement("OrgId"); //<OrgId> 
-                xml.WriteStartElement("Othr"); //<OrgId> 
-                xml.WriteElementString("Id", "TEST");
-                xml.WriteEndElement(); //</Othr>
-                xml.WriteEndElement(); //</OrgId>
-                xml.WriteEndElement(); //</Id>
-                xml.WriteEndElement(); //</OrgId>
-                xml.WriteEndElement(); //</Fr>
+                Indent = true,
+                IndentChars = "\t",
+                Encoding = System.Text.Encoding.UTF8
+            };
 
-                xml.WriteStartElement("To"); //<Fr>
-                xml.WriteStartElement("FIId"); //<FIId>
-                xml.WriteStartElement("FinInstnId"); //<FinInstnId>
-                xml.WriteStartElement("ClrSysMmbId"); //<ClrSysMmbId>                          
-                xml.WriteElementString("MmbId", "TEST");
-                xml.WriteEndElement(); //</ClrSysMmbId>
-                xml.WriteEndElement(); //</FinInstnId>
-                xml.WriteEndElement(); //</FIId>
-                xml.WriteEndElement(); //</To>
+            using (XmlWriter writer = XmlWriter.Create(filePath, settings))
+            {
+                writer.WriteStartDocument();
 
-                xml.WriteElementString("BizMsgIdr", "TEST");
-                xml.WriteElementString("MsgDefIdr", "TEST"); ;  //<MsgDefIdr>
-                xml.WriteElementString("BizSvc", "TEST"); ;  //<BizSvc>
-                xml.WriteElementString("CreDt", "TEST"); ;  //<CreDt>
-                xml.WriteEndElement(); //</AppHdr>
+                // Start RequestPayload element
+                writer.WriteStartElement("RequestPayload");
 
-                //Group Header
-                xml.WriteStartElement("Document"); //<Document>
-                xml.WriteStartElement("CstmrCdtTrfInitn"); //<CstmrCdtTrfInitn>
-                xml.WriteStartElement("GrpHdr"); //<GrpHdr>                          
-                xml.WriteElementString("MsgId", "TEST");
-                xml.WriteElementString("CreDtTm", "TEST");
-                xml.WriteStartElement("Authstn"); //<Authstn> 
-                xml.WriteElementString("Prtry", "TEST");
-                xml.WriteEndElement(); //</Authstn>
-                xml.WriteElementString("NbOfTxs", "TEST");
-                xml.WriteElementString("CtrlSum", "TEST");
-                xml.WriteStartElement("InitgPty"); //<InitgPty>
-                xml.WriteElementString("Nm", "TEST");
-                xml.WriteStartElement("Id"); //<Id>
-                xml.WriteStartElement("OrgId"); //<OrgId>
-                xml.WriteStartElement("Othr"); //<Othr>
-                xml.WriteElementString("Id", "TEST");
-                xml.WriteEndElement(); //</Othr>
-                xml.WriteEndElement(); //</OrgId>
-                xml.WriteEndElement(); //</Id>
-                xml.WriteStartElement("CtctDtls"); //<CtctDtls>
-                xml.WriteElementString("EmailAdr", "TEST");
-                xml.WriteEndElement(); //</CtctDtls>
-                xml.WriteEndElement(); //</InitgPty>
-                xml.WriteEndElement(); //</GrpHdr>
+                // Write AppHdr element
+                writer.WriteStartElement("AppHdr");
 
-                //Payment Block
+                // Write Fr element
+                writer.WriteStartElement("Fr");
+                writer.WriteStartElement("OrgId");
+                writer.WriteStartElement("Id");
+                writer.WriteStartElement("OrgId");
+                writer.WriteStartElement("Othr");
+                writer.WriteElementString("Id", "125");
+                writer.WriteEndElement(); // Othr
+                writer.WriteEndElement(); // OrgId
+                writer.WriteEndElement(); // Id
+                writer.WriteEndElement(); // OrgId
+                writer.WriteEndElement(); // Fr
 
-                xml.WriteStartElement("PmtInf"); //<PmtInf>  
-                xml.WriteElementString("PmtInfId","TEST");
-                xml.WriteElementString("PmtMtd", "TEST");
-                xml.WriteElementString("BtchBookg", "TEST");
-                xml.WriteElementString("NbOfTxs", "TEST");
-                xml.WriteElementString("CtrlSum", "TEST");
+                // Write To element
+                writer.WriteStartElement("To");
+                writer.WriteStartElement("FIId");
+                writer.WriteStartElement("FinInstnId");
+                writer.WriteStartElement("ClrSysMmbId");
+                writer.WriteElementString("MmbId", "RBI");
+                writer.WriteEndElement(); // ClrSysMmbId
+                writer.WriteEndElement(); // FinInstnId
+                writer.WriteEndElement(); // FIId
+                writer.WriteEndElement(); // To
 
-                xml.WriteStartElement("PmtTpInf"); //<PmtTpInf>  
-                xml.WriteElementString("InstrPrty", "HIGH");
-                xml.WriteStartElement("SvcLvl"); //<SvcLvl> 
-                xml.WriteElementString("Prtry", "TEST");
-                xml.WriteEndElement(); //</SvcLvl>
-                xml.WriteEndElement(); //</PmtTpInf>
-                xml.WriteElementString("ReqdExctnDt", "TEST");
+                writer.WriteElementString("BizMsgIdr", "EPV80125000000000210202402100338");
+                writer.WriteElementString("MsgDefIdr", "pain.001.001.08");
+                writer.WriteElementString("BizSvc", "CustomerCreditTransferInitiationV08");
+                writer.WriteElementString("CreDt", "2024-02-10T14:02:46");
 
-                xml.WriteStartElement("Dbtr"); //<Dbtr>  
-                xml.WriteElementString("Nm", "TEST");
-                xml.WriteStartElement("PstlAdr"); //<PstlAdr>  
-                xml.WriteElementString("Dept", "TEST");
-                xml.WriteElementString("SubDept", "TEST");
-                xml.WriteEndElement(); //</PstlAdr>
-                xml.WriteStartElement("Id"); //<Id>  
-                xml.WriteStartElement("OrgId"); //<OrgId>  
-                xml.WriteStartElement("Othr"); //<Othr>  
-                xml.WriteElementString("Id", "TEST");
-                xml.WriteEndElement(); //</Othr>
-                xml.WriteEndElement(); //</OrgId>
-                xml.WriteEndElement(); //</Id>                  
-                xml.WriteEndElement(); //</Dbtr>
+                writer.WriteEndElement(); // AppHdr
 
-                xml.WriteStartElement("DbtrAcct"); //<DbtrAcct>  
-                xml.WriteStartElement("Id"); //<Id>  
-                xml.WriteStartElement("Othr"); //<Othr> 
-                xml.WriteElementString("Id", "TEXT");
-                //xml.WriteElementString("Issr", "")
-                xml.WriteEndElement(); //</Othr>
-                xml.WriteEndElement(); //</Id>
-                xml.WriteEndElement(); //</DbtrAcct>
+                // Write Document element
+                writer.WriteStartElement("Document");
 
-                xml.WriteStartElement("DbtrAgt"); //<DbtrAgt>  
-                xml.WriteStartElement("FinInstnId"); //<FinInstnId>  
-                xml.WriteStartElement("ClrSysMmbId"); //<ClrSysMmbId> 
-                xml.WriteElementString("MmbId", "TEST");
+                // Write CstmrCdtTrfInitn element
+                writer.WriteStartElement("CstmrCdtTrfInitn");
 
-                xml.WriteEndElement(); //</ClrSysMmbId>
-                xml.WriteEndElement(); //</FinInstnId>
-                xml.WriteEndElement(); //</DbtrAgt>
+                // Write GrpHdr element
+                writer.WriteStartElement("GrpHdr");
+                writer.WriteElementString("MsgId", "EPV80125000000000210202402100338");
+                writer.WriteElementString("CreDtTm", "2024-02-10T14:02:46");
+                writer.WriteStartElement("Authstn");
+                writer.WriteElementString("Prtry", "ALL");
+                writer.WriteEndElement(); // Authstn
+                writer.WriteElementString("NbOfTxs", "2");
+                writer.WriteElementString("CtrlSum", "41701.00");
 
-                
-                //For i As Integer = 0 To dtBNFC.Rows.Count - 1
+                // Write InitgPty element
+                writer.WriteStartElement("InitgPty");
+                writer.WriteElementString("Nm", "JHARKHAND");
+                writer.WriteStartElement("Id");
+                writer.WriteStartElement("OrgId");
+                writer.WriteStartElement("Othr");
+                writer.WriteElementString("Id", "125");
+                writer.WriteEndElement(); // Othr
+                writer.WriteEndElement(); // OrgId
+                writer.WriteEndElement(); // Id
+                writer.WriteStartElement("CtctDtls");
+                writer.WriteElementString("EmailAdr", "test@gmail.com");
+                writer.WriteEndElement(); // CtctDtls
+                writer.WriteEndElement(); // InitgPty
 
-                //    xml.WriteStartElement("CdtTrfTxInf"); //<CdtTrfTxInf>  
-                //    xml.WriteStartElement("PmtId"); //<PmtId>
-                //    xml.WriteElementString("InstrId", dtBNFC.Rows(i)("CDTTRFTXN_INSTRID").ToString().Trim().Replace("/", ""));
-                //    xml.WriteElementString("EndToEndId", dtBNFC.Rows(i)("CDTTRFTXN_ENDTOENDID").ToString().Trim());
-                //    xml.WriteEndElement(); //</PmtId>
+                writer.WriteEndElement(); // GrpHdr
 
-                //    Dim INSTDAMT_AMT As Decimal = 0
-                //    INSTDAMT_AMT = Convert.ToDecimal(dtBNFC.Rows(i)("CDTTRFTXN_INSTDAMT_AMT").ToString());
+                // Write PmtInf element
+                writer.WriteStartElement("PmtInf");
+                writer.WriteElementString("PmtInfId", "0125CKP0002100020240210202402");
+                writer.WriteElementString("PmtMtd", "TRF");
+                writer.WriteElementString("BtchBookg", "true");
+                writer.WriteElementString("NbOfTxs", "2");
+                writer.WriteElementString("CtrlSum", "41701.00");
+                writer.WriteStartElement("PmtTpInf");
+                writer.WriteElementString("InstrPrty", "HIGH");
+                writer.WriteStartElement("SvcLvl");
+                writer.WriteElementString("Prtry", "NEFT");
+                writer.WriteEndElement(); // SvcLvl
+                writer.WriteEndElement(); // PmtTpInf
+                writer.WriteElementString("ReqdExctnDt", "2024-02-10");
 
-                //    xml.WriteStartElement("Amt"); //<Amt>
-                //    xml.WriteStartElement("InstdAmt"); //<InstdAmt>
-                //    xml.WriteElementString("Amt", INSTDAMT_AMT.ToString("F"));
-                //    xml.WriteElementString("CcyOfTrf", dtBNFC.Rows(i)("CDTTRFTXN_CCYOFTRF").ToString().Trim());
-                //    xml.WriteEndElement(); //</InstdAmt>
-                //    xml.WriteEndElement(); //</Amt>
-                //    xml.WriteStartElement("CdtrAgt"); //<CdtrAgt>
-                //    xml.WriteStartElement("FinInstnId"); //<FinInstnId>
-                //    xml.WriteStartElement("ClrSysMmbId"); //<ClrSysMmbId>
-                //    xml.WriteElementString("MmbId", dtBNFC.Rows(i)("CDTTRFTXN_CDTRAGT_MMBID").ToString().Trim());
-                //    xml.WriteEndElement(); //</ClrSysMmbId>
-                //    xml.WriteEndElement(); //</FinInstnId>
-                //    xml.WriteStartElement("BrnchId"); //<BrnchId>
-                //    xml.WriteElementString("Id", dtBNFC.Rows(i)("CDTTRFTXN_CDTRAGT_BRNCHID").ToString().Trim());
-                //    xml.WriteEndElement(); //</BrnchId>
-                //    xml.WriteEndElement(); //</CdtrAgt>
+                // Write Dbtr element
+                writer.WriteStartElement("Dbtr");
+                writer.WriteElementString("Nm", "FINANCE DEPT GoJH");
+                writer.WriteStartElement("PstlAdr");
+                writer.WriteElementString("Dept", "CKP");
+                writer.WriteElementString("SubDept", "CKPRWD001");
+                writer.WriteEndElement(); // PstlAdr
+                writer.WriteStartElement("Id");
+                writer.WriteStartElement("OrgId");
+                writer.WriteStartElement("Othr");
+                writer.WriteElementString("Id", "125");
+                writer.WriteEndElement(); // Othr
+                writer.WriteEndElement(); // OrgId
+                writer.WriteEndElement(); // Id
+                writer.WriteEndElement(); // Dbtr
 
-                //    xml.WriteStartElement("Cdtr"); //<Cdtr>
-                //    xml.WriteElementString("Nm", Regex.Replace(dtBNFC.Rows(i)("CDTTRFTXN_CDTR_NM").ToString().Trim(), "[^0-9a-zA-Z ]+", ""));
-                //    xml.WriteEndElement(); //</Cdtr>
+                // Write DbtrAcct element
+                writer.WriteStartElement("DbtrAcct");
+                writer.WriteStartElement("Id");
+                writer.WriteStartElement("Othr");
+                writer.WriteElementString("Id", "01602501045");
+                writer.WriteEndElement(); // Othr
+                writer.WriteEndElement(); // Id
+                writer.WriteEndElement(); // DbtrAcct
 
-                //    xml.WriteStartElement("CdtrAcct"); //<CdtrAcct>
-                //    xml.WriteStartElement("Id"); //<Id>
-                //    xml.WriteStartElement("Othr"); //<Othr>
-                //    xml.WriteElementString("Id", dtBNFC.Rows(i)("CDTTRFTXN_CDTRACCT_OTHRID").ToString().Trim());
-                //    xml.WriteEndElement(); //</Othr>
-                //    xml.WriteEndElement(); //</Id>
+                // Write DbtrAgt element
+                writer.WriteStartElement("DbtrAgt");
+                writer.WriteStartElement("FinInstnId");
+                writer.WriteStartElement("ClrSysMmbId");
+                writer.WriteElementString("MmbId", "RBIS0GOJHEP");
+                writer.WriteEndElement(); // ClrSysMmbId
+                writer.WriteEndElement(); // FinInstnId
+                writer.WriteEndElement(); // DbtrAgt
 
-                //    xml.WriteStartElement("Tp"); //<Tp>
-                //    xml.WriteElementString("Cd", dtBNFC.Rows(i)("CDTTRFTXN_CDTRACCT_TPCD").ToString().Trim());
-                //    xml.WriteEndElement(); //</Tp>
-                //    xml.WriteEndElement(); //</CdtrAcct>
+                // Write CdtTrfTxInf elements
+                for (int i = 0; i < 2; i++)
+                {
+                    writer.WriteStartElement("CdtTrfTxInf");
+                    writer.WriteStartElement("PmtId");
+                    writer.WriteElementString("InstrId", (i == 0) ? "DRNPAYEE03891A21010022024CKP" : "20RCHR00508E1DNA21010022024CKP");
+                    writer.WriteElementString("EndToEndId", (i == 0) ? "EP012500000000039824041001576" : "EP012500000000039824041001577");
+                    writer.WriteEndElement(); // PmtId
+                    writer.WriteStartElement("Amt");
+                    writer.WriteStartElement("InstdAmt");
+                    writer.WriteElementString("Amt", (i == 0) ? "40979.00" : "722.00");
+                    writer.WriteElementString("CcyOfTrf", "INR");
+                    writer.WriteEndElement(); // InstdAmt
+                    writer.WriteEndElement(); // Amt
+                    writer.WriteStartElement("CdtrAgt");
+                    writer.WriteStartElement("FinInstnId");
+                    writer.WriteStartElement("ClrSysMmbId");
+                    writer.WriteElementString("MmbId", (i == 0) ? "SBIN0001672" : "RBIS0GSTPMT");
+                    writer.WriteEndElement(); // ClrSysMmbId
+                    writer.WriteEndElement(); // FinInstnId
+                    writer.WriteStartElement("BrnchId");
+                    writer.WriteElementString("Id", (i == 0) ? "SBIN0001672" : "RBIS0GSTPMT");
+                    writer.WriteEndElement(); // BrnchId
+                    // writer.WriteEndElement(); // FinInstnId
+                    writer.WriteEndElement(); // CdtrAgt
+                    writer.WriteStartElement("Cdtr");
+                    writer.WriteElementString("Nm", (i == 0) ? "RAIDER SECURITY SERVICES PVT LTD" : "GST");
+                    writer.WriteEndElement(); // Cdtr
+                    writer.WriteStartElement("CdtrAcct");
+                    writer.WriteStartElement("Id");
+                    writer.WriteStartElement("Othr");
+                    writer.WriteElementString("Id", (i == 0) ? "33544440518" : "24022000007067");
+                    writer.WriteEndElement(); // Othr
+                    writer.WriteEndElement(); // Id
+                    writer.WriteStartElement("Tp");
+                    writer.WriteElementString("Cd", (i == 0) ? "10" : "10");
+                    writer.WriteEndElement(); // Tp
+                    writer.WriteEndElement(); // CdtrAcct
+                    writer.WriteEndElement(); // CdtTrfTxInf
+                }
 
-                //    //xml.WriteStartElement("RmtInf"); // < RmtInf >
-                //    //xml.WriteElementString("Ustrd", dtBNFC.Rows(i)("CDTTRFTXN_USTRD").ToString().Trim());
-                //    //xml.WriteEndElement(); // </ RmtInf >
+                writer.WriteEndElement(); // PmtInf
 
-                //    xml.WriteEndElement(); //</CdtTrfTxInf> 
-                //Next
-                xml.WriteEndElement(); //</PmtInf>
-                xml.WriteEndElement(); //</CstmrCdtTrfInitn>
-                xml.WriteEndElement(); //</Document>
-                xml.WriteEndElement(); //</RequestPayload>
-                xml.WriteEndDocument();
+                writer.WriteEndElement(); // CstmrCdtTrfInitn
+
+                writer.WriteEndElement(); // Document
+
+                writer.WriteEndElement(); // RequestPayload
+
+                writer.WriteEndDocument();
             }
         }
     }

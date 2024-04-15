@@ -21,7 +21,7 @@
     public class CreateShrtListDTO
     {
         public long TokenId {get; set; } 
-        public DateOnly PaymentDate { get; set; }
+        public string PaymentDate { get; set; }
     }
     public class NewShortlistDTO
     {

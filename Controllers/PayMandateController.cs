@@ -55,7 +55,14 @@ namespace CTS_BE.Controllers
                 }
                 response.apiResponseStatus = Enum.APIResponseStatus.Error;
                 response.Message = "Sortlisted Faild";
-            
+                return response;
+
+            }
+            catch (Exception Ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = Ex.Message;
+                return response;
             }
         }
         [HttpPost("newShortList")]
