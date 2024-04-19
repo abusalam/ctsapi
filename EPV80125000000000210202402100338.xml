@@ -6,7 +6,7 @@
 				<Id>
 					<OrgId>
 						<Othr>
-							<Id>1254</Id>
+							<Id>123456</Id>
 						</Othr>
 					</OrgId>
 				</Id>
@@ -21,58 +21,58 @@
 				</FinInstnId>
 			</FIId>
 		</To>
-		<BizMsgIdr>EPV81254000000000001202404150001</BizMsgIdr>??
+		<BizMsgIdr>EPV80125000000000210202402100338</BizMsgIdr>
 		<MsgDefIdr>pain.001.001.08</MsgDefIdr>
 		<BizSvc>CustomerCreditTransferInitiationV08</BizSvc>
-		<CreDt>2024-04-15T16:36:50</CreDt>
+		<CreDt>2024-04-15T15:28:37</CreDt>
 	</AppHdr>
 	<Document>
 		<CstmrCdtTrfInitn>
 			<GrpHdr>
-				<MsgId>EPV81254000000000001202404150001</MsgId>??
-				<CreDtTm>2024-04-15T16:36:50</CreDtTm>
+				<MsgId>EPV80125000000000210202402100338</MsgId>
+				<CreDtTm>2024-04-15T15:28:37</CreDtTm>
 				<Authstn>
 					<Prtry>ALL</Prtry>
 				</Authstn>
-				<NbOfTxs>2</NbOfTxs>
-				<CtrlSum>41637.00</CtrlSum>
+				<NbOfTxs>2000000</NbOfTxs>
+				<CtrlSum>17000000001.00</CtrlSum>
 				<InitgPty>
-					<Nm>WEST BENGAL</Nm>
+					<Nm>NOWARE</Nm>
 					<Id>
 						<OrgId>
 							<Othr>
-								<Id>1254</Id>
+								<Id>123456</Id>
 							</Othr>
 						</OrgId>
 					</Id>
 					<CtctDtls>
-						<EmailAdr>user@email.com</EmailAdr>
+						<EmailAdr>test@email.com</EmailAdr>
 					</CtctDtls>
 				</InitgPty>
 			</GrpHdr>
 			<PmtInf>
-				##<PmtInfId>1254CKP0002100020240210202402</PmtInfId>???
-				<PmtMtd>TRF</PmtMtd>
-				<BtchBookg>true</BtchBookg>
+				<PmtInfId>1234CODE1234566</PmtInfId>
+				<PmtMtd>MRF</PmtMtd>
+				<BtchBookg>True</BtchBookg>
 				<NbOfTxs>2</NbOfTxs>
-				<CtrlSum>41637.00</CtrlSum>
+				<CtrlSum>17000000001.00</CtrlSum>
 				<PmtTpInf>
-					<InstrPrty>HIGH</InstrPrty>
+					<InstrPrty>HIGHLIGHT</InstrPrty>
 					<SvcLvl>
-						<Prtry>NEFT</Prtry>
+						<Prtry>PYP</Prtry>
 					</SvcLvl>
 				</PmtTpInf>
-				<ReqdExctnDt>2024-05-15</ReqdExctnDt>
+				<ReqdExctnDt>10-10-2025 00:00:00</ReqdExctnDt>
 				<Dbtr>
-					##<Nm>FINANCE DEPT GoJH</Nm>???
+					<Nm>FIN</Nm>
 					<PstlAdr>
-						##<Dept>CKP</Dept>??
-						##<SubDept>CKPRWD001</SubDept>??
+						<Dept>KFC</Dept>
+						<SubDept>KFC123455</SubDept>
 					</PstlAdr>
 					<Id>
 						<OrgId>
 							<Othr>
-								<Id>1254</Id>
+								<Id>123456</Id>
 							</Othr>
 						</OrgId>
 					</Id>
@@ -80,84 +80,84 @@
 				<DbtrAcct>
 					<Id>
 						<Othr>
-							<Id>04522043212</Id>
+							<Id>123456</Id>
 						</Othr>
 					</Id>
 				</DbtrAcct>
 				<DbtrAgt>
 					<FinInstnId>
 						<ClrSysMmbId>
-							<MmbId>RBIS0GOJHEP</MmbId>
+							<MmbId>MAC147852</MmbId>
 						</ClrSysMmbId>
 					</FinInstnId>
 				</DbtrAgt>
 				<CdtTrfTxInf>
 					<PmtId>
-						<InstrId>DRNPAYEE001</InstrId>??
-						<EndToEndId>EP125400000000000124246000001</EndToEndId>??
+						<InstrId>17000000055</InstrId>
+						<EndToEndId>CORE2102024123456</EndToEndId>
 					</PmtId>
 					<Amt>
 						<InstdAmt>
-							<Amt>40916.00</Amt>
-							<CcyOfTrf>INR</CcyOfTrf>
+							<Amt>12515.00</Amt>
+							<CcyOfTrf>USD</CcyOfTrf>
 						</InstdAmt>
 					</Amt>
 					<CdtrAgt>
 						<FinInstnId>
 							<ClrSysMmbId>
-								<MmbId>SBIN0014061</MmbId>
+								<MmbId>ECO123456</MmbId>
 							</ClrSysMmbId>
 						</FinInstnId>
 						<BrnchId>
-							<Id>SBIN0014061</Id>
+							<Id>ECO123456</Id>
 						</BrnchId>
 					</CdtrAgt>
 					<Cdtr>
-						<Nm>FARM FIELD PVT LTD</Nm>
+						<Nm>AMAZON</Nm>
 					</Cdtr>
 					<CdtrAcct>
 						<Id>
 							<Othr>
-								<Id>69174199438</Id>
+								<Id>147852369</Id>
 							</Othr>
 						</Id>
 						<Tp>
-							<Cd>10</Cd>
+							<Cd>1000</Cd>
 						</Tp>
 					</CdtrAcct>
 				</CdtTrfTxInf>
 				<CdtTrfTxInf>
 					<PmtId>
-						<InstrId>DRNPAYEE002</InstrId>
-						<EndToEndId>EP125400000000000224246000002</EndToEndId>
+						<InstrId>1700000099</InstrId>
+						<EndToEndId>CORE2102024123457</EndToEndId>
 					</PmtId>
 					<Amt>
 						<InstdAmt>
-							<Amt>721.00</Amt>
-							<CcyOfTrf>INR</CcyOfTrf>
+							<Amt>72200.00</Amt>
+							<CcyOfTrf>USD</CcyOfTrf>
 						</InstdAmt>
 					</Amt>
 					<CdtrAgt>
 						<FinInstnId>
 							<ClrSysMmbId>
-								<Id>SBIN0014062</Id>
+								<MmbId>ECO147852369</MmbId>
 							</ClrSysMmbId>
 						</FinInstnId>
 						<BrnchId>
-							<Id>SBIN0014062</Id>
+							<Id>ECO147852369</Id>
 						</BrnchId>
 					</CdtrAgt>
 					<Cdtr>
-						<Nm>Test Name</Nm>
+						<Nm>VAT</Nm>
 					</Cdtr>
 					<CdtrAcct>
 						<Id>
 							<Othr>
-								<Id>24022000007067</Id>
+								<Id>147852369</Id>
 							</Othr>
 						</Id>
 						<Tp>
-							<Cd>10</Cd>
+							<Cd>1000</Cd>
 						</Tp>
 					</CdtrAcct>
 				</CdtTrfTxInf>

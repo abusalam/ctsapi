@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+﻿<xml version="1.0" encoding="utf-8">
 <RequestPayload>
 	<AppHdr>
 		<Fr>
@@ -21,7 +21,7 @@
 				</FinInstnId>
 			</FIId>
 		</To>
-		<BizMsgIdr>EPV81254000000000001202404150001</BizMsgIdr>??
+		<BizMsgIdr>EPV81254000000000001202404150001</BizMsgIdr>
 		<MsgDefIdr>pain.001.001.08</MsgDefIdr>
 		<BizSvc>CustomerCreditTransferInitiationV08</BizSvc>
 		<CreDt>2024-04-15T16:36:50</CreDt>
@@ -29,7 +29,7 @@
 	<Document>
 		<CstmrCdtTrfInitn>
 			<GrpHdr>
-				<MsgId>EPV81254000000000001202404150001</MsgId>??
+				<MsgId>EPV81254000000000001202404150001</MsgId>
 				<CreDtTm>2024-04-15T16:36:50</CreDtTm>
 				<Authstn>
 					<Prtry>ALL</Prtry>
@@ -51,7 +51,7 @@
 				</InitgPty>
 			</GrpHdr>
 			<PmtInf>
-				##<PmtInfId>1254CKP0002100020240210202402</PmtInfId>???
+				<PmtInfId>1254CKP0002100020240210202402</PmtInfId>
 				<PmtMtd>TRF</PmtMtd>
 				<BtchBookg>true</BtchBookg>
 				<NbOfTxs>2</NbOfTxs>
@@ -64,10 +64,10 @@
 				</PmtTpInf>
 				<ReqdExctnDt>2024-05-15</ReqdExctnDt>
 				<Dbtr>
-					##<Nm>FINANCE DEPT GoJH</Nm>???
+					<Nm>FINANCE DEPT GoJH</Nm>
 					<PstlAdr>
-						##<Dept>CKP</Dept>??
-						##<SubDept>CKPRWD001</SubDept>??
+						<Dept>CKP</Dept>
+						<SubDept>CKPRWD001</SubDept>
 					</PstlAdr>
 					<Id>
 						<OrgId>
@@ -93,8 +93,8 @@
 				</DbtrAgt>
 				<CdtTrfTxInf>
 					<PmtId>
-						<InstrId>DRNPAYEE001</InstrId>??
-						<EndToEndId>EP125400000000000124246000001</EndToEndId>??
+						<InstrId>DRNPAYEE001</InstrId>
+						<EndToEndId>EP125400000000000124246000001</EndToEndId>
 					</PmtId>
 					<Amt>
 						<InstdAmt>
