@@ -40,4 +40,16 @@
         public string Status { get; set; }
         public int? StatusId { get; set; }
     }
+    public class TokenPrintDTO
+    {
+       public long TokenNumber { get; set; }
+        public DateOnly TokenDate { get; set; }
+        public string BillNo { get; set; }
+        public DateOnly? BillDate {get; set; }
+        public string DdoCode {get; set; }
+        public string PayeeDept { get; set; }
+        public HOAChain HOAChain { get; set; }
+        public double? GrossAmount { get; set; }
+        public double? NetAmount { get; set; }
+    }
 }

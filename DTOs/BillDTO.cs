@@ -9,6 +9,9 @@
         public string? BillNo { get; set; }
         //public DateOnly? BillDate { get; set; }
         public string? BillDate { get; set; }
+        public double? GrossAmount { get; set; }
+        public double? NetAmount { get; set; }
+        public HOAChain HOAChain { get; set; }
 
     }
     public class BillDetailsDetailsByRef
