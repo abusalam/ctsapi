@@ -24,9 +24,9 @@ namespace CTS_BE.BAL
         {
            return await  _ChequeIndentRepository.GetSelectedColumnByConditionAsync(entity=>true,entity=> new ChequeIndentListDTO
             {
-                IndentDate = entity.IndentDate,
+                IndentDate = entity.IndentDate.Value.ToString("dd/MM/yyyy"),
                 IndentId = entity.IndentId,
-                MemoDate = entity.MemoDate,
+                MemoDate =entity.MemoDate.Value.ToString("dd/MM/yyyy"),
                 MemoNo = entity.MemoNo,
                 Remarks = entity.Remarks
             },dynamicListQueryParameters);

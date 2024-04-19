@@ -10,14 +10,14 @@
     }    
     public class FilterParameter
     {
-        public string Field { get; set; }
-        public string Value { get; set; }
-        public string Operator { get; set; }
+        public string? Field { get; set; }
+        public string? Value { get; set; }
+        public string? Operator { get; set; }
     }
     public class SortParameter
     {
-        public string Field { get; set; } = "";
-        public string Order { get; set; } = "ASC";
+        public string? Field { get; set; } = "";
+        public string? Order { get; set; } = "ASC";
     }
     public class DynamicListResult<T>
     {

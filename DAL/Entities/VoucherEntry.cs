@@ -29,7 +29,8 @@ public partial class VoucherEntry
     public short FinancialYearId { get; set; }
 
     [Column("major_head")]
-    public short MajorHead { get; set; }
+    [StringLength(4)]
+    public string MajorHead { get; set; } = null!;
 
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime? CreatedAt { get; set; }

@@ -21,7 +21,7 @@ public partial class TokenFlow
 
     [Column("reference_no")]
     [StringLength(13)]
-    public string ReferenceNo { get; set; } = null!;
+    public string? ReferenceNo { get; set; }
 
     [Column("status_id")]
     public int StatusId { get; set; }

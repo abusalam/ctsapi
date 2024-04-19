@@ -111,7 +111,8 @@ public partial class CTSDBContext : DbContext
     public virtual DbSet<VoucherEntry> VoucherEntries { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseNpgsql("Name=ConnectionStrings:DBConnection");
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseNpgsql("Host=localhost;Database=new_cts;Username=postgres;Password=pgsql");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -578,7 +579,6 @@ public partial class CTSDBContext : DbContext
             entity.HasKey(e => e.Id).HasName("token_entry_pkey");
 
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
-            entity.Property(e => e.FinancialYear).IsFixedLength();
             entity.Property(e => e.TokenNo).HasDefaultValueSql("1");
             entity.Property(e => e.TreasuryCode).IsFixedLength();
         });
@@ -667,6 +667,7 @@ public partial class CTSDBContext : DbContext
 
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
             entity.Property(e => e.LastVoucherNo).HasDefaultValueSql("1");
+            entity.Property(e => e.MajorHead).IsFixedLength();
             entity.Property(e => e.TreasuryCode).IsFixedLength();
         });
 

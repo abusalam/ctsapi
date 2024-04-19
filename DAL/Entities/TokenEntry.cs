@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.DAL.Entities;
 
 [Table("token_entry", Schema = "cts")]
-[Index("TreasuryCode", "FinancialYear", Name = "unique_treasary_code_fin_year", IsUnique = true)]
+[Index("TreasuryCode", "FinancialYearId", Name = "unique_treasary_code_fin_year", IsUnique = true)]
 public partial class TokenEntry
 {
     [Key]
@@ -21,9 +21,8 @@ public partial class TokenEntry
     [StringLength(3)]
     public string TreasuryCode { get; set; } = null!;
 
-    [Column("financial_year")]
-    [StringLength(9)]
-    public string FinancialYear { get; set; } = null!;
+    [Column("financial_year_id")]
+    public short FinancialYearId { get; set; }
 
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime CreatedAt { get; set; }

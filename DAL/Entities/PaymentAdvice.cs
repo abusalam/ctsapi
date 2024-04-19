@@ -29,7 +29,7 @@ public partial class PaymentAdvice
     public short FinancialYearId { get; set; }
 
     [Column("payment_status")]
-    public short PaymentStatus { get; set; }
+    public short? PaymentStatus { get; set; }
 
     [Column("created_at")]
     public DateTime CreatedAt { get; set; }
