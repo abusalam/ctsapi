@@ -20,10 +20,13 @@ public partial class Status
     public string Slug { get; set; } = null!;
 
     /// <summary>
-    /// 1 = token flow 
+    /// 1 = token flow ,2 = Cheque
     /// </summary>
     [Column("type")]
     public short Type { get; set; }
+
+    [InverseProperty("StatusNavigation")]
+    public virtual ICollection<ChequeIndent> ChequeIndents { get; set; } = new List<ChequeIndent>();
 
     [InverseProperty("Status")]
     public virtual ICollection<TokenFlow> TokenFlows { get; set; } = new List<TokenFlow>();

@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.DAL.Entities;
 
 [Table("cheque_indent", Schema = "cts")]
+[Index("Status", Name = "fki_cheque_indent_status_fkey")]
 public partial class ChequeIndent
 {
     [Key]
@@ -40,7 +41,7 @@ public partial class ChequeIndent
     /// 1 = new indent , 2 =  approve by TO , 3= Reject by TO
     /// </summary>
     [Column("status")]
-    public short? Status { get; set; }
+    public int? Status { get; set; }
 
     [Column("approved_rejected_by")]
     public long? ApprovedRejectedBy { get; set; }
@@ -50,4 +51,8 @@ public partial class ChequeIndent
 
     [InverseProperty("ChequeIndent")]
     public virtual ICollection<ChequeIndentDetail> ChequeIndentDetails { get; set; } = new List<ChequeIndentDetail>();
+
+    [ForeignKey("Status")]
+    [InverseProperty("ChequeIndents")]
+    public virtual Status? StatusNavigation { get; set; }
 }

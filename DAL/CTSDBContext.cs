@@ -336,6 +336,8 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
             entity.Property(e => e.MemoNo).IsFixedLength();
             entity.Property(e => e.Status).HasComment("1 = new indent , 2 =  approve by TO , 3= Reject by TO");
+
+            entity.HasOne(d => d.StatusNavigation).WithMany(p => p.ChequeIndents).HasConstraintName("cheque_indent_status_fkey");
         });
 
         modelBuilder.Entity<ChequeIndentDetail>(entity =>
@@ -540,7 +542,7 @@ public partial class CTSDBContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("status_pkey");
 
-            entity.Property(e => e.Type).HasComment("1 = token flow ");
+            entity.Property(e => e.Type).HasComment("1 = token flow ,2 = Cheque");
         });
 
         modelBuilder.Entity<SubDetailHead>(entity =>
