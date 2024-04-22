@@ -2,8 +2,8 @@
 {
     public enum IndentStatus
     {
-        NewIndent = 1, 
-        ApproveByTO = 2, 
-        RejectByTO = 3,
+        NewIndent = 11, 
+        ApproveByTO = 12, 
+        RejectByTO = 13,
     }
 }

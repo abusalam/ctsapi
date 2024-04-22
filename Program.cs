@@ -100,7 +100,7 @@ app.UseHttpsRedirection();
 
 //app.UseAuthorization();
 
-app.UseAuthTokenMiddleware();
+//app.UseAuthTokenMiddleware();
 
 app.MapControllers();
 

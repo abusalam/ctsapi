@@ -35,6 +35,8 @@ namespace CTS_BE.DTOs
         public string? MemoNo { get; set; }
         public string? MemoDate { get; set; }
         public string? Remarks { get; set; }
+        public string? CurrentStatus { get; set; }
+        public int? CurrentStatusId { get; set; }
     }
     public class IndentApproveRjectDTO
     {
@@ -42,6 +44,7 @@ namespace CTS_BE.DTOs
     }
     public class ChequeIndentDTO
     {
+        public long? IndentId { get; set; }
         public string IndentDate { get; set; }
         public string MemoNumber { get; set; }
         public string MemoDate { get; set; }
@@ -50,9 +53,10 @@ namespace CTS_BE.DTOs
     }
     public class ChequeIndentDeatilsDTO
     {
+        public long? IndentDeatilsId { get; set; } 
         public short ChequeType { get; set; } 
         public string MicrCode { get; set; }    
-        public short Quantity { get; set; }
+        public int Quantity { get; set; }
     }
     public class ChequeInvoiceDTO
     {
