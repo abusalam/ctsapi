@@ -147,7 +147,7 @@ namespace CTS_BE.Controllers
                         {
                             Name ="Indent Id",
                             DataType = "numeric",
-                            FieldName = "IndentId",
+                            FieldName = "indentId",
                             FilterField = "IndentId",
                             IsFilterable = true,
                             IsSortable = true,
@@ -156,7 +156,7 @@ namespace CTS_BE.Controllers
                         {
                             Name ="Indent Date",
                             DataType = "date",
-                            FieldName = "IndentDate",
+                            FieldName = "indentDate",
                             FilterField = "IndentDate",
                             IsFilterable = true,
                             IsSortable = true,
@@ -165,7 +165,7 @@ namespace CTS_BE.Controllers
                         {
                             Name ="Memo Number",
                             DataType = "text",
-                            FieldName = "MemoNo",
+                            FieldName = "memoNo",
                             FilterField = "MemoNo",
                             IsFilterable = true,
                             IsSortable = true,
@@ -174,7 +174,7 @@ namespace CTS_BE.Controllers
                         {
                             Name ="MemoDate",
                             DataType = "date",
-                            FieldName = "MemoDate",
+                            FieldName = "memoDate",
                             FilterField = "MemoDate",
                             IsFilterable = true,
                             IsSortable = true,
@@ -183,10 +183,10 @@ namespace CTS_BE.Controllers
                         {
                             Name ="Remarks",
                             DataType = "text",
-                            FieldName = "Remarks",
+                            FieldName = "remarks",
                             FilterField = "Remarks",
                             IsFilterable = true,
-                            IsSortable = true,
+                            IsSortable = false,
                         },
                     },
                     Data = await _chequeIndentService.ChequeIndentList(dynamicListQueryParameters),
@@ -205,15 +205,23 @@ namespace CTS_BE.Controllers
             }
         }
         [HttpPut("cheque-indent-approve")]
-        public async Task<APIResponse<string>> ChequeIndentApprove(long indentId)
+        public async Task<APIResponse<string>> ChequeIndentApprove(IndentApproveRjectDTO indentApproveRjectDTO)
         {
             APIResponse<string> response = new();
             try
             {
                 long userId = _claimService.GetUserId();
-                if (await _chequeIndentService.ApproveRejectIndent(userId,(short)Enum.IndentStatus.ApproveByTO))
+
+                var indentDetails = await _chequeIndentService.ChequeIndentByIdStatus(indentApproveRjectDTO.IndentId, (short)Enum.IndentStatus.NewIndent);
+                if (indentDetails == null)
                 {
-                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.apiResponseStatus = Enum.APIResponseStatus.Warning;
+                    response.Message = "Indent not found!";
+                    return response;
+                }
+                if (await _chequeIndentService.ApproveRejectIndent(indentDetails,userId,(short)Enum.IndentStatus.ApproveByTO))
+                {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
                     response.Message = "Cheque indent approve successfully!";
                     return response;
                 }
@@ -229,15 +237,22 @@ namespace CTS_BE.Controllers
             }
         }
         [HttpPut("cheque-indent-reject")]
-        public async Task<APIResponse<string>> ChequeIndentReject(long indentId)
+        public async Task<APIResponse<string>> ChequeIndentReject(IndentApproveRjectDTO indentApproveRjectDTO)
         {
             APIResponse<string> response = new();
             try
             {
                 long userId = _claimService.GetUserId();
-                if (await _chequeIndentService.ApproveRejectIndent(userId, (short)Enum.IndentStatus.RejectByTO))
+                var indentDetails = await _chequeIndentService.ChequeIndentByIdStatus(indentApproveRjectDTO.IndentId, (short)Enum.IndentStatus.NewIndent);
+                if (indentDetails == null)
                 {
-                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.apiResponseStatus = Enum.APIResponseStatus.Warning;
+                    response.Message = "Indent not found!";
+                    return response;
+                }
+                if (await _chequeIndentService.ApproveRejectIndent( indentDetails,userId, (short)Enum.IndentStatus.RejectByTO))
+                {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
                     response.Message = "Cheque indent reject successfully!";
                     return response;
                 }

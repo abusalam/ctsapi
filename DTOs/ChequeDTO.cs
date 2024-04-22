@@ -29,11 +29,16 @@ namespace CTS_BE.DTOs
     }
     public class ChequeIndentListDTO
     {
+        public long Id { get; set; }
         public int? IndentId { get; set; }
         public string? IndentDate { get; set; }
         public string? MemoNo { get; set; }
         public string? MemoDate { get; set; }
         public string? Remarks { get; set; }
+    }
+    public class IndentApproveRjectDTO
+    {
+        public long IndentId {get;set;}
     }
     public class ChequeIndentDTO
     {

@@ -22,8 +22,9 @@ namespace CTS_BE.BAL
         }
         public async Task<IEnumerable<ChequeIndentListDTO>> ChequeIndentList(DynamicListQueryParameters dynamicListQueryParameters)
         {
-           return await  _ChequeIndentRepository.GetSelectedColumnByConditionAsync(entity=>true,entity=> new ChequeIndentListDTO
+           return await  _ChequeIndentRepository.GetSelectedColumnByConditionAsync(entity=>entity.Status==1,entity=> new ChequeIndentListDTO
             {
+                Id = entity.Id,
                 IndentDate = entity.IndentDate.Value.ToString("dd/MM/yyyy"),
                 IndentId = entity.IndentId,
                 MemoDate =entity.MemoDate.Value.ToString("dd/MM/yyyy"),
@@ -31,15 +32,18 @@ namespace CTS_BE.BAL
                 Remarks = entity.Remarks
             },dynamicListQueryParameters);
         }
-        public async Task<bool> ApproveRejectIndent(long userId,short status)
+        public async Task<ChequeIndent> ChequeIndentByIdStatus(long indentId,short statusId)
         {
-            ChequeIndent chequeIndent = new ChequeIndent
-            {
-                Status = status,
-                ApprovedRejectedBy = userId,
-                ApprovedRejectedAt = DateTime.Now,
-            };
-            if (_ChequeIndentRepository.Add(chequeIndent))
+           return await _ChequeIndentRepository.GetSingleAysnc(entity=>entity.Id==indentId&&entity.Status==statusId);
+        }
+        public async Task<bool> ApproveRejectIndent(ChequeIndent chequeIndent,long userId,short status)
+        {
+
+            chequeIndent.Status = status;
+            chequeIndent.ApprovedRejectedBy = userId;
+            chequeIndent.ApprovedRejectedAt = DateTime.Now;
+ 
+            if (_ChequeIndentRepository.Update(chequeIndent))
             {
                 _ChequeIndentRepository.SaveChangesManaged();
                 return true;
