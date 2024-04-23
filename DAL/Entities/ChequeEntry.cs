@@ -39,4 +39,12 @@ public partial class ChequeEntry
 
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime? CreatedAt { get; set; }
+
+    [Column("treasurie_code")]
+    [StringLength(3)]
+    public string? TreasurieCode { get; set; }
+
+    [Column("micr_code")]
+    [StringLength(9)]
+    public string? MicrCode { get; set; }
 }
