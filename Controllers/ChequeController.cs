@@ -28,8 +28,9 @@ namespace CTS_BE.Controllers
             APIResponse<string> response = new();
             try
             {
-               short quantity = (short)(chequeEntryDTO.End - chequeEntryDTO.Start);
-               if(await _chequeEntryService.Insert(chequeEntryDTO.Series, chequeEntryDTO.Start, chequeEntryDTO.End, quantity))
+                long userId = _claimService.GetUserId();
+                short quantity = (short)(chequeEntryDTO.End - chequeEntryDTO.Start);
+                if (await _chequeEntryService.Insert(userId, chequeEntryDTO.TreasurieCode, chequeEntryDTO.MicrCode, chequeEntryDTO.Series, chequeEntryDTO.Start, chequeEntryDTO.End, quantity))
                 {
                     response.apiResponseStatus = Enum.APIResponseStatus.Success;
                     response.Message = "Cheque entry successfully.";
@@ -52,7 +53,7 @@ namespace CTS_BE.Controllers
             APIResponse<IEnumerable<DropdownDTO>> response = new();
             try
             {
-                
+
                 response.apiResponseStatus = Enum.APIResponseStatus.Success;
                 response.result = await _chequeEntryService.AllSeries();
                 response.Message = "";
@@ -95,6 +96,24 @@ namespace CTS_BE.Controllers
                 {
                     Headers = new List<ListHeader>
                     {
+                        new ListHeader
+                        {
+                            Name ="Treasurie",
+                            DataType = "text",
+                            FieldName = "treasurieCode",
+                            FilterField = "TreasurieCode",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="MICR",
+                            DataType = "text",
+                            FieldName = "micrCode",
+                            FilterField = "MicrCode",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
                         new ListHeader
                         {
                             Name ="Series",
@@ -173,7 +192,7 @@ namespace CTS_BE.Controllers
         [HttpPatch("cheque-indent-list")]
         public async Task<APIResponse<DynamicListResult<IEnumerable<ChequeIndentListDTO>>>> ListOfChequeIndent(DynamicListQueryParameters dynamicListQueryParameters)
         {
-            APIResponse < DynamicListResult < IEnumerable <ChequeIndentListDTO>>> response = new();
+            APIResponse<DynamicListResult<IEnumerable<ChequeIndentListDTO>>> response = new();
             try
             {
 
@@ -264,7 +283,7 @@ namespace CTS_BE.Controllers
                     DataCount = 1
                 };
                 response.apiResponseStatus = Enum.APIResponseStatus.Success;
-                response.Message ="";
+                response.Message = "";
                 response.result = result;
                 return response;
             }
@@ -395,7 +414,7 @@ namespace CTS_BE.Controllers
                     response.Message = "Indent not found!";
                     return response;
                 }
-                if (await _chequeIndentService.ApproveRejectIndent(indentDetails,userId,(short)Enum.IndentStatus.ApproveByTO))
+                if (await _chequeIndentService.ApproveRejectIndent(indentDetails, userId, (short)Enum.IndentStatus.ApproveByTO))
                 {
                     response.apiResponseStatus = Enum.APIResponseStatus.Success;
                     response.Message = "Cheque indent approve successfully!";
@@ -426,7 +445,7 @@ namespace CTS_BE.Controllers
                     response.Message = "Indent not found!";
                     return response;
                 }
-                if (await _chequeIndentService.ApproveRejectIndent( indentDetails,userId, (short)Enum.IndentStatus.RejectByTO))
+                if (await _chequeIndentService.ApproveRejectIndent(indentDetails, userId, (short)Enum.IndentStatus.RejectByTO))
                 {
                     response.apiResponseStatus = Enum.APIResponseStatus.Success;
                     response.Message = "Cheque indent reject successfully!";
@@ -444,7 +463,7 @@ namespace CTS_BE.Controllers
             }
         }
         [HttpPost("cheque-indent-invoice")]
-        public async Task<APIResponse<string>> ChequeIndentApprove(ChequeInvoiceDTO  chequeInvoiceDTO)
+        public async Task<APIResponse<string>> ChequeIndentApprove(ChequeInvoiceDTO chequeInvoiceDTO)
         {
             APIResponse<string> response = new();
             try
@@ -467,15 +486,15 @@ namespace CTS_BE.Controllers
             }
         }
         [HttpGet("cheque-indent")]
-        public async Task<APIResponse<List<ChequeIndentDTO>>> ChequeIndent([FromQuery]  long Id)
+        public async Task<APIResponse<List<ChequeIndentDTO>>> ChequeIndent([FromQuery] long Id)
         {
             APIResponse<List<ChequeIndentDTO>> response = new();
             try
             {
-                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
-                    response.result = await _chequeIndentService.ChequeIndentDetailsByIdStatus(Id, (int)Enum.IndentStatus.ApproveByTO);
-                    response.Message = "";
-                    return response;
+                response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                response.result = await _chequeIndentService.ChequeIndentDetailsByIdStatus(Id, (int)Enum.IndentStatus.ApproveByTO);
+                response.Message = "";
+                return response;
             }
             catch (Exception Ex)
             {

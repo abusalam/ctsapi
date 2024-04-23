@@ -10,20 +10,22 @@ namespace CTS_BE.BAL
     {
         private readonly IChequeEntryRepository _ChequeEntryRepository;
         private readonly IMapper _mapper;
-        public ChequeEntryService(IChequeEntryRepository ChequeEntryRepository, IMapper mapper) {
+        public ChequeEntryService(IChequeEntryRepository ChequeEntryRepository, IMapper mapper)
+        {
             _ChequeEntryRepository = ChequeEntryRepository;
             _mapper = mapper;
         }
-        public async Task<bool> Insert(string series,short start,short end,short quantity)
+        public async Task<bool> Insert(long userId,string treasurieCode, string MicrCode, string series, short start, short end, short quantity)
         {
             ChequeEntry chequeEntry = new ChequeEntry
             {
+                TreasurieCode = treasurieCode,
+                MicrCode = MicrCode,
                 SeriesNo = series,
                 Start = start,
                 End = end,
                 Quantity = quantity,
-                //TODO:: Change to logged in user id
-                CreatedBy = 1,
+                CreatedBy = userId,
             };
             if (_ChequeEntryRepository.Add(chequeEntry))
             {
@@ -34,19 +36,21 @@ namespace CTS_BE.BAL
         }
         public async Task<IEnumerable<ChequeListDTO>> List(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null)
         {
-            IEnumerable<ChequeListDTO> chequeList =(IEnumerable<ChequeListDTO>) await _ChequeEntryRepository.GetSelectedColumnByConditionAsync(entity=>true,entity=>new ChequeListDTO
+            IEnumerable<ChequeListDTO> chequeList = (IEnumerable<ChequeListDTO>)await _ChequeEntryRepository.GetSelectedColumnByConditionAsync(entity => true, entity => new ChequeListDTO
             {
+                TreasurieCode = entity.TreasurieCode,
+                MicrCode = entity.MicrCode,
                 Series = entity.SeriesNo,
                 Start = entity.Start,
                 End = entity.End,
                 Quantity = entity.Quantity
-                
+
             }, pageIndex, pageSize, filters, (sortParameters != null) ? sortParameters.Field : null, (sortParameters != null) ? sortParameters.Order : null);
             return chequeList;
         }
         public async Task<IEnumerable<DropdownDTO>> AllSeries()
         {
-            return await _ChequeEntryRepository.GetSelectedColumnByConditionAsync(entity=>!entity.IsUsed,entity=> new DropdownDTO
+            return await _ChequeEntryRepository.GetSelectedColumnByConditionAsync(entity => !entity.IsUsed, entity => new DropdownDTO
             {
                 Name = entity.SeriesNo,
                 Code = entity.Id
@@ -54,12 +58,12 @@ namespace CTS_BE.BAL
         }
         public async Task<ChequeListDTO> Series(long id)
         {
-            return (ChequeListDTO) await _ChequeEntryRepository.GetSingleSelectedColumnByConditionAsync(entity => entity.Id == id, entity => new ChequeListDTO
+            return (ChequeListDTO)await _ChequeEntryRepository.GetSingleSelectedColumnByConditionAsync(entity => entity.Id == id, entity => new ChequeListDTO
             {
                 Id = entity.Id,
                 Series = entity.SeriesNo,
-                Start=entity.Start,
-                End=entity.End,
+                Start = entity.Start,
+                End = entity.End,
                 Quantity = entity.Quantity
             });
         }

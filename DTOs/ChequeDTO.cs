@@ -25,6 +25,8 @@ namespace CTS_BE.DTOs
     public class ChequeListDTO
     {
         public long? Id { get; set; }
+        public string? TreasurieCode { get; set; }
+        public string? MicrCode { get; set; }
         public string Series { get; set; }
         public int Start { get; set; }
         public int End { get; set; }
