@@ -4,6 +4,8 @@ namespace CTS_BE.DTOs
 {
     public class ChequeEntryDTO : IValidatableObject
     {
+        public string TreasurieCode { get; set; }
+        public string MicrCode { get; set; }
         public string Series { get; set; }
 
         [Range(1, short.MaxValue, ErrorMessage = "Start must be a positive value")]
@@ -22,6 +24,7 @@ namespace CTS_BE.DTOs
     }
     public class ChequeListDTO
     {
+        public long? Id { get; set; }
         public string Series { get; set; }
         public int Start { get; set; }
         public int End { get; set; }

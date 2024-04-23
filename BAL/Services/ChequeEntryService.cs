@@ -44,5 +44,24 @@ namespace CTS_BE.BAL
             }, pageIndex, pageSize, filters, (sortParameters != null) ? sortParameters.Field : null, (sortParameters != null) ? sortParameters.Order : null);
             return chequeList;
         }
+        public async Task<IEnumerable<DropdownDTO>> AllSeries()
+        {
+            return await _ChequeEntryRepository.GetSelectedColumnByConditionAsync(entity=>!entity.IsUsed,entity=> new DropdownDTO
+            {
+                Name = entity.SeriesNo,
+                Code = entity.Id
+            });
+        }
+        public async Task<ChequeListDTO> Series(long id)
+        {
+            return (ChequeListDTO) await _ChequeEntryRepository.GetSingleSelectedColumnByConditionAsync(entity => entity.Id == id, entity => new ChequeListDTO
+            {
+                Id = entity.Id,
+                Series = entity.SeriesNo,
+                Start=entity.Start,
+                End=entity.End,
+                Quantity = entity.Quantity
+            });
+        }
     }
 }

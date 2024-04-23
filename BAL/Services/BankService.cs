@@ -19,7 +19,7 @@ namespace CTS_BE.BAL
             IEnumerable<DropdownDTO> banksDropdownData = (IEnumerable<DropdownDTO>)await  _BankRepository.GetSelectedColumnByConditionAsync(entity=>entity.IsActive,entity=> new DropdownDTO
             {
                 Name = entity.BankName,
-                code = entity.BankCode,
+                Code = entity.BankCode,
             });
             return banksDropdownData;
         }

@@ -17,6 +17,7 @@ using CTS_BE.Middlewares;
 using CTS_BE.Helper.Authentication;
 using CTS_BE.BAL.Services.paymandate;
 using CTS_BE.BAL.Interfaces.paymandate;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +33,7 @@ builder.Services.AddAutoMapper(typeof(Program));
 
 // Add services to the container.
 //Repositories
+builder.Services.AddTransient<ITreasuryRepository, TreasuryRepository>();
 builder.Services.AddTransient<IChequeInvoiceRepository, ChequeInvoiceRepository>();
 builder.Services.AddTransient<IBranchRepository, BranchRepository>();
 builder.Services.AddTransient<IBankRepository, BankRepository>();
@@ -47,6 +49,7 @@ builder.Services.AddTransient<ITpBillRepository, TpBillRepository>();
 builder.Services.AddTransient<ITokenRepository, TokenRepository>();
 
 //Services
+builder.Services.AddTransient<ITreasuryService, TreasuryService>();
 builder.Services.AddTransient<IChequeInvoiceService, ChequeInvoiceService>();
 builder.Services.AddTransient<IBranchService, BranchService>();
 builder.Services.AddTransient<IBankService, BankService>();
@@ -85,6 +88,35 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+//builder.Services.AddSwaggerGen(c =>
+//{
+//    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Test01", Version = "v1" });
+
+//    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+//    {
+//        Name = "Authorization",
+//        Type = SecuritySchemeType.ApiKey,
+//        Scheme = "Bearer",
+//        BearerFormat = "JWT",
+//        In = ParameterLocation.Header,
+//        Description = "JWT Authorization header using the Bearer scheme."
+
+//    });
+//    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+//                {
+//                    {
+//                          new OpenApiSecurityScheme
+//                          {
+//                              Reference = new OpenApiReference
+//                              {
+//                                  Type = ReferenceType.SecurityScheme,
+//                                  Id = "Bearer"
+//                              }
+//                          },
+//                         new string[] {}
+//                    }
+//                });
+//});
 
 builder.Services.AddHttpContextAccessor();
 var app = builder.Build();

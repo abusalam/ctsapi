@@ -20,7 +20,7 @@ namespace CTS_BE.BAL
                 entity=>new DropdownDTO
                 {
                     Name = entity.BranchName,
-                    code = entity.BranchCode
+                    Code = entity.BranchCode
                 });
             return branchDropdownData;
         }

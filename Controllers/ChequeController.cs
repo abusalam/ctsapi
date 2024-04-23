@@ -46,6 +46,44 @@ namespace CTS_BE.Controllers
                 return response;
             }
         }
+        [HttpGet("series")]
+        public async Task<APIResponse<IEnumerable<DropdownDTO>>> ChequeSeries()
+        {
+            APIResponse<IEnumerable<DropdownDTO>> response = new();
+            try
+            {
+                
+                response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                response.result = await _chequeEntryService.AllSeries();
+                response.Message = "";
+                return response;
+            }
+            catch (Exception Ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = Ex.Message;
+                return response;
+            }
+        }
+        [HttpGet("series-details")]
+        public async Task<APIResponse<ChequeListDTO>> ChequeSeriesDetils([FromQuery] long Id)
+        {
+            APIResponse<ChequeListDTO> response = new();
+            try
+            {
+
+                response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                response.result = await _chequeEntryService.Series(Id);
+                response.Message = "";
+                return response;
+            }
+            catch (Exception Ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = Ex.Message;
+                return response;
+            }
+        }
         [HttpPatch("all-cheques")]
         public async Task<APIResponse<DynamicListResult<IEnumerable<ChequeListDTO>>>> ChequeList(DynamicListQueryParameters dynamicListQueryParameters)
         {
@@ -217,7 +255,7 @@ namespace CTS_BE.Controllers
                                 },
 
                             },
-                            IsFilterable=true,
+                            IsFilterable=false,
                             IsSortable=false,
                             },
 
@@ -428,18 +466,16 @@ namespace CTS_BE.Controllers
                 return response;
             }
         }
-        [HttpGet("cheque-indent/{id}")]
-        public async Task<APIResponse<List<ChequeIndentDTO>>> ChequeIndent(long id)
+        [HttpGet("cheque-indent")]
+        public async Task<APIResponse<List<ChequeIndentDTO>>> ChequeIndent([FromQuery]  long Id)
         {
             APIResponse<List<ChequeIndentDTO>> response = new();
             try
             {
-                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
-                response.result = await _chequeIndentService.ChequeIndentDetailsByIdStatus(id, (int)Enum.IndentStatus.ApproveByTO);
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                    response.result = await _chequeIndentService.ChequeIndentDetailsByIdStatus(Id, (int)Enum.IndentStatus.ApproveByTO);
                     response.Message = "";
                     return response;
-
-
             }
             catch (Exception Ex)
             {
