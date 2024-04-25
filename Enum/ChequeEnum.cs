@@ -2,8 +2,12 @@
 {
     public enum IndentStatus
     {
-        NewIndent = 11, 
-        ApproveByTO = 12, 
-        RejectByTO = 13,
+        NewIndent = 11,	
+        FrowardToTreasuryOfficer = 12,	
+        RejectByTreasuryOfficer = 13,	
+        ApproveByTreasuryOfficer = 14,	
+        ApproveByDTA = 15,	
+        RejectByDTA = 16,
+        
     }
 }

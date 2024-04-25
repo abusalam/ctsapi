@@ -14,6 +14,7 @@
         public string GetScope();
         public int GetUserId();
         public string GetUserName();
+        public List<string> GetPermissions();
         public int GetApplicationIdByApplicationName(string applicationName);
 
     }

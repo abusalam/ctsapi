@@ -97,6 +97,13 @@ namespace CTS_BE.Helper.Authentication
         {
             return logedinUserClaims.claims.Where(claims => claims.Type == "name").Select(claim => claim.Value).FirstOrDefault();
         }
+        public List<string> GetPermissions()
+        {
+            var a = logedinUserClaims;
+            string[] userPermission = _applications.SelectMany(application => application.Roles).SelectMany(role => role.Permissions).ToArray();
+            return userPermission.ToList();
+            // return _applications.FirstOrDefault().Roles.SelectMany(role => role.Permissions).ToList();
+        }
         public int GetApplicationIdByApplicationName(string applicationName)
         {
             int id = _applications.Where(applications=>applications.Name == applicationName).Select(application=> application.Id).FirstOrDefault();

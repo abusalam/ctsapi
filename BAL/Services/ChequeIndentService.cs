@@ -4,6 +4,7 @@ using CTS_BE.DAL.Entities;
 using CTS_BE.DAL.Interfaces;
 using CTS_BE.DTOs;
 using CTS_BE.Helper;
+using CTS_BE.Model;
 
 namespace CTS_BE.BAL
 {
@@ -15,14 +16,14 @@ namespace CTS_BE.BAL
             _ChequeIndentRepository = ChequeIndentRepository;
             _mapper = mapper;
         }
-        public async Task<bool> Insert(ChequeIndentDTO chequeIndentDTO)
+        public async Task<bool> Insert(ChequeIndentModel chequeIndentModel)
         {
-            string indentData = JSONHelper.ObjectToJson(chequeIndentDTO);
+            string indentData = JSONHelper.ObjectToJson(chequeIndentModel);
             return await _ChequeIndentRepository.InsertIndent(indentData);
         }
-        public async Task<IEnumerable<ChequeIndentListDTO>> ChequeIndentList(DynamicListQueryParameters dynamicListQueryParameters,int status = (int)Enum.IndentStatus.NewIndent)
+        public async Task<IEnumerable<ChequeIndentListDTO>> ChequeIndentList(DynamicListQueryParameters dynamicListQueryParameters,List<int> statusIds)
         {
-            return await _ChequeIndentRepository.GetSelectedColumnByConditionAsync(entity => entity.Status == status, entity => new ChequeIndentListDTO
+            return await _ChequeIndentRepository.GetSelectedColumnByConditionAsync(entity => statusIds.Contains((int)entity.Status), entity => new ChequeIndentListDTO
             {
                 Id = entity.Id,
                 IndentDate = entity.IndentDate.Value.ToString("dd/MM/yyyy"),
