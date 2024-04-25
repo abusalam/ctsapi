@@ -175,13 +175,14 @@ namespace CTS_BE.Controllers
             try
             {
                 string role = _claimService.GetRole();
+                //TODO:: LOG OF INDENT NEED TO IMPLEMENT IN DATABASE
                 ChequeIndentModel chequeIndentModel = new()
                 {
                     IndentDate = chequeIndentDTO.IndentDate,
                     MemoDate = chequeIndentDTO.MemoDate,
                     MemoNumber = chequeIndentDTO.MemoNumber,
                     Remarks = chequeIndentDTO.Remarks,
-                    Status = (role == "treasury-officer") ? (int)Enum.IndentStatus.ApproveByTreasuryOfficer : (int)Enum.IndentStatus.NewIndent,
+                    Status = ChequeStatusManagerHelper.getStatus(role),
                     UserId = _claimService.GetUserId(),
                     ChequeIndentDeatils = chequeIndentDTO.ChequeIndentDeatils.Select(iDetils => new ChequeIndentDeatilsModel
                     {
@@ -576,9 +577,9 @@ namespace CTS_BE.Controllers
             }
         }
         [HttpGet("cheque-indent")]
-        public async Task<APIResponse<List<ChequeIndentDTO>>> ChequeIndent([FromQuery] long Id)
+        public async Task<APIResponse<ChequeIndentDTO>> ChequeIndent([FromQuery] long Id)
         {
-            APIResponse<List<ChequeIndentDTO>> response = new();
+            APIResponse<ChequeIndentDTO> response = new();
             try
             {
                 response.apiResponseStatus = Enum.APIResponseStatus.Success;
