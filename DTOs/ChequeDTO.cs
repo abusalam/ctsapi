@@ -39,11 +39,14 @@ namespace CTS_BE.DTOs
         public string? IndentDate { get; set; }
         public string? MemoNo { get; set; }
         public string? MemoDate { get; set; }
+        public string? ChequeType { get; set; }
+        public string? MicrCode { get; set; }
+        public int? Quantity { get; set; }
         public string? Remarks { get; set; }
         public string? CurrentStatus { get; set; }
         public int? CurrentStatusId { get; set; }
     }
-    public class IndentApproveRjectDTO
+    public class IndentFrowardApproveRjectDTO
     {
         public long IndentId {get;set;}
     }

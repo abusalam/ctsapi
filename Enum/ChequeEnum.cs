@@ -2,12 +2,17 @@
 {
     public enum IndentStatus
     {
-        NewIndent = 11,	
-        FrowardToTreasuryOfficer = 12,	
-        RejectByTreasuryOfficer = 13,	
-        ApproveByTreasuryOfficer = 14,	
-        ApproveByDTA = 15,	
+        NewIndent = 11,
+        FrowardToTreasuryOfficer = 12,
+        RejectByTreasuryOfficer = 13,
+        ApproveByTreasuryOfficer = 14,
+        ApproveByDTA = 15,
         RejectByDTA = 16,
-        
+
+    }
+    public enum ChequeType
+    {
+        TreasuryCheque = 1,
+        Others = 2,
     }
 }

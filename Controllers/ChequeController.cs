@@ -177,13 +177,14 @@ namespace CTS_BE.Controllers
                 string role = _claimService.GetRole();
                 ChequeIndentModel chequeIndentModel = new()
                 {
-                    IndentDate =  chequeIndentDTO.IndentDate,
+                    IndentDate = chequeIndentDTO.IndentDate,
                     MemoDate = chequeIndentDTO.MemoDate,
                     MemoNumber = chequeIndentDTO.MemoNumber,
                     Remarks = chequeIndentDTO.Remarks,
-                    Status = (role=="treasury-officer")? (int)Enum.IndentStatus.ApproveByTreasuryOfficer : (int)Enum.IndentStatus.NewIndent,
+                    Status = (role == "treasury-officer") ? (int)Enum.IndentStatus.ApproveByTreasuryOfficer : (int)Enum.IndentStatus.NewIndent,
                     UserId = _claimService.GetUserId(),
-                    ChequeIndentDeatils = chequeIndentDTO.ChequeIndentDeatils.Select(iDetils => new ChequeIndentDeatilsModel{
+                    ChequeIndentDeatils = chequeIndentDTO.ChequeIndentDeatils.Select(iDetils => new ChequeIndentDeatilsModel
+                    {
                         ChequeType = iDetils.ChequeType,
                         MicrCode = iDetils.MicrCode,
                         Quantity = iDetils.Quantity,
@@ -217,15 +218,15 @@ namespace CTS_BE.Controllers
                 {
                     Headers = new List<ListHeader>
                     {
-                        new ListHeader
-                        {
-                            Name ="Indent Id",
-                            DataType = "numeric",
-                            FieldName = "indentId",
-                            FilterField = "IndentId",
-                            IsFilterable = true,
-                            IsSortable = true,
-                        },
+                        // new ListHeader
+                        // {
+                        //     Name ="Indent Id",
+                        //     DataType = "numeric",
+                        //     FieldName = "indentId",
+                        //     FilterField = "IndentId",
+                        //     IsFilterable = true,
+                        //     IsSortable = true,
+                        // },
                         new ListHeader
                         {
                             Name ="Indent Date",
@@ -246,10 +247,52 @@ namespace CTS_BE.Controllers
                         },
                         new ListHeader
                         {
-                            Name ="MemoDate",
+                            Name ="Memo Date",
                             DataType = "date",
                             FieldName = "memoDate",
                             FilterField = "MemoDate",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                                                new ListHeader
+                        {
+                            Name ="Cheque Type",
+                            DataType = "object",
+                            FieldName = "chequeType",
+                            FilterField = "ChequeIndentDetails.ChequeType",
+                                                        FilterEnums = new List<FilterEnum>
+                            {
+                                new FilterEnum
+                                {
+                                    Value = (int) Enum.ChequeType.TreasuryCheque,
+                                    Label = "Treasury Cheque",
+                                    StyleClass = "status-Global"
+                                },
+                                new FilterEnum
+                                {
+                                    Value = (int) Enum.ChequeType.Others,
+                                    Label = "Others",
+                                    StyleClass = "success"
+                                },
+                            },
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                                                new ListHeader
+                        {
+                            Name ="Micr Code",
+                            DataType = "text",
+                            FieldName = "micrCode",
+                            FilterField = "ChequeIndentDetails.MicrCode",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                                                new ListHeader
+                        {
+                            Name ="Quantity",
+                            DataType = "numeric",
+                            FieldName = "quantity",
+                            FilterField = "ChequeIndentDetails.Quantity",
                             IsFilterable = true,
                             IsSortable = true,
                         },
@@ -296,7 +339,7 @@ namespace CTS_BE.Controllers
                             },
 
                     },
-                    Data = await _chequeIndentService.ChequeIndentList(dynamicListQueryParameters,statusIds),
+                    Data = await _chequeIndentService.ChequeIndentList(dynamicListQueryParameters, statusIds),
                     DataCount = 1
                 };
                 response.apiResponseStatus = Enum.APIResponseStatus.Success;
@@ -416,14 +459,14 @@ namespace CTS_BE.Controllers
         //     }
         // }
         [HttpPut("cheque-indent-approve")]
-        public async Task<APIResponse<string>> ChequeIndentApprove(IndentApproveRjectDTO indentApproveRjectDTO)
+        public async Task<APIResponse<string>> ChequeIndentApprove(IndentFrowardApproveRjectDTO indentApproveRjectDTO)
         {
             APIResponse<string> response = new();
             try
             {
                 long userId = _claimService.GetUserId();
 
-                var indentDetails = await _chequeIndentService.ChequeIndentByIdStatus(indentApproveRjectDTO.IndentId, (int)Enum.IndentStatus.NewIndent);
+                var indentDetails = await _chequeIndentService.ChequeIndentByIdStatus(indentApproveRjectDTO.IndentId, (int)Enum.IndentStatus.FrowardToTreasuryOfficer);
                 if (indentDetails == null)
                 {
                     response.apiResponseStatus = Enum.APIResponseStatus.Warning;
@@ -448,13 +491,13 @@ namespace CTS_BE.Controllers
             }
         }
         [HttpPut("cheque-indent-reject")]
-        public async Task<APIResponse<string>> ChequeIndentReject(IndentApproveRjectDTO indentApproveRjectDTO)
+        public async Task<APIResponse<string>> ChequeIndentReject(IndentFrowardApproveRjectDTO indentApproveRjectDTO)
         {
             APIResponse<string> response = new();
             try
             {
                 long userId = _claimService.GetUserId();
-                var indentDetails = await _chequeIndentService.ChequeIndentByIdStatus(indentApproveRjectDTO.IndentId, (short)Enum.IndentStatus.NewIndent);
+                var indentDetails = await _chequeIndentService.ChequeIndentByIdStatus(indentApproveRjectDTO.IndentId, (short)Enum.IndentStatus.FrowardToTreasuryOfficer);
                 if (indentDetails == null)
                 {
                     response.apiResponseStatus = Enum.APIResponseStatus.Warning;
@@ -469,6 +512,37 @@ namespace CTS_BE.Controllers
                 }
                 response.apiResponseStatus = Enum.APIResponseStatus.Error;
                 response.Message = "Cheque indent reject faild!";
+                return response;
+            }
+            catch (Exception Ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = Ex.Message;
+                return response;
+            }
+        }
+        [HttpPut("cheque-indent-froward")]
+        public async Task<APIResponse<string>> ChequeIndentFroward(IndentFrowardApproveRjectDTO indentApproveRjectDTO)
+        {
+            APIResponse<string> response = new();
+            try
+            {
+                long userId = _claimService.GetUserId();
+                var indentDetails = await _chequeIndentService.ChequeIndentByIdStatus(indentApproveRjectDTO.IndentId, (short)Enum.IndentStatus.NewIndent);
+                if (indentDetails == null)
+                {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Warning;
+                    response.Message = "Indent not found!";
+                    return response;
+                }
+                if (await _chequeIndentService.ApproveRejectIndent(indentDetails, userId, (short)Enum.IndentStatus.FrowardToTreasuryOfficer))
+                {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                    response.Message = "Cheque indent froward successfully!";
+                    return response;
+                }
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = "Cheque indent froward faild!";
                 return response;
             }
             catch (Exception Ex)

@@ -40,12 +40,12 @@ namespace CTS_BE.Helper
                         (int) Enum.IndentStatus.RejectByDTA,
                     }
                 },
-                // { "can-create-cheque-inoice",
-                //     new List<int>
-                //     {
-                        
-                //     }
-                // },
+                { "can-create-indent-invoice",
+                    new List<int>
+                    {
+                        (int) Enum.IndentStatus.ApproveByTreasuryOfficer,
+                    }
+                },
             };
         }
     }
