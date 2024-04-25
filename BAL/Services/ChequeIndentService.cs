@@ -56,9 +56,9 @@ namespace CTS_BE.BAL
             }
             return false;
         }
-        public async Task<List<ChequeIndentDTO>> ChequeIndentDetailsByIdStatus(long indentId, int statusId)
+        public async Task<ChequeIndentDTO> ChequeIndentDetailsByIdStatus(long indentId, int statusId)
         {
-            List<ChequeIndentDTO> chequeIndentDetails = (List<ChequeIndentDTO>) await _ChequeIndentRepository.GetSelectedColumnByConditionAsync(entity => entity.Id == indentId && entity.Status == statusId, entity => new ChequeIndentDTO
+            ChequeIndentDTO chequeIndentDetails = await _ChequeIndentRepository.GetSingleSelectedColumnByConditionAsync(entity => entity.Id == indentId && entity.Status == statusId, entity => new ChequeIndentDTO
             {
                 IndentId =  entity.Id,
                 IndentDate = entity.IndentDate.Value.ToString("dd/MM/yyyy"),

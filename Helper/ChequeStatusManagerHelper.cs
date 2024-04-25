@@ -8,6 +8,7 @@ namespace CTS_BE.Helper
     public static class ChequeStatusManagerHelper
     {
         private static Dictionary<string, List<int>> _chequeIndentListStatusMap;
+        private static Dictionary<string, int> _newChequeIndentStatusMap;
          static ChequeStatusManagerHelper(){
             InitChequeIndentStatus();
         }
@@ -18,6 +19,10 @@ namespace CTS_BE.Helper
             .SelectMany(key => _chequeIndentListStatusMap[key])
             .Distinct()
             .ToList();
+        }
+        public static int getStatus(string role)
+        {
+            return _newChequeIndentStatusMap[role];
         }
         private static void InitChequeIndentStatus()
         {
@@ -46,6 +51,11 @@ namespace CTS_BE.Helper
                         (int) Enum.IndentStatus.ApproveByTreasuryOfficer,
                     }
                 },
+            };
+            _newChequeIndentStatusMap = new Dictionary<string, int>{
+                {"cheque-operator", (int) Enum.IndentStatus.NewIndent},
+                {"treasury-officer", (int) Enum.IndentStatus.ApproveByTreasuryOfficer},
+                {"DTA", (int) Enum.IndentStatus.ApproveByTreasuryOfficer},
             };
         }
     }
