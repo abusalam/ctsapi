@@ -7,7 +7,7 @@ namespace CTS_BE.BAL.Interfaces.paymandate
     {
         public Task<IEnumerable<PayMandateShortListDTO>> TokenForShortList();
         public Task<bool> NewShortList(long loggendInUserId, List<NewShortlistDTO> newShortlistDTO);
-        public Task<EKuber> GetXMLData();
+        public EKuber GetXMLData();
         public void GenerateXML(EKuber kuber, string fileName, string filePath);
     }
 }

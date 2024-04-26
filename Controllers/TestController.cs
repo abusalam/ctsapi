@@ -204,12 +204,11 @@ namespace CTS_BE.Controllers
         //}
 
         [HttpGet("GeneretXML")]
-        public string GenerateXML() 
+        public bool GenerateXML() 
         {
-            var j = DateTimeHelper.GetJulianDate(DateTime.Now);
-            return j.ToString();
-            //EKuber data = await _paymandateService.GetXMLData();
-            //_paymandateService.GenerateXML(data, "EPV80125000000000210202402100338", "EPV80125000000000210202402100338.xml");
+            EKuber data = _paymandateService.GetXMLData();
+            _paymandateService.GenerateXML(data, "EPV8"+"1254"+"000000000001"+"20240415"+"0001", "EPV8"+"1254"+"000000000001"+"20240415"+"0001"+".xml");
+            return XmlHelper.ValidateXml("EPV8"+"1254"+"000000000001"+"20240415"+"0001"+".xml","pain.001.001.08v2.4.xsd");
         }
 
     }

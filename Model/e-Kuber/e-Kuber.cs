@@ -102,11 +102,11 @@
     {
         public string? PmtInfId { get; set; }
         public string? PmtMtd { get; set; }
-        public bool BtchBookg { get; set; }
+        public string BtchBookg { get; set; }
         public int NbOfTxs { get; set; }
         public decimal CtrlSum { get; set; }
         public PaymentTypeInformation? PmtTpInf { get; set; }
-        public DateTime ReqdExctnDt { get; set; }
+        public string ReqdExctnDt { get; set; }
         public Debtor? Dbtr { get; set; }
         public DebtorAccount? DbtrAcct { get; set; }
         public DebtorAgent? DbtrAgt { get; set; }

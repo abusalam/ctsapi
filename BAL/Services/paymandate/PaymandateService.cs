@@ -2,6 +2,7 @@
 using CTS_BE.BAL.Interfaces.paymandate;
 using CTS_BE.DAL.Interfaces;
 using CTS_BE.DTOs;
+using CTS_BE.Helper;
 using CTS_BE.Model.e_Kuber;
 using Type = CTS_BE.Model.e_Kuber.Type;
 
@@ -139,7 +140,7 @@ namespace CTS_BE.BAL.Services.paymandate
         //};
         //    return data;
         //}
-        public async Task<EKuber> GetXMLData()
+        public EKuber GetXMLData()
         {
             EKuber data = new EKuber
             {
@@ -147,15 +148,15 @@ namespace CTS_BE.BAL.Services.paymandate
                 {
                     AppHdr = new AppHdr
                     {
-                        Fr = new Fr{OrgId = new OrgId{Id = new Id{OrgId = new OrgId{Othr = new Othr{Id = "123456"}}}}},
-                        To = new To{FIId = new FIId{FinInstnId = new FinInstnId{ClrSysMmbId = new ClrSysMmbId{MmbId = "XYZ"
+                        Fr = new Fr{OrgId = new OrgId{Id = new Id{OrgId = new OrgId{Othr = new Othr{Id = "1254"}}}}},
+                        To = new To{FIId = new FIId{FinInstnId = new FinInstnId{ClrSysMmbId = new ClrSysMmbId{MmbId = "RBI"
                                     }
                                 }
                             }
                         },
-                        BizMsgIdr = "CORE2102024123456",
-                        MsgDefIdr = "pain.masla",
-                        BizSvc = "JANATA",
+                        BizMsgIdr = "EPV8"+"1254"+"000000000001"+"20240415"+"0001",
+                        MsgDefIdr = "pain.001.001.08",
+                        BizSvc = "CustomerCreditTransferInitiationV08",
                         CreDt = DateTime.Now
                     },
                     Document = new Document
@@ -164,56 +165,56 @@ namespace CTS_BE.BAL.Services.paymandate
                         {
                             GrpHdr = new GrpHdr
                             {
-                                MsgId = "CORE2102024123456",
+                                MsgId = "EPV8"+"1254"+"000000000001"+"20240415"+"0001",
                                 CreDtTm = DateTime.Now,
                                 Authstn = new Authstn
                                 {
                                     Prtry = "ALL",
                                 },
-                                NbOfTxs = 2000000,
-                                CtrlSum = 17000000001.00m,
+                                NbOfTxs = 2,
+                                CtrlSum = 41637.00m,
                                 InitgPty = new InitgPty
                                 {
-                                    Nm = "NOWARE",
+                                    Nm = "WEST BENGAL",
                                     Id = new Id
                                     {
                                         OrgId = new OrgId
                                         {
                                             Othr = new Othr
                                             {
-                                                Id = "123456"
+                                                Id = "1254"
                                             }
                                         }
                                     },
                                     CtctDtls = new ContactDetails
                                     {
-                                        EmailAdr = "test@email.com"
+                                        EmailAdr = "user@email.com"
                                     }
                                 }
                             },
                             PmtInf = new PmtInf
                             {
-                                PmtInfId = "1234CODE1234566",
-                                PmtMtd = "MRF",
-                                BtchBookg = true,
+                                PmtInfId = "1254"+"CKP000210"+"00"+"20240210"+"202402",
+                                PmtMtd = "TRF",
+                                BtchBookg = "true",
                                 NbOfTxs = 2,
-                                CtrlSum = 17000000001.00m,
+                                CtrlSum = 41637.00m,
                                 PmtTpInf = new PaymentTypeInformation
                                 {
-                                    InstrPrty = "HIGHLIGHT",
+                                    InstrPrty = "HIGH",
                                     SvcLvl = new ServiceLevel
                                     {
-                                        Prtry = "PYP"
+                                        Prtry = "NEFT"
                                     }
                                 },
-                                ReqdExctnDt = new DateTime(2025, 10, 10),
+                                ReqdExctnDt = DateTime.Now.ToString("yyyy-MM-dd"),
                                 Dbtr = new Debtor
                                 {
-                                    Nm = "FIN",
+                                    Nm = "FINANCE DEPT",
                                     PstlAdr = new PostalAddress
                                     {
-                                        Dept = "KFC",
-                                        SubDept = "KFC123455"
+                                        Dept = "FD",
+                                        SubDept = ""
                                     },
                                     Id = new Id
                                     {
@@ -221,7 +222,7 @@ namespace CTS_BE.BAL.Services.paymandate
                                         {
                                             Othr = new Othr
                                             {
-                                                Id = "123456"
+                                                Id = "1254"
                                             }
                                         }
                                     }
@@ -232,7 +233,7 @@ namespace CTS_BE.BAL.Services.paymandate
                                     {
                                         Othr = new Othr
                                         {
-                                            Id = "123456"
+                                            Id = "04522043212"
                                         }
                                     }
                                 },
@@ -242,7 +243,7 @@ namespace CTS_BE.BAL.Services.paymandate
                                     {
                                         ClrSysMmbId = new ClrSysMmbId
                                         {
-                                            MmbId = "MAC147852"
+                                            MmbId = "RBIS0GOJHEP"
                                         }
                                     }
                                 },
@@ -252,14 +253,14 @@ namespace CTS_BE.BAL.Services.paymandate
                                     {
                                         PmtId = new PaymentId
                                         {
-                                            InstrId = "17000000055",
-                                            EndToEndId = "CORE2102024123456"
+                                            InstrId = "DRNPAYEE001",
+                                            EndToEndId = "EP"+"1254"+"000000000001"+DateTimeHelper.GetJulianDate(DateTime.Now)+"000001"
                                         },
                                         Amt = new Amount
                                         {
                                         InstdAmt = new InstdAmt{
-                                                Amt = 12515.00m,
-                                                CcyOfTrf = "USD"
+                                                Amt = 40916.00m,
+                                                CcyOfTrf = "INR"
                                             }
 
                                         },
@@ -269,17 +270,17 @@ namespace CTS_BE.BAL.Services.paymandate
                                             {
                                                 ClrSysMmbId = new ClrSysMmbId
                                                 {
-                                                    MmbId = "ECO123456"
+                                                    MmbId = "SBIN0014061"
                                                 }
                                             },
                                             BrnchId = new BranchId
                                             {
-                                                Id = "ECO123456"
+                                                Id = "SBIN0014061"
                                             }
                                         },
                                         Cdtr = new Creditor
                                         {
-                                            Nm = "AMAZON"
+                                            Nm = "FARM FIELD PVT LTD"
                                         },
                                         CdtrAcct = new CreditorAccount
                                         {
@@ -287,12 +288,12 @@ namespace CTS_BE.BAL.Services.paymandate
                                             {
                                                 Othr = new Othr
                                                 {
-                                                    Id = "147852369"
+                                                    Id = "69174199438"
                                                 }
                                             },
                                             Tp = new Type
                                             {
-                                                Cd = "1000"
+                                                Cd = "10"
                                             }
                                         }
                                     },
@@ -300,14 +301,14 @@ namespace CTS_BE.BAL.Services.paymandate
                                     {
                                         PmtId = new PaymentId
                                         {
-                                            InstrId = "1700000099",
-                                            EndToEndId = "CORE2102024123457"
+                                            InstrId = "DRNPAYEE002",
+                                            EndToEndId = "EP125400000000000224246000002"
                                         },
                                         Amt = new Amount
                                         {
                                             InstdAmt = new InstdAmt{
-                                                Amt = 72200.00m,
-                                                CcyOfTrf = "USD"
+                                                Amt = 721.00m,
+                                                CcyOfTrf = "INR"
                                             }
                                         },
                                         CdtrAgt = new CreditorAgent
@@ -316,17 +317,17 @@ namespace CTS_BE.BAL.Services.paymandate
                                             {
                                                 ClrSysMmbId = new ClrSysMmbId
                                                 {
-                                                    MmbId = "ECO147852369"
+                                                    MmbId = "SBIN0014062"
                                                 }
                                             },
                                             BrnchId = new BranchId
                                             {
-                                                Id = "ECO147852369"
+                                                Id = "SBIN0014062"
                                             }
                                         },
                                         Cdtr = new Creditor
                                         {
-                                            Nm = "VAT"
+                                            Nm = "Test Name"
                                         },
                                         CdtrAcct = new CreditorAccount
                                         {
@@ -334,12 +335,12 @@ namespace CTS_BE.BAL.Services.paymandate
                                             {
                                                 Othr = new Othr
                                                 {
-                                                    Id = "147852369"
+                                                    Id = "24022000007067"
                                                 }
                                             },
                                             Tp = new Type
                                             {
-                                                Cd = "1000"
+                                                Cd = "10"
                                             }
                                         }
                                     }
@@ -506,7 +507,9 @@ namespace CTS_BE.BAL.Services.paymandate
                 //*Identification of a division
                 writer.WriteElementString("Dept", kuber.requestPayload.Document.CstmrCdtTrfInitn.PmtInf.Dbtr.PstlAdr.Dept);//TODO:: Change it to Department
                 //*Identification of a sub-division
-                writer.WriteElementString("SubDept", kuber.requestPayload.Document.CstmrCdtTrfInitn.PmtInf.Dbtr.PstlAdr.SubDept);//TODO:: Change it to Sub Department
+                if(kuber.requestPayload.Document.CstmrCdtTrfInitn.PmtInf.Dbtr.PstlAdr.SubDept!=""){
+                    writer.WriteElementString("SubDept", kuber.requestPayload.Document.CstmrCdtTrfInitn.PmtInf.Dbtr.PstlAdr.SubDept);//TODO:: Change it to Sub Department
+                }
                 writer.WriteEndElement(); // PstlAdr
                 writer.WriteStartElement("Id");
                 writer.WriteStartElement("OrgId");
