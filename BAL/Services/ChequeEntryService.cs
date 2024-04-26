@@ -56,15 +56,16 @@ namespace CTS_BE.BAL
                 Code = entity.Id
             });
         }
-        public async Task<ChequeListDTO> Series(long id)
+        public async Task<ChequeSeriesDetailDTO> SeriesDetailsById(long id)
         {
-            return (ChequeListDTO)await _ChequeEntryRepository.GetSingleSelectedColumnByConditionAsync(entity => entity.Id == id, entity => new ChequeListDTO
+            return await _ChequeEntryRepository.GetSingleSelectedColumnByConditionAsync(entity => entity.Id == id, entity => new ChequeSeriesDetailDTO
             {
                 Id = entity.Id,
                 Series = entity.SeriesNo,
                 Start = entity.Start,
                 End = entity.End,
-                Quantity = entity.Quantity
+                Quantity = entity.Quantity,
+                AvailableQuantity = entity.End - entity.CurrentPosition
             });
         }
     }

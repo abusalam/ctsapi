@@ -32,6 +32,17 @@ namespace CTS_BE.DTOs
         public int End { get; set; }
         public int Quantity { get; set; }
     }
+    public class ChequeSeriesDetailDTO
+    {
+        public long? Id { get; set; }
+        public string? TreasurieCode { get; set; }
+        public string? MicrCode { get; set; }
+        public string? Series { get; set; }
+        public int? Start { get; set; }
+        public int? End { get; set; }
+        public int? Quantity { get; set; }
+        public int? AvailableQuantity { get; set; }
+    }
     public class ChequeIndentListDTO
     {
         public long Id { get; set; }
@@ -77,8 +88,8 @@ namespace CTS_BE.DTOs
     {
         public long ChequeIndentDetailId { get; set; }
         public long ChequeEntryId { get; set; }
-        public short Start { get; set; }
-        public short End { get; set; }
+        // public short Start { get; set; }
+        // public short End { get; set; }
         public short Quantity { get; set; }
     }
 }

@@ -31,7 +31,15 @@ namespace CTS_BE.Controllers
             try
             {
                 long userId = _claimService.GetUserId();
-                short quantity = (short)(chequeEntryDTO.End - chequeEntryDTO.Start);
+                short quantity = 0;
+                if (chequeEntryDTO.Start == 1)
+                {
+                    quantity = (short)((chequeEntryDTO.End - chequeEntryDTO.Start) + 1);
+                }
+                else
+                {
+                    quantity = (short)(chequeEntryDTO.End - chequeEntryDTO.Start);
+                }
                 if (await _chequeEntryService.Insert(userId, chequeEntryDTO.TreasurieCode, chequeEntryDTO.MicrCode, chequeEntryDTO.Series, chequeEntryDTO.Start, chequeEntryDTO.End, quantity))
                 {
                     response.apiResponseStatus = Enum.APIResponseStatus.Success;
@@ -69,14 +77,14 @@ namespace CTS_BE.Controllers
             }
         }
         [HttpGet("series-details")]
-        public async Task<APIResponse<ChequeListDTO>> ChequeSeriesDetils([FromQuery] long Id)
+        public async Task<APIResponse<ChequeSeriesDetailDTO>> ChequeSeriesDetils([FromQuery] long Id)
         {
-            APIResponse<ChequeListDTO> response = new();
+            APIResponse<ChequeSeriesDetailDTO> response = new();
             try
             {
 
                 response.apiResponseStatus = Enum.APIResponseStatus.Success;
-                response.result = await _chequeEntryService.Series(Id);
+                response.result = await _chequeEntryService.SeriesDetailsById(Id);
                 response.Message = "";
                 return response;
             }
@@ -553,8 +561,8 @@ namespace CTS_BE.Controllers
                 return response;
             }
         }
-        [HttpPost("cheque-indent-invoice")]
-        public async Task<APIResponse<string>> ChequeIndentApprove(ChequeInvoiceDTO chequeInvoiceDTO)
+        [HttpPost("new-cheque-invoice")]
+        public async Task<APIResponse<string>> NewInvoice(ChequeInvoiceDTO chequeInvoiceDTO)
         {
             APIResponse<string> response = new();
             try
