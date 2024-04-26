@@ -78,7 +78,7 @@ namespace CTS_BE.DTOs
         public long ChequeIndentDetailId { get; set; }
         public long ChequeEntryId { get; set; }
         public short Start { get; set; }
-        public string End { get; set; }
+        public short End { get; set; }
         public short Quantity { get; set; }
     }
 }
