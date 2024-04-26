@@ -24,6 +24,7 @@ namespace CTS_BE.BAL
                 SeriesNo = series,
                 Start = start,
                 End = end,
+                CurrentPosition = start,
                 Quantity = quantity,
                 CreatedBy = userId,
             };
