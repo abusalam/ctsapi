@@ -30,12 +30,12 @@ public partial class ChequeIndentDetail
     [Column("quantity")]
     public int Quantity { get; set; }
 
-    [Column("approve_quantity")]
-    public int ApproveQuantity { get; set; }
+    [Column("approved_quantity")]
+    public int ApprovedQuantity { get; set; }
 
-    [Column("approve_micr_code")]
+    [Column("approved_micr_code")]
     [StringLength(9)]
-    public string? ApproveMicrCode { get; set; }
+    public string? ApprovedMicrCode { get; set; }
 
     [ForeignKey("ChequeIndentId")]
     [InverseProperty("ChequeIndentDetails")]

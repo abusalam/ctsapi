@@ -345,7 +345,7 @@ public partial class CTSDBContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("cheque_indent_details_pkey");
 
-            entity.Property(e => e.ApproveMicrCode).IsFixedLength();
+            entity.Property(e => e.ApprovedMicrCode).IsFixedLength();
             entity.Property(e => e.ChequeType).HasComment("1= treasury 2= others");
             entity.Property(e => e.MicrCode).IsFixedLength();
 
