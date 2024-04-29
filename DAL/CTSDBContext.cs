@@ -111,7 +111,7 @@ public partial class CTSDBContext : DbContext
     public virtual DbSet<VoucherEntry> VoucherEntries { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-       => optionsBuilder.UseNpgsql("Name=ConnectionStrings:DBConnection");
+        => optionsBuilder.UseNpgsql("Name=ConnectionStrings:DBConnection");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -345,6 +345,7 @@ public partial class CTSDBContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("cheque_indent_details_pkey");
 
+            entity.Property(e => e.ApproveMicrCode).IsFixedLength();
             entity.Property(e => e.ChequeType).HasComment("1= treasury 2= others");
             entity.Property(e => e.MicrCode).IsFixedLength();
 
@@ -358,6 +359,9 @@ public partial class CTSDBContext : DbContext
             entity.HasKey(e => e.Id).HasName("cheque_invoice_pkey");
 
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
+            entity.Property(e => e.InvoiceNumber).IsFixedLength();
+
+            entity.HasOne(d => d.StatusNavigation).WithMany(p => p.ChequeInvoices).HasConstraintName("cheque_invoice_status_fkey");
         });
 
         modelBuilder.Entity<ChequeInvoiceDetail>(entity =>
@@ -543,7 +547,7 @@ public partial class CTSDBContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("status_pkey");
 
-            entity.Property(e => e.Type).HasComment("1 = token flow ,2 = Cheque");
+            entity.Property(e => e.Type).HasComment("1 = token flow ,2 = Cheque indent,3 Cheque invoice");
         });
 
         modelBuilder.Entity<SubDetailHead>(entity =>

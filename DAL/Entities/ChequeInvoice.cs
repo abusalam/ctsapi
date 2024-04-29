@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.DAL.Entities;
 
 [Table("cheque_invoice", Schema = "cts")]
+[Index("Status", Name = "fki_cheque_invoice_status_fkey")]
 public partial class ChequeInvoice
 {
     [Key]
@@ -20,7 +21,8 @@ public partial class ChequeInvoice
     public DateOnly? InvoiceDate { get; set; }
 
     [Column("invoice_number")]
-    public int? InvoiceNumber { get; set; }
+    [StringLength(50)]
+    public string? InvoiceNumber { get; set; }
 
     [Column("cheque_indent_id")]
     public long? ChequeIndentId { get; set; }
@@ -30,4 +32,11 @@ public partial class ChequeInvoice
 
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime? CreatedAt { get; set; }
+
+    [Column("status")]
+    public int? Status { get; set; }
+
+    [ForeignKey("Status")]
+    [InverseProperty("ChequeInvoices")]
+    public virtual Status? StatusNavigation { get; set; }
 }

@@ -33,6 +33,10 @@ public partial class ChequeIndentDetail
     [Column("approve_quantity")]
     public int ApproveQuantity { get; set; }
 
+    [Column("approve_micr_code")]
+    [StringLength(9)]
+    public string? ApproveMicrCode { get; set; }
+
     [ForeignKey("ChequeIndentId")]
     [InverseProperty("ChequeIndentDetails")]
     public virtual ChequeIndent ChequeIndent { get; set; } = null!;
