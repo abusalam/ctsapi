@@ -32,14 +32,7 @@ namespace CTS_BE.Controllers
             {
                 long userId = _claimService.GetUserId();
                 short quantity = 0;
-                if (chequeEntryDTO.Start == 1)
-                {
-                    quantity = (short)((chequeEntryDTO.End - chequeEntryDTO.Start) + 1);
-                }
-                else
-                {
-                    quantity = (short)(chequeEntryDTO.End - chequeEntryDTO.Start);
-                }
+                quantity = (short)((chequeEntryDTO.End - chequeEntryDTO.Start) + 1);
                 if (await _chequeEntryService.Insert(userId, chequeEntryDTO.TreasurieCode, chequeEntryDTO.MicrCode, chequeEntryDTO.Series, chequeEntryDTO.Start, chequeEntryDTO.End, quantity))
                 {
                     response.apiResponseStatus = Enum.APIResponseStatus.Success;
@@ -363,7 +356,7 @@ namespace CTS_BE.Controllers
                 return response;
             }
         }
-        [HttpPatch("cheque-invoice-list")]
+        // [HttpPatch("cheque-invoice-list")]
         // public async Task<APIResponse<DynamicListResult<IEnumerable<ChequeIndentListDTO>>>> ListOfChequeInvoice(DynamicListQueryParameters dynamicListQueryParameters)
         // {
         //     APIResponse<DynamicListResult<IEnumerable<ChequeIndentListDTO>>> response = new();
@@ -375,28 +368,19 @@ namespace CTS_BE.Controllers
         //             {
         //                 new ListHeader
         //                 {
-        //                     Name ="Indent Id",
-        //                     DataType = "numeric",
-        //                     FieldName = "indentId",
-        //                     FilterField = "IndentId",
-        //                     IsFilterable = true,
-        //                     IsSortable = true,
-        //                 },
-        //                 new ListHeader
-        //                 {
-        //                     Name ="Indent Date",
+        //                     Name ="Invoice Date",
         //                     DataType = "date",
-        //                     FieldName = "indentDate",
-        //                     FilterField = "IndentDate",
+        //                     FieldName = "invoiceDate",
+        //                     FilterField = "InvoiceDate",
         //                     IsFilterable = true,
         //                     IsSortable = true,
         //                 },
         //                 new ListHeader
         //                 {
-        //                     Name ="Memo Number",
+        //                     Name ="Invoice Number",
         //                     DataType = "text",
-        //                     FieldName = "memoNo",
-        //                     FilterField = "MemoNo",
+        //                     FieldName = "InvoiceNo",
+        //                     FilterField = "InvoiceNumber",
         //                     IsFilterable = true,
         //                     IsSortable = true,
         //                 },

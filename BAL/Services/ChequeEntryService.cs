@@ -3,6 +3,7 @@ using CTS_BE.BAL.Interfaces;
 using CTS_BE.DAL.Entities;
 using CTS_BE.DAL.Interfaces;
 using CTS_BE.DTOs;
+using CTS_BE.Helper;
 
 namespace CTS_BE.BAL
 {
@@ -24,7 +25,6 @@ namespace CTS_BE.BAL
                 SeriesNo = series,
                 Start = start,
                 End = end,
-                CurrentPosition = start,
                 Quantity = quantity,
                 CreatedBy = userId,
             };
@@ -53,7 +53,7 @@ namespace CTS_BE.BAL
         {
             return await _ChequeEntryRepository.GetSelectedColumnByConditionAsync(entity => !entity.IsUsed, entity => new DropdownDTO
             {
-                Name = entity.SeriesNo,
+                Name = entity.SeriesNo+" - "+entity.MicrCode+" - "+CommonHelper.calculateAvailableQuantity(entity.CurrentPosition,entity.End,entity.Start).ToString(),
                 Code = entity.Id
             });
         }
@@ -66,7 +66,7 @@ namespace CTS_BE.BAL
                 Start = entity.Start,
                 End = entity.End,
                 Quantity = entity.Quantity,
-                AvailableQuantity = entity.End - entity.CurrentPosition
+                AvailableQuantity = CommonHelper.calculateAvailableQuantity(entity.CurrentPosition,entity.End,entity.Start)
             });
         }
     }
