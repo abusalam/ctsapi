@@ -7,6 +7,9 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.DAL.Entities;
 
 [Table("cheque_invoice_details", Schema = "cts")]
+[Index("ChequeEntryId", Name = "fki_cheque_invoice_details__cheque_entry_id__fkey")]
+[Index("ChequeIndentDetailId", Name = "fki_cheque_invoice_details__cheque_indent_detail_id__fkey")]
+[Index("ChequeInvoiceId", Name = "fki_cheque_invoice_details__cheque_invoice_id__fkey")]
 public partial class ChequeInvoiceDetail
 {
     [Key]
@@ -30,4 +33,16 @@ public partial class ChequeInvoiceDetail
 
     [Column("cheque_entry_id")]
     public long ChequeEntryId { get; set; }
+
+    [ForeignKey("ChequeEntryId")]
+    [InverseProperty("ChequeInvoiceDetails")]
+    public virtual ChequeEntry ChequeEntry { get; set; } = null!;
+
+    [ForeignKey("ChequeIndentDetailId")]
+    [InverseProperty("ChequeInvoiceDetails")]
+    public virtual ChequeIndentDetail ChequeIndentDetail { get; set; } = null!;
+
+    [ForeignKey("ChequeInvoiceId")]
+    [InverseProperty("ChequeInvoiceDetails")]
+    public virtual ChequeInvoice ChequeInvoice { get; set; } = null!;
 }

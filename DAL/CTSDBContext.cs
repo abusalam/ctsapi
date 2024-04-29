@@ -361,12 +361,26 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
             entity.Property(e => e.InvoiceNumber).IsFixedLength();
 
+            entity.HasOne(d => d.ChequeIndent).WithMany(p => p.ChequeInvoices).HasConstraintName("cheque_invoice_cheque_indent_id_fkey");
+
             entity.HasOne(d => d.StatusNavigation).WithMany(p => p.ChequeInvoices).HasConstraintName("cheque_invoice_status_fkey");
         });
 
         modelBuilder.Entity<ChequeInvoiceDetail>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("cheque_invoice_details_pkey");
+
+            entity.HasOne(d => d.ChequeEntry).WithMany(p => p.ChequeInvoiceDetails)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("cheque_invoice_details__cheque_entry_id__fkey");
+
+            entity.HasOne(d => d.ChequeIndentDetail).WithMany(p => p.ChequeInvoiceDetails)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("cheque_invoice_details__cheque_indent_detail_id__fkey");
+
+            entity.HasOne(d => d.ChequeInvoice).WithMany(p => p.ChequeInvoiceDetails)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("cheque_invoice_details__cheque_invoice_id__fkey");
         });
 
         modelBuilder.Entity<Ddo>(entity =>

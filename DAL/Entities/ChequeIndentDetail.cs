@@ -40,4 +40,7 @@ public partial class ChequeIndentDetail
     [ForeignKey("ChequeIndentId")]
     [InverseProperty("ChequeIndentDetails")]
     public virtual ChequeIndent ChequeIndent { get; set; } = null!;
+
+    [InverseProperty("ChequeIndentDetail")]
+    public virtual ICollection<ChequeInvoiceDetail> ChequeInvoiceDetails { get; set; } = new List<ChequeInvoiceDetail>();
 }

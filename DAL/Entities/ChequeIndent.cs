@@ -58,6 +58,9 @@ public partial class ChequeIndent
     [InverseProperty("ChequeIndent")]
     public virtual ICollection<ChequeIndentDetail> ChequeIndentDetails { get; set; } = new List<ChequeIndentDetail>();
 
+    [InverseProperty("ChequeIndent")]
+    public virtual ICollection<ChequeInvoice> ChequeInvoices { get; set; } = new List<ChequeInvoice>();
+
     [ForeignKey("Status")]
     [InverseProperty("ChequeIndents")]
     public virtual Status? StatusNavigation { get; set; }

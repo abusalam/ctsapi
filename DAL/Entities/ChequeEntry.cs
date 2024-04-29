@@ -47,4 +47,7 @@ public partial class ChequeEntry
     [Column("micr_code")]
     [StringLength(9)]
     public string? MicrCode { get; set; }
+
+    [InverseProperty("ChequeEntry")]
+    public virtual ICollection<ChequeInvoiceDetail> ChequeInvoiceDetails { get; set; } = new List<ChequeInvoiceDetail>();
 }
