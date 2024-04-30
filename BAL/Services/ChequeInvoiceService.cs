@@ -11,14 +11,41 @@ namespace CTS_BE.BAL
     {
         private readonly IChequeInvoiceRepository _ChequeInvoiceRepository;
         private readonly IMapper _mapper;
-        public ChequeInvoiceService(IChequeInvoiceRepository ChequeInvoiceRepository, IMapper mapper) {
+        public ChequeInvoiceService(IChequeInvoiceRepository ChequeInvoiceRepository, IMapper mapper)
+        {
             _ChequeInvoiceRepository = ChequeInvoiceRepository;
             _mapper = mapper;
         }
         public async Task<bool> InsertIndentInvoice(ChequeInvoiceDTO chequeInvoiceDTO)
         {
-            string chequeInvoiceData =  JSONHelper.ObjectToJson(chequeInvoiceDTO);
+            string chequeInvoiceData = JSONHelper.ObjectToJson(chequeInvoiceDTO);
             return await _ChequeInvoiceRepository.Insert(chequeInvoiceData);
         }
+        public async Task<IEnumerable<ChequeInvoiceListDTO>> ChequeInvoiceList(DynamicListQueryParameters dynamicListQueryParameters, List<int> statusIds)
+        {
+            return await _ChequeInvoiceRepository.GetSelectedColumnByConditionAsync(entity => statusIds.Contains((int)entity.Status), entity => new ChequeInvoiceListDTO
+            {
+                Id = entity.Id,
+                InvoiceNumber = entity.InvoiceNumber,
+                InvoiceDate = entity.InvoiceDate.Value.ToString("dd/MM/yyyy"),
+                MemoNumber = entity.ChequeIndent.MemoNo,
+                Quantity = entity.ChequeIndent.TotalApprovedQuantity,
+                CurrentStatus = entity.StatusNavigation.Name,
+                CurrentStatusId = entity.Status
+            });
+        }
+        public async Task<bool> UpdateInvoiceStatus(ChequeInvoice chequeInvoice, int statusId)
+        {
+            chequeInvoice.Status = statusId;
+            if(_ChequeInvoiceRepository.Update(chequeInvoice)){
+                _ChequeInvoiceRepository.SaveChangesManaged();
+                return true;
+            }
+            return false;
+        }
+        public async Task<ChequeInvoice> ChequeInvoiceById(long chequeInvoiceId,short statusId)
+        {
+            return await _ChequeInvoiceRepository.GetSingleAysnc(entity=>entity.Id==chequeInvoiceId && entity.Status==statusId);
+        } 
     }
 }

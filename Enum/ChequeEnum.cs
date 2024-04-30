@@ -10,6 +10,11 @@
         RejectByDTA = 16,
 
     }
+    public enum InvoiceStatus
+    {
+        NewInvoice = 17,
+        FrowardToTreasuryOfficer = 18
+    }
     public enum ChequeType
     {
         TreasuryCheque = 1,

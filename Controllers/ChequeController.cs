@@ -1,4 +1,5 @@
 ﻿using CTS_BE.BAL.Interfaces;
+using CTS_BE.DAL.Entities;
 using CTS_BE.DTOs;
 using CTS_BE.Helper;
 using CTS_BE.Helper.Authentication;
@@ -356,101 +357,105 @@ namespace CTS_BE.Controllers
                 return response;
             }
         }
-        // [HttpPatch("cheque-invoice-list")]
-        // public async Task<APIResponse<DynamicListResult<IEnumerable<ChequeIndentListDTO>>>> ListOfChequeInvoice(DynamicListQueryParameters dynamicListQueryParameters)
-        // {
-        //     APIResponse<DynamicListResult<IEnumerable<ChequeIndentListDTO>>> response = new();
-        //     try
-        //     {
-        //         DynamicListResult<IEnumerable<ChequeIndentListDTO>> result = new DynamicListResult<IEnumerable<ChequeIndentListDTO>>
-        //         {
-        //             Headers = new List<ListHeader>
-        //             {
-        //                 new ListHeader
-        //                 {
-        //                     Name ="Invoice Date",
-        //                     DataType = "date",
-        //                     FieldName = "invoiceDate",
-        //                     FilterField = "InvoiceDate",
-        //                     IsFilterable = true,
-        //                     IsSortable = true,
-        //                 },
-        //                 new ListHeader
-        //                 {
-        //                     Name ="Invoice Number",
-        //                     DataType = "text",
-        //                     FieldName = "InvoiceNo",
-        //                     FilterField = "InvoiceNumber",
-        //                     IsFilterable = true,
-        //                     IsSortable = true,
-        //                 },
-        //                 new ListHeader
-        //                 {
-        //                     Name ="MemoDate",
-        //                     DataType = "date",
-        //                     FieldName = "memoDate",
-        //                     FilterField = "MemoDate",
-        //                     IsFilterable = true,
-        //                     IsSortable = true,
-        //                 },
-        //                 new ListHeader
-        //                 {
-        //                     Name ="Remarks",
-        //                     DataType = "text",
-        //                     FieldName = "remarks",
-        //                     FilterField = "Remarks",
-        //                     IsFilterable = true,
-        //                     IsSortable = false,
-        //                 },
-        //                 new ListHeader
-        //                 {
-        //                     Name ="Status",
-        //                     DataType="object",
-        //                     ObjectTypeValueField="currentStatusId",
-        //                     FieldName ="currentStatus",
-        //                     FilterField ="Status",
-        //                     FilterEnums = new List<FilterEnum>
-        //                     {
-        //                         new FilterEnum
-        //                         {
-        //                             Value = (int) Enum.IndentStatus.NewIndent,
-        //                             Label = "New Indent",
-        //                             StyleClass = "primary"
-        //                         },
-        //                         new FilterEnum
-        //                         {
-        //                             Value = (int) Enum.IndentStatus.ApproveByTreasuryOfficer,
-        //                             Label = "Approve by TO",
-        //                             StyleClass = "success"
-        //                         },
-        //                         new FilterEnum
-        //                         {
-        //                             Value = (int) Enum.IndentStatus.RejectByTreasuryOfficer,
-        //                             Label = "Reject by TO",
-        //                             StyleClass = "warning"
-        //                         },
+        [HttpPatch("cheque-invoice-list")]
+        public async Task<APIResponse<DynamicListResult<IEnumerable<ChequeInvoiceListDTO>>>> ListOfChequeInvoice(DynamicListQueryParameters dynamicListQueryParameters)
+        {
+            APIResponse<DynamicListResult<IEnumerable<ChequeInvoiceListDTO>>> response = new();
+            try
+            {
+                string role = _claimService.GetRole();
+                List<int> statusIds = new List<int>();
+                if (role == "DTA")
+                {
+                    statusIds = new List<int> { (int)Enum.InvoiceStatus.NewInvoice, (int)Enum.InvoiceStatus.FrowardToTreasuryOfficer };
+                }
+                else
+                {
+                    statusIds = new List<int> {(int)Enum.InvoiceStatus.FrowardToTreasuryOfficer };
+                }
+                DynamicListResult<IEnumerable<ChequeInvoiceListDTO>> result = new DynamicListResult<IEnumerable<ChequeInvoiceListDTO>>
+                {
+                    Headers = new List<ListHeader>
+                    {
+                        new ListHeader
+                        {
+                            Name ="Invoice Date",
+                            DataType = "date",
+                            FieldName = "invoiceDate",
+                            FilterField = "InvoiceDate",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Invoice Number",
+                            DataType = "text",
+                            FieldName = "invoiceNumber",
+                            FilterField = "InvoiceNo",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Memo Number",
+                            DataType = "text",
+                            FieldName = "memoNumber",
+                            FilterField = "ChequeIndent.MemoNo",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Quantity",
+                            DataType = "numeric",
+                            FieldName = "quantity",
+                            FilterField = "TotalApprovedQuantity",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Status",
+                            DataType="object",
+                            ObjectTypeValueField="currentStatusId",
+                            FieldName ="currentStatus",
+                            FilterField ="Status",
+                            FilterEnums = new List<FilterEnum>
+                            {
+                                new FilterEnum
+                                {
+                                    Value = (int) Enum.InvoiceStatus.NewInvoice,
+                                    Label = "New Invoice",
+                                    StyleClass = "primary"
+                                },
+                                new FilterEnum
+                                {
+                                    Value = (int) Enum.InvoiceStatus.FrowardToTreasuryOfficer,
+                                    Label = "Froward to Treasury Officer",
+                                    StyleClass = "success"
+                                },
 
-        //                     },
-        //                     IsFilterable=true,
-        //                     IsSortable=false,
-        //                     },
+                            },
+                            IsFilterable=true,
+                            IsSortable=false,
+                            },
 
-        //             },
-        //             Data = await _chequeIndentService.ChequeIndentList(dynamicListQueryParameters, (int)Enum.IndentStatus.ApproveByTreasuryOfficer),
-        //             DataCount = 1
-        //         };
-        //         response.apiResponseStatus = Enum.APIResponseStatus.Success;
-        //         response.Message = "";
-        //         response.result = result;
-        //         return response;
-        //     }
-        //     catch (Exception Ex)
-        //     {
-        //         response.apiResponseStatus = Enum.APIResponseStatus.Error;
-        //         response.Message = Ex.Message;
-        //         return response;
-        //     }
-        // }
+                    },
+                    Data = await _chequeInvoiceService.ChequeInvoiceList(dynamicListQueryParameters, statusIds),
+                    DataCount = 1
+                };
+                response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                response.Message = "";
+                response.result = result;
+                return response;
+            }
+            catch (Exception Ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = Ex.Message;
+                return response;
+            }
+        }
         [HttpPut("cheque-indent-approve")]
         public async Task<APIResponse<string>> ChequeIndentApprove(IndentFrowardApproveRjectDTO indentApproveRjectDTO)
         {
@@ -553,7 +558,7 @@ namespace CTS_BE.Controllers
             {
                 if (await _chequeInvoiceService.InsertIndentInvoice(chequeInvoiceDTO))
                 {
-                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
                     response.Message = "Cheque invoice successfully!";
                     return response;
                 }
@@ -577,6 +582,37 @@ namespace CTS_BE.Controllers
                 response.apiResponseStatus = Enum.APIResponseStatus.Success;
                 response.result = await _chequeIndentService.ChequeIndentDetailsByIdStatus(Id, (int)Enum.IndentStatus.ApproveByTreasuryOfficer);
                 response.Message = "";
+                return response;
+            }
+            catch (Exception Ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = Ex.Message;
+                return response;
+            }
+        }
+        [HttpPut("cheque-invoice-froward")]
+        public async Task<APIResponse<string>> ChequeInvoiceFroward(InvoiceFrowardDTO invoiceFrowardDTO)
+        {
+            APIResponse<string> response = new();
+            try
+            {
+                long userId = _claimService.GetUserId();
+                var invoiceDetails = await _chequeInvoiceService.ChequeInvoiceById(invoiceFrowardDTO.InvoiceId, (short)Enum.InvoiceStatus.NewInvoice);
+                if (invoiceDetails == null)
+                {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Warning;
+                    response.Message = "Invoice not found!";
+                    return response;
+                }
+                if (await _chequeInvoiceService.UpdateInvoiceStatus(invoiceDetails, (int)Enum.InvoiceStatus.FrowardToTreasuryOfficer))
+                {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                    response.Message = "Cheque invoice froward successfully!";
+                    return response;
+                }
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = "Cheque invoice froward faild!";
                 return response;
             }
             catch (Exception Ex)

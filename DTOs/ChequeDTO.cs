@@ -59,7 +59,11 @@ namespace CTS_BE.DTOs
     }
     public class IndentFrowardApproveRjectDTO
     {
-        public long IndentId {get;set;}
+        public long IndentId { get; set; }
+    }
+    public class InvoiceFrowardDTO
+    {
+        public long InvoiceId { get; set; }
     }
     public class ChequeIndentDTO
     {
@@ -72,16 +76,16 @@ namespace CTS_BE.DTOs
     }
     public class ChequeIndentDeatilsDTO
     {
-        public long? IndentDeatilsId { get; set; } 
-        public short ChequeType { get; set; } 
-        public string MicrCode { get; set; }    
+        public long? IndentDeatilsId { get; set; }
+        public short ChequeType { get; set; }
+        public string MicrCode { get; set; }
         public int Quantity { get; set; }
     }
     public class ChequeInvoiceDTO
     {
         public long ChequeIndentId { get; set; }
-        public string InvoiceDate{ get; set; }
-        public string InvoiceNumber{ get; set; }
+        public string InvoiceDate { get; set; }
+        public string InvoiceNumber { get; set; }
         public List<ChequeInvoiceDeatilsDTO> ChequeInvoiceDeatils { get; set; }
     }
     public class ChequeInvoiceDeatilsDTO
@@ -91,5 +95,15 @@ namespace CTS_BE.DTOs
         // public short Start { get; set; }
         // public short End { get; set; }
         public short Quantity { get; set; }
+    }
+    public class ChequeInvoiceListDTO
+    {
+        public long Id { get; set; }
+        public string InvoiceDate { get; set; } = DateTime.Now.ToString("dd/MM/yyyy");
+        public string InvoiceNumber { get; set; } = "";
+        public string MemoNumber { get; set; } = "";
+        public int? Quantity { get; set; }
+        public string? CurrentStatus { get; set; }
+        public int? CurrentStatusId { get; set; }
     }
 }

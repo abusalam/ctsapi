@@ -11,11 +11,6 @@
     {
         ForwardedToTreasury = 3,
     }
-    public enum StatusType
-    {
-        BillChecking = 1,
-        ReturnMemo = 2,
-    }
     public enum TokenStatus
     {
         BillReceived = 1,
