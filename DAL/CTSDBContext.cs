@@ -68,6 +68,8 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<EcsNeftDetail> EcsNeftDetails { get; set; }
 
+    public virtual DbSet<EcsNeftPaymentStatusDetail> EcsNeftPaymentStatusDetails { get; set; }
+
     public virtual DbSet<FinancialYearMaster> FinancialYearMasters { get; set; }
 
     public virtual DbSet<GobalObjection> GobalObjections { get; set; }
@@ -317,6 +319,8 @@ public partial class CTSDBContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("cheque_count_pkey");
 
+            entity.Property(e => e.MicrCode).IsFixedLength();
+            entity.Property(e => e.TreasuryCode).IsFixedLength();
             entity.Property(e => e.Utilized).HasDefaultValueSql("0");
         });
 
@@ -325,6 +329,7 @@ public partial class CTSDBContext : DbContext
             entity.HasKey(e => e.Id).HasName("cheque_pkey1");
 
             entity.Property(e => e.Id).HasDefaultValueSql("nextval('cts.cheque_id_seq1'::regclass)");
+            entity.Property(e => e.IsActive).HasDefaultValueSql("true");
             entity.Property(e => e.MicrCode).IsFixedLength();
             entity.Property(e => e.TreasurieCode).IsFixedLength();
         });
@@ -337,6 +342,7 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
             entity.Property(e => e.MemoNo).IsFixedLength();
             entity.Property(e => e.Status).HasComment("1 = new indent , 2 =  approve by TO , 3= Reject by TO");
+            entity.Property(e => e.TreasurieCode).IsFixedLength();
 
             entity.HasOne(d => d.StatusNavigation).WithMany(p => p.ChequeIndents).HasConstraintName("cheque_indent_status_fkey");
         });
@@ -504,6 +510,11 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.IfscCode).IsFixedLength();
             entity.Property(e => e.IsActive).HasDefaultValueSql("1");
             entity.Property(e => e.PanNo).IsFixedLength();
+        });
+
+        modelBuilder.Entity<EcsNeftPaymentStatusDetail>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("ecs_neft_payment_status_details_pkey");
         });
 
         modelBuilder.Entity<FinancialYearMaster>(entity =>

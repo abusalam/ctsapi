@@ -55,6 +55,10 @@ public partial class ChequeIndent
     [Column("total_requested_quantity")]
     public int? TotalRequestedQuantity { get; set; }
 
+    [Column("treasurie_code")]
+    [StringLength(3)]
+    public string? TreasurieCode { get; set; }
+
     [InverseProperty("ChequeIndent")]
     public virtual ICollection<ChequeIndentDetail> ChequeIndentDetails { get; set; } = new List<ChequeIndentDetail>();
 

@@ -17,13 +17,15 @@ namespace CTS_BE.Controllers
         private readonly IChequeIndentService _chequeIndentService;
         private readonly IChequeInvoiceService _chequeInvoiceService;
         private readonly IClaimService _claimService;
+        private readonly IChequeCountService _chequeCountService;
 
-        public ChequeController(IChequeEntryService chequeEntryService, IChequeIndentService chequeIndentService, IChequeInvoiceService chequeInvoiceService, IClaimService claimService)
+        public ChequeController(IChequeCountService chequeCountService,IChequeEntryService chequeEntryService, IChequeIndentService chequeIndentService, IChequeInvoiceService chequeInvoiceService, IClaimService claimService)
         {
             _chequeEntryService = chequeEntryService;
             _chequeIndentService = chequeIndentService;
             _chequeInvoiceService = chequeInvoiceService;
             _claimService = claimService;
+            _chequeCountService =chequeCountService;
         }
         [HttpPost("new-cheque-entry")]
         public async Task<APIResponse<string>> ChequeEntry(ChequeEntryDTO chequeEntryDTO)
@@ -34,7 +36,18 @@ namespace CTS_BE.Controllers
                 long userId = _claimService.GetUserId();
                 short quantity = 0;
                 quantity = (short)((chequeEntryDTO.End - chequeEntryDTO.Start) + 1);
-                if (await _chequeEntryService.Insert(userId, chequeEntryDTO.TreasurieCode, chequeEntryDTO.MicrCode, chequeEntryDTO.Series, chequeEntryDTO.Start, chequeEntryDTO.End, quantity))
+                ChequeEntryModel chequeEntry = new ChequeEntryModel
+                {
+                    FinancialYearId = 1, //TODO:: Change this to active FY ID
+                    TreasurieCode = chequeEntryDTO.TreasurieCode,
+                    MicrCode = chequeEntryDTO.MicrCode,
+                    SeriesNo = chequeEntryDTO.Series,
+                    Start = chequeEntryDTO.Start,
+                    End = chequeEntryDTO.End,
+                    Quantity = quantity,
+                    CreatedBy = userId,
+                };
+                if (await _chequeEntryService.Insert(chequeEntry))
                 {
                     response.apiResponseStatus = Enum.APIResponseStatus.Success;
                     response.Message = "Cheque entry successfully.";
@@ -70,6 +83,24 @@ namespace CTS_BE.Controllers
                 return response;
             }
         }
+        [HttpGet("available-cheque-micr")]
+        public async Task<APIResponse<IEnumerable<DropdownStringCodeDTO>>> TreasuryChequeMICR([FromQuery] string treasuryCode)
+        {
+            APIResponse<IEnumerable<DropdownStringCodeDTO>> response = new();
+            try
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                response.result = await _chequeCountService.GetAvailableChequeMICRByTreasuryCode(treasuryCode);
+                response.Message = "";
+                return response;
+            }
+            catch (Exception Ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = Ex.Message;
+                return response;
+            }
+        }
         [HttpGet("series-details")]
         public async Task<APIResponse<ChequeSeriesDetailDTO>> ChequeSeriesDetils([FromQuery] long Id)
         {
@@ -79,6 +110,25 @@ namespace CTS_BE.Controllers
 
                 response.apiResponseStatus = Enum.APIResponseStatus.Success;
                 response.result = await _chequeEntryService.SeriesDetailsById(Id);
+                response.Message = "";
+                return response;
+            }
+            catch (Exception Ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = Ex.Message;
+                return response;
+            }
+        }
+        [HttpGet("micr-series-details")]
+        public async Task<APIResponse<List<ChequeSeriesDetailDTO>>> MicrSeriesDetils([FromQuery] string MicrCode)
+        {
+            APIResponse<List<ChequeSeriesDetailDTO>> response = new();
+            try
+            {
+
+                response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                response.result = await _chequeEntryService.SeriesDetailsByMICRCode(MicrCode);
                 response.Message = "";
                 return response;
             }

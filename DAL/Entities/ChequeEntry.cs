@@ -48,6 +48,9 @@ public partial class ChequeEntry
     [StringLength(9)]
     public string? MicrCode { get; set; }
 
+    [Column("is_active")]
+    public bool? IsActive { get; set; }
+
     [InverseProperty("ChequeEntry")]
     public virtual ICollection<ChequeInvoiceDetail> ChequeInvoiceDetails { get; set; } = new List<ChequeInvoiceDetail>();
 }
