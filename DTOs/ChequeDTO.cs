@@ -72,6 +72,7 @@ namespace CTS_BE.DTOs
         public string MemoNumber { get; set; }
         public string MemoDate { get; set; }
         public string Remarks { get; set; }
+        public string? TreasurieCode { get; set; }
         public List<ChequeIndentDeatilsDTO> ChequeIndentDeatils { get; set; }
     }
     public class ChequeIndentDeatilsDTO

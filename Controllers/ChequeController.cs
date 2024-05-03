@@ -231,6 +231,7 @@ namespace CTS_BE.Controllers
                 ChequeIndentModel chequeIndentModel = new()
                 {
                     IndentDate = chequeIndentDTO.IndentDate,
+                    TreasurieCode = (role=="DTA")? chequeIndentDTO.TreasurieCode:_claimService.GetScope(),
                     MemoDate = chequeIndentDTO.MemoDate,
                     MemoNumber = chequeIndentDTO.MemoNumber,
                     Remarks = chequeIndentDTO.Remarks,

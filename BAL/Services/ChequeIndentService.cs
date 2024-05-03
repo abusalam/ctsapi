@@ -61,6 +61,7 @@ namespace CTS_BE.BAL
             ChequeIndentDTO chequeIndentDetails = await _ChequeIndentRepository.GetSingleSelectedColumnByConditionAsync(entity => entity.Id == indentId && entity.Status == statusId, entity => new ChequeIndentDTO
             {
                 IndentId =  entity.Id,
+                TreasurieCode = entity.TreasurieCode,
                 IndentDate = entity.IndentDate.Value.ToString("dd/MM/yyyy"),
                 MemoDate = entity.MemoDate.Value.ToString("dd/MM/yyyy"),
                 MemoNumber = entity.MemoNo,

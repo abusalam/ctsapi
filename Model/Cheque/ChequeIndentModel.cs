@@ -9,6 +9,7 @@ namespace CTS_BE.Model
     public class ChequeIndentModel
     {
         public string IndentDate { get; set; }
+        public string? TreasurieCode { get; set; }
         public string MemoNumber { get; set; }
         public string MemoDate { get; set; }
         public string Remarks { get; set; }
