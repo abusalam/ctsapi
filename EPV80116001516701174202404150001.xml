@@ -21,16 +21,16 @@
 				</FinInstnId>
 			</FIId>
 		</To>
-		<BizMsgIdr>EPV81254000000000001202404150001</BizMsgIdr>
+		<BizMsgIdr>EPV80116001516701174202404150001</BizMsgIdr>
 		<MsgDefIdr>pain.001.001.08</MsgDefIdr>
 		<BizSvc>CustomerCreditTransferInitiationV08</BizSvc>
-		<CreDt>2024-05-03T17:52:57</CreDt>
+		<CreDt>2024-05-03T18:16:32</CreDt>
 	</AppHdr>
 	<Document>
 		<CstmrCdtTrfInitn>
 			<GrpHdr>
-				<MsgId>EPV81254000000000001202404150001</MsgId>
-				<CreDtTm>2024-05-03T17:52:57</CreDtTm>
+				<MsgId>EPV80116001516701174202404150001</MsgId>
+				<CreDtTm>2024-05-03T18:16:32</CreDtTm>
 				<Authstn>
 					<Prtry>ALL</Prtry>
 				</Authstn>
@@ -93,7 +93,7 @@
 				<CdtTrfTxInf>
 					<PmtId>
 						<InstrId>DRNPAYEE001</InstrId>
-						<EndToEndId>EP0116System.Linq.Enumerable+RepeatIterator`1[System.String]0151670117424124000001</EndToEndId>
+						<EndToEndId>EP011600151670117424124000001</EndToEndId>
 					</PmtId>
 					<Amt>
 						<InstdAmt>
@@ -128,7 +128,7 @@
 				<CdtTrfTxInf>
 					<PmtId>
 						<InstrId>DRNPAYEE002</InstrId>
-						<EndToEndId>EP125400000000000224246000002</EndToEndId>
+						<EndToEndId>EP0116001516701174241240002</EndToEndId>
 					</PmtId>
 					<Amt>
 						<InstdAmt>

@@ -142,19 +142,31 @@ namespace CTS_BE.BAL.Services.paymandate
         //}
         public EKuber GetXMLData()
         {
+            string UDCH = "0116";
+            string DbtrAcctNo = "01516701174";
+            string DebtorIFSC = "RBIS0GOWBEP";
+            string FileSequenceNumber = "0001";
+            string DateofAuthorization = "20240415";
+            string LotNumber = "CKP000210";
+            string LotType = "01";
+            string PaymentAdviceDate = "20240415";
+            string PaymentAdviceYYMM = "202402";
+            string ReservedField = DbtrAcctNo.PadLeft(12,'0');
+            string FileName = "EPV8"+UDCH+ReservedField+DateofAuthorization+FileSequenceNumber;
             EKuber data = new EKuber
             {
                 requestPayload = new RequestPayload
                 {
+                    
                     AppHdr = new AppHdr
                     {
-                        Fr = new Fr{OrgId = new OrgId{Id = new Id{OrgId = new OrgId{Othr = new Othr{Id = "1254"}}}}},
+                        Fr = new Fr{OrgId = new OrgId{Id = new Id{OrgId = new OrgId{Othr = new Othr{Id = UDCH}}}}},
                         To = new To{FIId = new FIId{FinInstnId = new FinInstnId{ClrSysMmbId = new ClrSysMmbId{MmbId = "RBI"
                                     }
                                 }
                             }
                         },
-                        BizMsgIdr = "EPV8"+"1254"+"000000000001"+"20240415"+"0001",
+                        BizMsgIdr = FileName,
                         MsgDefIdr = "pain.001.001.08",
                         BizSvc = "CustomerCreditTransferInitiationV08",
                         CreDt = DateTime.Now
@@ -165,7 +177,7 @@ namespace CTS_BE.BAL.Services.paymandate
                         {
                             GrpHdr = new GrpHdr
                             {
-                                MsgId = "EPV8"+"1254"+"000000000001"+"20240415"+"0001",
+                                MsgId = FileName,
                                 CreDtTm = DateTime.Now,
                                 Authstn = new Authstn
                                 {
@@ -182,7 +194,7 @@ namespace CTS_BE.BAL.Services.paymandate
                                         {
                                             Othr = new Othr
                                             {
-                                                Id = "1254"
+                                                Id = UDCH
                                             }
                                         }
                                     },
@@ -194,7 +206,7 @@ namespace CTS_BE.BAL.Services.paymandate
                             },
                             PmtInf = new PmtInf
                             {
-                                PmtInfId = "1254"+"CKP000210"+"00"+"20240210"+"202402",
+                                PmtInfId = UDCH+LotNumber+LotType+PaymentAdviceDate+PaymentAdviceYYMM,
                                 PmtMtd = "TRF",
                                 BtchBookg = "true",
                                 NbOfTxs = 2,
@@ -222,7 +234,7 @@ namespace CTS_BE.BAL.Services.paymandate
                                         {
                                             Othr = new Othr
                                             {
-                                                Id = "1254"
+                                                Id = UDCH
                                             }
                                         }
                                     }
@@ -233,7 +245,7 @@ namespace CTS_BE.BAL.Services.paymandate
                                     {
                                         Othr = new Othr
                                         {
-                                            Id = "04522043212"
+                                            Id = DbtrAcctNo
                                         }
                                     }
                                 },
@@ -243,7 +255,7 @@ namespace CTS_BE.BAL.Services.paymandate
                                     {
                                         ClrSysMmbId = new ClrSysMmbId
                                         {
-                                            MmbId = "RBIS0GOJHEP"
+                                            MmbId = DebtorIFSC
                                         }
                                     }
                                 },
@@ -254,7 +266,7 @@ namespace CTS_BE.BAL.Services.paymandate
                                         PmtId = new PaymentId
                                         {
                                             InstrId = "DRNPAYEE001",
-                                            EndToEndId = "EP"+"1254"+"000000000001"+DateTimeHelper.GetJulianDate(DateTime.Now)+"000001"
+                                            EndToEndId = "EP"+UDCH+ReservedField+DateTimeHelper.GetJulianDate(DateTime.Now)+"000001"
                                         },
                                         Amt = new Amount
                                         {
@@ -302,7 +314,7 @@ namespace CTS_BE.BAL.Services.paymandate
                                         PmtId = new PaymentId
                                         {
                                             InstrId = "DRNPAYEE002",
-                                            EndToEndId = "EP125400000000000224246000002"
+                                            EndToEndId = "EP"+UDCH+ReservedField+DateTimeHelper.GetJulianDate(DateTime.Now)+"0002"
                                         },
                                         Amt = new Amount
                                         {
