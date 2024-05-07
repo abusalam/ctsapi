@@ -19,13 +19,13 @@ namespace CTS_BE.Controllers
         private readonly IClaimService _claimService;
         private readonly IChequeCountService _chequeCountService;
 
-        public ChequeController(IChequeCountService chequeCountService,IChequeEntryService chequeEntryService, IChequeIndentService chequeIndentService, IChequeInvoiceService chequeInvoiceService, IClaimService claimService)
+        public ChequeController(IChequeCountService chequeCountService, IChequeEntryService chequeEntryService, IChequeIndentService chequeIndentService, IChequeInvoiceService chequeInvoiceService, IClaimService claimService)
         {
             _chequeEntryService = chequeEntryService;
             _chequeIndentService = chequeIndentService;
             _chequeInvoiceService = chequeInvoiceService;
             _claimService = claimService;
-            _chequeCountService =chequeCountService;
+            _chequeCountService = chequeCountService;
         }
         [HttpPost("new-cheque-entry")]
         public async Task<APIResponse<string>> ChequeEntry(ChequeEntryDTO chequeEntryDTO)
@@ -231,7 +231,7 @@ namespace CTS_BE.Controllers
                 ChequeIndentModel chequeIndentModel = new()
                 {
                     IndentDate = chequeIndentDTO.IndentDate,
-                    TreasurieCode = (role=="DTA")? chequeIndentDTO.TreasurieCode:_claimService.GetScope(),
+                    TreasurieCode = (role == "DTA") ? chequeIndentDTO.TreasurieCode : _claimService.GetScope(),
                     MemoDate = chequeIndentDTO.MemoDate,
                     MemoNumber = chequeIndentDTO.MemoNumber,
                     Remarks = chequeIndentDTO.Remarks,
@@ -422,7 +422,7 @@ namespace CTS_BE.Controllers
                 }
                 else
                 {
-                    statusIds = new List<int> {(int)Enum.InvoiceStatus.FrowardToTreasuryOfficer };
+                    statusIds = new List<int> { (int)Enum.InvoiceStatus.FrowardToTreasuryOfficer };
                 }
                 DynamicListResult<IEnumerable<ChequeInvoiceListDTO>> result = new DynamicListResult<IEnumerable<ChequeInvoiceListDTO>>
                 {
@@ -665,6 +665,34 @@ namespace CTS_BE.Controllers
                 response.apiResponseStatus = Enum.APIResponseStatus.Error;
                 response.Message = "Cheque invoice froward faild!";
                 return response;
+            }
+            catch (Exception Ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = Ex.Message;
+                return response;
+            }
+        }
+
+        [HttpGet("getChequeInvoiceDetails/{invoiceId}")]
+        public async Task<APIResponse<string>> getChequeInvoiceDetails(long invoiceId)
+        {
+            APIResponse<string> response = new();
+            try
+            {
+                var invoiceDetails = await _chequeInvoiceService.ChequeInvoiceById(invoiceId, (short)Enum.InvoiceStatus.FrowardToTreasuryOfficer);
+                if (invoiceDetails != null)
+                {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success; 
+                    // response.result= 
+                    return response;
+                }
+                else{
+                    response.apiResponseStatus = Enum.APIResponseStatus.Warning;
+                    response.Message = "Invoice not found!";
+                    return response;
+                }
+                
             }
             catch (Exception Ex)
             {

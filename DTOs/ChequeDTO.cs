@@ -107,4 +107,13 @@ namespace CTS_BE.DTOs
         public string? CurrentStatus { get; set; }
         public int? CurrentStatusId { get; set; }
     }
+
+    public class ChequeReceivedDTO{
+        public long Id { get; set; }
+        public int Range{get; set;}
+        public int Quantity{get; set;}
+        public int ReceivedUser {get; set;}
+        public string? ChequeSeriesInfo {get; set;}
+        public int InvoiceId {get; set;}
+    }
 }
