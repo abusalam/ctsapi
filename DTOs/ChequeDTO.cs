@@ -92,7 +92,7 @@ namespace CTS_BE.DTOs
     public class ChequeInvoiceDeatilsDTO
     {
         public long ChequeIndentDetailId { get; set; }
-        public long ChequeEntryId { get; set; }
+        public string MicrCode { get; set; }
         // public short Start { get; set; }
         // public short End { get; set; }
         public short Quantity { get; set; }
