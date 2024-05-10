@@ -2,7 +2,8 @@
 using CTS_BE.Helper;
 using CTS_BE.Model.e_Kuber;
 using Microsoft.AspNetCore.Mvc;
-using System.Xml;
+using System.IO.Compression;
+using System.Text;
 
 namespace CTS_BE.Controllers
 {
@@ -204,12 +205,58 @@ namespace CTS_BE.Controllers
         //}
 
         [HttpGet("GeneretXML")]
-        public bool GenerateXML() 
+        public APIResponse<bool> GenerateXML()
         {
-            EKuber data = _paymandateService.GetXMLData();
-            string fileName = data.requestPayload.AppHdr.BizMsgIdr;
-            _paymandateService.GenerateXML(data, fileName, fileName+".xml");
-            return XmlHelper.ValidateXml(fileName+".xml","pain.001.001.08v2.4.xsd");
+            APIResponse<bool> aPIResponse = new();
+            try
+            {
+                EKuber data = _paymandateService.GetXMLData();
+                string fileName = data.requestPayload.AppHdr.BizMsgIdr;
+                _paymandateService.GenerateXML(data, fileName, fileName + ".xml");
+                XmlHelper.ValidateXml(fileName + ".xml", "pain.001.001.08v2.4.xsd");
+                SignHelper.signdocument("EPV80116001516701174202404150001" + ".xml", "cert.pfx", "temp", "");
+                string ZipFileName = "EPV80116001516701174202404150001" + ".zip";
+                using (var zip = ZipFile.Open(ZipFileName, ZipArchiveMode.Create))
+                {
+                    // Add files to the zip file
+                    zip.CreateEntryFromFile("EPV80116001516701174202404150001" + ".xml", "EPV80116001516701174202404150001" + ".xml");
+                    zip.CreateEntryFromFile("temp.sig", "temp.sig");
+                }
+                aPIResponse.Message = "XML Generated & Signed Successfully";
+                aPIResponse.result = true;
+                aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Success;
+                return aPIResponse;
+            }
+            catch (Exception ex)
+            {
+                aPIResponse.Message = ex.Message;
+                aPIResponse.result = false;
+                aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Error;
+                return aPIResponse;
+            }
+        }
+        [HttpGet("VerifyXML")]
+        public APIResponse<bool> VerifyXML()
+        {
+            APIResponse<bool> aPIResponse = new();
+            try
+            {
+                System.IO.FileInfo xmlfile = new System.IO.FileInfo("EPV80116001516701174202404150001" + ".xml");
+                System.IO.FileStream sigfile = new System.IO.FileStream("temp.sig", System.IO.FileMode.Open);
+                bool verify = SignHelper.verifySignaturesRBI(xmlfile, sigfile);
+                sigfile.Close();
+                aPIResponse.result = verify;
+                aPIResponse.Message = (verify) ? "Valid XML" : "Invalid XML";
+                aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Success;
+                return aPIResponse;
+            }
+            catch (Exception ex)
+            {
+                aPIResponse.Message = ex.Message;
+                aPIResponse.result = false;
+                aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Error;
+                return aPIResponse;
+            }
         }
 
     }
