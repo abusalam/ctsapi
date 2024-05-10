@@ -214,7 +214,7 @@ namespace CTS_BE.Controllers
                 string fileName = data.requestPayload.AppHdr.BizMsgIdr;
                 _paymandateService.GenerateXML(data, fileName, fileName + ".xml");
                 XmlHelper.ValidateXml(fileName + ".xml", "pain.001.001.08v2.4.xsd");
-                SignHelper.signdocument1("EPV80116001516701174202404150001" + ".xml", "cert.pfx", "temp", "");
+                SignHelper.signdocument1("EPV80116001516701174202404150001" + ".xml", "ifms.gowb.pfx", "temp", "");
                 string ZipFileName = "EPV80116001516701174202404150001" + ".zip";
                 using (var zip = ZipFile.Open(ZipFileName, ZipArchiveMode.Create))
                 {

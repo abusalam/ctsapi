@@ -30,9 +30,9 @@ namespace CTS_BE.Helper
                 result = text;
                 return result;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return result;
+                throw ex;
             }
         }
         public static X509Certificate2 GetFileCertificate1(string path)
