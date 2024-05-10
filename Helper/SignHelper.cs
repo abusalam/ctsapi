@@ -17,13 +17,13 @@ namespace CTS_BE.Helper
 {
     public static class SignHelper
     {
-        public static string signdocument(string xmlfilepath, string certpath, string sigfilename, string locsigpath)
+        public static string signdocument1(string xmlfilepath, string certpath, string sigfilename, string locsigpath)
         {
             string result = "";
             try
             {
                 byte[] msg = File.ReadAllBytes(xmlfilepath);
-                X509Certificate2 fileCertificate = GetFileCertificate(certpath);
+                X509Certificate2 fileCertificate = GetFileCertificate1(certpath);
                 byte[] bytes = SignDocument.SignMsg(msg, fileCertificate, detached: true);
                 string text = locsigpath + sigfilename + ".sig";
                 File.WriteAllBytes(text, bytes);
@@ -35,13 +35,21 @@ namespace CTS_BE.Helper
                 return result;
             }
         }
-        public static X509Certificate2 GetFileCertificate(string path)
+        public static X509Certificate2 GetFileCertificate1(string path)
         {
             X509Certificate2 x509Certificate = null;
             return new X509Certificate2(path, "nic@123", X509KeyStorageFlags.MachineKeySet);
         }
         public static bool verifySignaturesRBI(FileInfo xmlfile, FileStream sigfile)
         {
+            //IL_000c: Unknown result type (might be due to invalid IL or missing references)
+            //IL_0012: Expected O, but got Unknown
+            //IL_0014: Unknown result type (might be due to invalid IL or missing references)
+            //IL_001a: Expected O, but got Unknown
+            //IL_004d: Unknown result type (might be due to invalid IL or missing references)
+            //IL_0054: Expected O, but got Unknown
+            //IL_0070: Unknown result type (might be due to invalid IL or missing references)
+            //IL_0077: Expected O, but got Unknown
             bool result = false;
             CmsProcessable val = null;
             CmsSignedData val2 = null;
@@ -69,6 +77,62 @@ namespace CTS_BE.Helper
                 //Trace.Write(ex.ToString());
                 return result;
             }
+        }
+        public static void SignXml(string xmlFilePath, string pfxFilePath, string password)
+        {
+            // Load the XML document
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.PreserveWhitespace = true;
+            xmlDoc.Load(xmlFilePath);
+
+            // Load the PFX certificate
+            X509Certificate2 certificate = new X509Certificate2(pfxFilePath, password);
+
+            // Create a SignedXml object
+            SignedXml signedXml = new SignedXml(xmlDoc);
+            signedXml.SigningKey = certificate.PrivateKey;
+
+            // Create a reference to the XML document
+            Reference reference = new Reference("");
+            reference.AddTransform(new XmlDsigEnvelopedSignatureTransform());
+            signedXml.AddReference(reference);
+
+            // Compute the signature
+            signedXml.ComputeSignature();
+
+            // Get the XML representation of the signature
+            XmlElement xmlDigitalSignature = signedXml.GetXml();
+
+            // Append the signature to the XML document
+            xmlDoc.DocumentElement.AppendChild(xmlDoc.ImportNode(xmlDigitalSignature, true));
+
+            // Save the signed XML document
+            xmlDoc.Save(xmlFilePath);
+        }
+        public static bool VerifyXml(string xmlFilePath)
+        {
+            // Load the XML document
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.PreserveWhitespace = true;
+            xmlDoc.Load(xmlFilePath);
+
+            // Create a SignedXml object
+            SignedXml signedXml = new SignedXml(xmlDoc);
+
+            // Find the signature node
+            XmlNodeList nodeList = xmlDoc.GetElementsByTagName("Signature", SignedXml.XmlDsigNamespaceUrl);
+            if (nodeList.Count == 0)
+            {
+                throw new CryptographicException("Signature element not found.");
+            }
+
+            // Load the signature
+            signedXml.LoadXml((XmlElement)nodeList[0]);
+
+            // Verify the signature
+            bool isValid = signedXml.CheckSignature();
+
+            return isValid;
         }
     }
 }
