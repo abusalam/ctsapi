@@ -24,13 +24,13 @@
 		<BizMsgIdr>EPV80116001516701174202404150001</BizMsgIdr>
 		<MsgDefIdr>pain.001.001.08</MsgDefIdr>
 		<BizSvc>CustomerCreditTransferInitiationV08</BizSvc>
-		<CreDt>2024-05-10T17:46:48</CreDt>
+		<CreDt>2024-05-10T17:50:06</CreDt>
 	</AppHdr>
 	<Document>
 		<CstmrCdtTrfInitn>
 			<GrpHdr>
 				<MsgId>EPV80116001516701174202404150001</MsgId>
-				<CreDtTm>2024-05-10T17:46:48</CreDtTm>
+				<CreDtTm>2024-05-10T17:50:06</CreDtTm>
 				<Authstn>
 					<Prtry>ALL</Prtry>
 				</Authstn>
