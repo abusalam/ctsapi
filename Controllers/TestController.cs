@@ -210,18 +210,19 @@ namespace CTS_BE.Controllers
             APIResponse<bool> aPIResponse = new();
             try
             {
-                EKuber data = _paymandateService.GetXMLData();
-                string fileName = data.requestPayload.AppHdr.BizMsgIdr;
-                _paymandateService.GenerateXML(data, fileName, fileName + ".xml");
-                XmlHelper.ValidateXml(fileName + ".xml", "pain.001.001.08v2.4.xsd");
-                SignHelper.signdocument1("EPV80116001516701174202404150001" + ".xml", "ifms.gowb.pfx", "temp", "");
-                string ZipFileName = "EPV80116001516701174202404150001" + ".zip";
-                using (var zip = ZipFile.Open(ZipFileName, ZipArchiveMode.Create))
-                {
-                    // Add files to the zip file
-                    zip.CreateEntryFromFile("EPV80116001516701174202404150001" + ".xml", "EPV80116001516701174202404150001" + ".xml");
-                    zip.CreateEntryFromFile("temp.sig", "temp.sig");
-                }
+                // EKuber data = _paymandateService.GetXMLData();
+                // string fileName = data.requestPayload.AppHdr.BizMsgIdr;
+                // _paymandateService.GenerateXML(data, fileName, fileName + ".xml");
+                // XmlHelper.ValidateXml(fileName + ".xml", "pain.001.001.08v2.4.xsd");
+                // SignHelper.signdocument1("EPV80116001516701174202404150001" + ".xml", "ifms.gowb.pfx", "temp", "");
+                // string ZipFileName = "EPV80116001516701174202404150001" + ".zip";
+                // using (var zip = ZipFile.Open(ZipFileName, ZipArchiveMode.Create))
+                // {
+                //     // Add files to the zip file
+                //     zip.CreateEntryFromFile("EPV80116001516701174202404150001" + ".xml", "EPV80116001516701174202404150001" + ".xml");
+                //     zip.CreateEntryFromFile("temp.sig", "temp.sig");
+                // }
+                SFTPHelper.UploadFile("10.176.100.62",22,"admin","admin","EPV80116001516701174202404150001.xml","/CTS/EPV80116001516701174202404150001.xml");
                 aPIResponse.Message = "XML Generated & Signed Successfully";
                 aPIResponse.result = true;
                 aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Success;
