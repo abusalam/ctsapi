@@ -45,6 +45,7 @@ namespace CTS_BE.Controllers
                     Start = chequeEntryDTO.Start,
                     End = chequeEntryDTO.End,
                     Quantity = quantity,
+                    AvailableQuantity = quantity,
                     CreatedBy = userId,
                 };
                 if (await _chequeEntryService.Insert(chequeEntry))
@@ -674,17 +675,17 @@ namespace CTS_BE.Controllers
             }
         }
 
-        [HttpGet("getChequeInvoiceDetails/{invoiceId}")]
-        public async Task<APIResponse<string>> getChequeInvoiceDetails(long invoiceId)
+        [HttpGet("getChequeInvoiceDetails")]
+        public async Task<APIResponse<List<ChequeInvoiceDetailsByIdDTO>>> getChequeInvoiceDetails([FromQuery]long invoiceId)
         {
-            APIResponse<string> response = new();
+            APIResponse<List<ChequeInvoiceDetailsByIdDTO>> response = new();
             try
             {
-                var invoiceDetails = await _chequeInvoiceService.ChequeInvoiceById(invoiceId, (short)Enum.InvoiceStatus.FrowardToTreasuryOfficer);
+                List<ChequeInvoiceDetailsByIdDTO> invoiceDetails = await _chequeInvoiceService.ChequeInvoiceAndInvoiceDetailsById(invoiceId);
                 if (invoiceDetails != null)
                 {
                     response.apiResponseStatus = Enum.APIResponseStatus.Success; 
-                    // response.result= 
+                     response.result= invoiceDetails;
                     return response;
                 }
                 else{

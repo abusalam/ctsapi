@@ -47,5 +47,18 @@ namespace CTS_BE.BAL
         {
             return await _ChequeInvoiceRepository.GetSingleAysnc(entity=>entity.Id==chequeInvoiceId && entity.Status==statusId);
         } 
+        public async Task<List<ChequeInvoiceDetailsByIdDTO>> ChequeInvoiceAndInvoiceDetailsById(long chequeInvoice){
+            List<ChequeInvoiceDetailsByIdDTO> chequeInvoiceDetails =(List<ChequeInvoiceDetailsByIdDTO> )await _ChequeInvoiceRepository.GetSelectedColumnByConditionAsync(entity=>entity.Id == chequeInvoice, entity=>new ChequeInvoiceDetailsByIdDTO{
+                ChequeInvoiceSeries= entity.ChequeInvoiceDetails.Select(indentDetails=> new ChequeInvoiceSeriesDTO{
+                    Quantity = indentDetails.Quantity,
+                    MicrCode = indentDetails.ChequeEntry.MicrCode,
+                    TreasuryCode = indentDetails.ChequeEntry.TreasurieCode,
+                    Series = indentDetails.ChequeEntry.SeriesNo,
+                    InvoiceDeatilsId = indentDetails.Id
+                } ).ToList(),
+                Quantity = entity.ChequeIndent.TotalApprovedQuantity,
+            });
+            return chequeInvoiceDetails;
+        }
     }
 }

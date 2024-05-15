@@ -31,6 +31,8 @@ namespace CTS_BE.DTOs
         public int Start { get; set; }
         public int End { get; set; }
         public int Quantity { get; set; }
+        public short AvailableQuantity { get; set; }
+
     }
     public class ChequeSeriesDetailDTO
     {
@@ -91,7 +93,7 @@ namespace CTS_BE.DTOs
     }
     public class ChequeInvoiceDeatilsDTO
     {
-        public long ChequeIndentDetailId { get; set; }
+        // public long ChequeIndentDetailId { get; set; }
         public string MicrCode { get; set; }
         // public short Start { get; set; }
         // public short End { get; set; }
@@ -108,12 +110,31 @@ namespace CTS_BE.DTOs
         public int? CurrentStatusId { get; set; }
     }
 
-    public class ChequeReceivedDTO{
+    public class ChequeReceivedDTO
+    {
         public long Id { get; set; }
-        public int Range{get; set;}
-        public int Quantity{get; set;}
-        public int ReceivedUser {get; set;}
-        public string? ChequeSeriesInfo {get; set;}
-        public int InvoiceId {get; set;}
+        public int Range { get; set; }
+        public int Quantity { get; set; }
+        public int ReceivedUser { get; set; }
+        public string? ChequeSeriesInfo { get; set; }
+        public int InvoiceId { get; set; }
+    }
+
+    public class ChequeInvoiceDetailsByIdDTO
+    {
+        public long Id { get; set; }
+        public int? Quantity { get; set; }
+        public List<ChequeInvoiceSeriesDTO> ChequeInvoiceSeries { get; set; }
+    }
+
+    public class ChequeInvoiceSeriesDTO
+    {
+        public long InvoiceDeatilsId { get; set; }
+
+        public string TreasuryCode { get; set; }
+        public string MicrCode { get; set; }
+        public short Quantity { get; set; }
+        public string Series { get; set; }
+        // public short AvailableQuantity { get; set; }
     }
 }
