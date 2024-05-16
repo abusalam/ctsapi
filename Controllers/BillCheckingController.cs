@@ -24,8 +24,8 @@ namespace CTS_BE.Controllers
             _tokenHasObjectionService = tokenHasObjectionService;
             _claimService = claimService;
         }
-        [HttpGet("GetBillDetails/{tokenId}")]
-        public async Task<APIResponse<BillCheckingBillDetailsDto>> BillDetails(long tokenId)
+        [HttpGet("get-bill-details")]
+        public async Task<APIResponse<BillCheckingBillDetailsDto>> BillDetails([FromQuery]long tokenId)
         {
             APIResponse<BillCheckingBillDetailsDto> response = new();
             try

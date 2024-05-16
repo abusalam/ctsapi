@@ -93,7 +93,7 @@ namespace CTS_BE.Controllers
         {
             APIResponse<DynamicListResult<IEnumerable<TokenList>>> response = new();
             string userScope = "BAA";
-            string userRole = "dealling-assistant";
+            string userRole = _claimService.GetRole();
             try
             {
                 List<int> statuses = StatusManager.GetStatus(userRole, listType);
