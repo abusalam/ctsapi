@@ -37,28 +37,33 @@ namespace CTS_BE.BAL
         public async Task<bool> UpdateInvoiceStatus(ChequeInvoice chequeInvoice, int statusId)
         {
             chequeInvoice.Status = statusId;
-            if(_ChequeInvoiceRepository.Update(chequeInvoice)){
+            if (_ChequeInvoiceRepository.Update(chequeInvoice))
+            {
                 _ChequeInvoiceRepository.SaveChangesManaged();
                 return true;
             }
             return false;
         }
-        public async Task<ChequeInvoice> ChequeInvoiceById(long chequeInvoiceId,short statusId)
+        public async Task<ChequeInvoice> ChequeInvoiceById(long chequeInvoiceId, short statusId)
         {
-            return await _ChequeInvoiceRepository.GetSingleAysnc(entity=>entity.Id==chequeInvoiceId && entity.Status==statusId);
-        } 
-        public async Task<List<ChequeInvoiceDetailsByIdDTO>> ChequeInvoiceAndInvoiceDetailsById(long chequeInvoice){
-            List<ChequeInvoiceDetailsByIdDTO> chequeInvoiceDetails =(List<ChequeInvoiceDetailsByIdDTO> )await _ChequeInvoiceRepository.GetSelectedColumnByConditionAsync(entity=>entity.Id == chequeInvoice, entity=>new ChequeInvoiceDetailsByIdDTO{
-                ChequeInvoiceSeries= entity.ChequeInvoiceDetails.Select(indentDetails=> new ChequeInvoiceSeriesDTO{
+            return await _ChequeInvoiceRepository.GetSingleAysnc(entity => entity.Id == chequeInvoiceId && entity.Status == statusId);
+        }
+        public async Task<ChequeInvoiceDetailsByIdDTO> ChequeInvoiceAndInvoiceDetailsById(long chequeInvoice)
+        {
+            ChequeInvoiceDetailsByIdDTO chequeInvoiceDetails = await _ChequeInvoiceRepository.GetSingleSelectedColumnByConditionAsync(entity => entity.Id == chequeInvoice, entity => new ChequeInvoiceDetailsByIdDTO
+            {
+                ChequeInvoiceSeries = entity.ChequeInvoiceDetails.Select(indentDetails => new ChequeInvoiceSeriesDTO
+                {
                     Quantity = indentDetails.Quantity,
                     MicrCode = indentDetails.ChequeEntry.MicrCode,
                     TreasuryCode = indentDetails.ChequeEntry.TreasurieCode,
                     Series = indentDetails.ChequeEntry.SeriesNo,
                     InvoiceDeatilsId = indentDetails.Id
-                } ).ToList(),
+                }).ToList(),
                 Quantity = entity.ChequeIndent.TotalApprovedQuantity,
             });
             return chequeInvoiceDetails;
         }
+
     }
 }
