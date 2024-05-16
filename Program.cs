@@ -18,6 +18,10 @@ using CTS_BE.Helper.Authentication;
 using CTS_BE.BAL.Services.paymandate;
 using CTS_BE.BAL.Interfaces.paymandate;
 using Microsoft.OpenApi.Models;
+using CTS_BE.DAL.Interfaces.stamp;
+using CTS_BE.DAL.Repositories.stamp;
+using CTS_BE.BAL.Interfaces.stamp;
+using CTS_BE.BAL.Services.stamp;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,6 +52,10 @@ builder.Services.AddTransient<IGobalObjectionRepository, GobalObjectionRepositor
 builder.Services.AddTransient<IDdoRepository, DdoRepository>();
 builder.Services.AddTransient<ITpBillRepository, TpBillRepository>();
 builder.Services.AddTransient<ITokenRepository, TokenRepository>();
+builder.Services.AddTransient<IStampLabelRepository, StampLabelRepository>();
+builder.Services.AddTransient<IStampCategoryRepository, StampCategoryRepository>();
+builder.Services.AddTransient<IStampVendorRepository, StampVendorRepository>();
+builder.Services.AddTransient<IStampTypeRepository, StampTypeRepository>();
 
 //Services
 builder.Services.AddTransient<IChequeCountService, ChequeCountService>();
@@ -65,6 +73,7 @@ builder.Services.AddTransient<IGobalObjectionService, GobalObjectionService>();
 builder.Services.AddTransient<IDdoService, DdoService>();
 builder.Services.AddTransient<ITpBillService, TpBillService>();
 builder.Services.AddTransient<ITokenService, TokenService>();
+builder.Services.AddTransient<IStampMasterService, StampMasterService>();
 
 builder.Services.AddTransient<IPaymandateService, PaymandateService>();
 

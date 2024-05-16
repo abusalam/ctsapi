@@ -42,7 +42,12 @@ namespace CTS_BE.Common
         public const string Time_Format = "h:mm:ss tt";
 
         public const string HeadrKeyAccessToken = "cat";
-        public const string HeadrKeyRefreshToken = "crt";       
+        public const string HeadrKeyRefreshToken = "crt";
 
+        public const string DataFound = "Data collected successfully";
+        public const string DataNotFound = "No data found in the record";
+        public const string DataAdded = "Data added successfully";
+        public const string MissingField = "Missing fields in form body";
+        public const string Deleted = "Data deleted Successfully";
     }
 }
