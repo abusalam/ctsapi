@@ -69,9 +69,9 @@ namespace CTS_BE.DTOs
 
         public long? PhoneNumber { get; set; }
 
-        public DateTime? EffectiveFrom { get; set; }
+        public string? EffectiveFrom { get; set; }
 
-        public DateTime? ValidUpto { get; set; }
+        public string? ValidUpto { get; set; }
 
         public string PanNumber { get; set; } = null!;
 
