@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.DAL.Entities;
 
 [Table("bill_subdetail_info", Schema = "billing")]
-[Index("TreasuryCode", "ActiveHoaId", Name = "bill_subdetail_info_treasury_code_active_hoa_id_key", IsUnique = true)]
 [Index("ActiveHoaId", "TreasuryCode", Name = "fki_ddo_wallet_active_hoa_id_treasury_code_fkey")]
 public partial class BillSubdetailInfo
 {
@@ -60,8 +59,6 @@ public partial class BillSubdetailInfo
     public virtual BillDetail Bill { get; set; } = null!;
 
     public virtual Ddo DdoCodeNavigation { get; set; } = null!;
-
-    public virtual DdoWallet DdoWallet { get; set; } = null!;
 
     [ForeignKey("FinancialYear")]
     [InverseProperty("BillSubdetailInfos")]

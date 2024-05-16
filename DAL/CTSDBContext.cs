@@ -42,6 +42,8 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<ChequeCountRecord> ChequeCountRecords { get; set; }
 
+    public virtual DbSet<ChequeDistribute> ChequeDistributes { get; set; }
+
     public virtual DbSet<ChequeEntry> ChequeEntries { get; set; }
 
     public virtual DbSet<ChequeIndent> ChequeIndents { get; set; }
@@ -51,6 +53,8 @@ public partial class CTSDBContext : DbContext
     public virtual DbSet<ChequeInvoice> ChequeInvoices { get; set; }
 
     public virtual DbSet<ChequeInvoiceDetail> ChequeInvoiceDetails { get; set; }
+
+    public virtual DbSet<ChequeReceived> ChequeReceiveds { get; set; }
 
     public virtual DbSet<Ddo> Ddos { get; set; }
 
@@ -69,6 +73,10 @@ public partial class CTSDBContext : DbContext
     public virtual DbSet<EcsNeftDetail> EcsNeftDetails { get; set; }
 
     public virtual DbSet<EcsNeftPaymentStatusDetail> EcsNeftPaymentStatusDetails { get; set; }
+
+    public virtual DbSet<EcsNeftPreviousRecord> EcsNeftPreviousRecords { get; set; }
+
+    public virtual DbSet<FailedBeneficiaryRecord> FailedBeneficiaryRecords { get; set; }
 
     public virtual DbSet<FinancialYearMaster> FinancialYearMasters { get; set; }
 
@@ -97,6 +105,12 @@ public partial class CTSDBContext : DbContext
     public virtual DbSet<TokenHasObjection> TokenHasObjections { get; set; }
 
     public virtual DbSet<TrMaster> TrMasters { get; set; }
+
+    public virtual DbSet<TransactionLot> TransactionLots { get; set; }
+
+    public virtual DbSet<TransactionLotHasBeneficiary> TransactionLotHasBeneficiaries { get; set; }
+
+    public virtual DbSet<TransactionLotHistory> TransactionLotHistories { get; set; }
 
     public virtual DbSet<Treasury> Treasuries { get; set; }
 
@@ -261,12 +275,6 @@ public partial class CTSDBContext : DbContext
                 .HasForeignKey(d => d.TreasuryCode)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("bill_subdetail_info_treasury_code_fkey");
-
-            entity.HasOne(d => d.DdoWallet).WithMany(p => p.BillSubdetailInfos)
-                .HasPrincipalKey(p => new { p.ActiveHoaId, p.TreasuryCode })
-                .HasForeignKey(d => new { d.ActiveHoaId, d.TreasuryCode })
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("ddo_wallet_active_hoa_id_treasury_code_fkey");
         });
 
         modelBuilder.Entity<Branch>(entity =>
@@ -305,6 +313,7 @@ public partial class CTSDBContext : DbContext
             entity.HasKey(e => e.Id).HasName("challan_pkey");
 
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
+            entity.Property(e => e.MajorHead).IsFixedLength();
         });
 
         modelBuilder.Entity<ChallanEntry>(entity =>
@@ -312,6 +321,7 @@ public partial class CTSDBContext : DbContext
             entity.HasKey(e => e.Id).HasName("challan_entry_pkey");
 
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
+            entity.Property(e => e.MajorHead).IsFixedLength();
             entity.Property(e => e.TreasuryCode).IsFixedLength();
         });
 
@@ -342,6 +352,7 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
             entity.Property(e => e.MemoNo).IsFixedLength();
             entity.Property(e => e.Status).HasComment("1 = new indent , 2 =  approve by TO , 3= Reject by TO");
+            entity.Property(e => e.TotalApprovedQuantity).HasDefaultValueSql("0");
             entity.Property(e => e.TreasurieCode).IsFixedLength();
 
             entity.HasOne(d => d.StatusNavigation).WithMany(p => p.ChequeIndents).HasConstraintName("cheque_indent_status_fkey");
@@ -387,6 +398,11 @@ public partial class CTSDBContext : DbContext
             entity.HasOne(d => d.ChequeInvoice).WithMany(p => p.ChequeInvoiceDetails)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("cheque_invoice_details__cheque_invoice_id__fkey");
+        });
+
+        modelBuilder.Entity<ChequeReceived>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("cheque_received_pkey");
         });
 
         modelBuilder.Entity<Ddo>(entity =>
@@ -515,6 +531,20 @@ public partial class CTSDBContext : DbContext
         modelBuilder.Entity<EcsNeftPaymentStatusDetail>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("ecs_neft_payment_status_details_pkey");
+        });
+
+        modelBuilder.Entity<EcsNeftPreviousRecord>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("ecs_neft_previous_record_pkey");
+        });
+
+        modelBuilder.Entity<FailedBeneficiaryRecord>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("failed_beneficiary_records_pkey");
+
+            entity.Property(e => e.AccountNumber).IsFixedLength();
+            entity.Property(e => e.IfscCode).IsFixedLength();
+            entity.Property(e => e.MobileNo).IsFixedLength();
         });
 
         modelBuilder.Entity<FinancialYearMaster>(entity =>
@@ -651,6 +681,31 @@ public partial class CTSDBContext : DbContext
             entity.HasKey(e => e.Id).HasName("TR_Master_pkey");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
+        });
+
+        modelBuilder.Entity<TransactionLot>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("transaction_lot_pkey");
+
+            entity.Property(e => e.DrnNo).IsFixedLength();
+            entity.Property(e => e.LotNo).IsFixedLength();
+        });
+
+        modelBuilder.Entity<TransactionLotHasBeneficiary>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("transaction_lot_has_beneficiarys_pkey");
+
+            entity.Property(e => e.Id).HasDefaultValueSql("nextval('\"cts-payment\".transaction_lot_has_beneficiarys_id_seq'::regclass)");
+            entity.Property(e => e.AccountNumber).IsFixedLength();
+            entity.Property(e => e.IfscCode).IsFixedLength();
+            entity.Property(e => e.MobileNo).IsFixedLength();
+        });
+
+        modelBuilder.Entity<TransactionLotHistory>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("transaction_lot_history _pkey");
+
+            entity.Property(e => e.TransactionLotId).ValueGeneratedOnAdd();
         });
 
         modelBuilder.Entity<Treasury>(entity =>

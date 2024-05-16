@@ -40,4 +40,8 @@ public partial class Challan
 
     [Column("payment_advice_id")]
     public long? PaymentAdviceId { get; set; }
+
+    [Column("major_head")]
+    [StringLength(4)]
+    public string? MajorHead { get; set; }
 }

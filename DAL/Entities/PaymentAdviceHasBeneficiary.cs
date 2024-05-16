@@ -79,4 +79,7 @@ public partial class PaymentAdviceHasBeneficiary
 
     [Column("financial_year_id")]
     public short? FinancialYearId { get; set; }
+
+    [Column("lot_beneficiarie_id")]
+    public long? LotBeneficiarieId { get; set; }
 }
