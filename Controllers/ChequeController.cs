@@ -676,24 +676,25 @@ namespace CTS_BE.Controllers
         }
 
         [HttpGet("getChequeInvoiceDetails")]
-        public async Task<APIResponse<List<ChequeInvoiceDetailsByIdDTO>>> getChequeInvoiceDetails([FromQuery]long invoiceId)
+        public async Task<APIResponse<ChequeInvoiceDetailsByIdDTO>> getChequeInvoiceDetails([FromQuery] long invoiceId)
         {
-            APIResponse<List<ChequeInvoiceDetailsByIdDTO>> response = new();
+            APIResponse<ChequeInvoiceDetailsByIdDTO> response = new();
             try
             {
-                List<ChequeInvoiceDetailsByIdDTO> invoiceDetails = await _chequeInvoiceService.ChequeInvoiceAndInvoiceDetailsById(invoiceId);
+                ChequeInvoiceDetailsByIdDTO invoiceDetails = await _chequeInvoiceService.ChequeInvoiceAndInvoiceDetailsById(invoiceId);
                 if (invoiceDetails != null)
                 {
-                    response.apiResponseStatus = Enum.APIResponseStatus.Success; 
-                     response.result= invoiceDetails;
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                    response.result = invoiceDetails;
                     return response;
                 }
-                else{
+                else
+                {
                     response.apiResponseStatus = Enum.APIResponseStatus.Warning;
                     response.Message = "Invoice not found!";
                     return response;
                 }
-                
+
             }
             catch (Exception Ex)
             {
@@ -702,5 +703,6 @@ namespace CTS_BE.Controllers
                 return response;
             }
         }
+
     }
 }

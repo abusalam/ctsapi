@@ -110,16 +110,6 @@ namespace CTS_BE.DTOs
         public int? CurrentStatusId { get; set; }
     }
 
-    public class ChequeReceivedDTO
-    {
-        public long Id { get; set; }
-        public int Range { get; set; }
-        public int Quantity { get; set; }
-        public int ReceivedUser { get; set; }
-        public string? ChequeSeriesInfo { get; set; }
-        public int InvoiceId { get; set; }
-    }
-
     public class ChequeInvoiceDetailsByIdDTO
     {
         public long Id { get; set; }
@@ -137,4 +127,16 @@ namespace CTS_BE.DTOs
         public string Series { get; set; }
         // public short AvailableQuantity { get; set; }
     }
+
+        public class ChequeReceivedDTO
+    {
+        public long Id { get; set; }
+        public int Start { get; set; }
+        public int End { get; set; }
+        public int Quantity { get; set; }
+        public int ReceivedUser { get; set; }
+        public int InvoiceId { get; set; }
+        public int ChequeEntryId { get; set; }
+    }
+
 }
