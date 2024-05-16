@@ -43,13 +43,14 @@ namespace CTS_BE.BAL.Services.stamp
         {
             IEnumerable<StampLabelMasterDTO> stampLabelMasters = await _stampLabelRepo.GetSelectedColumnAsync(entity=>new StampLabelMasterDTO
             {
-                Id = entity.LabelId,
-                IsActive = entity.IsActive,
                 LabelId = entity.LabelId,
+                IsActive = entity.IsActive,
                 NoLabelPerSheet = entity.NoLabelPerSheet,
-                
-                
-                // todo
+                CreatedAt = entity.CreatedAt,
+                CreatedBy = entity.CreatedBy,
+                UpdatedAt = entity.UpdatedAt,
+                UpdatedBy = entity.UpdatedBy,
+
             });
             return stampLabelMasters;
         }
@@ -81,9 +82,16 @@ namespace CTS_BE.BAL.Services.stamp
 
         async Task<IEnumerable<StampCategoryDTO>> IStampMasterService.GetAllStampCategories()
         {
-            IEnumerable<StampCategoryDTO> stampCategory = await _stampCategoryRepo.GetSelectedColumnAsync(e=> new StampCategoryDTO
+            IEnumerable<StampCategoryDTO> stampCategory = await _stampCategoryRepo.GetSelectedColumnAsync(entity => new StampCategoryDTO
             {
-                // todo
+                StampCategoryId = entity.StampCategoryId,
+                StampCategory1 = entity.StampCategory1,
+                Description = entity.Description,
+                IsActive = entity.IsActive,
+                CreatedAt = entity.CreatedAt,
+                CreatedBy = entity.CreatedBy,
+                UpdatedAt = entity.UpdatedAt,
+                UpdatedBy = entity.UpdatedBy
             });
             return stampCategory;
         }
@@ -124,8 +132,21 @@ namespace CTS_BE.BAL.Services.stamp
 
         async Task<IEnumerable<StampVendorDTO>> IStampMasterService.GetAllStampVendors()
         {
-            IEnumerable<StampVendorDTO> stampVendor = await _stampVendorRepo.GetSelectedColumnAsync(e => new StampVendorDTO {
-            //todo
+            IEnumerable<StampVendorDTO> stampVendor = await _stampVendorRepo.GetSelectedColumnAsync(entity => new StampVendorDTO {
+               
+                LicenseNo = entity.LicenseNo,
+                //EffectiveFrom = entity.EffectiveFrom.ToString,
+                PanNumber = entity.PanNumber,
+                PhoneNumber = entity.PhoneNumber,
+                StampVendorId = entity.StampVendorId,
+                Address = entity.Address,
+                ActiveAtGrips = entity.ActiveAtGrips,
+                //ValidUpto = entity.ValidUpto,
+                IsActive = entity.IsActive,
+                CreatedAt = entity.CreatedAt,
+                CreatedBy = entity.CreatedBy,
+                UpdatedAt = entity.UpdatedAt,
+                UpdatedBy = entity.UpdatedBy
             });
             return stampVendor;
         }
@@ -166,8 +187,15 @@ namespace CTS_BE.BAL.Services.stamp
 
         async Task<IEnumerable<StampTypeDTO>> IStampMasterService.GetAllStampTypes()
         {
-            IEnumerable<StampTypeDTO> stampType = await _stampTypeRepo.GetSelectedColumnAsync(e => new StampTypeDTO { 
-            // todo
+            IEnumerable<StampTypeDTO> stampType = await _stampTypeRepo.GetSelectedColumnAsync(entity => new StampTypeDTO { 
+            
+                DenominationId = entity.DenominationId,
+                Denomination = entity.Denomination,
+                IsActive = entity.IsActive,
+                CreatedAt = entity.CreatedAt,
+                CreatedBy = entity.CreatedBy,
+                UpdatedAt = entity.UpdatedAt,
+                UpdatedBy = entity.UpdatedBy,
             });
             return stampType;
         }
