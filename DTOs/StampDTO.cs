@@ -137,4 +137,41 @@ namespace CTS_BE.DTOs
         [Required]
         public bool? IsActive { get; set; }
     }
+
+    public class DiscountDetailsDTO
+    {
+        public long DiscountId { get; set; }
+
+        public decimal DenominationFrom { get; set; }
+
+        public decimal DenominationTo { get; set; }
+
+        public decimal Discount { get; set; }
+
+        public bool? IsActive { get; set; }
+
+        public long VendorTypeId { get; set; }
+
+        public long StampCategoryId { get; set; }
+
+
+    }
+
+    public class DiscountDetailsInsertDTO
+    {
+
+        public decimal DenominationFrom { get; set; }
+
+        public decimal DenominationTo { get; set; }
+
+        public decimal Discount { get; set; }
+
+        public bool? IsActive { get; set; }
+
+        public long VendorTypeId { get; set; }
+
+        public long StampCategoryId { get; set; }
+
+
+    }
 }
