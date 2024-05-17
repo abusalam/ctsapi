@@ -1,5 +1,6 @@
 ﻿using CTS_BE.BAL.Interfaces;
 using CTS_BE.DAL.Entities;
+using CTS_BE.DAL.Interfaces;
 using CTS_BE.DTOs;
 using CTS_BE.Helper;
 using CTS_BE.Helper.Authentication;
@@ -18,6 +19,7 @@ namespace CTS_BE.Controllers
         private readonly IChequeInvoiceService _chequeInvoiceService;
         private readonly IClaimService _claimService;
         private readonly IChequeCountService _chequeCountService;
+        private readonly IChequeReceivedService _chequeReceivedService;
 
         public ChequeController(IChequeCountService chequeCountService, IChequeEntryService chequeEntryService, IChequeIndentService chequeIndentService, IChequeInvoiceService chequeInvoiceService, IClaimService claimService)
         {
@@ -695,6 +697,32 @@ namespace CTS_BE.Controllers
                     return response;
                 }
 
+            }
+            catch (Exception Ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = Ex.Message;
+                return response;
+            }
+        }
+
+        [HttpPost("cheque-received")]
+        public async Task<APIResponse<string>> ChequeReceived(ChequeReceivedDTO chequeReceivedDTO)
+        {
+            APIResponse<string> response = new();
+            try
+            {
+                var result = _chequeReceivedService.ChequeReceived(chequeReceivedDTO);
+                if (result != null)
+                {
+                    await result;
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                    response.Message = "Cheque received successfully!";
+                    return response;
+                }
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = "Cheque received failed!";
+                return response;
             }
             catch (Exception Ex)
             {

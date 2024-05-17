@@ -18,5 +18,10 @@ namespace CTS_BE.Helper
                 return null; // Return null or handle the error as appropriate for your use case
             }
         }
+
+        internal static T JsonToObject<T>(string? v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

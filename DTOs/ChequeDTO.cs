@@ -128,15 +128,18 @@ namespace CTS_BE.DTOs
         // public short AvailableQuantity { get; set; }
     }
 
-        public class ChequeReceivedDTO
+    public class ChequeReceivedDTO
     {
-        public long Id { get; set; }
-        public int Start { get; set; }
-        public int End { get; set; }
-        public int Quantity { get; set; }
-        public int ReceivedUser { get; set; }
         public int InvoiceId { get; set; }
+        public List<ChequeReceivedDamagedDetailsDTO> ChequeReceivedDamagedDetails { get; set; }
+
+    }
+
+    public class ChequeReceivedDamagedDetailsDTO
+
+    {
         public int ChequeEntryId { get; set; }
+        public string DamageIndex { get; set; }
     }
 
 }
