@@ -31,14 +31,10 @@ namespace CTS_BE.BAL.Services
                 });
             return tokenDetailsDto;
         }
-        public async Task<int> InsterNewToken(TokenDTO tokenDTO,long userId)
+        public async Task<GeneratedTokenDTO> InsterNewToken(TokenDTO tokenDTO,long userId)
         {
-            int tokenNo = await _TokenRepository.GenarateToken(tokenDTO.BillId,userId,tokenDTO.Remarks, DateOnly.ParseExact(tokenDTO.PhysicalBillDate, "dd/MM/yyyy"));
-            if (tokenNo!=null)
-            {
-                return tokenNo;
-            }
-            return 0;
+            return await _TokenRepository.GenarateToken(tokenDTO.BillId,userId,tokenDTO.Remarks, DateOnly.ParseExact(tokenDTO.PhysicalBillDate, "dd/MM/yyyy"));
+            
         }
         public async Task<IEnumerable<TokenList>> AllTokens(string treasuryCode)
         {

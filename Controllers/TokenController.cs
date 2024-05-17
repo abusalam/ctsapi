@@ -20,17 +20,17 @@ namespace CTS_BE.Controllers
         }
         [Authorize("permissions:can-receive-bill|roles:clerk")]
         [HttpPost("GenerateToken")]
-        public async Task<APIResponse<string>> GenerateToken(TokenDTO tokenDTO)
+        public async Task<APIResponse<GeneratedTokenDTO>> GenerateToken(TokenDTO tokenDTO)
         {
-            APIResponse<string> response = new();
+            APIResponse<GeneratedTokenDTO> response = new();
             try
             {
                 long userId = _claimService.GetUserId();
-                int tokenNo = await _tokenService.InsterNewToken(tokenDTO,userId);
-                if (tokenNo!=0)
+                GeneratedTokenDTO result = await _tokenService.InsterNewToken(tokenDTO,userId);
+                if (result!=null)
                 {
                     response.apiResponseStatus = Enum.APIResponseStatus.Error;
-                    response.result = tokenNo.ToString();
+                    response.result = result;
                     response.Message = "Token Generated Successfully";
                     return response;
                 }
