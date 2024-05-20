@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using CTS_BE.BAL.Interfaces;
 using CTS_BE.DAL.Interfaces;
@@ -19,15 +20,17 @@ namespace CTS_BE.BAL.Services
             _ChequeReceivedRepository = ChequeReceivedRepository;
             _ChequeInvoiceDetailRepository = ChequeInvoiceDetailRepository;
         }
-        public async Task<ChequeReceivedDTO> ChequeReceived(ChequeReceivedDTO chequeReceivedDTO)
+        public async Task<Int16?> ChequeReceived(ChequeReceivedDTO chequeReceivedDTO)
         {
             List<ChequeReceivedModel> chequeReceivedModel = new List<ChequeReceivedModel>();
+            List<int> exclusions = new List<int>();
+            List<Tuple<Int16, List<int>>> exclusionlist = new();
 
             foreach (var chequeReceivedDamagedDetail in chequeReceivedDTO.ChequeReceivedDamagedDetails)
             {
-                List<int> exclusions = chequeReceivedDamagedDetail.DamageIndex.Split(',').Select(int.Parse).ToList();
+                exclusions = chequeReceivedDamagedDetail.DamageIndex.Split(',').Select(int.Parse).ToList();
                 var chequeEntryId = chequeReceivedDamagedDetail.ChequeEntryId;
-                var invoiceDetails = await _ChequeInvoiceDetailRepository.GetSingleSelectedColumnByConditionAsync(entity => entity.Id == 1, entity => new
+                var invoiceDetails = await _ChequeInvoiceDetailRepository.GetSingleSelectedColumnByConditionAsync(entity => entity.ChequeInvoiceId == 91, entity => new
                 {
                     Start = entity.Start,
                     End = entity.End
@@ -37,15 +40,18 @@ namespace CTS_BE.BAL.Services
                 {
                     chequeReceivedModel.Add(new ChequeReceivedModel { Start = item.start, End = item.end, Quantity = item.end - item.start, ChequeEntryId = chequeEntryId });
                 }
+                //
+                Tuple<Int16, List<int>> exclusion = new(chequeReceivedDamagedDetail.DamageType, exclusions);
+         
+                exclusionlist.Add(exclusion);
             }
             string chequeReceivedData = JSONHelper.ObjectToJson(chequeReceivedModel);
-            return await _ChequeReceivedRepository.Insert(chequeReceivedData);
+            string exclusionListData = JSONHelper.ObjectToJson(exclusionlist);
+            
+            return await _ChequeReceivedRepository.Insert(chequeReceivedData, exclusionListData);
         }
 
-        Task IChequeReceivedService.ChequeReceived(ChequeReceivedDTO chequeReceivedDTO)
-        {
-            throw new NotImplementedException();
-        }
+      
 
         internal class ChequeInvoiceDetailService
         {

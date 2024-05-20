@@ -49,6 +49,11 @@ builder.Services.AddTransient<IDdoRepository, DdoRepository>();
 builder.Services.AddTransient<ITpBillRepository, TpBillRepository>();
 builder.Services.AddTransient<ITokenRepository, TokenRepository>();
 
+builder.Services.AddTransient<IChequeInvoiceDetailRepository, ChequeInvoiceDetailRepository>();
+builder.Services.AddTransient<IChequeReceivedRepository, ChequeReceivedRepository>();
+
+
+
 //Services
 builder.Services.AddTransient<IChequeCountService, ChequeCountService>();
 builder.Services.AddTransient<ITreasuryService, TreasuryService>();
@@ -72,6 +77,8 @@ builder.Services.AddTransient<ITokenHelper, TokenHelper>();
 builder.Services.AddSingleton<ITokencache, Tokencache>();
 
 builder.Services.AddTransient<IClaimService, ClaimService>();
+
+builder.Services.AddTransient<IChequeReceivedService, ChequeReceivedService>();
 
 //builder.Services.AddTransient<ITokenHelper, TokenHelper>();
 //builder.Services.AddSingleton<ITokencache, Tokencache>();
@@ -133,6 +140,7 @@ app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 app.UseHttpsRedirection();
 
 //app.UseAuthorization();
+ app.UseAuthTokenMiddleware();
 
 app.UseAuthTokenMiddleware();
 

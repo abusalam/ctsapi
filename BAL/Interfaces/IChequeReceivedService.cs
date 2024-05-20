@@ -8,6 +8,6 @@ namespace CTS_BE.BAL.Interfaces
 {
     public interface IChequeReceivedService
     {
-        Task ChequeReceived(ChequeReceivedDTO chequeReceivedDTO);
+       public Task<Int16?> ChequeReceived(ChequeReceivedDTO chequeReceivedDTO);
     }
 }

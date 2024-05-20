@@ -21,7 +21,10 @@ namespace CTS_BE.Helper
 
         internal static T JsonToObject<T>(string? v)
         {
-            throw new NotImplementedException();
+            T obj;
+            
+            // Use JsonSerializer to serialize the object to a JSON string
+            return JsonSerializer.Deserialize<T>(v);
         }
     }
 }

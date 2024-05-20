@@ -140,6 +140,8 @@ namespace CTS_BE.DTOs
     {
         public int ChequeEntryId { get; set; }
         public string DamageIndex { get; set; }
+        //Test
+        public Int16 DamageType { get; set; }
     }
 
 }
