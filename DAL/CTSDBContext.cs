@@ -34,6 +34,8 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<BtDetail> BtDetails { get; set; }
 
+    public virtual DbSet<CategoryType> CategoryTypes { get; set; }
+
     public virtual DbSet<Challan> Challans { get; set; }
 
     public virtual DbSet<ChallanEntry> ChallanEntries { get; set; }
@@ -102,6 +104,8 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<StampVendor> StampVendors { get; set; }
 
+    public virtual DbSet<StampVendorType> StampVendorTypes { get; set; }
+
     public virtual DbSet<Status> Statuses { get; set; }
 
     public virtual DbSet<SubDetailHead> SubDetailHeads { get; set; }
@@ -132,16 +136,16 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<VBillDetail> VBillDetails { get; set; }
 
-    public virtual DbSet<VTokenDeatil> VTokenDeatils { get; set; }
+    public virtual DbSet<VPaymentAdvice> VPaymentAdvices { get; set; }
 
-    public virtual DbSet<VendorType> VendorTypes { get; set; }
+    public virtual DbSet<VTokenDeatil> VTokenDeatils { get; set; }
 
     public virtual DbSet<Voucher> Vouchers { get; set; }
 
     public virtual DbSet<VoucherEntry> VoucherEntries { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseNpgsql("Name=CTS_BEDBConnection");
+        => optionsBuilder.UseNpgsql("Name=CTSLocal");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -289,12 +293,6 @@ public partial class CTSDBContext : DbContext
                 .HasForeignKey(d => d.TreasuryCode)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("bill_subdetail_info_treasury_code_fkey");
-
-            entity.HasOne(d => d.DdoWallet).WithMany(p => p.BillSubdetailInfos)
-                .HasPrincipalKey(p => new { p.ActiveHoaId, p.TreasuryCode })
-                .HasForeignKey(d => new { d.ActiveHoaId, d.TreasuryCode })
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("ddo_wallet_active_hoa_id_treasury_code_fkey");
         });
 
         modelBuilder.Entity<Branch>(entity =>
@@ -328,11 +326,17 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.Submajor).IsFixedLength();
         });
 
+        modelBuilder.Entity<CategoryType>(entity =>
+        {
+            entity.HasKey(e => e.CategoryTypeId).HasName("category_type_pkey");
+        });
+
         modelBuilder.Entity<Challan>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("challan_pkey");
 
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
+            entity.Property(e => e.MajorHead).IsFixedLength();
         });
 
         modelBuilder.Entity<ChallanEntry>(entity =>
@@ -340,6 +344,7 @@ public partial class CTSDBContext : DbContext
             entity.HasKey(e => e.Id).HasName("challan_entry_pkey");
 
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
+            entity.Property(e => e.MajorHead).IsFixedLength();
             entity.Property(e => e.TreasuryCode).IsFixedLength();
         });
 
@@ -370,6 +375,7 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
             entity.Property(e => e.MemoNo).IsFixedLength();
             entity.Property(e => e.Status).HasComment("1 = new indent , 2 =  approve by TO , 3= Reject by TO");
+            entity.Property(e => e.TotalApprovedQuantity).HasDefaultValueSql("0");
             entity.Property(e => e.TreasurieCode).IsFixedLength();
 
             entity.HasOne(d => d.StatusNavigation).WithMany(p => p.ChequeIndents).HasConstraintName("cheque_indent_status_fkey");
@@ -539,12 +545,6 @@ public partial class CTSDBContext : DbContext
             entity.HasKey(e => e.DiscountId).HasName("discount_details_pkey");
 
             entity.Property(e => e.IsActive).HasDefaultValueSql("true");
-
-            entity.HasOne(d => d.StampCategory).WithMany(p => p.DiscountDetails).HasConstraintName("discount_details_stamp_category_id_fkey");
-
-            entity.HasOne(d => d.VendorType).WithMany(p => p.DiscountDetails)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("discount_details_vendor_type_id_fkey");
         });
 
         modelBuilder.Entity<EcsNeftDetail>(entity =>
@@ -672,10 +672,15 @@ public partial class CTSDBContext : DbContext
             entity.HasKey(e => e.StampVendorId).HasName("stamp_vendor_pkey");
 
             entity.Property(e => e.StampVendorId).HasDefaultValueSql("nextval('cts_master.stamp_vendor_vendor_code_seq'::regclass)");
+            entity.Property(e => e.IsActive).HasDefaultValueSql("true");
+        });
 
-            entity.HasOne(d => d.VendorType).WithMany(p => p.StampVendors)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("stamp_vendor_vendor_type_id_fkey");
+        modelBuilder.Entity<StampVendorType>(entity =>
+        {
+            entity.HasKey(e => e.VendorTypeId).HasName("vendor_type_pkey");
+
+            entity.Property(e => e.VendorTypeId).HasDefaultValueSql("nextval('cts_master.vendor_type_vendor_type_id_seq'::regclass)");
+            entity.Property(e => e.IsActive).HasDefaultValueSql("true");
         });
 
         modelBuilder.Entity<Status>(entity =>
@@ -775,7 +780,7 @@ public partial class CTSDBContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("transaction_lot_has_beneficiarys_pkey");
 
-            entity.Property(e => e.Id).HasDefaultValueSql("nextval('\"cts-payment\".transaction_lot_has_beneficiarys_id_seq'::regclass)");
+            entity.Property(e => e.Id).HasDefaultValueSql("nextval('cts_payment.transaction_lot_has_beneficiarys_id_seq'::regclass)");
             entity.Property(e => e.AccountNumber).IsFixedLength();
             entity.Property(e => e.IfscCode).IsFixedLength();
             entity.Property(e => e.MobileNo).IsFixedLength();
@@ -820,11 +825,12 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.TreasuryCode).IsFixedLength();
         });
 
-        modelBuilder.Entity<VendorType>(entity =>
+        modelBuilder.Entity<VPaymentAdvice>(entity =>
         {
-            entity.HasKey(e => e.VendorTypeId).HasName("vendor_type_pkey");
-
-            entity.Property(e => e.IsActive).HasDefaultValueSql("true");
+            entity.Property(e => e.BankAccountNumber).IsFixedLength();
+            entity.Property(e => e.ContactNumber).IsFixedLength();
+            entity.Property(e => e.IfscCode).IsFixedLength();
+            entity.Property(e => e.PanNo).IsFixedLength();
         });
 
         modelBuilder.Entity<Voucher>(entity =>
@@ -844,6 +850,13 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.MajorHead).IsFixedLength();
             entity.Property(e => e.TreasuryCode).IsFixedLength();
         });
+        modelBuilder.HasSequence("discount_details_discount_id_seq", "cts_master");
+        modelBuilder.HasSequence("stamp_category_stamp_category_id_seq", "cts_master");
+        modelBuilder.HasSequence("stamp_combination_stamp_combination_id_seq", "cts_master");
+        modelBuilder.HasSequence("stamp_label_master_label_id_seq", "cts_master");
+        modelBuilder.HasSequence("stamp_type_denomination_id_seq", "cts_master");
+        modelBuilder.HasSequence("stamp_vendor_vendor_code_seq", "cts_master");
+        modelBuilder.HasSequence("vendor_type_vendor_type_id_seq", "cts_master");
 
         OnModelCreatingPartial(modelBuilder);
     }

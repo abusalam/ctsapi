@@ -6,15 +6,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Entities;
 
-[Table("transaction_lot", Schema = "cts-payment")]
+[Table("transaction_lot", Schema = "cts_payment")]
 public partial class TransactionLot
 {
     [Key]
     [Column("id")]
     public long Id { get; set; }
-
-    [Column("bill_id")]
-    public long? BillId { get; set; }
 
     [Column("lot_no")]
     [StringLength(10)]

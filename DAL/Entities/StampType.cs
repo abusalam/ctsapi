@@ -9,6 +9,10 @@ namespace CTS_BE.DAL.Entities;
 [Table("stamp_type", Schema = "cts_master")]
 public partial class StampType
 {
+    [Key]
+    [Column("denomination_id")]
+    public long DenominationId { get; set; }
+
     [Column("denomination")]
     [Precision(10, 2)]
     public decimal Denomination { get; set; }
@@ -28,10 +32,6 @@ public partial class StampType
 
     [Column("updated_by")]
     public long? UpdatedBy { get; set; }
-
-    [Key]
-    [Column("denomination_id")]
-    public long DenominationId { get; set; }
 
     [InverseProperty("StampDenomination")]
     public virtual ICollection<StampCombination> StampCombinations { get; set; } = new List<StampCombination>();

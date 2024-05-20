@@ -27,7 +27,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 //Database Connection
 builder.Services.AddDbContext<CTSDBContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("CTS_BEDBConnection"),
+    options.UseNpgsql(builder.Configuration.GetConnectionString("CTSLocal"),
     //options => options.CommandTimeout(999)                   
     options => options.EnableRetryOnFailure(10, TimeSpan.FromSeconds(5), null)
 ), ServiceLifetime.Transient);
@@ -56,6 +56,9 @@ builder.Services.AddTransient<IStampLabelRepository, StampLabelRepository>();
 builder.Services.AddTransient<IStampCategoryRepository, StampCategoryRepository>();
 builder.Services.AddTransient<IStampVendorRepository, StampVendorRepository>();
 builder.Services.AddTransient<IStampTypeRepository, StampTypeRepository>();
+builder.Services.AddTransient<IDiscountDetailsRepository, DiscountDetailsRepository>();
+builder.Services.AddTransient<IStampVendorTypeRepository, StampVendorTypeRepository>();
+builder.Services.AddTransient<IStampCategoryTypeRepository, StampCateroryTypeRepository>();
 
 //Services
 builder.Services.AddTransient<IChequeCountService, ChequeCountService>();

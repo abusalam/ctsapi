@@ -9,6 +9,17 @@ namespace CTS_BE.DAL.Entities;
 [Table("discount_details", Schema = "cts_master")]
 public partial class DiscountDetail
 {
+    [Key]
+    [Column("discount_id")]
+    public long DiscountId { get; set; }
+
+    [Column("vendor_type", TypeName = "character varying")]
+    public string VendorType { get; set; } = null!;
+
+    [Column("stamp_category")]
+    [StringLength(2)]
+    public string StampCategory { get; set; } = null!;
+
     [Column("denomination_from")]
     [Precision(10, 2)]
     public decimal DenominationFrom { get; set; }
@@ -21,6 +32,7 @@ public partial class DiscountDetail
     [Precision(10, 2)]
     public decimal Discount { get; set; }
 
+    [Required]
     [Column("is_active")]
     public bool? IsActive { get; set; }
 
@@ -35,22 +47,4 @@ public partial class DiscountDetail
 
     [Column("updated_by")]
     public long? UpdatedBy { get; set; }
-
-    [Column("vendor_type_id")]
-    public long VendorTypeId { get; set; }
-
-    [Column("stamp_category_id")]
-    public long StampCategoryId { get; set; }
-
-    [Key]
-    [Column("discount_id")]
-    public long DiscountId { get; set; }
-
-    [ForeignKey("StampCategoryId")]
-    [InverseProperty("DiscountDetails")]
-    public virtual StampCategory StampCategory { get; set; } = null!;
-
-    [ForeignKey("VendorTypeId")]
-    [InverseProperty("DiscountDetails")]
-    public virtual VendorType VendorType { get; set; } = null!;
 }

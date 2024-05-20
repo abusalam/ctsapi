@@ -28,6 +28,8 @@ namespace CTS_BE.Helper
                 .ForMember(d => d.ValidUpto, opt => opt.MapFrom(src => src.ValidUpto.HasValue ? DateOnly.FromDateTime(src.ValidUpto.Value) : default));
             CreateMap<StampTypeInsertDTO, StampType>();
             CreateMap<StampType, StampTypeDTO>();
+            //CreateMap<DiscountDetailsInsertDTO, DiscountDetail>();
+            CreateMap<DiscountDetail, DiscountDetailsInsertDTO>();
 
         }
     }

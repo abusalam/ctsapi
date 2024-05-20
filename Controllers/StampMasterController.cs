@@ -1,5 +1,6 @@
 ﻿using CTS_BE.BAL.Interfaces.stamp;
 using CTS_BE.Common;
+using CTS_BE.DAL.Entities;
 using CTS_BE.DAL.Interfaces.stamp;
 using CTS_BE.DTOs;
 using CTS_BE.Filters;
@@ -20,6 +21,87 @@ namespace CTS_BE.Controllers
         }
 
         // Stamp Label
+        [HttpPatch("StampLabelList")]
+        public async Task<APIResponse<DynamicListResult<IEnumerable<StampLabelMasterDTO>>>> StampLabelList(DynamicListQueryParameters dynamicListQueryParameters)
+        {
+            //Get all stamp labels with sort & filter parameters
+            APIResponse<DynamicListResult<IEnumerable<StampLabelMasterDTO>>> response = new();
+            try
+            {
+                IEnumerable<StampLabelMasterDTO> labelList = await _stampMasterService.ListAllStampLabels(dynamicListQueryParameters.filterParameters, dynamicListQueryParameters.PageIndex, dynamicListQueryParameters.PageSize, dynamicListQueryParameters.sortParameters);
+                DynamicListResult<IEnumerable<StampLabelMasterDTO>> result = new DynamicListResult<IEnumerable<StampLabelMasterDTO>>
+                {
+                    Headers = new List<ListHeader>
+                    {
+                        new ListHeader
+                        {
+                            Name ="Label ID",
+                            DataType = "numeric",
+                            FieldName = "labelId",
+                            FilterField = "Label Id",
+                            IsFilterable = false,
+                            IsSortable = false,
+                        },
+                        new ListHeader
+                        {
+                            Name ="No: of Label/Sheet",
+                            DataType = "numeric",
+                            FieldName = "noLabelPerSheet",
+                            FilterField = "no: of Label/Sheet",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Is Active",
+                            DataType = "boolean",
+                            FieldName = "isActive",
+                            FilterField = "IsActive",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Created At",
+                            DataType = "string",
+                            FieldName = "createdAt",
+                            FilterField = "Created At",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Created By",
+                            DataType = "numeric",
+                            FieldName = "createdBy",
+                            FilterField = "CreatedBy",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        }
+                    },
+                    Data = labelList,
+                    DataCount = 1
+                };
+                if (labelList.Count() > 0)
+                {
+                    response.Message = AppConstants.DataFound;
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                }
+                else
+                {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.Message = AppConstants.DataNotFound;
+                }
+                response.result = result;
+                return response;
+            }
+            catch (Exception Ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = Ex.Message;
+                return response;
+            }
+        }
 
         [HttpGet("GetALLStampLabels")]
         public async Task<APIResponse<IEnumerable<StampLabelMasterDTO>>> GetALLStampLabels()
@@ -30,9 +112,9 @@ namespace CTS_BE.Controllers
                 IEnumerable<StampLabelMasterDTO> allStampLabels = await _stampMasterService.GetAllStampLabels();
                 if (allStampLabels.Count() > 0)
                 {
+                    response.Message = AppConstants.DataFound;
                     response.apiResponseStatus = Enum.APIResponseStatus.Success;
                     response.result = allStampLabels;
-                    response.Message = AppConstants.DataFound;
                     return response;
                 }
                 response.apiResponseStatus = Enum.APIResponseStatus.Error;
@@ -47,14 +129,13 @@ namespace CTS_BE.Controllers
             }
         }
 
-
         [HttpGet("GetStampLabelsById")]
         public async Task<APIResponse<IEnumerable<StampLabelMasterDTO>>> GetStampLabelsById(long id)
         {
             APIResponse<IEnumerable<StampLabelMasterDTO>> response = new();
             try
             {
-                IEnumerable<StampLabelMasterDTO> allStampLabels = (IEnumerable<StampLabelMasterDTO>)await _stampMasterService.GetStampLabelById(id);
+                IEnumerable<StampLabelMasterDTO> allStampLabels = await _stampMasterService.GetStampLabelById(id);
                 if (allStampLabels.Count() > 0)
                 {
                     response.apiResponseStatus = Enum.APIResponseStatus.Success;
@@ -128,16 +209,107 @@ namespace CTS_BE.Controllers
                 return response;
             }
         }
-        
+
         // Stamp Category
 
+        [HttpPatch("StampCategoryList")]
+        public async Task<APIResponse<DynamicListResult<IEnumerable<StampCategoryDTO>>>> StampCategoryList(DynamicListQueryParameters dynamicListQueryParameters)
+        {
+            //Get all stamp categories with sort & filter parameters
+            APIResponse<DynamicListResult<IEnumerable<StampCategoryDTO>>> response = new();
+            try
+            {
+                IEnumerable<StampCategoryDTO> categoryList = await _stampMasterService.ListAllStampCategories(dynamicListQueryParameters.filterParameters, dynamicListQueryParameters.PageIndex, dynamicListQueryParameters.PageSize, dynamicListQueryParameters.sortParameters);
+                DynamicListResult<IEnumerable<StampCategoryDTO>> result = new DynamicListResult<IEnumerable<StampCategoryDTO>>
+                {
+                    Headers = new List<ListHeader>
+                    {
+                        new ListHeader
+                        {
+                            Name ="Stamp Category Id",
+                            DataType = "numeric",
+                            FieldName = "stampCategoryId",
+                            FilterField = "StampCategoryId",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Stamp Category",
+                            DataType = "string",
+                            FieldName = "stampCategory1",
+                            FilterField = "StampCategory1",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Description",
+                            DataType = "string",
+                            FieldName = "description",
+                            FilterField = "Description",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Is Active",
+                            DataType = "boolean",
+                            FieldName = "isActive",
+                            FilterField = "IsActive",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Created At",
+                            DataType = "string",
+                            FieldName = "createdAt",
+                            FilterField = "CreatedAt",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Created By",
+                            DataType = "numeric",
+                            FieldName = "createdBy",
+                            FilterField = "CreatedBy",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                    },
+                Data = categoryList,
+                    DataCount = 1
+                };
+                if (categoryList.Count() > 0)
+                {
+                    response.Message = AppConstants.DataFound;
+                }
+                else
+                {
+                    response.Message = AppConstants.DataNotFound;
+                }
+                response.result = result;
+                response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                return response;
+            }
+            catch (Exception Ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = Ex.Message;
+                return response;
+            }
+        }
+
+
         [HttpGet("GetALLStampCategories")]
-        public async Task<APIResponse<IEnumerable<StampCategoryDTO>>> GetALLStampCategorys()
+        public async Task<APIResponse<IEnumerable<StampCategoryDTO>>> GetALLStampCategories()
         {
             APIResponse<IEnumerable<StampCategoryDTO>> response = new();
             try
             {
-                IEnumerable<StampCategoryDTO> allStampCategorys = (IEnumerable<StampCategoryDTO>)await _stampMasterService.GetAllStampCategories();
+                IEnumerable<StampCategoryDTO> allStampCategorys = await _stampMasterService.GetAllStampCategories();
                 if (allStampCategorys.Count() > 0)
                 {
                     response.apiResponseStatus = Enum.APIResponseStatus.Success;
@@ -157,14 +329,39 @@ namespace CTS_BE.Controllers
             }
         }
 
+        [HttpGet("GetALLStampCategoryTypes")]
+        public async Task<APIResponse<IEnumerable<CategoryTypeDTO>>> GetALLStampCategoryTypes()
+        {
+            APIResponse<IEnumerable<CategoryTypeDTO>> response = new();
+            try
+            {
+                IEnumerable<CategoryTypeDTO> allStampCategorys = await _stampMasterService.GetAllCategoryType();
+                if (allStampCategorys.Count() > 0)
+                {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                    response.result = allStampCategorys;
+                    response.Message = AppConstants.DataFound;
+                    return response;
+                }
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = AppConstants.DataNotFound;
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = ex.Message;
+                return response;
+            }
+        }
 
-        [HttpGet("GetStampCategorysById")]
-        public async Task<APIResponse<IEnumerable<StampCategoryDTO>>> GetStampCategorysById(long id)
+        [HttpGet("GetStampCategoryById")]
+        public async Task<APIResponse<IEnumerable<StampCategoryDTO>>> GetStampCategoryById(long id)
         {
             APIResponse<IEnumerable<StampCategoryDTO>> response = new();
             try
             {
-                IEnumerable<StampCategoryDTO> allStampCategorys = (IEnumerable<StampCategoryDTO>)await _stampMasterService.GetStampCategoryById(id);
+                IEnumerable<StampCategoryDTO> allStampCategorys = await _stampMasterService.GetStampCategoryById(id);
                 if (allStampCategorys.Count() > 0)
                 {
                     response.apiResponseStatus = Enum.APIResponseStatus.Success;
@@ -212,8 +409,8 @@ namespace CTS_BE.Controllers
             }
         }
 
-        [HttpDelete("DeleteStampCategorysById")]
-        public async Task<APIResponse<bool>> DeleteStampCategorysById(long id)
+        [HttpDelete("DeleteStampCategoryById")]
+        public async Task<APIResponse<bool>> DeleteStampCategoryById(long id)
         {
             APIResponse<bool> response = new();
             try
@@ -241,13 +438,158 @@ namespace CTS_BE.Controllers
         
         // Stamp Vendor
 
+        [HttpPatch("StampVendorList")]
+        public async Task<APIResponse<DynamicListResult<IEnumerable<StampVendorDTO>>>> StampVendorList(DynamicListQueryParameters dynamicListQueryParameters)
+        {
+            //Get all stamp vendors with sort & filter parameters
+            APIResponse<DynamicListResult<IEnumerable<StampVendorDTO>>> response = new();
+            try
+            {
+                IEnumerable<StampVendorDTO> vendorList = await _stampMasterService.ListAllStampVendors(dynamicListQueryParameters.filterParameters, dynamicListQueryParameters.PageIndex, dynamicListQueryParameters.PageSize, dynamicListQueryParameters.sortParameters);
+                DynamicListResult<IEnumerable<StampVendorDTO>> result = new DynamicListResult<IEnumerable<StampVendorDTO>>
+                {
+                    Headers = new List<ListHeader>
+                    {
+                        new ListHeader
+                        {
+                            Name ="Stamp Vendor Id",
+                            DataType = "numeric",
+                            FieldName = "stampVendorId",
+                            FilterField = "StampVendorId",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Vendor Type",
+                            DataType = "numeric",
+                            FieldName = "vendorType",
+                            FilterField = "VendorType",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="License No",
+                            DataType = "string",
+                            FieldName = "licenseNo",
+                            FilterField = "LicenseNo",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Address",
+                            DataType = "string",
+                            FieldName = "address",
+                            FilterField = "Address",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Phone Number",
+                            DataType = "numeric",
+                            FieldName = "phoneNumber",
+                            FilterField = "PhoneNumber",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Effective From",
+                            DataType = "string",
+                            FieldName = "effectiveFrom",
+                            FilterField = "EffectiveFrom",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Valid Upto",
+                            DataType = "string",
+                            FieldName = "validUpto",
+                            FilterField = "ValidUpto",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Pan Number",
+                            DataType = "string",
+                            FieldName = "panNumber",
+                            FilterField = "PanNumber",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Is Active",
+                            DataType = "boolean",
+                            FieldName = "isActive",
+                            FilterField = "IsActive",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Active At Grips",
+                            DataType = "boolean",
+                            FieldName = "activeAtGrips",
+                            FilterField = "ActiveAtGrips",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Created At",
+                            DataType = "string",
+                            FieldName = "createdAt",
+                            FilterField = "CreatedAt",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Created By",
+                            DataType = "numeric",
+                            FieldName = "createdBy",
+                            FilterField = "CreatedBy",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        }
+                    },
+                Data = vendorList,
+                    DataCount = 1
+                };
+                if (vendorList.Count() > 0)
+                {
+                    response.Message = AppConstants.DataFound;
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                }
+                else
+                {
+                    response.Message = AppConstants.DataNotFound;
+                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                }
+                response.result = result;
+                return response;
+            }
+            catch (Exception Ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = Ex.Message;
+                return response;
+            }
+        }
+
         [HttpGet("GetALLStampVendors")]
         public async Task<APIResponse<IEnumerable<StampVendorDTO>>> GetALLStampVendors()
         {
             APIResponse<IEnumerable<StampVendorDTO>> response = new();
             try
             {
-                IEnumerable<StampVendorDTO> allStampVendors = (IEnumerable<StampVendorDTO>)await _stampMasterService.GetAllStampVendors();
+                IEnumerable<StampVendorDTO> allStampVendors = await _stampMasterService.GetAllStampVendors();
                 if (allStampVendors.Count() > 0)
                 {
                     response.apiResponseStatus = Enum.APIResponseStatus.Success;
@@ -267,6 +609,31 @@ namespace CTS_BE.Controllers
             }
         }
 
+        [HttpGet("GetALLStampVendorTypes")]
+        public async Task<APIResponse<IEnumerable<VendorTypeDTO>>> GetALLStampVendorTypes()
+        {
+            APIResponse<IEnumerable<VendorTypeDTO>> response = new();
+            try
+            {
+                IEnumerable<VendorTypeDTO> allStampVendors = await _stampMasterService.GetAllStampVendorTypes();
+                if (allStampVendors.Count() > 0)
+                {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                    response.result = allStampVendors;
+                    response.Message = AppConstants.DataFound;
+                    return response;
+                }
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = AppConstants.DataNotFound;
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = ex.Message;
+                return response;
+            }
+        }
 
         [HttpGet("GetStampVendorsById")]
         public async Task<APIResponse<IEnumerable<StampVendorDTO>>> GetStampVendorsById(long id)
@@ -274,7 +641,7 @@ namespace CTS_BE.Controllers
             APIResponse<IEnumerable<StampVendorDTO>> response = new();
             try
             {
-                IEnumerable<StampVendorDTO> allStampVendors = (IEnumerable<StampVendorDTO>)await _stampMasterService.GetStampVendorById(id);
+                IEnumerable<StampVendorDTO> allStampVendors = await _stampMasterService.GetStampVendorById(id);
                 if (allStampVendors.Count() > 0)
                 {
                     response.apiResponseStatus = Enum.APIResponseStatus.Success;
@@ -350,6 +717,87 @@ namespace CTS_BE.Controllers
         }
 
         // Stamp Type
+        [HttpPatch("StampTypeList")]
+        public async Task<APIResponse<DynamicListResult<IEnumerable<StampTypeDTO>>>> StampTypeList(DynamicListQueryParameters dynamicListQueryParameters)
+        {
+            //Get all stamp types with sort & filter parameters
+            APIResponse<DynamicListResult<IEnumerable<StampTypeDTO>>> response = new();
+            try
+            {
+                IEnumerable<StampTypeDTO> typeList = await _stampMasterService.ListAllStampTypes(dynamicListQueryParameters.filterParameters, dynamicListQueryParameters.PageIndex, dynamicListQueryParameters.PageSize, dynamicListQueryParameters.sortParameters);
+                DynamicListResult<IEnumerable<StampTypeDTO>> result = new DynamicListResult<IEnumerable<StampTypeDTO>>
+                {
+                    Headers = new List<ListHeader>
+                    {
+                        new ListHeader
+                        {
+                            Name ="Denomination ID",
+                            DataType = "numeric",
+                            FieldName = "denominationId",
+                            FilterField = "DenominationId",
+                            IsFilterable = false,
+                            IsSortable = false,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Denomination",
+                            DataType = "numeric",
+                            FieldName = "denomination",
+                            FilterField = "Denomination",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Is Active",
+                            DataType = "boolean",
+                            FieldName = "isActive",
+                            FilterField = "IsActive",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        }, 
+                        new ListHeader
+                        {
+                            Name ="Created At",
+                            DataType = "string",
+                            FieldName = "createdAt",
+                            FilterField = "Created At",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        }, 
+                        new ListHeader
+                        {
+                            Name ="Created By",
+                            DataType = "numeric",
+                            FieldName = "createdBy",
+                            FilterField = "CreatedBy",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        }
+                    },
+                    Data = typeList,
+                    DataCount = 1
+                };
+                if (typeList.Count() > 0)
+                {
+                    response.Message = AppConstants.DataFound;
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                }
+                else
+                {
+                    response.Message = AppConstants.DataNotFound;
+                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                }
+                response.result = result;
+                return response;
+            }
+            catch (Exception Ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = Ex.Message;
+                return response;
+            }
+        }
 
         [HttpGet("GetALLStampTypes")]
         public async Task<APIResponse<IEnumerable<StampTypeDTO>>> GetALLStampTypes()
@@ -357,7 +805,7 @@ namespace CTS_BE.Controllers
             APIResponse<IEnumerable<StampTypeDTO>> response = new();
             try
             {
-                IEnumerable<StampTypeDTO> allStampTypes = (IEnumerable<StampTypeDTO>)await _stampMasterService.GetAllStampTypes();
+                IEnumerable<StampTypeDTO> allStampTypes = await _stampMasterService.GetAllStampTypes();
                 if (allStampTypes.Count() > 0)
                 {
                     response.apiResponseStatus = Enum.APIResponseStatus.Success;
@@ -384,7 +832,7 @@ namespace CTS_BE.Controllers
             APIResponse<IEnumerable<StampTypeDTO>> response = new();
             try
             {
-                IEnumerable<StampTypeDTO> allStampTypes = (IEnumerable<StampTypeDTO>)await _stampMasterService.GetStampTypeById(id);
+                IEnumerable<StampTypeDTO> allStampTypes = await _stampMasterService.GetStampTypeById(id);
                 if (allStampTypes.Count() > 0)
                 {
                     response.apiResponseStatus = Enum.APIResponseStatus.Success;
@@ -459,5 +907,153 @@ namespace CTS_BE.Controllers
             }
         }
 
+        // Stamp discount details
+        [HttpPatch("StampDiscountDetailsList")]
+        public async Task<APIResponse<DynamicListResult<IEnumerable<DiscountDetailsDTO>>>> StampDiscountDetailsList(DynamicListQueryParameters dynamicListQueryParameters)
+        {
+            //Get all stamp discount details with sort & filter parameters
+            APIResponse<DynamicListResult<IEnumerable<DiscountDetailsDTO>>> response = new();
+            try
+            {
+                IEnumerable<DiscountDetailsDTO> discountDetailsList = await _stampMasterService.ListAllDiscountDetails(dynamicListQueryParameters.filterParameters, dynamicListQueryParameters.PageIndex, dynamicListQueryParameters.PageSize, dynamicListQueryParameters.sortParameters);
+                DynamicListResult<IEnumerable<DiscountDetailsDTO>> result = new DynamicListResult<IEnumerable<DiscountDetailsDTO>>
+                {
+                    Headers = new List<ListHeader>
+                    {
+                        new ListHeader
+                        {
+                            Name ="Discount ID",
+                            DataType = "numeric",
+                            FieldName = "discountId",
+                            FilterField = "Discount ID",
+                            IsFilterable = false,
+                            IsSortable = false,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Denomination From",
+                            DataType = "string",
+                            FieldName = "denominationFrom",
+                            FilterField = "Denomination From",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        }, 
+                        new ListHeader
+                        {
+                            Name ="Denomination To",
+                            DataType = "string",
+                            FieldName = "denominationTo",
+                            FilterField = "Denomination To",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Discount (%)",
+                            DataType = "numeric",
+                            FieldName = "discount",
+                            FilterField = "Discount",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Vendor Type",
+                            DataType = "string",
+                            FieldName = "vendorType",
+                            FilterField = "Vendor Type",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        }, 
+                        new ListHeader
+                        {
+                            Name ="Stamp Category",
+                            DataType = "string",
+                            FieldName = "stampCategory",
+                            FilterField = "StampCategory",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Is Active",
+                            DataType = "boolean",
+                            FieldName = "isActive",
+                            FilterField = "IsActive",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Created At",
+                            DataType = "string",
+                            FieldName = "createdAt",
+                            FilterField = "CreatedAt",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Created By",
+                            DataType = "numeric",
+                            FieldName = "createdBy",
+                            FilterField = "CreatedBy",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        }
+                    },
+                    Data = discountDetailsList,
+                    DataCount = 1
+                };
+                if (discountDetailsList.Count() > 0)
+                {
+                    response.Message = AppConstants.DataFound;
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                }
+                else
+                {
+                    response.Message = AppConstants.DataNotFound;
+                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                }
+                response.result = result;
+                return response;
+            }
+            catch (Exception Ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = Ex.Message;
+                return response;
+            }
+        }
+
+        [HttpPost("CreateStampDiscountDetails")]
+
+        public async Task<APIResponse<bool>> CreateStampDiscountDetails(DiscountDetailsInsertDTO stampDiscountDetails)
+        {
+            APIResponse<bool> response = new();
+            try
+            {
+                if (stampDiscountDetails != null)
+                {
+                    if (await _stampMasterService.CreateNewStampDiscountDetails(stampDiscountDetails))
+                    {
+                        response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                        response.Message = AppConstants.DataAdded;
+                        response.result = true;
+                        return response;
+                    }
+                }
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.result = false;
+                response.Message = AppConstants.MissingField;
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = ex.Message;
+                return response;
+            }
+        }
     }
 }

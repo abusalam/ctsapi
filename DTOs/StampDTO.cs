@@ -47,6 +47,14 @@ namespace CTS_BE.DTOs
 
         public long StampCategoryId { get; set; }
     }
+
+    public class CategoryTypeDTO
+    {
+        public string? StampCategory1 { get; set; }
+
+        public long StampCategoryId { get; set; }
+    }
+
     public class StampCategoryInsertDTO
     {
 
@@ -63,6 +71,11 @@ namespace CTS_BE.DTOs
 
     public class StampVendorDTO
     {
+
+        public string? VendorType { get; set; }
+
+        public long StampVendorId { get; set; }
+
         public string LicenseNo { get; set; } = null!;
 
         public string Address { get; set; } = null!;
@@ -86,12 +99,18 @@ namespace CTS_BE.DTOs
         public DateTime? UpdatedAt { get; set; }
 
         public long? UpdatedBy { get; set; }
+    }
+
+    public class VendorTypeDTO
+    {
+
+        public string? VendorType { get; set; }
 
         public long StampVendorId { get; set; }
-
     }
-    public class StampVendorInsertDTO
+        public class StampVendorInsertDTO
     {
+        public short VendorType { get; set; }
 
         public string LicenseNo { get; set; } = null!;
 
@@ -148,13 +167,15 @@ namespace CTS_BE.DTOs
 
         public decimal Discount { get; set; }
 
+        public string? VendorType { get; set; }
+
+        public string? StampCategory { get; set; }
+
         public bool? IsActive { get; set; }
 
-        public long VendorTypeId { get; set; }
+        public DateTime? CreatedAt { get; set; }
 
-        public long StampCategoryId { get; set; }
-
-
+        public long? CreatedBy { get; set; }
     }
 
     public class DiscountDetailsInsertDTO
@@ -166,12 +187,11 @@ namespace CTS_BE.DTOs
 
         public decimal Discount { get; set; }
 
-        public bool? IsActive { get; set; }
+        public string? VendorType { get; set; }
 
-        public long VendorTypeId { get; set; }
-
-        public long StampCategoryId { get; set; }
-
+        [StringLength(2, ErrorMessage = "String Length must be 2.")]
+        public string? StampCategory { get; set; }
 
     }
+
 }

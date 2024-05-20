@@ -9,6 +9,10 @@ namespace CTS_BE.DAL.Entities;
 [Table("stamp_label_master", Schema = "cts_master")]
 public partial class StampLabelMaster
 {
+    [Key]
+    [Column("label_id")]
+    public long LabelId { get; set; }
+
     [Column("no_label_per_sheet")]
     public int NoLabelPerSheet { get; set; }
 
@@ -27,10 +31,6 @@ public partial class StampLabelMaster
 
     [Column("updated_by")]
     public long? UpdatedBy { get; set; }
-
-    [Key]
-    [Column("label_id")]
-    public long LabelId { get; set; }
 
     [InverseProperty("StampLabel")]
     public virtual ICollection<StampCombination> StampCombinations { get; set; } = new List<StampCombination>();

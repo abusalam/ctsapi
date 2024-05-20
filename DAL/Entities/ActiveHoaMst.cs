@@ -62,6 +62,10 @@ public partial class ActiveHoaMst
     [Column("activated_by")]
     public short? ActivatedBy { get; set; }
 
+    [Column("financial_year")]
+    [StringLength(50)]
+    public string? FinancialYear { get; set; }
+
     [InverseProperty("ActiveHoa")]
     public virtual ICollection<BillSubdetailInfo> BillSubdetailInfos { get; set; } = new List<BillSubdetailInfo>();
 }

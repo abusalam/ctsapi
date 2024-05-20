@@ -20,7 +20,7 @@ public partial class TokenFlow
     public long TokeId { get; set; }
 
     [Column("reference_no")]
-    [StringLength(13)]
+    [StringLength(20)]
     public string? ReferenceNo { get; set; }
 
     [Column("status_id")]

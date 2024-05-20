@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Entities;
 
-[Table("failed_beneficiary_records", Schema = "cts-payment")]
+[Table("failed_beneficiary_records", Schema = "cts_payment")]
 public partial class FailedBeneficiaryRecord
 {
     [Key]

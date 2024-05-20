@@ -97,7 +97,8 @@ public partial class BillDetail
     public DateOnly? SanctionDate { get; set; }
 
     [Column("sanction_by")]
-    public long? SanctionBy { get; set; }
+    [StringLength(100)]
+    public string? SanctionBy { get; set; }
 
     [Column("remarks")]
     [StringLength(100)]
