@@ -15,7 +15,10 @@ namespace CTS_BE.BAL.Services
         private readonly IChequeReceivedRepository _ChequeReceivedRepository;
         private readonly IChequeInvoiceDetailRepository _ChequeInvoiceDetailRepository;
 
-
+        public ChequeReceivedService(IChequeReceivedRepository ChequeReceivedRepository, IChequeInvoiceDetailRepository ChequeInvoiceDetailRepository){
+            _ChequeReceivedRepository = ChequeReceivedRepository;
+            _ChequeInvoiceDetailRepository = ChequeInvoiceDetailRepository;
+        }
         public async Task<ChequeReceivedDTO> ChequeReceived(ChequeReceivedDTO chequeReceivedDTO)
         {
             List<ChequeReceivedModel> chequeReceivedModel = new List<ChequeReceivedModel>();

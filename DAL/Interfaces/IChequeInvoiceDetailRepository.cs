@@ -8,6 +8,6 @@ namespace CTS_BE.DAL.Interfaces
 {
     public interface IChequeInvoiceDetailRepository: IRepository<ChequeInvoiceDetail>
     {
-        public Task<bool>Insert(string chequeInvoiceDetailsData);
+        public Task<bool> Insert(string chequeInvoiceDetailsData);
     }
 }

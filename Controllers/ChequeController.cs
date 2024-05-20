@@ -21,13 +21,14 @@ namespace CTS_BE.Controllers
         private readonly IChequeCountService _chequeCountService;
         private readonly IChequeReceivedService _chequeReceivedService;
 
-        public ChequeController(IChequeCountService chequeCountService, IChequeEntryService chequeEntryService, IChequeIndentService chequeIndentService, IChequeInvoiceService chequeInvoiceService, IClaimService claimService)
+        public ChequeController(IChequeCountService chequeCountService, IChequeEntryService chequeEntryService, IChequeIndentService chequeIndentService, IChequeInvoiceService chequeInvoiceService, IClaimService claimService, IChequeReceivedService chequeReceivedService)
         {
             _chequeEntryService = chequeEntryService;
             _chequeIndentService = chequeIndentService;
             _chequeInvoiceService = chequeInvoiceService;
             _claimService = claimService;
             _chequeCountService = chequeCountService;
+            _chequeReceivedService = chequeReceivedService;
         }
         [HttpPost("new-cheque-entry")]
         public async Task<APIResponse<string>> ChequeEntry(ChequeEntryDTO chequeEntryDTO)

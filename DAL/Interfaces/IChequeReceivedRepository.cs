@@ -9,7 +9,6 @@ namespace CTS_BE.DAL.Interfaces
 {
     public interface IChequeReceivedRepository : IRepository<ChequeReceived>
     {
-        //  public Task<ChequeReceivedDTO> Insert(string chequeReceivedData);
         public Task<ChequeReceivedDTO> Insert(string chequeReceivedData);
     }
 }
