@@ -27,7 +27,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 //Database Connection
 builder.Services.AddDbContext<CTSDBContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("CTSLocal"),
+    options.UseNpgsql(builder.Configuration.GetConnectionString("CTS_BEDBConnection"),
     //options => options.CommandTimeout(999)                   
     options => options.EnableRetryOnFailure(10, TimeSpan.FromSeconds(5), null)
 ), ServiceLifetime.Transient);

@@ -432,7 +432,7 @@ namespace CTS_BE.BAL.Services.stamp
             StampDenominationId = entity.StampDenominationId,
             NoLabelPerSheet = entity.StampLabel.NoLabelPerSheet,
             StampLabelId = entity.StampLabelId,
-            IsActive = entity.IsActive,
+            IsActive = (bool)entity.IsActive,
             //StampCategory = new StampCategoryDTO
             //{
             //    // Map the properties of StampCategoryDTO

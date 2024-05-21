@@ -204,7 +204,7 @@ namespace CTS_BE.DTOs
         public long StampDenominationId { get; set; }
         public int NoLabelPerSheet { get; set; }
         public long StampLabelId { get; set; }
-        public bool IsActive { get; set; } = true;
+        public bool IsActive { get; set; }
         //public virtual StampCategoryDTO StampCategory { get; set; } = null!;
         //public virtual StampTypeDTO StampDenomination { get; set; } = null!;
         //public virtual StampLabelMasterDTO StampLabel { get; set; } = null!;
