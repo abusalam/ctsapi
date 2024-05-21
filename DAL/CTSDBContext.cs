@@ -147,8 +147,7 @@ public partial class CTSDBContext : DbContext
     public virtual DbSet<VoucherEntry> VoucherEntries { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql("Host=10.176.100.34;Database=new_cts;Username=postgres;Password=pgsql;port=5432");
+        => optionsBuilder.UseNpgsql("Name=CTS_BEDBConnection");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -358,6 +357,11 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.MicrCode).IsFixedLength();
             entity.Property(e => e.TreasuryCode).IsFixedLength();
             entity.Property(e => e.Utilized).HasDefaultValueSql("0");
+        });
+
+        modelBuilder.Entity<ChequeDamage>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("cheque_damage_pkey");
         });
 
         modelBuilder.Entity<ChequeEntry>(entity =>

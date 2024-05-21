@@ -77,9 +77,6 @@ namespace CTS_BE.BAL.Services.stamp
                 NoLabelPerSheet = entity.NoLabelPerSheet,
                 CreatedAt = entity.CreatedAt,
                 CreatedBy = entity.CreatedBy,
-                UpdatedAt = entity.UpdatedAt,
-                UpdatedBy = entity.UpdatedBy,
-
             });
             return stampLabelMasters;
         }
@@ -94,9 +91,6 @@ namespace CTS_BE.BAL.Services.stamp
                 NoLabelPerSheet = entity.NoLabelPerSheet,
                 CreatedAt = entity.CreatedAt,
                 CreatedBy = entity.CreatedBy,
-                UpdatedAt = entity.UpdatedAt,
-                UpdatedBy = entity.UpdatedBy,
-
             });
 
             return stampLabelMasters;
@@ -108,7 +102,8 @@ namespace CTS_BE.BAL.Services.stamp
             {
                 foreach (var item in stampLabelMasters)
                 {
-                    _stampLabelRepo.Delete(item);
+                    item.IsActive = false;
+                    _stampLabelRepo.Update(item);
 
                 }
                 _stampLabelRepo.SaveChangesManaged();
@@ -121,12 +116,12 @@ namespace CTS_BE.BAL.Services.stamp
 
         // Stamp Category Services
 
-        public async Task<IEnumerable<CategoryTypeDTO>> GetAllCategoryType()
+        public async Task<IEnumerable<StampCategoryDTO>> GetAllCategoryType()
         {
-            IEnumerable<CategoryTypeDTO> categoryType = await _stampCategoryTypeRepo.GetSelectedColumnAsync(entity => new CategoryTypeDTO
+            IEnumerable<StampCategoryDTO> categoryType = await _stampCategoryRepo.GetSelectedColumnAsync(entity => new StampCategoryDTO
             {
-                StampCategory1 = entity.StampCategory,
-                StampCategoryId = entity.CategoryTypeId
+                StampCategoryId = entity.StampCategoryId,
+                StampCategory1 = entity.StampCategory1 
             });
             return categoryType;
         }
@@ -159,8 +154,8 @@ namespace CTS_BE.BAL.Services.stamp
                 IsActive = entity.IsActive,
                 CreatedAt = entity.CreatedAt,
                 CreatedBy = entity.CreatedBy,
-                UpdatedAt = entity.UpdatedAt,
-                UpdatedBy = entity.UpdatedBy
+                
+                
             });
             return stampCategory;
         }
@@ -186,8 +181,8 @@ namespace CTS_BE.BAL.Services.stamp
                 IsActive = entity.IsActive,
                 CreatedAt = entity.CreatedAt,
                 CreatedBy = entity.CreatedBy,
-                UpdatedAt = entity.UpdatedAt,
-                UpdatedBy = entity.UpdatedBy
+                
+                
             });
 
             return stampCategory;
@@ -200,8 +195,8 @@ namespace CTS_BE.BAL.Services.stamp
             {
                 foreach (var item in stampCategory)
                 {
-                    _stampCategoryRepo.Delete(item);
-
+                    item.IsActive = false;
+                    _stampCategoryRepo.Update(item);
                 }
                 _stampCategoryRepo.SaveChangesManaged();
                 return await Task.FromResult(true);
@@ -227,8 +222,6 @@ namespace CTS_BE.BAL.Services.stamp
                 IsActive = entity.IsActive,
                 CreatedAt = entity.CreatedAt,
                 CreatedBy = entity.CreatedBy,
-                UpdatedAt = entity.UpdatedAt,
-                UpdatedBy = entity.UpdatedBy,
                 VendorType = entity.VendorType,
 
             }, pageIndex, pageSize, filters, (sortParameters != null) ? sortParameters.Field : null, (sortParameters != null) ? sortParameters.Order : null);
@@ -250,8 +243,6 @@ namespace CTS_BE.BAL.Services.stamp
                 IsActive = entity.IsActive,
                 CreatedAt = entity.CreatedAt,
                 CreatedBy = entity.CreatedBy,
-                UpdatedAt = entity.UpdatedAt,
-                UpdatedBy = entity.UpdatedBy,
                 VendorType = entity.VendorType,
             });
             return stampVendor;
@@ -282,9 +273,6 @@ namespace CTS_BE.BAL.Services.stamp
                 IsActive = entity.IsActive,
                 CreatedAt = entity.CreatedAt,
                 CreatedBy = entity.CreatedBy,
-                UpdatedAt = entity.UpdatedAt,
-                UpdatedBy = entity.UpdatedBy
-
             });
             return stampVendor;
         }
@@ -296,7 +284,8 @@ namespace CTS_BE.BAL.Services.stamp
             {
                 foreach (var item in stampVendor)
                 {
-                    _stampVendorRepo.Delete(item);
+                    item.IsActive = false;
+                    _stampVendorRepo.Update(item);
 
                 }
                 _stampVendorRepo.SaveChangesManaged();
@@ -329,9 +318,7 @@ namespace CTS_BE.BAL.Services.stamp
                 Denomination = entity.Denomination,
                 IsActive = entity.IsActive,
                 CreatedAt = entity.CreatedAt,
-                CreatedBy = entity.CreatedBy,
-                UpdatedAt = entity.UpdatedAt,
-                UpdatedBy = entity.UpdatedBy,
+                CreatedBy = entity.CreatedBy
             });
             return stampType;
         }
@@ -356,8 +343,6 @@ namespace CTS_BE.BAL.Services.stamp
                 IsActive = entity.IsActive,
                 CreatedAt = entity.CreatedAt,
                 CreatedBy = entity.CreatedBy,
-                UpdatedAt = entity.UpdatedAt,
-                UpdatedBy = entity.UpdatedBy,
             });
             return stampType;
         }
@@ -369,7 +354,8 @@ namespace CTS_BE.BAL.Services.stamp
             {
                 foreach (var item in stampType)
                 {
-                    _stampTypeRepo.Delete(item);
+                    item.IsActive = false;
+                    _stampTypeRepo.Update(item);
 
                 }
                 _stampTypeRepo.SaveChangesManaged();
@@ -433,31 +419,9 @@ namespace CTS_BE.BAL.Services.stamp
             NoLabelPerSheet = entity.StampLabel.NoLabelPerSheet,
             StampLabelId = entity.StampLabelId,
             IsActive = (bool)entity.IsActive,
-            //StampCategory = new StampCategoryDTO
-            //{
-            //    // Map the properties of StampCategoryDTO
-            //    // Assuming that StampCategoryDTO has similar properties to StampCategory entity
-            //    // Example:
-            //    // StampCategoryId = entity.StampCategory.StampCategoryId,
-            //    // CategoryName = entity.StampCategory.CategoryName,
-            //    // (and so on for other properties)
-            //},
-            //StampDenomination = new StampTypeDTO
-            //{
-            //    // Map the properties of StampTypeDTO
-            //    // Example:
-            //    // StampTypeId = entity.StampDenomination.StampTypeId,
-            //    // TypeName = entity.StampDenomination.TypeName,
-            //    // (and so on for other properties)
-            //},
-            //StampLabel = new StampLabelMasterDTO
-            //{
-            //    // Map the properties of StampLabelMasterDTO
-            //    // Example:
-            //    // StampLabelId = entity.StampLabel.StampLabelId,
-            //    // LabelName = entity.StampLabel.LabelName,
-            //    // (and so on for other properties)
-            //}
+            StampCategoryId = entity.StampCategoryId,
+            CreatedAt = entity.CreatedAt,
+            CreatedBy = entity.CreatedBy,
         },
         pageIndex,
         pageSize,
@@ -468,6 +432,24 @@ namespace CTS_BE.BAL.Services.stamp
 
             // Return the list of StampCombinationDTO
             return stampCombinationEntities;
+        }
+
+
+        async Task<bool> IStampMasterService.DeleteStampCombinationById(long id)
+        {
+            var stampComb = await _stampCombinationRepo.GetAllByConditionAsync(a => a.StampCombinationId == id);
+            if (stampComb.Count > 0)
+            {
+                foreach (var item in stampComb)
+                {
+                    item.IsActive = false;
+                    _stampCombinationRepo.Update(item);
+
+                }
+                _stampCombinationRepo.SaveChangesManaged();
+                return await Task.FromResult(true);
+            }
+            return await Task.FromResult(false);
         }
     }
 }

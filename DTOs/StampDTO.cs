@@ -26,7 +26,6 @@ namespace CTS_BE.DTOs
     {
         public int NoLabelPerSheet { get; set; }
 
-        [Required]
         public bool? IsActive { get; set; }
     }
 
@@ -64,8 +63,6 @@ namespace CTS_BE.DTOs
 
         [Required]
         public string Description { get; set; } = null!;
-
-        [Required]
         public bool? IsActive { get; set; }
 
     }
@@ -111,7 +108,7 @@ namespace CTS_BE.DTOs
     }
         public class StampVendorInsertDTO
     {
-        public short VendorType { get; set; }
+        public string? VendorType { get; set; }
 
         public string LicenseNo { get; set; } = null!;
 
@@ -153,8 +150,6 @@ namespace CTS_BE.DTOs
 
         [Precision(10, 2)]
         public decimal Denomination { get; set; }
-
-        [Required]
         public bool? IsActive { get; set; }
     }
 
@@ -199,12 +194,16 @@ namespace CTS_BE.DTOs
         public long StampCombinationId { get; set; }
         //public long LabelId { get; set; }
         public string? StampCategory1 { get; set; }
+        public long StampCategoryId { get; set; }
         public string? Description { get; set; }
         public decimal Denomination { get; set; }
         public long StampDenominationId { get; set; }
         public int NoLabelPerSheet { get; set; }
         public long StampLabelId { get; set; }
         public bool IsActive { get; set; }
+        public DateTime? CreatedAt { get; set; }
+        public long? CreatedBy { get; set; }
+
         //public virtual StampCategoryDTO StampCategory { get; set; } = null!;
         //public virtual StampTypeDTO StampDenomination { get; set; } = null!;
         //public virtual StampLabelMasterDTO StampLabel { get; set; } = null!;

@@ -6,12 +6,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Entities;
 
-[Keyless]
 [Table("cheque_damage", Schema = "cts")]
 public partial class ChequeDamage
 {
+    [Key]
     [Column("id")]
-    public short? Id { get; set; }
+    public long Id { get; set; }
+
+    [Column("damage_index", TypeName = "character varying")]
+    public string? DamageIndex { get; set; }
+
+    [Column("damage_type", TypeName = "character varying")]
+    public string? DamageType { get; set; }
 
     [Column("user_id")]
     public short? UserId { get; set; }
@@ -19,15 +25,9 @@ public partial class ChequeDamage
     [Column("cheque_entry_id")]
     public long? ChequeEntryId { get; set; }
 
-    [Column("damage_time")]
+    [Column("damage_time", TypeName = "timestamp without time zone")]
     public DateTime? DamageTime { get; set; }
 
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime? CreatedAt { get; set; }
-
-    [Column("damage_index", TypeName = "character varying")]
-    public string? DamageIndex { get; set; }
-
-    [Column("damage_type", TypeName = "character varying")]
-    public string? DamageType { get; set; }
 }

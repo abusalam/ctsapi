@@ -331,12 +331,12 @@ namespace CTS_BE.Controllers
         }
 
         [HttpGet("GetALLStampCategoryTypes")]
-        public async Task<APIResponse<IEnumerable<CategoryTypeDTO>>> GetALLStampCategoryTypes()
+        public async Task<APIResponse<IEnumerable<StampCategoryDTO>>> GetALLStampCategoryTypes()
         {
-            APIResponse<IEnumerable<CategoryTypeDTO>> response = new();
+            APIResponse<IEnumerable<StampCategoryDTO>> response = new();
             try
             {
-                IEnumerable<CategoryTypeDTO> allStampCategorys = await _stampMasterService.GetAllCategoryType();
+                IEnumerable<StampCategoryDTO> allStampCategorys = await _stampMasterService.GetAllCategoryType();
                 if (allStampCategorys.Count() > 0)
                 {
                     response.apiResponseStatus = Enum.APIResponseStatus.Success;
@@ -1080,6 +1080,15 @@ namespace CTS_BE.Controllers
                         },
                         new ListHeader
                         {
+                            Name ="Stamp Category Id",
+                            DataType = "numeric",
+                            FieldName = "stampCategoryId",
+                            FilterField = "stampCategoryId",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
                             Name ="Stamp Category",
                             DataType = "string",
                             FieldName = "stampCategory1",
@@ -1129,6 +1138,24 @@ namespace CTS_BE.Controllers
                             DataType = "numeric",
                             FieldName = "stampLabelId",
                             FilterField = "StampLabelId",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Created At",
+                            DataType = "string",
+                            FieldName = "createdAt",
+                            FilterField = "CreatedAt",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Created By",
+                            DataType = "numeric",
+                            FieldName = "createdBy",
+                            FilterField = "CreatedBy",
                             IsFilterable = true,
                             IsSortable = true,
                         }

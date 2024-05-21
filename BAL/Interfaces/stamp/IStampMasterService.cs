@@ -14,7 +14,7 @@ namespace CTS_BE.BAL.Interfaces.stamp
         // Stamp category Interfaces
         public Task<IEnumerable<StampCategoryDTO>> ListAllStampCategories(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null);
         public Task<IEnumerable<StampCategoryDTO>> GetAllStampCategories();
-        public Task<IEnumerable<CategoryTypeDTO>> GetAllCategoryType();
+        public Task<IEnumerable<StampCategoryDTO>> GetAllCategoryType();
         public Task<bool> CreateNewStampCategory(StampCategoryInsertDTO stampCategory);
         public Task<IEnumerable<StampCategoryDTO>> GetStampCategoryById(long id);
         public Task<bool> DeleteStampCategorysById(long id);
@@ -42,5 +42,6 @@ namespace CTS_BE.BAL.Interfaces.stamp
 
         // stamp combonation
         public Task<IEnumerable<StampCombinationDTO>> StampCombinationList(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null);
+        public Task<bool> DeleteStampCombinationById(long id);
     }
 }

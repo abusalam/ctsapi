@@ -25,6 +25,12 @@ public partial class StampCombination
     [Column("is_active")]
     public bool? IsActive { get; set; }
 
+    [Column("created_by")]
+    public long? CreatedBy { get; set; }
+
+    [Column("created_at", TypeName = "timestamp without time zone")]
+    public DateTime? CreatedAt { get; set; }
+
     [ForeignKey("StampCategoryId")]
     [InverseProperty("StampCombinations")]
     public virtual StampCategory StampCategory { get; set; } = null!;
