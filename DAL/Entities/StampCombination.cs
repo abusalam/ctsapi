@@ -22,6 +22,9 @@ public partial class StampCombination
     [Column("stamp_denomination_id")]
     public long StampDenominationId { get; set; }
 
+    [Column("is_active")]
+    public bool? IsActive { get; set; }
+
     [ForeignKey("StampCategoryId")]
     [InverseProperty("StampCombinations")]
     public virtual StampCategory StampCategory { get; set; } = null!;

@@ -39,5 +39,8 @@ namespace CTS_BE.BAL.Interfaces.stamp
         public Task<IEnumerable<DiscountDetailsDTO>> ListAllDiscountDetails(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null);
         public Task<bool> CreateNewStampDiscountDetails(DiscountDetailsInsertDTO stampDiscountDetails);
 
+
+        // stamp combonation
+        public Task<IEnumerable<StampCombinationDTO>> StampCombinationList(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null);
     }
 }

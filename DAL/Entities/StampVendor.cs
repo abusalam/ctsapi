@@ -26,10 +26,10 @@ public partial class StampVendor
     public long? PhoneNumber { get; set; }
 
     [Column("effective_from")]
-    public DateTime? EffectiveFrom { get; set; }
+    public DateOnly EffectiveFrom { get; set; }
 
     [Column("valid_upto")]
-    public DateTime? ValidUpto { get; set; }
+    public DateOnly ValidUpto { get; set; }
 
     [Column("pan_number")]
     [StringLength(10)]

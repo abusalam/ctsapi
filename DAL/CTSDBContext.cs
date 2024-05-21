@@ -44,6 +44,8 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<ChequeCountRecord> ChequeCountRecords { get; set; }
 
+    public virtual DbSet<ChequeDamage> ChequeDamages { get; set; }
+
     public virtual DbSet<ChequeDistribute> ChequeDistributes { get; set; }
 
     public virtual DbSet<ChequeEntry> ChequeEntries { get; set; }
@@ -145,7 +147,8 @@ public partial class CTSDBContext : DbContext
     public virtual DbSet<VoucherEntry> VoucherEntries { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseNpgsql("Name=CTSLocal");
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseNpgsql("Host=10.176.100.34;Database=new_cts;Username=postgres;Password=pgsql;port=5432");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -640,6 +643,8 @@ public partial class CTSDBContext : DbContext
         {
             entity.HasKey(e => e.StampCombinationId).HasName("stamp_combination_pkey");
 
+            entity.Property(e => e.IsActive).HasDefaultValueSql("true");
+
             entity.HasOne(d => d.StampCategory).WithMany(p => p.StampCombinations)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("stamp_combination_stamp_category_id_fkey");
@@ -677,7 +682,7 @@ public partial class CTSDBContext : DbContext
 
         modelBuilder.Entity<StampVendorType>(entity =>
         {
-            entity.HasKey(e => e.VendorTypeId).HasName("vendor_type_pkey");
+            entity.HasKey(e => e.VendorTypeId).HasName("stamp_vendor_type_pkey");
 
             entity.Property(e => e.VendorTypeId).HasDefaultValueSql("nextval('cts_master.vendor_type_vendor_type_id_seq'::regclass)");
             entity.Property(e => e.IsActive).HasDefaultValueSql("true");
@@ -850,6 +855,7 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.MajorHead).IsFixedLength();
             entity.Property(e => e.TreasuryCode).IsFixedLength();
         });
+        modelBuilder.HasSequence("category_type_category_type_id_seq", "cts_master");
         modelBuilder.HasSequence("discount_details_discount_id_seq", "cts_master");
         modelBuilder.HasSequence("stamp_category_stamp_category_id_seq", "cts_master");
         modelBuilder.HasSequence("stamp_combination_stamp_combination_id_seq", "cts_master");

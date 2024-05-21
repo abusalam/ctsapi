@@ -1,4 +1,5 @@
 ﻿using CTS_BE.BAL.Interfaces.stamp;
+using CTS_BE.BAL.Services.stamp;
 using CTS_BE.Common;
 using CTS_BE.DAL.Entities;
 using CTS_BE.DAL.Interfaces.stamp;
@@ -1055,5 +1056,106 @@ namespace CTS_BE.Controllers
                 return response;
             }
         }
+        // Stamp combination details
+        [HttpPatch("StampCombinationList")]
+        public async Task<APIResponse<DynamicListResult<IEnumerable<StampCombinationDTO>>>> StampCombinationList(DynamicListQueryParameters dynamicListQueryParameters)
+        {
+            //Get all stamp discount details with sort & filter parameters
+            APIResponse<DynamicListResult<IEnumerable<StampCombinationDTO>>> response = new();
+            try
+            {
+                IEnumerable<StampCombinationDTO> discountDetailsList = await _stampMasterService.StampCombinationList(dynamicListQueryParameters.filterParameters, dynamicListQueryParameters.PageIndex, dynamicListQueryParameters.PageSize, dynamicListQueryParameters.sortParameters);
+                DynamicListResult<IEnumerable<StampCombinationDTO>> result = new DynamicListResult<IEnumerable<StampCombinationDTO>>
+                {
+                    Headers = new List<ListHeader>
+                    {
+                        new ListHeader
+                        {
+                            Name ="Stamp Combination Id",
+                            DataType = "numeric",
+                            FieldName = "stampCombinationId",
+                            FilterField = "StampCombinationId",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Stamp Category",
+                            DataType = "string",
+                            FieldName = "stampCategory1",
+                            FilterField = "StampCategory1",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Description",
+                            DataType = "string",
+                            FieldName = "description",
+                            FilterField = "Description",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Denomination",
+                            DataType = "decimal",
+                            FieldName = "denomination",
+                            FilterField = "Denomination",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Stamp Denomination Id",
+                            DataType = "numeric",
+                            FieldName = "stampDenominationId",
+                            FilterField = "StampDenominationId",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="No Label Per Sheet",
+                            DataType = "numeric",
+                            FieldName = "noLabelPerSheet",
+                            FilterField = "NoLabelPerSheet",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Stamp Label Id",
+                            DataType = "numeric",
+                            FieldName = "stampLabelId",
+                            FilterField = "StampLabelId",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        }
+                    },
+                Data = discountDetailsList,
+                    DataCount = 1
+                };
+                if (discountDetailsList.Count() > 0)
+                {
+                    response.Message = AppConstants.DataFound;
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                }
+                else
+                {
+                    response.Message = AppConstants.DataNotFound;
+                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                }
+                response.result = result;
+                return response;
+            }
+            catch (Exception Ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = Ex.Message;
+                return response;
+            }
+        }
     }
 }
+

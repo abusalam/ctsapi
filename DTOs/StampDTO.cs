@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 using CTS_BE.Common;
+using CTS_BE.DAL.Entities;
 
 namespace CTS_BE.DTOs
 {
@@ -191,6 +192,23 @@ namespace CTS_BE.DTOs
 
         [StringLength(2, ErrorMessage = "String Length must be 2.")]
         public string? StampCategory { get; set; }
+
+    }
+    public class StampCombinationDTO
+    {
+        public long StampCombinationId { get; set; }
+        //public long LabelId { get; set; }
+        public string? StampCategory1 { get; set; }
+        public string? Description { get; set; }
+        public decimal Denomination { get; set; }
+        public long StampDenominationId { get; set; }
+        public int NoLabelPerSheet { get; set; }
+        public long StampLabelId { get; set; }
+        public bool IsActive { get; set; } = true;
+        //public virtual StampCategoryDTO StampCategory { get; set; } = null!;
+        //public virtual StampTypeDTO StampDenomination { get; set; } = null!;
+        //public virtual StampLabelMasterDTO StampLabel { get; set; } = null!;
+
 
     }
 

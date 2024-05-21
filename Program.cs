@@ -59,6 +59,7 @@ builder.Services.AddTransient<IStampTypeRepository, StampTypeRepository>();
 builder.Services.AddTransient<IDiscountDetailsRepository, DiscountDetailsRepository>();
 builder.Services.AddTransient<IStampVendorTypeRepository, StampVendorTypeRepository>();
 builder.Services.AddTransient<IStampCategoryTypeRepository, StampCateroryTypeRepository>();
+builder.Services.AddTransient<IStampCombinationRepository, StampCombinationRepository>();
 
 //Services
 builder.Services.AddTransient<IChequeCountService, ChequeCountService>();

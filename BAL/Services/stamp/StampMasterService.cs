@@ -14,6 +14,7 @@ namespace CTS_BE.BAL.Services.stamp
         private readonly IStampVendorRepository _stampVendorRepo;
         private readonly IStampCategoryTypeRepository _stampCategoryTypeRepo;
         private readonly IStampVendorTypeRepository _stampVendorTypeRepo;
+        private readonly IStampCombinationRepository _stampCombinationRepo;
         private readonly IStampTypeRepository _stampTypeRepo;
         private readonly IMapper _mapper;
         private readonly IClaimService _auth;
@@ -25,7 +26,8 @@ namespace CTS_BE.BAL.Services.stamp
             IStampCategoryTypeRepository stampCategoryTypeRepo, 
             IStampVendorTypeRepository stampVendorTypeRepo, 
             IStampTypeRepository stampTypeRepo, 
-            IDiscountDetailsRepository discountDetailRepo, 
+            IDiscountDetailsRepository discountDetailRepo,
+            IStampCombinationRepository stampCombinationRepo,
             IMapper mapper, 
             IClaimService claim)
         {
@@ -36,6 +38,7 @@ namespace CTS_BE.BAL.Services.stamp
             _stampCategoryTypeRepo = stampCategoryTypeRepo;
             _stampVendorTypeRepo = stampVendorTypeRepo;
             _stampTypeRepo = stampTypeRepo;
+            _stampCombinationRepo = stampCombinationRepo;
             _mapper = mapper;
             _auth = claim;
         }
@@ -413,6 +416,58 @@ namespace CTS_BE.BAL.Services.stamp
             _discountDetailRepo.Add(stampDiscount);
             _discountDetailRepo.SaveChangesManaged();
             return await Task.FromResult(true);
+        }
+
+        async Task<IEnumerable<StampCombinationDTO>> IStampMasterService.StampCombinationList(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null)
+        {
+
+        var stampCombinationEntities = await _stampCombinationRepo.GetSelectedColumnByConditionAsync(
+        entity => entity.IsActive == true,
+        entity => new StampCombinationDTO
+        {
+            StampCombinationId = entity.StampCombinationId,
+            StampCategory1 = entity.StampCategory.StampCategory1,
+            Description = entity.StampCategory.Description,
+            Denomination = entity.StampDenomination.Denomination,
+            StampDenominationId = entity.StampDenominationId,
+            NoLabelPerSheet = entity.StampLabel.NoLabelPerSheet,
+            StampLabelId = entity.StampLabelId,
+            IsActive = entity.IsActive,
+            //StampCategory = new StampCategoryDTO
+            //{
+            //    // Map the properties of StampCategoryDTO
+            //    // Assuming that StampCategoryDTO has similar properties to StampCategory entity
+            //    // Example:
+            //    // StampCategoryId = entity.StampCategory.StampCategoryId,
+            //    // CategoryName = entity.StampCategory.CategoryName,
+            //    // (and so on for other properties)
+            //},
+            //StampDenomination = new StampTypeDTO
+            //{
+            //    // Map the properties of StampTypeDTO
+            //    // Example:
+            //    // StampTypeId = entity.StampDenomination.StampTypeId,
+            //    // TypeName = entity.StampDenomination.TypeName,
+            //    // (and so on for other properties)
+            //},
+            //StampLabel = new StampLabelMasterDTO
+            //{
+            //    // Map the properties of StampLabelMasterDTO
+            //    // Example:
+            //    // StampLabelId = entity.StampLabel.StampLabelId,
+            //    // LabelName = entity.StampLabel.LabelName,
+            //    // (and so on for other properties)
+            //}
+        },
+        pageIndex,
+        pageSize,
+        filters,
+        sortParameters?.Field,
+        sortParameters?.Order
+    );
+
+            // Return the list of StampCombinationDTO
+            return stampCombinationEntities;
         }
     }
 }
