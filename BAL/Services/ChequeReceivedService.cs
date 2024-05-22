@@ -29,7 +29,7 @@ namespace CTS_BE.BAL.Services
             foreach (var chequeReceivedDamagedDetail in chequeReceivedDTO.ChequeReceivedDamagedDetails)
             {
                 exclusions = chequeReceivedDamagedDetail.DamageIndex.Split(',').Select(int.Parse).ToList();
-                var chequeEntryId = chequeReceivedDamagedDetail.ChequeEntryId;
+                var invoiceDeatilsId = chequeReceivedDamagedDetail.InvoiceDeatilsId;
                 var invoiceDetails = await _ChequeInvoiceDetailRepository.GetSingleSelectedColumnByConditionAsync(entity => entity.ChequeInvoiceId == 91, entity => new
                 {
                     Start = entity.Start,
@@ -38,7 +38,7 @@ namespace CTS_BE.BAL.Services
                 List<(int start, int end)> values = CommonHelper.SplitRange(invoiceDetails.Start, invoiceDetails.End, exclusions);
                 foreach (var item in values)
                 {
-                    chequeReceivedModel.Add(new ChequeReceivedModel { Start = item.start, End = item.end, Quantity = item.end - item.start, ChequeEntryId = chequeEntryId });
+                    chequeReceivedModel.Add(new ChequeReceivedModel { Start = item.start, End = item.end, Quantity = item.end - item.start, InvoiceDeatilsId = invoiceDeatilsId });
                 }
                 //
                 Tuple<Int16, List<int>> exclusion = new(chequeReceivedDamagedDetail.DamageType, exclusions);
