@@ -25,8 +25,8 @@ public partial class ChequeReceived
     [Column("created_at")]
     public DateTime? CreatedAt { get; set; }
 
-    [Column("cheque_entry_id")]
-    public long? ChequeEntryId { get; set; }
+    [Column("cheque_invoice_details_id")]
+    public long? ChequeInvoiceDetailsId { get; set; }
 
     [Column("start")]
     public short? Start { get; set; }

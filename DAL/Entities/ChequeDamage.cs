@@ -22,8 +22,8 @@ public partial class ChequeDamage
     [Column("user_id")]
     public short? UserId { get; set; }
 
-    [Column("cheque_entry_id")]
-    public long? ChequeEntryId { get; set; }
+    [Column("cheque_invoice_details_id")]
+    public long? ChequeInvoiceDetailsId { get; set; }
 
     [Column("damage_time", TypeName = "timestamp without time zone")]
     public DateTime? DamageTime { get; set; }

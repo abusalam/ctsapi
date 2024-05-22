@@ -100,6 +100,8 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<StampCombination> StampCombinations { get; set; }
 
+    public virtual DbSet<StampIndent> StampIndents { get; set; }
+
     public virtual DbSet<StampLabelMaster> StampLabelMasters { get; set; }
 
     public virtual DbSet<StampType> StampTypes { get; set; }
@@ -147,7 +149,7 @@ public partial class CTSDBContext : DbContext
     public virtual DbSet<VoucherEntry> VoucherEntries { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseNpgsql("Name=CTS_BEDBConnection");
+        => optionsBuilder.UseNpgsql("name=CTS_BEDBConnection");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -660,6 +662,19 @@ public partial class CTSDBContext : DbContext
             entity.HasOne(d => d.StampLabel).WithMany(p => p.StampCombinations)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("stamp_combination_stamp_label_id_fkey");
+        });
+
+        modelBuilder.Entity<StampIndent>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("stamp_indent_pkey");
+
+            entity.HasOne(d => d.RaisedByTreasuryNavigation).WithMany(p => p.StampIndents)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("stamp_indent_raised_by_treasury_fkey");
+
+            entity.HasOne(d => d.StampCombination).WithMany(p => p.StampIndents)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("stamp_indent_stamp_combination_id_fkey");
         });
 
         modelBuilder.Entity<StampLabelMaster>(entity =>
