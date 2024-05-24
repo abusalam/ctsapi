@@ -58,6 +58,8 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<ChequeInvoiceDetail> ChequeInvoiceDetails { get; set; }
 
+    public virtual DbSet<ChequeLocker> ChequeLockers { get; set; }
+
     public virtual DbSet<ChequeReceived> ChequeReceiveds { get; set; }
 
     public virtual DbSet<Ddo> Ddos { get; set; }
@@ -655,22 +657,28 @@ public partial class CTSDBContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("stamp_combination_stamp_category_id_fkey");
 
-            entity.HasOne(d => d.StampDenomination).WithMany(p => p.StampCombinations)
+            entity.HasOne(d => d.StampDenomination).WithMany(p => p.StampCombinationStampDenominations)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("stamp_combination_stamp_denomination_id_fkey");
 
             entity.HasOne(d => d.StampLabel).WithMany(p => p.StampCombinations)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("stamp_combination_stamp_label_id_fkey");
+
+            entity.HasOne(d => d.StampType).WithMany(p => p.StampCombinationStampTypes)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("stamp_combination_stamp_type_id_fkey");
         });
 
         modelBuilder.Entity<StampIndent>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("stamp_indent_pkey");
 
-            entity.HasOne(d => d.RaisedByTreasuryNavigation).WithMany(p => p.StampIndents)
+            entity.HasOne(d => d.RaisedByTreasuryNavigation).WithMany(p => p.StampIndentRaisedByTreasuryNavigations)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("stamp_indent_raised_by_treasury_fkey");
+
+            entity.HasOne(d => d.RaisedToTreasuryNavigation).WithMany(p => p.StampIndentRaisedToTreasuryNavigations).HasConstraintName("stamp_indent_raised_to_treasury_fkey");
 
             entity.HasOne(d => d.StampCombination).WithMany(p => p.StampIndents)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -878,6 +886,7 @@ public partial class CTSDBContext : DbContext
         modelBuilder.HasSequence("discount_details_discount_id_seq", "cts_master");
         modelBuilder.HasSequence("stamp_category_stamp_category_id_seq", "cts_master");
         modelBuilder.HasSequence("stamp_combination_stamp_combination_id_seq", "cts_master");
+        modelBuilder.HasSequence("stamp_indent_id_seq", "cts");
         modelBuilder.HasSequence("stamp_label_master_label_id_seq", "cts_master");
         modelBuilder.HasSequence("stamp_type_denomination_id_seq", "cts_master");
         modelBuilder.HasSequence("stamp_vendor_vendor_code_seq", "cts_master");

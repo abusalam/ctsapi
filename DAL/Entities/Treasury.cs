@@ -36,7 +36,10 @@ public partial class Treasury
     public virtual ICollection<BillSubdetailInfo> BillSubdetailInfos { get; set; } = new List<BillSubdetailInfo>();
 
     [InverseProperty("RaisedByTreasuryNavigation")]
-    public virtual ICollection<StampIndent> StampIndents { get; set; } = new List<StampIndent>();
+    public virtual ICollection<StampIndent> StampIndentRaisedByTreasuryNavigations { get; set; } = new List<StampIndent>();
+
+    [InverseProperty("RaisedToTreasuryNavigation")]
+    public virtual ICollection<StampIndent> StampIndentRaisedToTreasuryNavigations { get; set; } = new List<StampIndent>();
 
     [InverseProperty("Treasury")]
     public virtual ICollection<TreasuryHasBranch> TreasuryHasBranches { get; set; } = new List<TreasuryHasBranch>();

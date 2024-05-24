@@ -34,5 +34,8 @@ public partial class StampType
     public long? UpdatedBy { get; set; }
 
     [InverseProperty("StampDenomination")]
-    public virtual ICollection<StampCombination> StampCombinations { get; set; } = new List<StampCombination>();
+    public virtual ICollection<StampCombination> StampCombinationStampDenominations { get; set; } = new List<StampCombination>();
+
+    [InverseProperty("StampType")]
+    public virtual ICollection<StampCombination> StampCombinationStampTypes { get; set; } = new List<StampCombination>();
 }

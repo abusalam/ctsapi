@@ -8,7 +8,7 @@ namespace CTS_BE.DTOs
 {
     public class StampLabelMasterDTO
     {
-        public int NoLabelPerSheet { get; set; }
+        public short NoLabelPerSheet { get; set; }
 
         public bool? IsActive { get; set; }
 
@@ -24,7 +24,7 @@ namespace CTS_BE.DTOs
     }
     public class StampLabelMasterInsertDTO
     {
-        public int NoLabelPerSheet { get; set; }
+        public short NoLabelPerSheet { get; set; }
 
         public bool? IsActive { get; set; }
     }

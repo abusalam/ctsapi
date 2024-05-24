@@ -13,6 +13,7 @@ namespace CTS_BE.DAL.Repositories.stamp
             _context.Set<StampCombination>()
                 .Include(t => t.StampCategory)
                 .Include(t => t.StampDenomination)
+                .Include(t => t.StampType)
                 .Include(t => t.StampLabel);
         }
 

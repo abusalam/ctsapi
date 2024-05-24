@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -6,6 +6,13 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>CTS_BE</RootNamespace>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="BAL\Interfaces\stamp\IStampIndentService.cs" />
+    <Compile Remove="BAL\Interfaces\stamp\IStampMasterService - Copy.cs" />
+    <Compile Remove="BAL\Services\stamp\StampIndentService.cs" />
+    <Compile Remove="DAL\Interfaces\stamp\IStampCategoryRepository - Copy.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />

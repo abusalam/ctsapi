@@ -25,18 +25,21 @@ public partial class StampCombination
     [Column("is_active")]
     public bool? IsActive { get; set; }
 
+    [Column("created_at", TypeName = "timestamp without time zone")]
+    public DateTime? CreatedAt { get; set; }
+
     [Column("created_by")]
     public long? CreatedBy { get; set; }
 
-    [Column("created_at", TypeName = "timestamp without time zone")]
-    public DateTime? CreatedAt { get; set; }
+    [Column("stamp_type_id")]
+    public long StampTypeId { get; set; }
 
     [ForeignKey("StampCategoryId")]
     [InverseProperty("StampCombinations")]
     public virtual StampCategory StampCategory { get; set; } = null!;
 
     [ForeignKey("StampDenominationId")]
-    [InverseProperty("StampCombinations")]
+    [InverseProperty("StampCombinationStampDenominations")]
     public virtual StampType StampDenomination { get; set; } = null!;
 
     [InverseProperty("StampCombination")]
@@ -45,4 +48,8 @@ public partial class StampCombination
     [ForeignKey("StampLabelId")]
     [InverseProperty("StampCombinations")]
     public virtual StampLabelMaster StampLabel { get; set; } = null!;
+
+    [ForeignKey("StampTypeId")]
+    [InverseProperty("StampCombinationStampTypes")]
+    public virtual StampType StampType { get; set; } = null!;
 }

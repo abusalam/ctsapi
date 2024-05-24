@@ -14,7 +14,7 @@ public partial class StampLabelMaster
     public long LabelId { get; set; }
 
     [Column("no_label_per_sheet")]
-    public int NoLabelPerSheet { get; set; }
+    public short NoLabelPerSheet { get; set; }
 
     [Required]
     [Column("is_active")]

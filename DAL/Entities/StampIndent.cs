@@ -53,8 +53,12 @@ public partial class StampIndent
     public DateTime CreatedAt { get; set; }
 
     [ForeignKey("RaisedByTreasury")]
-    [InverseProperty("StampIndents")]
+    [InverseProperty("StampIndentRaisedByTreasuryNavigations")]
     public virtual Treasury RaisedByTreasuryNavigation { get; set; } = null!;
+
+    [ForeignKey("RaisedToTreasury")]
+    [InverseProperty("StampIndentRaisedToTreasuryNavigations")]
+    public virtual Treasury? RaisedToTreasuryNavigation { get; set; }
 
     [ForeignKey("StampCombinationId")]
     [InverseProperty("StampIndents")]
