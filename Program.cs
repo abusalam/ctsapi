@@ -61,6 +61,7 @@ builder.Services.AddTransient<IStampVendorTypeRepository, StampVendorTypeReposit
 builder.Services.AddTransient<IStampCategoryTypeRepository, StampCateroryTypeRepository>();
 builder.Services.AddTransient<IStampCombinationRepository, StampCombinationRepository>();
 builder.Services.AddTransient<IStampIndentRepository, StampIndentRepository>();
+builder.Services.AddTransient<IStampInvoiceRepository, StampInvoiceRepository>();
 
 
 //Services

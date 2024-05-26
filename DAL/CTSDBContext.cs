@@ -104,6 +104,8 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<StampIndent> StampIndents { get; set; }
 
+    public virtual DbSet<StampInvoice> StampInvoices { get; set; }
+
     public virtual DbSet<StampLabelMaster> StampLabelMasters { get; set; }
 
     public virtual DbSet<StampType> StampTypes { get; set; }
@@ -150,8 +152,7 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<VoucherEntry> VoucherEntries { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseNpgsql("name=CTS_BEDBConnection");
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -674,15 +675,18 @@ public partial class CTSDBContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("stamp_indent_pkey");
 
-            entity.HasOne(d => d.RaisedByTreasuryNavigation).WithMany(p => p.StampIndentRaisedByTreasuryNavigations)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("stamp_indent_raised_by_treasury_fkey");
-
-            entity.HasOne(d => d.RaisedToTreasuryNavigation).WithMany(p => p.StampIndentRaisedToTreasuryNavigations).HasConstraintName("stamp_indent_raised_to_treasury_fkey");
-
             entity.HasOne(d => d.StampCombination).WithMany(p => p.StampIndents)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("stamp_indent_stamp_combination_id_fkey");
+        });
+
+        modelBuilder.Entity<StampInvoice>(entity =>
+        {
+            entity.HasKey(e => e.StampInvoiceId).HasName("stamp_invoice_pkey");
+
+            entity.HasOne(d => d.StampIndent).WithMany(p => p.StampInvoices)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("stamp_invoice_stamp_indent_id_fkey");
         });
 
         modelBuilder.Entity<StampLabelMaster>(entity =>
@@ -887,6 +891,7 @@ public partial class CTSDBContext : DbContext
         modelBuilder.HasSequence("stamp_category_stamp_category_id_seq", "cts_master");
         modelBuilder.HasSequence("stamp_combination_stamp_combination_id_seq", "cts_master");
         modelBuilder.HasSequence("stamp_indent_id_seq", "cts");
+        modelBuilder.HasSequence("stamp_invoice_stamp_invoice_id_seq", "cts");
         modelBuilder.HasSequence("stamp_label_master_label_id_seq", "cts_master");
         modelBuilder.HasSequence("stamp_type_denomination_id_seq", "cts_master");
         modelBuilder.HasSequence("stamp_vendor_vendor_code_seq", "cts_master");

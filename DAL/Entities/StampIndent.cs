@@ -20,7 +20,7 @@ public partial class StampIndent
     [StringLength(20)]
     public string MemoNumber { get; set; } = null!;
 
-    [Column("memo_date", TypeName = "timestamp without time zone")]
+    [Column("memo_date")]
     public DateTime MemoDate { get; set; }
 
     [Column("remarks")]
@@ -43,24 +43,20 @@ public partial class StampIndent
     [Column("status")]
     public short Status { get; set; }
 
-    [Column("raised_by_treasury")]
-    public short RaisedByTreasury { get; set; }
-
-    [Column("raised_to_treasury")]
-    public short? RaisedToTreasury { get; set; }
-
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime CreatedAt { get; set; }
 
-    [ForeignKey("RaisedByTreasury")]
-    [InverseProperty("StampIndentRaisedByTreasuryNavigations")]
-    public virtual Treasury RaisedByTreasuryNavigation { get; set; } = null!;
+    [Column("created_by")]
+    public long CreatedBy { get; set; }
 
-    [ForeignKey("RaisedToTreasury")]
-    [InverseProperty("StampIndentRaisedToTreasuryNavigations")]
-    public virtual Treasury? RaisedToTreasuryNavigation { get; set; }
+    [Column("raised_to_treasury_code")]
+    [StringLength(3)]
+    public string? RaisedToTreasuryCode { get; set; }
 
     [ForeignKey("StampCombinationId")]
     [InverseProperty("StampIndents")]
     public virtual StampCombination StampCombination { get; set; } = null!;
+
+    [InverseProperty("StampIndent")]
+    public virtual ICollection<StampInvoice> StampInvoices { get; set; } = new List<StampInvoice>();
 }

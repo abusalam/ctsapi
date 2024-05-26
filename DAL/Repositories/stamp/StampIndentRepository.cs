@@ -11,9 +11,7 @@ namespace CTS_BE.DAL.Repositories.stamp
         {
             _context = context;
             _context.Set<StampIndent>()
-                .Include(t => t.StampCombination)
-                .Include(t => t.RaisedToTreasuryNavigation)
-                .Include(t => t.RaisedByTreasuryNavigation);
+                .Include(t => t.StampCombination);
         }
 
     }

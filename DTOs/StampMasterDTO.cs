@@ -203,14 +203,15 @@ namespace CTS_BE.DTOs
         public bool IsActive { get; set; }
         public DateTime? CreatedAt { get; set; }
         public long? CreatedBy { get; set; }
-
-        //public virtual StampCategoryDTO StampCategory { get; set; } = null!;
-        //public virtual StampTypeDTO StampDenomination { get; set; } = null!;
-        //public virtual StampLabelMasterDTO StampLabel { get; set; } = null!;
-
-
     }
-
+    public class GetAllStampCombinationDTO
+    {
+        public long StampCombinationId { get; set; }
+        public string? StampCategory1 { get; set; }
+        public string? Description { get; set; }
+        public decimal Denomination { get; set; }
+        public int NoLabelPerSheet { get; set; }
+    }
 
     public class DiscountDetailsUpdateDTO
     {

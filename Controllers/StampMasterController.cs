@@ -1183,6 +1183,32 @@ namespace CTS_BE.Controllers
                 return response;
             }
         }
+
+        [HttpGet("GetALLStampCombinations")]
+        public async Task<APIResponse<IEnumerable<GetAllStampCombinationDTO>>> GetALLStampCombinations()
+        {
+            APIResponse<IEnumerable<GetAllStampCombinationDTO>> response = new();
+            try
+            {
+                IEnumerable<GetAllStampCombinationDTO> allStampCombinations = await _stampMasterService.GetAllStampCombinations();
+                if (allStampCombinations.Count() > 0)
+                {
+                    response.Message = AppConstants.DataFound;
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                    response.result = allStampCombinations;
+                    return response;
+                }
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = AppConstants.DataNotFound;
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = ex.Message;
+                return response;
+            }
+        }
     }
 }
 
