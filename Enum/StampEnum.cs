@@ -5,8 +5,9 @@
         ForwardedToSuperintendent = 10,
         ApproveBySuperintendent = 15,
         RejectBySuperintendent = 16,
-        FrowardToTreasuryOfficer = 11,
-        RejectByTreasuryOfficer = 12,
-        ApproveByTreasuryOfficer = 13,
+
+        ForwardedToTreasuryOfficer = 11,
+        ApproveByTreasuryOfficer = 12,
+        RejectByTreasuryOfficer = 13,
     }
 }

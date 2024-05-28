@@ -152,7 +152,8 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<VoucherEntry> VoucherEntries { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        => optionsBuilder.UseNpgsql("name=CTS_BEDBConnection");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -150,7 +150,7 @@ namespace CTS_BE.Controllers
                             FilterField = "Amount",
                             IsFilterable = true,
                             IsSortable = true,
-                        }, 
+                        },
                         new ListHeader
                         {
                             Name ="Created At",
@@ -163,16 +163,57 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Status",
-                            DataType = "numeric",
+                            DataType = "object",
+                            ObjectTypeValueField="status",
                             FieldName = "status",
                             FilterField = "Status",
+                            FilterEnums = new List<FilterEnum>
+                            {
+                                new FilterEnum
+                                {
+                                    Value = (int) Enum.StampIndentStatusEnum.ForwardedToSuperintendent,
+                                    Label = "Forwarded To Superintendent",
+                                    StyleClass = "primary"
+                                },
+                                new FilterEnum
+                                {
+                                    Value = (int) Enum.StampIndentStatusEnum.ForwardedToTreasuryOfficer,
+                                    Label = "Forwarded To Treasury Office",
+                                    StyleClass = "primary"
+                                },
+                                new FilterEnum
+                                {
+                                    Value = (int) Enum.StampIndentStatusEnum.ApproveBySuperintendent,
+                                    Label = "Approve by Superintendent",
+                                    StyleClass = "success"
+                                },
+                                new FilterEnum
+                                {
+                                    Value = (int) Enum.StampIndentStatusEnum.ApproveByTreasuryOfficer,
+                                    Label = "Approve by Treasury Office",
+                                    StyleClass = "success"
+                                },
+                                new FilterEnum
+                                {
+                                    Value = (int) Enum.StampIndentStatusEnum.RejectBySuperintendent,
+                                    Label = "Reject by Superintendent",
+                                    StyleClass = "warning"
+                                },
+                                new FilterEnum
+                                {
+                                    Value = (int) Enum.StampIndentStatusEnum.RejectByTreasuryOfficer,
+                                    Label = "Reject by Treasury Office",
+                                    StyleClass = "warning"
+                                },
+
+                            },
                             IsFilterable = true,
                             IsSortable = true,
                         }
-                       
+
                     },
 
-                Data = labelList,
+                    Data = labelList,
                     DataCount = 1
                 };
                 if (labelList.Count() > 0)
@@ -215,6 +256,67 @@ namespace CTS_BE.Controllers
                 response.apiResponseStatus = Enum.APIResponseStatus.Error;
                 response.result = false;
                 response.Message = AppConstants.MissingField;
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = ex.Message;
+                return response;
+            }
+        }
+
+        // approve
+
+        [HttpPatch("ApproveStampIndent")]
+        public async Task<APIResponse<bool>> ApproveStampIndent(long stampIndentId)
+        {
+            APIResponse<bool> response = new();
+            try
+            {
+                //if (stampIndentId != null)
+                //{
+                    if (await _stampService.ApproveStampIndent(stampIndentId))
+                    {
+                        response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                        response.Message = AppConstants.ApproveStatusDone;
+                        response.result = true;
+                        return response;
+                    }
+                //}
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.result = false;
+                response.Message = AppConstants.ApproveStatusFail;
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = ex.Message;
+                return response;
+            }
+        }
+
+        // reject stamp Indent
+        [HttpPatch("RejectStampIndent")]
+        public async Task<APIResponse<bool>> RejectStampIndent(long stampIndentId)
+        {
+            APIResponse<bool> response = new();
+            try
+            {
+                //if (stampIndentId != null)
+                //{
+                    if (await _stampService.RejectStampIndent(stampIndentId))
+                    {
+                        response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                        response.Message = AppConstants.RejectStatusDone;
+                        response.result = true;
+                        return response;
+                    }
+                //}
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.result = false;
+                response.Message = AppConstants.RejectStatusFail;
                 return response;
             }
             catch (Exception ex)

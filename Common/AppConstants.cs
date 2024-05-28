@@ -49,5 +49,9 @@ namespace CTS_BE.Common
         public const string DataAdded = "Data added successfully";
         public const string MissingField = "Missing fields in form body";
         public const string Deleted = "Data deleted Successfully";
+        public const string ApproveStatusDone = "Approve Status Updated Successfully";
+        public const string ApproveStatusFail = "Approve Status Update Failed";
+        public const string RejectStatusDone = "Rejection Status Updated Successfully";
+        public const string RejectStatusFail = "Rejection Status Update Failed";
     }
 }

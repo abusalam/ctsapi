@@ -33,4 +33,7 @@ public partial class ChequeReceived
 
     [Column("end")]
     public short? End { get; set; }
+
+    [Column("status")]
+    public int? Status { get; set; }
 }
