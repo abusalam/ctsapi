@@ -26,7 +26,7 @@ public partial class StampInvoice
     [StringLength(20)]
     public string InvoiceNumber { get; set; } = null!;
 
-    [Column("invoice_date", TypeName = "timestamp without time zone")]
+    [Column("invoice_date")]
     public DateTime InvoiceDate { get; set; }
 
     [Column("amount")]
@@ -38,6 +38,9 @@ public partial class StampInvoice
 
     [Column("quantity")]
     public short Quantity { get; set; }
+
+    [Column("created_at", TypeName = "timestamp without time zone")]
+    public DateTime? CreatedAt { get; set; }
 
     [ForeignKey("StampIndentId")]
     [InverseProperty("StampInvoices")]

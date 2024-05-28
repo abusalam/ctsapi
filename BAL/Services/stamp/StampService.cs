@@ -149,6 +149,7 @@ namespace CTS_BE.BAL.Services.stamp
         {
             var stampInvoiceInput = _mapper.Map<StampInvoice>(stampInvoice);
             stampInvoiceInput.CreatedBy = _auth.GetUserId();
+            stampInvoiceInput.CreatedAt = DateTime.Now;
             _stampInvoiceRepo.Add(stampInvoiceInput);
             bool res = await this.ApproveStampIndent(stampInvoice.StampIndentId);
             if (res)
