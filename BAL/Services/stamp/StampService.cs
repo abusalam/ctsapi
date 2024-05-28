@@ -56,7 +56,7 @@ namespace CTS_BE.BAL.Services.stamp
             return stampIndentList;
         }
 
-        async Task<bool> IStampService.CreateNewStampIndent(StampIndentInsertDTO stampIndent)
+        public async Task<bool> CreateNewStampIndent(StampIndentInsertDTO stampIndent)
         {
                 var stampIndentInput = _mapper.Map<StampIndent>(stampIndent);
                 stampIndentInput.CreatedAt = DateTime.Now;
@@ -69,7 +69,7 @@ namespace CTS_BE.BAL.Services.stamp
 
 
 
-        async Task<bool> IStampService.ApproveStampIndent(long stampIndentId)
+        public async Task<bool> ApproveStampIndent(long stampIndentId)
         {
             var data = await _stampIndentRepo.GetSingleAysnc(e=>e.Id == stampIndentId);
             if (data != null)
@@ -88,7 +88,7 @@ namespace CTS_BE.BAL.Services.stamp
             return await Task.FromResult(true);
         }
 
-        async Task<bool> IStampService.RejectStampIndent(long stampIndentId)
+        public async Task<bool> RejectStampIndent(long stampIndentId)
         {
             var data = await _stampIndentRepo.GetSingleAysnc(e => e.Id == stampIndentId);
             if (data != null)
@@ -145,15 +145,19 @@ namespace CTS_BE.BAL.Services.stamp
         }
 
 
-        async Task<bool> IStampService.CreateNewStampInvoice(StampInvoiceInsertDTO stampInvoice)
+        public async Task<bool> CreateNewStampInvoice(StampInvoiceInsertDTO stampInvoice)
         {
             var stampInvoiceInput = _mapper.Map<StampInvoice>(stampInvoice);
-            //stampInvoiceInput.CreatedAt = DateTime.Now;
             stampInvoiceInput.CreatedBy = _auth.GetUserId();
-            //stampInvoiceInput.Status = stampInvoiceInput.RaisedToTreasuryCode == null ? (short)10 : (short)11;
             _stampInvoiceRepo.Add(stampInvoiceInput);
+            bool res = await this.ApproveStampIndent(stampInvoice.StampIndentId);
+            if (res)
+            {
+                _stampInvoiceRepo.SaveChangesManaged();
+                return await Task.FromResult(true); 
+            }
             _stampInvoiceRepo.SaveChangesManaged();
-            return await Task.FromResult(true);
+            return await Task.FromResult(false);
         }
     }
 }

@@ -41,7 +41,7 @@ namespace CTS_BE.BAL.Services.stamp
         }
 
         // Stamp Label Services
-        async Task<bool> IStampMasterService.CreateNewStampLabel(StampLabelMasterInsertDTO stampLabel)
+        public async Task<bool> CreateNewStampLabel(StampLabelMasterInsertDTO stampLabel)
         {
             var stampLab = _mapper.Map<StampLabelMaster>(stampLabel);
             stampLab.CreatedAt = DateTime.Now;
@@ -65,7 +65,7 @@ namespace CTS_BE.BAL.Services.stamp
             }, pageIndex, pageSize, filters, (sortParameters != null) ? sortParameters.Field : null, (sortParameters != null) ? sortParameters.Order : null);
             return stampLabelList;
         }
-        async Task<IEnumerable<StampLabelMasterDTO>> IStampMasterService.GetAllStampLabels()
+        public async Task<IEnumerable<StampLabelMasterDTO>> GetAllStampLabels()
         {
             IEnumerable<StampLabelMasterDTO> stampLabelMasters = await _stampLabelRepo.GetSelectedColumnAsync(entity=>new StampLabelMasterDTO
             {
@@ -78,7 +78,7 @@ namespace CTS_BE.BAL.Services.stamp
             return stampLabelMasters;
         }
 
-        async Task<IEnumerable<StampLabelMasterDTO>> IStampMasterService.GetStampLabelById(long id)
+        public async Task<IEnumerable<StampLabelMasterDTO>> GetStampLabelById(long id)
         {
 
             IEnumerable<StampLabelMasterDTO> stampLabelMasters = await _stampLabelRepo.GetSelectedColumnByConditionAsync(e => e.LabelId == id, entity => new StampLabelMasterDTO
@@ -92,7 +92,7 @@ namespace CTS_BE.BAL.Services.stamp
 
             return stampLabelMasters;
         }
-        async Task<bool> IStampMasterService.DeleteStampLabelsById(long id)
+        public async Task<bool> DeleteStampLabelsById(long id)
         {
             var stampLabelMasters = await _stampLabelRepo.GetAllByConditionAsync(a=>a.LabelId == id);
             if (stampLabelMasters.Count() > 0)
@@ -141,7 +141,7 @@ namespace CTS_BE.BAL.Services.stamp
             return stampCategoryList;
         }
 
-        async Task<IEnumerable<StampCategoryDTO>> IStampMasterService.GetAllStampCategories()
+        public async Task<IEnumerable<StampCategoryDTO>> GetAllStampCategories()
         {
             IEnumerable<StampCategoryDTO> stampCategory = await _stampCategoryRepo.GetSelectedColumnAsync(entity => new StampCategoryDTO
             {
@@ -157,7 +157,7 @@ namespace CTS_BE.BAL.Services.stamp
             return stampCategory;
         }
 
-        async Task<bool> IStampMasterService.CreateNewStampCategory(StampCategoryInsertDTO stampCategory)
+        public async Task<bool> CreateNewStampCategory(StampCategoryInsertDTO stampCategory)
         {
             var stampCat = _mapper.Map<StampCategory>(stampCategory);
             stampCat.CreatedAt = DateTime.Now;
@@ -167,7 +167,7 @@ namespace CTS_BE.BAL.Services.stamp
             return await Task.FromResult(true);
         }
 
-        async Task<IEnumerable<StampCategoryDTO>> IStampMasterService.GetStampCategoryById(long id)
+        public async Task<IEnumerable<StampCategoryDTO>> GetStampCategoryById(long id)
         {
 
             IEnumerable<StampCategoryDTO> stampCategory = await _stampCategoryRepo.GetSelectedColumnByConditionAsync(e => e.StampCategoryId == id, entity => new StampCategoryDTO
@@ -185,7 +185,7 @@ namespace CTS_BE.BAL.Services.stamp
             return stampCategory;
         }
 
-        async Task<bool> IStampMasterService.DeleteStampCategorysById(long id)
+        public async Task<bool> DeleteStampCategorysById(long id)
         {
             var stampCategory = await _stampCategoryRepo.GetAllByConditionAsync(a => a.StampCategoryId == id);
             if (stampCategory.Count() > 0)
@@ -225,7 +225,7 @@ namespace CTS_BE.BAL.Services.stamp
             return stampVendorList;
         }
 
-        async Task<IEnumerable<StampVendorDTO>> IStampMasterService.GetAllStampVendors()
+        public async Task<IEnumerable<StampVendorDTO>> GetAllStampVendors()
         {
             IEnumerable<StampVendorDTO> stampVendor = await _stampVendorRepo.GetSelectedColumnAsync(entity => new StampVendorDTO {
                
@@ -245,7 +245,7 @@ namespace CTS_BE.BAL.Services.stamp
             return stampVendor;
         }
 
-        async Task<bool> IStampMasterService.CreateNewStampVendor(StampVendorInsertDTO stampVendor)
+        public async Task<bool> CreateNewStampVendor(StampVendorInsertDTO stampVendor)
         {
             var stampVen = _mapper.Map<StampVendor>(stampVendor);
             stampVen.CreatedAt = DateTime.Now;
@@ -255,7 +255,7 @@ namespace CTS_BE.BAL.Services.stamp
             return await Task.FromResult(true);
         }
 
-        async Task<IEnumerable<StampVendorDTO>> IStampMasterService.GetStampVendorById(long id)
+        public async Task<IEnumerable<StampVendorDTO>> GetStampVendorById(long id)
         {
             IEnumerable<StampVendorDTO> stampVendor = await _stampVendorRepo.GetSelectedColumnByConditionAsync(e => e.StampVendorId == id, entity => new StampVendorDTO
             {
@@ -274,7 +274,7 @@ namespace CTS_BE.BAL.Services.stamp
             return stampVendor;
         }
 
-        async Task<bool> IStampMasterService.DeleteStampVendorsById(long id)
+        public async Task<bool> DeleteStampVendorsById(long id)
         {
             var stampVendor = await _stampVendorRepo.GetAllByConditionAsync(a => a.StampVendorId == id);
             if (stampVendor.Count() > 0)
@@ -292,7 +292,7 @@ namespace CTS_BE.BAL.Services.stamp
         }
 
         // Stamp Type Services
-        async Task<IEnumerable<StampTypeDTO>> IStampMasterService.ListAllStampTypes(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null)
+        public async Task<IEnumerable<StampTypeDTO>> ListAllStampTypes(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null)
         {
             //Get all stamp types with sort & filter parameters
             IEnumerable<StampTypeDTO> stampTypeList = await _stampTypeRepo.GetSelectedColumnByConditionAsync(entity => true, entity => new StampTypeDTO
@@ -307,7 +307,7 @@ namespace CTS_BE.BAL.Services.stamp
             return stampTypeList;
         }
 
-         async Task<IEnumerable<StampTypeDTO>> IStampMasterService.GetAllStampTypes()
+         public async Task<IEnumerable<StampTypeDTO>> GetAllStampTypes()
         {
             IEnumerable<StampTypeDTO> stampType = await _stampTypeRepo.GetSelectedColumnAsync(entity => new StampTypeDTO { 
             
@@ -320,7 +320,7 @@ namespace CTS_BE.BAL.Services.stamp
             return stampType;
         }
 
-         async Task<bool> IStampMasterService.CreateNewStampType(StampTypeInsertDTO stampType)
+         public async Task<bool> CreateNewStampType(StampTypeInsertDTO stampType)
         {
             var stampTp = _mapper.Map<StampType>(stampType);
             stampTp.CreatedAt = DateTime.Now;
@@ -330,7 +330,7 @@ namespace CTS_BE.BAL.Services.stamp
             return await Task.FromResult(true);
         }
 
-        async Task<IEnumerable<StampTypeDTO>> IStampMasterService.GetStampTypeById(long id)
+        public async Task<IEnumerable<StampTypeDTO>> GetStampTypeById(long id)
         {
             IEnumerable<StampTypeDTO> stampType = await _stampTypeRepo.GetSelectedColumnByConditionAsync(e => e.DenominationId == id, entity => new StampTypeDTO
             {
@@ -344,7 +344,7 @@ namespace CTS_BE.BAL.Services.stamp
             return stampType;
         }
 
-        async Task<bool> IStampMasterService.DeleteStampTypesById(long id)
+        public async Task<bool> DeleteStampTypesById(long id)
         {
             var stampType = await _stampTypeRepo.GetAllByConditionAsync(a => a.DenominationId == id);
             if (stampType.Count() > 0)
@@ -382,7 +382,7 @@ namespace CTS_BE.BAL.Services.stamp
             return discountDetailList;
         }
 
-        async Task<IEnumerable<VendorTypeDTO>> IStampMasterService.GetAllStampVendorTypes()
+        public async Task<IEnumerable<VendorTypeDTO>> GetAllStampVendorTypes()
         {
             IEnumerable<VendorTypeDTO> allVendorTypes = await _stampVendorTypeRepo.GetSelectedColumnAsync(entity => new VendorTypeDTO
             {
@@ -391,7 +391,7 @@ namespace CTS_BE.BAL.Services.stamp
             });
             return allVendorTypes;
         }
-        async Task<bool> IStampMasterService.CreateNewStampDiscountDetails(DiscountDetailsInsertDTO stampDiscountDetails)
+        public async Task<bool> CreateNewStampDiscountDetails(DiscountDetailsInsertDTO stampDiscountDetails)
         {
             var stampDiscount = _mapper.Map<DiscountDetail>(stampDiscountDetails);
             stampDiscount.CreatedAt = DateTime.Now;
@@ -401,7 +401,7 @@ namespace CTS_BE.BAL.Services.stamp
             return await Task.FromResult(true);
         }
 
-        async Task<IEnumerable<StampCombinationDTO>> IStampMasterService.StampCombinationList(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null)
+        public async Task<IEnumerable<StampCombinationDTO>> StampCombinationList(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null)
         {
 
         var stampCombinationEntities = await _stampCombinationRepo.GetSelectedColumnByConditionAsync(
@@ -432,7 +432,7 @@ namespace CTS_BE.BAL.Services.stamp
         }
 
 
-        async Task<bool> IStampMasterService.DeleteStampCombinationById(long id)
+        public async Task<bool> DeleteStampCombinationById(long id)
         {
             var stampComb = await _stampCombinationRepo.GetAllByConditionAsync(a => a.StampCombinationId == id);
             if (stampComb.Count > 0)
@@ -449,7 +449,7 @@ namespace CTS_BE.BAL.Services.stamp
             return await Task.FromResult(false);
         }
 
-        async Task<IEnumerable<GetAllStampCombinationDTO>> IStampMasterService.GetAllStampCombinations()
+        public async Task<IEnumerable<GetAllStampCombinationDTO>> GetAllStampCombinations()
         {
             IEnumerable<GetAllStampCombinationDTO> stampCombinations = await _stampCombinationRepo.GetSelectedColumnByConditionAsync(entity => entity.IsActive == true, entity => new GetAllStampCombinationDTO
             {
