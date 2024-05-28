@@ -61,7 +61,7 @@ namespace CTS_BE.BAL.Services.stamp
                 var stampIndentInput = _mapper.Map<StampIndent>(stampIndent);
                 stampIndentInput.CreatedAt = DateTime.Now;
                 stampIndentInput.CreatedBy = _auth.GetUserId();
-                stampIndentInput.Status = stampIndentInput.RaisedToTreasuryCode == null ? (short) 13 : (short) 11;
+                stampIndentInput.Status = stampIndentInput.RaisedToTreasuryCode == null ? (short) 10 : (short) 11;
                 _stampIndentRepo.Add(stampIndentInput);
                 _stampIndentRepo.SaveChangesManaged();
                 return await Task.FromResult(true);
@@ -128,11 +128,11 @@ namespace CTS_BE.BAL.Services.stamp
             {
                 if (data.Status == 10)
                 {
-                    data.Status = 15;
+                    data.Status = 16;
                 }
                 if (data.Status == 11)
                 {
-                    data.Status = 12;
+                    data.Status = 13;
                 }
                 _stampIndentRepo.Update(data);
                 return await Task.FromResult(true);
