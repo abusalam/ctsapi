@@ -748,7 +748,7 @@ namespace CTS_BE.Controllers
                         {
                             Name = "Invoice Details Id",
                             DataType = "numeric",
-                            FieldName = "quantity",
+                            FieldName = "InvoiceDeatilsId",
                             FilterField = "cheque_invoice_details_id",
                             IsFilterable = true,
                             IsSortable = true,
@@ -784,3 +784,4 @@ namespace CTS_BE.Controllers
         }
     }
 }
+

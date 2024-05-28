@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Entities;
 
-[Table("transaction_lot_history ", Schema = "cts-payment")]
+[Table("transaction_lot_history ", Schema = "cts_payment")]
 public partial class TransactionLotHistory
 {
     [Key]

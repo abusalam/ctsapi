@@ -148,8 +148,8 @@ namespace CTS_BE.DTOs
     public class ChequeReceivedListDTO
     {
         public long Id { get; set; }
-        public int InvoiceDeatilsId { get; set; }
-        public short Quantity { get; set; }
+        public long? InvoiceDeatilsId { get; set; }
+        public short? Quantity { get; set; }
 
 
     }

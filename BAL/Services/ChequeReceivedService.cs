@@ -56,7 +56,7 @@ namespace CTS_BE.BAL.Services
             return await _ChequeReceivedRepository.GetSelectedColumnByConditionAsync(entity => statusIds.Contains((int)entity.Status), entity => new ChequeReceivedListDTO
             {
                 Id = entity.Id,
-                InvoiceDeatilsId = entity.InvoiceId,
+                InvoiceDeatilsId = entity.ChequeInvoiceDetailsId,
                 Quantity = entity.Quantity,
             }, dynamicListQueryParameters);
         }
