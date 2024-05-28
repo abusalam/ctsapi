@@ -131,6 +131,7 @@ namespace CTS_BE.DTOs
     public class ChequeReceivedDTO
     {
         public int InvoiceId { get; set; }
+        public int Status { get; set; }
         public List<ChequeReceivedDamagedDetailsDTO> ChequeReceivedDamagedDetails { get; set; }
 
     }
@@ -142,6 +143,15 @@ namespace CTS_BE.DTOs
         public string DamageIndex { get; set; }
         //Test
         public Int16 DamageType { get; set; }
+    }
+
+    public class ChequeReceivedListDTO
+    {
+        public long Id { get; set; }
+        public int InvoiceDeatilsId { get; set; }
+        public short Quantity { get; set; }
+
+
     }
 
 }

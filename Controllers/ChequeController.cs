@@ -733,5 +733,54 @@ namespace CTS_BE.Controllers
             }
         }
 
+        [HttpPatch("cheque-received-list")]
+        public async Task<APIResponse<DynamicListResult<IEnumerable<ChequeReceivedListDTO>>>> ListOfChequeReceived(DynamicListQueryParameters dynamicListQueryParameters)
+        {
+            APIResponse<DynamicListResult<IEnumerable<ChequeReceivedListDTO>>> response = new();
+            try
+            {
+                List<int> statusIds = ChequeStatusManagerHelper.getStatus(_claimService.GetPermissions());
+                DynamicListResult<IEnumerable<ChequeReceivedListDTO>> result = new DynamicListResult<IEnumerable<ChequeReceivedListDTO>>
+                {
+                    Headers = new List<ListHeader>
+                    {
+                        new ListHeader
+                        {
+                            Name = "Invoice Details Id",
+                            DataType = "numeric",
+                            FieldName = "quantity",
+                            FilterField = "cheque_invoice_details_id",
+                            IsFilterable = true,
+                            IsSortable = true,
+
+                        },
+
+                        new ListHeader
+                        {
+                            Name = "Quantity",
+                            DataType = "numeric",
+                            FieldName = "quantity",
+                            FilterField = "quantity",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        }
+
+                    },
+                    Data = await _chequeReceivedService.ChequeReceivedList(dynamicListQueryParameters, statusIds),
+                    DataCount=1
+                };
+                response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                response.Message = "";
+                response.result = result;
+                return response;
+            }
+            catch (Exception Ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = Ex.Message;
+                return response;
+            }
+            
+        }
     }
 }

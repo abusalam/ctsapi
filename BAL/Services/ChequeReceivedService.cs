@@ -30,7 +30,7 @@ namespace CTS_BE.BAL.Services
             {
                 exclusions = chequeReceivedDamagedDetail.DamageIndex.Split(',').Select(int.Parse).ToList();
                 var invoiceDeatilsId = chequeReceivedDamagedDetail.InvoiceDeatilsId;
-                var invoiceDetails = await _ChequeInvoiceDetailRepository.GetSingleSelectedColumnByConditionAsync(entity => entity.ChequeInvoiceId == 91, entity => new
+                var invoiceDetails = await _ChequeInvoiceDetailRepository.GetSingleSelectedColumnByConditionAsync(entity => entity.ChequeInvoiceId == 108, entity => new
                 {
                     Start = entity.Start,
                     End = entity.End
@@ -49,6 +49,16 @@ namespace CTS_BE.BAL.Services
             string exclusionListData = JSONHelper.ObjectToJson(exclusionlist);
             
             return await _ChequeReceivedRepository.Insert(chequeReceivedData, exclusionListData);
+        }
+
+        public async Task<IEnumerable<ChequeReceivedListDTO>> ChequeReceivedList(DynamicListQueryParameters dynamicListQueryParameters, List<int> statusIds)
+        {
+            return await _ChequeReceivedRepository.GetSelectedColumnByConditionAsync(entity => statusIds.Contains((int)entity.Status), entity => new ChequeReceivedListDTO
+            {
+                Id = entity.Id,
+                InvoiceDeatilsId = entity.InvoiceId,
+                Quantity = entity.Quantity,
+            }, dynamicListQueryParameters);
         }
 
       

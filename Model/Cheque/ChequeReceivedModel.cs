@@ -14,5 +14,6 @@ namespace CTS_BE.Model.Cheque
         public int ReceivedUser { get; set; }
         public int InvoiceId { get; set; }
         public int InvoiceDeatilsId { get; set; }
+        public int Status { get; set; }
     }
 }

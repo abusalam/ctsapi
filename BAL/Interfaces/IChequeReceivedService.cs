@@ -9,5 +9,6 @@ namespace CTS_BE.BAL.Interfaces
     public interface IChequeReceivedService
     {
        public Task<Int16?> ChequeReceived(ChequeReceivedDTO chequeReceivedDTO);
+        public Task<IEnumerable<ChequeReceivedListDTO>> ChequeReceivedList(DynamicListQueryParameters dynamicListQueryParameters, List<int> statusIds);
     }
 }
