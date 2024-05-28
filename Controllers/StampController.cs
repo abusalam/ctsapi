@@ -546,6 +546,34 @@ namespace CTS_BE.Controllers
             }
         }
 
+        [HttpPost("CreateStampInvoice")]
+        public async Task<APIResponse<bool>> CreateStampInvoice(StampInvoiceInsertDTO stampInvoice)
+        {
+            APIResponse<bool> response = new();
+            try
+            {
+                if (stampInvoice != null)
+                {
+                    if (await _stampService.CreateNewStampInvoice(stampInvoice))
+                    {
+                        response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                        response.Message = AppConstants.DataAdded;
+                        response.result = true;
+                        return response;
+                    }
+                }
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.result = false;
+                response.Message = AppConstants.MissingField;
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = ex.Message;
+                return response;
+            }
+        }
     }
 }
 

@@ -12,6 +12,8 @@ namespace CTS_BE.BAL.Interfaces.stamp
 
         // Stamp Invoice Interfaces
         Task<IEnumerable<StampInvoiceDTO>> ListAllStampInvoices(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null);
-        
+        Task<bool> CreateNewStampInvoice(StampInvoiceInsertDTO stampInvoice);
+
+
     }
 }

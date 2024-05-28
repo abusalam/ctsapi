@@ -68,6 +68,6 @@ namespace CTS_BE.DTOs
         public string InvoiceNumber { get; set; } = null!;
         public DateTime InvoiceDate { get; set; }
         public decimal Amount { get; set; }
-        public long CreatedBy { get; set; }
+        public short Quantity { get; set; }
     }
 }

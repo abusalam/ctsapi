@@ -69,39 +69,6 @@ namespace CTS_BE.BAL.Services.stamp
 
 
 
-        public async Task<IEnumerable<StampInvoiceDTO>> ListAllStampInvoices(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null)
-        {
-            //Get all stamp labels with sort & filter parameters
-            Console.WriteLine(_auth);
-            IEnumerable<StampInvoiceDTO> stampInvoiceList = await _stampInvoiceRepo.GetSelectedColumnByConditionAsync(
-                // if _auth user is superintenvoice
-                entity => entity.CreatedBy == _auth.GetUserId(), 
-            entity => new StampInvoiceDTO
-            {
-                StampIndentId = entity.StampIndentId,
-                MemoNumber = entity.StampIndent.MemoNumber,
-                MemoDate = entity.StampIndent.MemoDate,
-                Remarks = entity.StampIndent.Remarks,
-                RaisedToTreasuryCode = entity.StampIndent.RaisedToTreasuryCode,
-                StmapCategory = entity.StampIndent.StampCombination.StampCategory.StampCategory1,
-                Description = entity.StampIndent.StampCombination.StampCategory.Description,
-                Denomination = entity.StampIndent.StampCombination.StampDenomination.Denomination,
-                LabelPerSheet = entity.StampIndent.StampCombination.StampLabel.NoLabelPerSheet,
-                IndentedSheet = entity.StampIndent.Sheet,
-                IndentedLabel = entity.StampIndent.Label,
-                Sheet = entity.Sheet,
-                Label = entity.Label,
-                Quantity = entity.Quantity,
-                Amount = entity.Amount,
-                Status = entity.StampIndent.Status,
-                StampInvoiceId = entity.StampInvoiceId,
-                InvoiceNumber = entity.InvoiceNumber,
-                InvoiceDate = entity.InvoiceDate,
-                CreatedBy = entity.CreatedBy,
-    }, pageIndex, pageSize, filters, (sortParameters != null) ? sortParameters.Field : null, (sortParameters != null) ? sortParameters.Order : null);
-            return stampInvoiceList;
-        }
-
         async Task<bool> IStampService.ApproveStampIndent(long stampIndentId)
         {
             var data = await _stampIndentRepo.GetSingleAysnc(e=>e.Id == stampIndentId);
@@ -137,6 +104,55 @@ namespace CTS_BE.BAL.Services.stamp
                 _stampIndentRepo.Update(data);
                 return await Task.FromResult(true);
             }
+            return await Task.FromResult(true);
+        }
+
+
+
+        // stamp invoice
+
+        public async Task<IEnumerable<StampInvoiceDTO>> ListAllStampInvoices(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null)
+        {
+            //Get all stamp labels with sort & filter parameters
+            Console.WriteLine(_auth);
+            IEnumerable<StampInvoiceDTO> stampInvoiceList = await _stampInvoiceRepo.GetSelectedColumnByConditionAsync(
+                // if _auth user is superintenvoice
+                entity => entity.CreatedBy == _auth.GetUserId(),
+            entity => new StampInvoiceDTO
+            {
+                StampIndentId = entity.StampIndentId,
+                MemoNumber = entity.StampIndent.MemoNumber,
+                MemoDate = entity.StampIndent.MemoDate,
+                Remarks = entity.StampIndent.Remarks,
+                RaisedToTreasuryCode = entity.StampIndent.RaisedToTreasuryCode,
+                StmapCategory = entity.StampIndent.StampCombination.StampCategory.StampCategory1,
+                Description = entity.StampIndent.StampCombination.StampCategory.Description,
+                Denomination = entity.StampIndent.StampCombination.StampDenomination.Denomination,
+                LabelPerSheet = entity.StampIndent.StampCombination.StampLabel.NoLabelPerSheet,
+                IndentedSheet = entity.StampIndent.Sheet,
+                IndentedLabel = entity.StampIndent.Label,
+                Sheet = entity.Sheet,
+                Label = entity.Label,
+                Quantity = entity.Quantity,
+                Amount = entity.Amount,
+                Status = entity.StampIndent.Status,
+                StampInvoiceId = entity.StampInvoiceId,
+                InvoiceNumber = entity.InvoiceNumber,
+                InvoiceDate = entity.InvoiceDate,
+                CreatedBy = entity.CreatedBy,
+            }, pageIndex, pageSize, filters, (sortParameters != null) ? sortParameters.Field : null, (sortParameters != null) ? sortParameters.Order : null);
+            return stampInvoiceList;
+        }
+
+
+        async Task<bool> IStampService.CreateNewStampInvoice(StampInvoiceInsertDTO stampInvoice)
+        {
+            var stampInvoiceInput = _mapper.Map<StampInvoice>(stampInvoice);
+            //stampInvoiceInput.CreatedAt = DateTime.Now;
+            stampInvoiceInput.CreatedBy = _auth.GetUserId();
+            //stampInvoiceInput.Status = stampInvoiceInput.RaisedToTreasuryCode == null ? (short)10 : (short)11;
+            _stampInvoiceRepo.Add(stampInvoiceInput);
+            _stampInvoiceRepo.SaveChangesManaged();
             return await Task.FromResult(true);
         }
     }
