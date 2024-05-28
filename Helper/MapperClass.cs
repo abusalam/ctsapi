@@ -30,8 +30,7 @@ namespace CTS_BE.Helper
             CreateMap<StampType, StampTypeDTO>();
             CreateMap<DiscountDetailsInsertDTO, DiscountDetail>();
             CreateMap<StampIndentInsertDTO, StampIndent>();
-
-            //CreateMap<DiscountDetail, DiscountDetailsInsertDTO>();
+            CreateMap<StampInvoiceInsertDTO, StampInvoice>();
 
         }
     }
