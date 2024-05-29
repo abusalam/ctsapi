@@ -3,6 +3,7 @@ using CTS_BE.BAL.Interfaces.stamp;
 using CTS_BE.DAL.Entities;
 using CTS_BE.DAL.Interfaces.stamp;
 using CTS_BE.DTOs;
+using CTS_BE.Enum;
 using CTS_BE.Helper.Authentication;
 
 namespace CTS_BE.BAL.Services.stamp
@@ -26,13 +27,42 @@ namespace CTS_BE.BAL.Services.stamp
             _auth = claim;
         }
 
-        public async Task<IEnumerable<StampIndentDTO>> ListAllStampIndents(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null)
+        public async Task<IEnumerable<StampIndentDTO>> ListAllStampIndentsProcessed(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null)
         {
             //Get all stamp labels with sort & filter parameters
             Console.WriteLine(_auth);
             IEnumerable<StampIndentDTO> stampIndentList = await _stampIndentRepo.GetSelectedColumnByConditionAsync(
                 // if _auth user is superintendent
-                entity => entity.CreatedBy == _auth.GetUserId(), 
+                entity => entity.CreatedBy == _auth.GetUserId() && (entity.Status == (short)StampIndentStatusEnum.ApproveBySuperintendent || entity.Status == (short)StampIndentStatusEnum.ApproveByTreasuryOfficer || entity.Status == (short)StampIndentStatusEnum.RejectBySuperintendent || entity.Status == (short)StampIndentStatusEnum.RejectByTreasuryOfficer),
+            entity => new StampIndentDTO
+            {
+                StampIndentId = entity.Id,
+                MemoNumber = entity.MemoNumber,
+                MemoDate = entity.MemoDate,
+                Remarks = entity.Remarks,
+                RaisedToTreasuryCode = entity.RaisedToTreasuryCode != null ? entity.RaisedToTreasuryCode : "SUPERINTENDENT",
+                StmapCategory = entity.StampCombination.StampCategory.StampCategory1,
+                Description = entity.StampCombination.StampCategory.Description,
+                Denomination = entity.StampCombination.StampType.Denomination,
+                LabelPerSheet = entity.StampCombination.StampLabel.NoLabelPerSheet,
+                Sheet = entity.Sheet,
+                Label = entity.Label,
+                Quantity = entity.Quantity,
+                Amount = entity.Amount,
+                CreatedAt = entity.CreatedAt,
+                CreatedBy = entity.CreatedBy,
+                Status = entity.Status
+
+            }, pageIndex, pageSize, filters, (sortParameters != null) ? sortParameters.Field : null, (sortParameters != null) ? sortParameters.Order : null);
+            return stampIndentList;
+        }
+        public async Task<IEnumerable<StampIndentDTO>> ListAllStampIndentsProcessing(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null)
+        {
+            //Get all stamp labels with sort & filter parameters
+            Console.WriteLine(_auth);
+            IEnumerable<StampIndentDTO> stampIndentList = await _stampIndentRepo.GetSelectedColumnByConditionAsync(
+                // if _auth user is superintendent
+                entity => entity.CreatedBy == _auth.GetUserId() && (entity.Status == (short)StampIndentStatusEnum.ForwardedToSuperintendent || entity.Status == (short)StampIndentStatusEnum.ForwardedToTreasuryOfficer),
             entity => new StampIndentDTO
             {
                 StampIndentId = entity.Id,

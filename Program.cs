@@ -22,6 +22,7 @@ using CTS_BE.DAL.Interfaces.stamp;
 using CTS_BE.DAL.Repositories.stamp;
 using CTS_BE.BAL.Interfaces.stamp;
 using CTS_BE.BAL.Services.stamp;
+using Swashbuckle.AspNetCore.SwaggerUI;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -145,7 +146,16 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        options.EnableFilter();
+        options.EnablePersistAuthorization();
+        options.EnableValidator();
+        options.EnableDeepLinking();
+        options.DisplayRequestDuration();
+        options.ShowExtensions();
+        options.DocExpansion(DocExpansion.None);
+    });
 }
 app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 app.UseHttpsRedirection();
