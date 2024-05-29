@@ -78,11 +78,12 @@ namespace CTS_BE.BAL.Services.stamp
                 {
                     data.Status = 15;
                 }
-                if (data.Status == 11)
+                else if (data.Status == 11)
                 {
                     data.Status = 12;
                 }
                 _stampIndentRepo.Update(data);
+                _stampIndentRepo.SaveChangesManaged();
                 return await Task.FromResult(true);
             }
             return await Task.FromResult(true);
