@@ -16,7 +16,8 @@ namespace CTS_BE.BAL.Services
         private readonly IChequeReceivedRepository _ChequeReceivedRepository;
         private readonly IChequeInvoiceDetailRepository _ChequeInvoiceDetailRepository;
 
-        public ChequeReceivedService(IChequeReceivedRepository ChequeReceivedRepository, IChequeInvoiceDetailRepository ChequeInvoiceDetailRepository){
+        public ChequeReceivedService(IChequeReceivedRepository ChequeReceivedRepository, IChequeInvoiceDetailRepository ChequeInvoiceDetailRepository)
+        {
             _ChequeReceivedRepository = ChequeReceivedRepository;
             _ChequeInvoiceDetailRepository = ChequeInvoiceDetailRepository;
         }
@@ -42,26 +43,31 @@ namespace CTS_BE.BAL.Services
                 }
                 //
                 Tuple<Int16, List<int>> exclusion = new(chequeReceivedDamagedDetail.DamageType, exclusions);
-         
+
                 exclusionlist.Add(exclusion);
             }
             string chequeReceivedData = JSONHelper.ObjectToJson(chequeReceivedModel);
             string exclusionListData = JSONHelper.ObjectToJson(exclusionlist);
-            
+
             return await _ChequeReceivedRepository.Insert(chequeReceivedData, exclusionListData);
         }
 
         public async Task<IEnumerable<ChequeReceivedListDTO>> ChequeReceivedList(DynamicListQueryParameters dynamicListQueryParameters, List<int> statusIds)
         {
-            return await _ChequeReceivedRepository.GetSelectedColumnByConditionAsync(entity => statusIds.Contains((int)entity.Status), entity => new ChequeReceivedListDTO
-            {
-                Id = entity.Id,
-                InvoiceDeatilsId = entity.ChequeInvoiceDetailsId,
-                Quantity = entity.Quantity,
-            }, dynamicListQueryParameters);
+            var chequeReceivedList = await _ChequeReceivedRepository.GetSelectedColumnByConditionAsync(
+                entity => statusIds.Contains((int)entity.Status),
+                entity => new ChequeReceivedListDTO
+                {
+                    Id = entity.Id,
+                    InvoiceDeatilsId = entity.ChequeInvoiceDetailsId,
+                    Quantity = entity.Quantity,
+                },
+                dynamicListQueryParameters);
+
+            return chequeReceivedList;
         }
 
-      
+
 
         internal class ChequeInvoiceDetailService
         {

@@ -154,4 +154,11 @@ namespace CTS_BE.DTOs
 
     }
 
+    public class UserListDTO{
+        public short? UserId { get; set; }
+        public string? UserName { get; set; }
+        public string? TreasurieCode { get; set; }
+        public object UserList { get; internal set; }
+    }
+
 }

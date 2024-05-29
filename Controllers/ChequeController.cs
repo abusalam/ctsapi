@@ -1,4 +1,5 @@
 ﻿using CTS_BE.BAL.Interfaces;
+using CTS_BE.BAL.Services;
 using CTS_BE.DAL.Entities;
 using CTS_BE.DAL.Interfaces;
 using CTS_BE.DTOs;
@@ -20,8 +21,9 @@ namespace CTS_BE.Controllers
         private readonly IClaimService _claimService;
         private readonly IChequeCountService _chequeCountService;
         private readonly IChequeReceivedService _chequeReceivedService;
+        private readonly IChequeDistributionService _chequeDistributionService;
 
-        public ChequeController(IChequeCountService chequeCountService, IChequeEntryService chequeEntryService, IChequeIndentService chequeIndentService, IChequeInvoiceService chequeInvoiceService, IClaimService claimService, IChequeReceivedService chequeReceivedService)
+        public ChequeController(IChequeCountService chequeCountService, IChequeEntryService chequeEntryService, IChequeIndentService chequeIndentService, IChequeInvoiceService chequeInvoiceService, IClaimService claimService, IChequeReceivedService chequeReceivedService, IChequeDistributionService chequeDistributionService)
         {
             _chequeEntryService = chequeEntryService;
             _chequeIndentService = chequeIndentService;
@@ -29,6 +31,7 @@ namespace CTS_BE.Controllers
             _claimService = claimService;
             _chequeCountService = chequeCountService;
             _chequeReceivedService = chequeReceivedService;
+            _chequeDistributionService = chequeDistributionService;
         }
         [HttpPost("new-cheque-entry")]
         public async Task<APIResponse<string>> ChequeEntry(ChequeEntryDTO chequeEntryDTO)
@@ -739,7 +742,8 @@ namespace CTS_BE.Controllers
             APIResponse<DynamicListResult<IEnumerable<ChequeReceivedListDTO>>> response = new();
             try
             {
-                List<int> statusIds = ChequeStatusManagerHelper.getStatus(_claimService.GetPermissions());
+                // List<int> statusIds = ChequeStatusManagerHelper.getStatus(_claimService.GetPermissions());
+                List<int> statusIds = new List<int> { 20 };
                 DynamicListResult<IEnumerable<ChequeReceivedListDTO>> result = new DynamicListResult<IEnumerable<ChequeReceivedListDTO>>
                 {
                     Headers = new List<ListHeader>
@@ -767,7 +771,7 @@ namespace CTS_BE.Controllers
 
                     },
                     Data = await _chequeReceivedService.ChequeReceivedList(dynamicListQueryParameters, statusIds),
-                    DataCount=1
+                    DataCount = 1
                 };
                 response.apiResponseStatus = Enum.APIResponseStatus.Success;
                 response.Message = "";
@@ -780,8 +784,28 @@ namespace CTS_BE.Controllers
                 response.Message = Ex.Message;
                 return response;
             }
-            
+
         }
+        [HttpGet("user-list")]
+        public async Task<APIResponse<IEnumerable<UserListDTO>>> UserList()
+        {
+            APIResponse<IEnumerable<UserListDTO>> response = new();
+
+            try
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                response.result = await _chequeDistributionService.UserList();
+                response.Message = "Success";
+            }
+            catch (Exception ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = ex.Message;
+            }
+
+            return response;
+        }
+
     }
 }
 

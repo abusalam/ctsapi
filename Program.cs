@@ -79,6 +79,7 @@ builder.Services.AddSingleton<ITokencache, Tokencache>();
 builder.Services.AddTransient<IClaimService, ClaimService>();
 
 builder.Services.AddTransient<IChequeReceivedService, ChequeReceivedService>();
+builder.Services.AddTransient<IChequeDistributionService, ChequeDistributionService>();
 
 //builder.Services.AddTransient<ITokenHelper, TokenHelper>();
 //builder.Services.AddSingleton<ITokencache, Tokencache>();
