@@ -133,6 +133,7 @@ namespace CTS_BE.BAL.Services.stamp
                     data.Status = 13;
                 }
                 _stampIndentRepo.Update(data);
+                _stampIndentRepo.SaveChangesManaged();
                 return await Task.FromResult(true);
             }
             return await Task.FromResult(true);
