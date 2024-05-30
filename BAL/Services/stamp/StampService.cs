@@ -148,7 +148,7 @@ namespace CTS_BE.BAL.Services.stamp
             Console.WriteLine(_auth);
             IEnumerable<StampInvoiceDTO> stampInvoiceList = await _stampInvoiceRepo.GetSelectedColumnByConditionAsync(
                 // if _auth user is superintenvoice
-                entity => entity.CreatedBy == _auth.GetUserId(),
+                entity => entity.CreatedBy == _auth.GetUserId() && (entity.StampIndent.Status == (short)StampIndentStatusEnum.ApproveBySuperintendent || entity.StampIndent.Status == (short)StampIndentStatusEnum.ApproveByTreasuryOfficer || entity.StampIndent.Status == (short)StampIndentStatusEnum.RejectBySuperintendent || entity.StampIndent.Status == (short)StampIndentStatusEnum.RejectByTreasuryOfficer),
             entity => new StampInvoiceDTO
             {
                 StampIndentId = entity.StampIndentId,
@@ -194,7 +194,28 @@ namespace CTS_BE.BAL.Services.stamp
 
         public async Task<StampIndentDTO> GetStampIndentById(long IndentId)
         {
-            var stampIndent = await _stampIndentRepo.GetSingleAysnc(e=>e.Id == IndentId);
+            var stampIndent = await _stampIndentRepo.GetSingleSelectedColumnByConditionAsync(
+                e=>e.Id == IndentId,
+                e=>new StampIndentDTO
+                    {
+                            StampIndentId = e.Id,
+                            MemoNumber = e.MemoNumber,
+                            MemoDate = e.MemoDate,
+                            Remarks = e.Remarks,
+                            RaisedToTreasuryCode = e.RaisedToTreasuryCode,
+                            StmapCategory = e.StampCombination.StampCategory.StampCategory1,
+                            Description = e.StampCombination.StampCategory.Description,
+                            Denomination = e.StampCombination.StampType.Denomination,
+                            LabelPerSheet = e.StampCombination.StampLabel.NoLabelPerSheet,
+                            Sheet = e.Sheet,
+                            Label = e.Label,
+                            Quantity = e.Quantity,
+                            Amount = e.Amount,
+                            CreatedAt = e.CreatedAt,
+                            Status = e.Status,
+
+                    }
+                );
             return _mapper.Map<StampIndentDTO>(stampIndent);
 
         }

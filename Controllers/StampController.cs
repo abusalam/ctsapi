@@ -594,13 +594,40 @@ namespace CTS_BE.Controllers
                     },
                     new ListHeader
                     {
-                        Name = "Raised To Treasury Code",
-                        DataType = "string",
-                        FieldName = "raisedToTreasuryCode",
-                        FilterField = "RaisedToTreasuryCode",
+                        Name = "Stamp Invoice Id",
+                        DataType = "numeric",
+                        FieldName = "stampInvoiceId",
+                        FilterField = "StampInvoiceId",
                         IsFilterable = true,
                         IsSortable = true,
                     },
+                    new ListHeader
+                    {
+                        Name = "Invoice Number",
+                        DataType = "string",
+                        FieldName = "invoiceNumber",
+                        FilterField = "InvoiceNumber",
+                        IsFilterable = true,
+                        IsSortable = true,
+                    },
+                    new ListHeader
+                    {
+                        Name = "Invoice Date",
+                        DataType = "datetime",
+                        FieldName = "invoiceDate",
+                        FilterField = "InvoiceDate",
+                        IsFilterable = true,
+                        IsSortable = true,
+                    },
+                    //new ListHeader
+                    //{
+                    //    Name = "Raised To Treasury Code",
+                    //    DataType = "string",
+                    //    FieldName = "raisedToTreasuryCode",
+                    //    FilterField = "RaisedToTreasuryCode",
+                    //    IsFilterable = true,
+                    //    IsSortable = true,
+                    //},
                     new ListHeader
                     {
                         Name = "Stamp Category",
@@ -628,33 +655,33 @@ namespace CTS_BE.Controllers
                         IsFilterable = true,
                         IsSortable = true,
                     },
-                    new ListHeader
-                    {
-                        Name = "Label Per Sheet",
-                        DataType = "numeric",
-                        FieldName = "labelPerSheet",
-                        FilterField = "LabelPerSheet",
-                        IsFilterable = true,
-                        IsSortable = true,
-                    },
-                    new ListHeader
-                    {
-                        Name = "Indented Sheet",
-                        DataType = "numeric",
-                        FieldName = "indentedSheet",
-                        FilterField = "IndentedSheet",
-                        IsFilterable = true,
-                        IsSortable = true,
-                    },
-                    new ListHeader
-                    {
-                        Name = "Indented Label",
-                        DataType = "numeric",
-                        FieldName = "indentedLabel",
-                        FilterField = "IndentedLabel",
-                        IsFilterable = true,
-                        IsSortable = true,
-                    },
+                    //new ListHeader
+                    //{
+                    //    Name = "Label Per Sheet",
+                    //    DataType = "numeric",
+                    //    FieldName = "labelPerSheet",
+                    //    FilterField = "LabelPerSheet",
+                    //    IsFilterable = true,
+                    //    IsSortable = true,
+                    //},
+                    //new ListHeader
+                    //{
+                    //    Name = "Indented Sheet",
+                    //    DataType = "numeric",
+                    //    FieldName = "indentedSheet",
+                    //    FilterField = "IndentedSheet",
+                    //    IsFilterable = true,
+                    //    IsSortable = true,
+                    //},
+                    //new ListHeader
+                    //{
+                    //    Name = "Indented Label",
+                    //    DataType = "numeric",
+                    //    FieldName = "indentedLabel",
+                    //    FilterField = "IndentedLabel",
+                    //    IsFilterable = true,
+                    //    IsSortable = true,
+                    //},
                     new ListHeader
                     {
                         Name = "Sheet",
@@ -739,42 +766,16 @@ namespace CTS_BE.Controllers
 
                             }
                     },
-                    new ListHeader
-                    {
-                        Name = "Stamp Invoice Id",
-                        DataType = "numeric",
-                        FieldName = "stampInvoiceId",
-                        FilterField = "StampInvoiceId",
-                        IsFilterable = true,
-                        IsSortable = true,
-                    },
-                    new ListHeader
-                    {
-                        Name = "Invoice Number",
-                        DataType = "string",
-                        FieldName = "invoiceNumber",
-                        FilterField = "InvoiceNumber",
-                        IsFilterable = true,
-                        IsSortable = true,
-                    },
-                    new ListHeader
-                    {
-                        Name = "Invoice Date",
-                        DataType = "datetime",
-                        FieldName = "invoiceDate",
-                        FilterField = "InvoiceDate",
-                        IsFilterable = true,
-                        IsSortable = true,
-                    },
-                    new ListHeader
-                    {
-                        Name = "Created By",
-                        DataType = "numeric",
-                        FieldName = "createdBy",
-                        FilterField = "CreatedBy",
-                        IsFilterable = true,
-                        IsSortable = true,
-                    },
+                    
+                    //new ListHeader
+                    //{
+                    //    Name = "Created By",
+                    //    DataType = "numeric",
+                    //    FieldName = "createdBy",
+                    //    FilterField = "CreatedBy",
+                    //    IsFilterable = true,
+                    //    IsSortable = true,
+                    //},
                 },
                     Data = labelList,
                     DataCount = 1
