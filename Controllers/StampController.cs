@@ -618,15 +618,6 @@ namespace CTS_BE.Controllers
                     },
                     new ListHeader
                     {
-                        Name = "Remarks",
-                        DataType = "string",
-                        FieldName = "remarks",
-                        FilterField = "Remarks",
-                        IsFilterable = true,
-                        IsSortable = true,
-                    },
-                    new ListHeader
-                    {
                         Name = "Stamp Invoice Id",
                         DataType = "numeric",
                         FieldName = "stampInvoiceId",
