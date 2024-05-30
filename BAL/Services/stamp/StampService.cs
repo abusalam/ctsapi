@@ -128,7 +128,7 @@ namespace CTS_BE.BAL.Services.stamp
                 {
                     data.Status = 16;
                 }
-                if (data.Status == 11)
+                else if (data.Status == 11)
                 {
                     data.Status = 13;
                 }
