@@ -4,6 +4,7 @@ using CTS_BE.Common;
 using CTS_BE.DAL.Entities;
 using CTS_BE.DAL.Interfaces.stamp;
 using CTS_BE.DTOs;
+using CTS_BE.Enum;
 using CTS_BE.Filters;
 using CTS_BE.Helper;
 using Microsoft.AspNetCore.Mvc;
@@ -483,7 +484,7 @@ namespace CTS_BE.Controllers
 
         // approve
 
-        [HttpPatch("ApproveStampIndent")]
+        [HttpGet("ApproveStampIndent")]
         public async Task<APIResponse<bool>> ApproveStampIndent(long stampIndentId)
         {
             APIResponse<bool> response = new();
@@ -513,7 +514,7 @@ namespace CTS_BE.Controllers
         }
 
         // reject stamp Indent
-        [HttpPatch("RejectStampIndent")]
+        [HttpGet("RejectStampIndent")]
         public async Task<APIResponse<bool>> RejectStampIndent(long stampIndentId)
         {
             APIResponse<bool> response = new();
@@ -555,15 +556,15 @@ namespace CTS_BE.Controllers
                 {
                     Headers = new List<ListHeader>
                 {
-                    // new ListHeader
-                    // {
-                    //     Name = "Stamp Indent Id",
-                    //     DataType = "numeric",
-                    //     FieldName = "stampIndentId",
-                    //     FilterField = "StampIndentId",
-                    //     IsFilterable = true,
-                    //     IsSortable = true,
-                    // },
+                    new ListHeader
+                    {
+                        Name = "Stamp Indent Id",
+                        DataType = "numeric",
+                        FieldName = "stampIndentId",
+                        FilterField = "StampIndentId",
+                        IsFilterable = true,
+                        IsSortable = true,
+                    },
                     new ListHeader
                     {
                         Name = "Memo Number",
@@ -582,39 +583,12 @@ namespace CTS_BE.Controllers
                         IsFilterable = true,
                         IsSortable = true,
                     },
-                    // new ListHeader
-                    // {
-                    //     Name = "Remarks",
-                    //     DataType = "string",
-                    //     FieldName = "remarks",
-                    //     FilterField = "Remarks",
-                    //     IsFilterable = true,
-                    //     IsSortable = true,
-                    // },
                     new ListHeader
                     {
-                        Name = "Stamp Invoice Id",
-                        DataType = "numeric",
-                        FieldName = "stampInvoiceId",
-                        FilterField = "StampInvoiceId",
-                        IsFilterable = true,
-                        IsSortable = true,
-                    },
-                    new ListHeader
-                    {
-                        Name = "Invoice Number",
+                        Name = "Remarks",
                         DataType = "string",
-                        FieldName = "invoiceNumber",
-                        FilterField = "InvoiceNumber",
-                        IsFilterable = true,
-                        IsSortable = true,
-                    },
-                    new ListHeader
-                    {
-                        Name = "Invoice Date",
-                        DataType = "datetime",
-                        FieldName = "invoiceDate",
-                        FilterField = "InvoiceDate",
+                        FieldName = "remarks",
+                        FilterField = "Remarks",
                         IsFilterable = true,
                         IsSortable = true,
                     },
@@ -654,33 +628,33 @@ namespace CTS_BE.Controllers
                         IsFilterable = true,
                         IsSortable = true,
                     },
-                    // new ListHeader
-                    // {
-                    //     Name = "Label Per Sheet",
-                    //     DataType = "numeric",
-                    //     FieldName = "labelPerSheet",
-                    //     FilterField = "LabelPerSheet",
-                    //     IsFilterable = true,
-                    //     IsSortable = true,
-                    // },
-                    // new ListHeader
-                    // {
-                    //     Name = "Indented Sheet",
-                    //     DataType = "numeric",
-                    //     FieldName = "indentedSheet",
-                    //     FilterField = "IndentedSheet",
-                    //     IsFilterable = true,
-                    //     IsSortable = true,
-                    // },
-                    // new ListHeader
-                    // {
-                    //     Name = "Indented Label",
-                    //     DataType = "numeric",
-                    //     FieldName = "indentedLabel",
-                    //     FilterField = "IndentedLabel",
-                    //     IsFilterable = true,
-                    //     IsSortable = true,
-                    // },
+                    new ListHeader
+                    {
+                        Name = "Label Per Sheet",
+                        DataType = "numeric",
+                        FieldName = "labelPerSheet",
+                        FilterField = "LabelPerSheet",
+                        IsFilterable = true,
+                        IsSortable = true,
+                    },
+                    new ListHeader
+                    {
+                        Name = "Indented Sheet",
+                        DataType = "numeric",
+                        FieldName = "indentedSheet",
+                        FilterField = "IndentedSheet",
+                        IsFilterable = true,
+                        IsSortable = true,
+                    },
+                    new ListHeader
+                    {
+                        Name = "Indented Label",
+                        DataType = "numeric",
+                        FieldName = "indentedLabel",
+                        FilterField = "IndentedLabel",
+                        IsFilterable = true,
+                        IsSortable = true,
+                    },
                     new ListHeader
                     {
                         Name = "Sheet",
@@ -765,15 +739,42 @@ namespace CTS_BE.Controllers
 
                             }
                     },
-                    // new ListHeader
-                    // {
-                    //     Name = "Created By",
-                    //     DataType = "numeric",
-                    //     FieldName = "createdBy",
-                    //     FilterField = "CreatedBy",
-                    //     IsFilterable = true,
-                    //     IsSortable = true,
-                    // },
+                    new ListHeader
+                    {
+                        Name = "Stamp Invoice Id",
+                        DataType = "numeric",
+                        FieldName = "stampInvoiceId",
+                        FilterField = "StampInvoiceId",
+                        IsFilterable = true,
+                        IsSortable = true,
+                    },
+                    new ListHeader
+                    {
+                        Name = "Invoice Number",
+                        DataType = "string",
+                        FieldName = "invoiceNumber",
+                        FilterField = "InvoiceNumber",
+                        IsFilterable = true,
+                        IsSortable = true,
+                    },
+                    new ListHeader
+                    {
+                        Name = "Invoice Date",
+                        DataType = "datetime",
+                        FieldName = "invoiceDate",
+                        FilterField = "InvoiceDate",
+                        IsFilterable = true,
+                        IsSortable = true,
+                    },
+                    new ListHeader
+                    {
+                        Name = "Created By",
+                        DataType = "numeric",
+                        FieldName = "createdBy",
+                        FilterField = "CreatedBy",
+                        IsFilterable = true,
+                        IsSortable = true,
+                    },
                 },
                     Data = labelList,
                     DataCount = 1
@@ -827,6 +828,36 @@ namespace CTS_BE.Controllers
                 return response;
             }
         }
+
+
+        [HttpGet("IndentDetailsById")]
+        public async Task<APIResponse<StampIndentDTO>> IndentDetailsById(long id)
+        {
+            APIResponse<StampIndentDTO> response = new();
+            try
+            {
+                StampIndentDTO stampIndent = await _stampService.GetStampIndentById(id);
+                if (stampIndent != null)
+                {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                    response.result = stampIndent;
+                    response.Message = AppConstants.DataFound;
+                    return response;
+                }
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = AppConstants.DataNotFound;
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = ex.Message;
+                return response;
+            }
+        }
+
+
+
     }
 }
 

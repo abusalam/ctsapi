@@ -39,7 +39,7 @@ namespace CTS_BE.DTOs
     }
     public class StampInvoiceDTO
     {
-        //public long StampIndentId { get; set; }
+        public long StampIndentId { get; set; }
         public string MemoNumber { get; set; } = null!;
         public DateTime MemoDate { get; set; }
         //public string? Remarks { get; set; }

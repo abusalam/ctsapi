@@ -151,7 +151,7 @@ namespace CTS_BE.BAL.Services.stamp
                 entity => entity.CreatedBy == _auth.GetUserId(),
             entity => new StampInvoiceDTO
             {
-                //StampIndentId = entity.StampIndentId,
+                StampIndentId = entity.StampIndentId,
                 MemoNumber = entity.StampIndent.MemoNumber,
                 MemoDate = entity.StampIndent.MemoDate,
                 //Remarks = entity.StampIndent.Remarks,
@@ -190,6 +190,13 @@ namespace CTS_BE.BAL.Services.stamp
             }
             _stampInvoiceRepo.SaveChangesManaged();
             return await Task.FromResult(false);
+        }
+
+        public async Task<StampIndentDTO> GetStampIndentById(long IndentId)
+        {
+            var stampIndent = await _stampIndentRepo.GetSingleAysnc(e=>e.Id == IndentId);
+            return _mapper.Map<StampIndentDTO>(stampIndent);
+
         }
     }
 }
