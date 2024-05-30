@@ -513,6 +513,39 @@ namespace CTS_BE.Controllers
             }
         }
 
+        // receive
+
+        [HttpGet("ReceiveStampIndent")]
+        public async Task<APIResponse<bool>> ReceiveStampIndent(long stampIndentId)
+        {
+            APIResponse<bool> response = new();
+            try
+            {
+                //if (stampIndentId != null)
+                //{
+                if (await _stampService.ReceiveStampIndent(stampIndentId))
+                {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                    response.Message = AppConstants.ReceiveStatusDone;
+                    response.result = true;
+                    return response;
+                }
+                //}
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.result = false;
+                response.Message = AppConstants.ReceiveStatusFail;
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = ex.Message;
+                return response;
+            }
+        }
+
+
+
         // reject stamp Indent
         [HttpGet("RejectStampIndent")]
         public async Task<APIResponse<bool>> RejectStampIndent(long stampIndentId)

@@ -53,5 +53,7 @@ namespace CTS_BE.Common
         public const string ApproveStatusFail = "Approve Status Update Failed";
         public const string RejectStatusDone = "Rejection Status Updated Successfully";
         public const string RejectStatusFail = "Rejection Status Update Failed";
+        public const string ReceiveStatusDone = "Receive Status Updated Successfully";
+        public const string ReceiveStatusFail = "Receive Status Update Failed";
     }
 }

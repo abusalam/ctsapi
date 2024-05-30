@@ -139,6 +139,25 @@ namespace CTS_BE.BAL.Services.stamp
             return await Task.FromResult(false);
         }
 
+        public async Task<bool> ReceiveStampIndent(long stampIndentId)
+        {
+            var data = await _stampIndentRepo.GetSingleAysnc(e => e.Id == stampIndentId);
+            if (data != null)
+            {
+                if (data.Status == 15)
+                {
+                    data.Status = 14;
+                }
+                else if (data.Status == 12)
+                {
+                    data.Status = 14;
+                }
+                _stampIndentRepo.Update(data);
+                _stampIndentRepo.SaveChangesManaged();
+                return await Task.FromResult(true);
+            }
+            return await Task.FromResult(false);
+        }
 
 
         // stamp invoice

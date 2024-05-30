@@ -9,5 +9,7 @@
         ForwardedToTreasuryOfficer = 11,
         ApproveByTreasuryOfficer = 12,
         RejectByTreasuryOfficer = 13,
+
+        RecievedByTreasuryOfficer= 14,
     }
 }
