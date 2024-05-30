@@ -136,7 +136,7 @@ namespace CTS_BE.BAL.Services.stamp
                 _stampIndentRepo.SaveChangesManaged();
                 return await Task.FromResult(true);
             }
-            return await Task.FromResult(true);
+            return await Task.FromResult(false);
         }
 
 
