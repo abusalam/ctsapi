@@ -555,15 +555,15 @@ namespace CTS_BE.Controllers
                 {
                     Headers = new List<ListHeader>
                 {
-                    new ListHeader
-                    {
-                        Name = "Stamp Indent Id",
-                        DataType = "numeric",
-                        FieldName = "stampIndentId",
-                        FilterField = "StampIndentId",
-                        IsFilterable = true,
-                        IsSortable = true,
-                    },
+                    // new ListHeader
+                    // {
+                    //     Name = "Stamp Indent Id",
+                    //     DataType = "numeric",
+                    //     FieldName = "stampIndentId",
+                    //     FilterField = "StampIndentId",
+                    //     IsFilterable = true,
+                    //     IsSortable = true,
+                    // },
                     new ListHeader
                     {
                         Name = "Memo Number",
@@ -582,12 +582,39 @@ namespace CTS_BE.Controllers
                         IsFilterable = true,
                         IsSortable = true,
                     },
+                    // new ListHeader
+                    // {
+                    //     Name = "Remarks",
+                    //     DataType = "string",
+                    //     FieldName = "remarks",
+                    //     FilterField = "Remarks",
+                    //     IsFilterable = true,
+                    //     IsSortable = true,
+                    // },
                     new ListHeader
                     {
-                        Name = "Remarks",
+                        Name = "Stamp Invoice Id",
+                        DataType = "numeric",
+                        FieldName = "stampInvoiceId",
+                        FilterField = "StampInvoiceId",
+                        IsFilterable = true,
+                        IsSortable = true,
+                    },
+                    new ListHeader
+                    {
+                        Name = "Invoice Number",
                         DataType = "string",
-                        FieldName = "remarks",
-                        FilterField = "Remarks",
+                        FieldName = "invoiceNumber",
+                        FilterField = "InvoiceNumber",
+                        IsFilterable = true,
+                        IsSortable = true,
+                    },
+                    new ListHeader
+                    {
+                        Name = "Invoice Date",
+                        DataType = "datetime",
+                        FieldName = "invoiceDate",
+                        FilterField = "InvoiceDate",
                         IsFilterable = true,
                         IsSortable = true,
                     },
@@ -627,33 +654,33 @@ namespace CTS_BE.Controllers
                         IsFilterable = true,
                         IsSortable = true,
                     },
-                    new ListHeader
-                    {
-                        Name = "Label Per Sheet",
-                        DataType = "numeric",
-                        FieldName = "labelPerSheet",
-                        FilterField = "LabelPerSheet",
-                        IsFilterable = true,
-                        IsSortable = true,
-                    },
-                    new ListHeader
-                    {
-                        Name = "Indented Sheet",
-                        DataType = "numeric",
-                        FieldName = "indentedSheet",
-                        FilterField = "IndentedSheet",
-                        IsFilterable = true,
-                        IsSortable = true,
-                    },
-                    new ListHeader
-                    {
-                        Name = "Indented Label",
-                        DataType = "numeric",
-                        FieldName = "indentedLabel",
-                        FilterField = "IndentedLabel",
-                        IsFilterable = true,
-                        IsSortable = true,
-                    },
+                    // new ListHeader
+                    // {
+                    //     Name = "Label Per Sheet",
+                    //     DataType = "numeric",
+                    //     FieldName = "labelPerSheet",
+                    //     FilterField = "LabelPerSheet",
+                    //     IsFilterable = true,
+                    //     IsSortable = true,
+                    // },
+                    // new ListHeader
+                    // {
+                    //     Name = "Indented Sheet",
+                    //     DataType = "numeric",
+                    //     FieldName = "indentedSheet",
+                    //     FilterField = "IndentedSheet",
+                    //     IsFilterable = true,
+                    //     IsSortable = true,
+                    // },
+                    // new ListHeader
+                    // {
+                    //     Name = "Indented Label",
+                    //     DataType = "numeric",
+                    //     FieldName = "indentedLabel",
+                    //     FilterField = "IndentedLabel",
+                    //     IsFilterable = true,
+                    //     IsSortable = true,
+                    // },
                     new ListHeader
                     {
                         Name = "Sheet",
@@ -692,52 +719,63 @@ namespace CTS_BE.Controllers
                     },
                     new ListHeader
                     {
-                        Name = "Status",
-                        DataType = "numeric",
-                        FieldName = "status",
-                        FilterField = "Status",
-                        IsFilterable = true,
-                        IsSortable = true,
-                    },
-                    new ListHeader
-                    {
-                        Name = "Stamp Invoice Id",
-                        DataType = "numeric",
-                        FieldName = "stampInvoiceId",
-                        FilterField = "StampInvoiceId",
-                        IsFilterable = true,
-                        IsSortable = true,
-                    },
-                    new ListHeader
-                    {
-                        Name = "Invoice Number",
-                        DataType = "string",
-                        FieldName = "invoiceNumber",
-                        FilterField = "InvoiceNumber",
-                        IsFilterable = true,
-                        IsSortable = true,
-                    },
-                    new ListHeader
-                    {
-                        Name = "Invoice Date",
-                        DataType = "datetime",
-                        FieldName = "invoiceDate",
-                        FilterField = "InvoiceDate",
-                        IsFilterable = true,
-                        IsSortable = true,
-                    },
-                    new ListHeader
-                    {
-                        Name = "Created By",
-                        DataType = "numeric",
-                        FieldName = "createdBy",
-                        FilterField = "CreatedBy",
-                        IsFilterable = true,
-                        IsSortable = true,
-                    }
-                },
+                            Name ="Status",
+                            DataType = "object",
+                            ObjectTypeValueField="status",
+                            FieldName = "status",
+                            FilterField = "Status",
+                            FilterEnums = new List<FilterEnum>
+                            {
+                                new FilterEnum
+                                {
+                                    Value = (int) Enum.StampIndentStatusEnum.ForwardedToSuperintendent,
+                                    Label = "Forwarded To Superintendent",
+                                    StyleClass = "primary"
+                                },
+                                new FilterEnum
+                                {
+                                    Value = (int) Enum.StampIndentStatusEnum.ForwardedToTreasuryOfficer,
+                                    Label = "Forwarded To Treasury Office",
+                                    StyleClass = "primary"
+                                },
+                                new FilterEnum
+                                {
+                                    Value = (int) Enum.StampIndentStatusEnum.ApproveBySuperintendent,
+                                    Label = "Approve by Superintendent",
+                                    StyleClass = "success"
+                                },
+                                new FilterEnum
+                                {
+                                    Value = (int) Enum.StampIndentStatusEnum.ApproveByTreasuryOfficer,
+                                    Label = "Approve by Treasury Office",
+                                    StyleClass = "success"
+                                },
+                                new FilterEnum
+                                {
+                                    Value = (int) Enum.StampIndentStatusEnum.RejectBySuperintendent,
+                                    Label = "Reject by Superintendent",
+                                    StyleClass = "warning"
+                                },
+                                new FilterEnum
+                                {
+                                    Value = (int) Enum.StampIndentStatusEnum.RejectByTreasuryOfficer,
+                                    Label = "Reject by Treasury Office",
+                                    StyleClass = "warning"
+                                },
 
-                Data = labelList,
+                            }
+                    },
+                    // new ListHeader
+                    // {
+                    //     Name = "Created By",
+                    //     DataType = "numeric",
+                    //     FieldName = "createdBy",
+                    //     FilterField = "CreatedBy",
+                    //     IsFilterable = true,
+                    //     IsSortable = true,
+                    // },
+                },
+                    Data = labelList,
                     DataCount = 1
                 };
                 if (labelList.Count() > 0)

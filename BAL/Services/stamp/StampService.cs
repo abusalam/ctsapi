@@ -151,26 +151,26 @@ namespace CTS_BE.BAL.Services.stamp
                 entity => entity.CreatedBy == _auth.GetUserId(),
             entity => new StampInvoiceDTO
             {
-                StampIndentId = entity.StampIndentId,
+                //StampIndentId = entity.StampIndentId,
                 MemoNumber = entity.StampIndent.MemoNumber,
                 MemoDate = entity.StampIndent.MemoDate,
-                Remarks = entity.StampIndent.Remarks,
+                //Remarks = entity.StampIndent.Remarks,
+                StampInvoiceId = entity.StampInvoiceId,
+                InvoiceNumber = entity.InvoiceNumber,
+                InvoiceDate = entity.InvoiceDate,
                 RaisedToTreasuryCode = entity.StampIndent.RaisedToTreasuryCode,
                 StmapCategory = entity.StampIndent.StampCombination.StampCategory.StampCategory1,
                 Description = entity.StampIndent.StampCombination.StampCategory.Description,
                 Denomination = entity.StampIndent.StampCombination.StampDenomination.Denomination,
-                LabelPerSheet = entity.StampIndent.StampCombination.StampLabel.NoLabelPerSheet,
-                IndentedSheet = entity.StampIndent.Sheet,
-                IndentedLabel = entity.StampIndent.Label,
+                //LabelPerSheet = entity.StampIndent.StampCombination.StampLabel.NoLabelPerSheet,
+                //IndentedSheet = entity.StampIndent.Sheet,
+                //IndentedLabel = entity.StampIndent.Label,
                 Sheet = entity.Sheet,
                 Label = entity.Label,
                 Quantity = entity.Quantity,
                 Amount = entity.Amount,
                 Status = entity.StampIndent.Status,
-                StampInvoiceId = entity.StampInvoiceId,
-                InvoiceNumber = entity.InvoiceNumber,
-                InvoiceDate = entity.InvoiceDate,
-                CreatedBy = entity.CreatedBy,
+                //CreatedBy = entity.CreatedBy,   // todo raised by treasury code
             }, pageIndex, pageSize, filters, (sortParameters != null) ? sortParameters.Field : null, (sortParameters != null) ? sortParameters.Order : null);
             return stampInvoiceList;
         }

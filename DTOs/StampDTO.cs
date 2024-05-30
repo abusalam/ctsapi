@@ -39,17 +39,14 @@ namespace CTS_BE.DTOs
     }
     public class StampInvoiceDTO
     {
-        public long StampIndentId { get; set; }
+        //public long StampIndentId { get; set; }
         public string MemoNumber { get; set; } = null!;
         public DateTime MemoDate { get; set; }
-        public string? Remarks { get; set; }
+        //public string? Remarks { get; set; }
         public string? RaisedToTreasuryCode { get; set; }
         public string StmapCategory { get; set; } = null!;
         public string Description { get; set; } = null!;
         public decimal Denomination { get; set; }
-        public short LabelPerSheet { get; set; }
-        public short IndentedSheet { get; set; }
-        public short IndentedLabel { get; set; }
         public short Sheet { get; set; }
         public short Label { get; set; }
         public short Quantity { get; set; }
@@ -58,7 +55,10 @@ namespace CTS_BE.DTOs
         public long StampInvoiceId { get; set; }
         public string InvoiceNumber { get; set; } = null!;
         public DateTime InvoiceDate { get; set; }
-        public long CreatedBy { get; set; }
+        //public short LabelPerSheet { get; set; }
+        //public short IndentedSheet { get; set; }
+        //public short IndentedLabel { get; set; }
+        //public long CreatedBy { get; set; }
     }
     public class StampInvoiceInsertDTO
     {
