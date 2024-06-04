@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Entities;
 
-[Table("ecs_neft_payment_status_details", Schema = "cts-payment")]
+[Table("ecs_neft_payment_status_details", Schema = "cts_payment")]
 public partial class EcsNeftPaymentStatusDetail
 {
     [Key]

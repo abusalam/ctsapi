@@ -7,17 +7,17 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.DAL.Entities;
 
 [Keyless]
-[Table("payment_advice_has_beneficiarys", Schema = "cts")]
-public partial class PaymentAdviceHasBeneficiary
+[Table("v_payment_advice")]
+public partial class VPaymentAdvice
 {
     [Column("id")]
-    public long Id { get; set; }
+    public long? Id { get; set; }
 
     [Column("payment_advice_id")]
-    public long PaymentAdviceId { get; set; }
+    public long? PaymentAdviceId { get; set; }
 
     [Column("bill_id")]
-    public long BillId { get; set; }
+    public long? BillId { get; set; }
 
     [Column("payee_name")]
     [StringLength(100)]

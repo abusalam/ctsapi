@@ -103,13 +103,10 @@ public partial class DdoWallet
     [Column("updated_by")]
     public int UpdatedBy { get; set; }
 
-    [Required]
     [Column("active_hoa_id")]
     public long? ActiveHoaId { get; set; }
 
     [Column("treasury_code")]
     [StringLength(3)]
-    public string TreasuryCode { get; set; } = null!;
-
-    public virtual ICollection<BillSubdetailInfo> BillSubdetailInfos { get; set; } = new List<BillSubdetailInfo>();
+    public string? TreasuryCode { get; set; }
 }
