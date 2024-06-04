@@ -20,7 +20,7 @@ public partial class ChequeReceived
     public short? ReceivedUser { get; set; }
 
     [Column("invoice_id")]
-    public short? InvoiceId { get; set; }
+    public long? InvoiceId { get; set; }
 
     [Column("created_at")]
     public DateTime? CreatedAt { get; set; }

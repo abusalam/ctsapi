@@ -806,6 +806,26 @@ namespace CTS_BE.Controllers
             return response;
         }
 
+        [HttpGet("getChequeReceivedDetails")]
+        public async Task<APIResponse<IEnumerable<ChequeReceivedDataWithMICRDTO>>> getChequeReceivedDetails()
+        {
+            APIResponse<IEnumerable<ChequeReceivedDataWithMICRDTO>> response = new();
+            try
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                response.result = await _chequeReceivedService.AllChequeReceivedList();
+                response.Message = "Success";
+            }
+            catch (Exception ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
     }
+
 }
+
+
 

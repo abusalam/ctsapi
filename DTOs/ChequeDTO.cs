@@ -161,4 +161,13 @@ namespace CTS_BE.DTOs
         public object UserList { get; internal set; }
     }
 
+    public class ChequeReceivedDataWithMICRDTO
+    {
+        public long? InvoiceId { get; set; }
+        public short? Start { get; set; }
+        public short? End { get; set; }
+        public string MicrCode { get; set; }
+        public short? Quantity { get; set; }
+    }
+
 }

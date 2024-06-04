@@ -24,7 +24,7 @@ namespace CTS_BE.BAL.Services
             var userList = await (from user in _context.UserLists
                                   join chequeEntry in _context.ChequeEntries on user.TreasurieCode equals chequeEntry.TreasurieCode
                                   join chequeInvoiceDetails in _context.ChequeInvoiceDetails on chequeEntry.Id equals chequeInvoiceDetails.ChequeEntryId
-                                  join chequeReceived in _context.ChequeReceiveds on chequeInvoiceDetails.ChequeInvoiceId equals chequeReceived.ChequeInvoiceDetailsId
+                                  join chequeReceived in _context.ChequeReceiveds on chequeInvoiceDetails.ChequeInvoiceId equals chequeReceived.InvoiceId
                                   select new UserListDTO
                                   {
                                       UserId = user.UserId,

@@ -10,5 +10,6 @@ namespace CTS_BE.BAL.Interfaces
     {
        public Task<Int16?> ChequeReceived(ChequeReceivedDTO chequeReceivedDTO);
         public Task<IEnumerable<ChequeReceivedListDTO>> ChequeReceivedList(DynamicListQueryParameters dynamicListQueryParameters, List<int> statusIds);
+        public  Task<IEnumerable<ChequeReceivedDataWithMICRDTO>> AllChequeReceivedList();
     }
 }
