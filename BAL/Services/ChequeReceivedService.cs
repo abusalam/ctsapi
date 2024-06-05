@@ -75,7 +75,7 @@ namespace CTS_BE.BAL.Services
         public async Task<IEnumerable<ChequeReceivedDataWithMICRDTO>> AllChequeReceivedList()
         {
             var result = await (from cr in _context.ChequeReceiveds
-                                join cid in _context.ChequeInvoiceDetails on cr.InvoiceId equals cid.ChequeInvoiceId
+                                join cid in _context.ChequeInvoiceDetails on cr.ChequeInvoiceDetailsId equals cid.Id
                                 join ce in _context.ChequeEntries on cid.ChequeEntryId equals ce.Id
                                 select new ChequeReceivedDataWithMICRDTO
                                 {
