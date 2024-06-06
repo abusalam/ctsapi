@@ -855,6 +855,8 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.AccountNumber).IsFixedLength();
             entity.Property(e => e.IfscCode).IsFixedLength();
             entity.Property(e => e.MobileNo).IsFixedLength();
+
+            entity.HasOne(d => d.TransactionLot).WithMany(p => p.TransactionLotHasBeneficiaries).HasConstraintName("transaction_lot_fky");
         });
 
         modelBuilder.Entity<TransactionLotHistory>(entity =>
