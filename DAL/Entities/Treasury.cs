@@ -35,6 +35,8 @@ public partial class Treasury
 
     public virtual ICollection<BillSubdetailInfo> BillSubdetailInfos { get; set; } = new List<BillSubdetailInfo>();
 
+    public virtual ICollection<StampWalletTransaction> StampWalletTransactions { get; set; } = new List<StampWalletTransaction>();
+
     [InverseProperty("Treasury")]
     public virtual ICollection<TreasuryHasBranch> TreasuryHasBranches { get; set; } = new List<TreasuryHasBranch>();
 }

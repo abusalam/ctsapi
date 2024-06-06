@@ -20,17 +20,20 @@ public partial class ChequeReceived
     public short? ReceivedUser { get; set; }
 
     [Column("invoice_id")]
-    public short? InvoiceId { get; set; }
+    public long? InvoiceId { get; set; }
 
     [Column("created_at")]
     public DateTime? CreatedAt { get; set; }
 
-    [Column("cheque_entry_id")]
-    public long? ChequeEntryId { get; set; }
+    [Column("cheque_invoice_details_id")]
+    public long? ChequeInvoiceDetailsId { get; set; }
 
     [Column("start")]
     public short? Start { get; set; }
 
     [Column("end")]
     public short? End { get; set; }
+
+    [Column("status")]
+    public int? Status { get; set; }
 }

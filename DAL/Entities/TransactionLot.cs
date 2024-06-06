@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Entities;
 
-[Table("transaction_lot", Schema = "cts-payment")]
+[Table("transaction_lot", Schema = "cts_payment")]
 public partial class TransactionLot
 {
     [Key]
@@ -39,18 +39,14 @@ public partial class TransactionLot
     [Column("debit_amount")]
     public int? DebitAmount { get; set; }
 
-    [Column("file_name")]
-    [MaxLength(1)]
-    public char? FileName { get; set; }
-
-    [Column("file_data")]
-    public byte[]? FileData { get; set; }
-
-    [Column("lot_")]
-    public int? Lot { get; set; }
+    /// <summary>
+    /// 1=lot generate
+    /// </summary>
+    [Column("status")]
+    public short? Status { get; set; }
 
     [Column("voucher_no")]
-    public long? VoucherNo { get; set; }
+    public int? VoucherNo { get; set; }
 
     [Column("voucher_date")]
     public DateOnly? VoucherDate { get; set; }
