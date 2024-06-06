@@ -228,6 +228,7 @@ public partial class CTSDBContext : DbContext
 
             entity.Property(e => e.BillNo).IsFixedLength();
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
+            entity.Property(e => e.CssBenType).HasComment("{ name: 'Non-SNA', code: 2 }, { name: 'SNA', code: 1 }");
             entity.Property(e => e.DdoCode).IsFixedLength();
             entity.Property(e => e.Demand).IsFixedLength();
             entity.Property(e => e.DetailHead).IsFixedLength();
@@ -238,6 +239,7 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.PlanStatus).IsFixedLength();
             entity.Property(e => e.ReferenceNo).IsFixedLength();
             entity.Property(e => e.SchemeHead).IsFixedLength();
+            entity.Property(e => e.SnaGrantType).HasComment("{ name: 'Grant-in-Aid in Cash', code: 1 }, { name: 'Grant-in-Aid in Kind', code: 2 }");
             entity.Property(e => e.SubMajorHead).IsFixedLength();
             entity.Property(e => e.TreasuryCode).IsFixedLength();
             entity.Property(e => e.VersionNo).HasDefaultValueSql("1");

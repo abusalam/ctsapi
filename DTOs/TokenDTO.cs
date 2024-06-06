@@ -42,14 +42,19 @@
     }
     public class TokenPrintDTO
     {
-       public long TokenNumber { get; set; }
+        public long TokenNumber { get; set; }
         public DateOnly TokenDate { get; set; }
         public string BillNo { get; set; }
-        public DateOnly? BillDate {get; set; }
-        public string DdoCode {get; set; }
+        public DateOnly? BillDate { get; set; }
+        public string DdoCode { get; set; }
         public string PayeeDept { get; set; }
         public HOAChain HOAChain { get; set; }
         public decimal? GrossAmount { get; set; }
         public decimal? NetAmount { get; set; }
+    }
+    public class GeneratedTokenDTO
+    {
+        public long TokenId { get; set; }
+        public int TokenNumber { get; set; }
     }
 }
