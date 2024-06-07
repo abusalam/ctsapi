@@ -27,11 +27,13 @@ namespace CTS_BE.DAL.Repositories.billing
                                         bill.ddo_code AS ""DdoCode"",
                                         mddo.designation AS ""DdoDesignation"",
                                         bill.bill_no AS ""BillNo"",
-                                        bill.bill_date AS ""BillDate""
+                                        bill.bill_date AS ""BillDate"",
+                                        bill.gross_amount AS ""GrossAmount"",
+                                        bill.net_amount AS ""NetAmount""
                                 FROM billing.""bill_details"" bill
                                 JOIN master.ddo mddo ON bill.ddo_code = mddo.code
                                 LEFT JOIN cts.token tkn ON tkn.reference_no = bill.reference_no
-                                WHERE bill.status = 3 AND tkn.reference_no IS NULL AND  bill.treasury_code = '{treasuryCode}'";
+                                WHERE bill.status = '{(short)Enum.BillStatus.ForwardedToTreasury}' AND tkn.reference_no IS NULL AND  bill.treasury_code = '{treasuryCode}'";
                 IEnumerable<BillsListDTO> results = connection.Query<BillsListDTO>(sql).ToList();
                 return results;
             }
@@ -43,7 +45,7 @@ namespace CTS_BE.DAL.Repositories.billing
                 string sql = $@"SELECT tp.bill_id
                             FROM billing.""bill_details"" tp
                             LEFT JOIN cts.token tkn ON tkn.reference_no = tp.reference_no
-                            WHERE tp.status = 3 AND tkn.reference_no IS NULL AND  tp.treasury_code = '{treasuryCode}'";
+                            WHERE tp.status = '{(short)Enum.BillStatus.ForwardedToTreasury}' AND tkn.reference_no IS NULL AND  tp.treasury_code = '{treasuryCode}'";
                 int results = connection.Query<BillsListDTO>(sql).Count();
                 return results;
             }
