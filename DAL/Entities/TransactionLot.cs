@@ -34,10 +34,12 @@ public partial class TransactionLot
     public int? NumberOfFailed { get; set; }
 
     [Column("total_amount")]
-    public int? TotalAmount { get; set; }
+    [Precision(10, 2)]
+    public decimal? TotalAmount { get; set; }
 
     [Column("debit_amount")]
-    public int? DebitAmount { get; set; }
+    [Precision(10, 2)]
+    public decimal? DebitAmount { get; set; }
 
     /// <summary>
     /// 1=lot generate
