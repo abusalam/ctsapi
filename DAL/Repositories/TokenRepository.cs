@@ -1,5 +1,6 @@
 using CTS_BE.DAL.Entities;
 using CTS_BE.DAL.Interfaces;
+using CTS_BE.DTOs;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using System.Data;
@@ -13,30 +14,35 @@ namespace CTS_BE.DAL.Repositories
         {
             _context = context;
         }
-        public async Task<int> GenarateToken(long billid, long userid,string remarks,DateOnly phybilldate)
+        public async Task<GeneratedTokenDTO> GenarateToken(long billid, long userid,string remarks,DateOnly phybilldate)
         {
 
             var _billid = new NpgsqlParameter("@in_bill_id", NpgsqlTypes.NpgsqlDbType.Bigint);
             var _userid = new NpgsqlParameter("@in_logged_in_user_id", NpgsqlTypes.NpgsqlDbType.Bigint);
             var _remarks = new NpgsqlParameter("@in_remarks", NpgsqlTypes.NpgsqlDbType.Varchar);
             var _phybilldate = new NpgsqlParameter("@in_phybilldate", NpgsqlTypes.NpgsqlDbType.Date);
-            var _outputParameter = new NpgsqlParameter("@token_number_out", NpgsqlTypes.NpgsqlDbType.Integer);
+            var _tokenNumberOutputParameter = new NpgsqlParameter("@token_number_out", NpgsqlTypes.NpgsqlDbType.Integer);
+            var _tokenIdOutputParameter = new NpgsqlParameter("@token_id_out", NpgsqlTypes.NpgsqlDbType.Integer);
             _billid.Value = billid;
             _userid.Value = userid;
             _remarks.Value = remarks;
             _phybilldate.Value = phybilldate;
-            _outputParameter.Direction = ParameterDirection.InputOutput;
+            _tokenNumberOutputParameter.Direction = ParameterDirection.InputOutput;
+            _tokenIdOutputParameter.Direction = ParameterDirection.InputOutput;
 
             // Set an initial value for the output parameter
-            _outputParameter.Value = 0; // Replace with an appropriate initial value if needed
+            _tokenNumberOutputParameter.Value = 0; // Replace with an appropriate initial value if needed
+            _tokenIdOutputParameter.Value = 0; // Replace with an appropriate initial value if needed
 
-            var parameters = new[] { _billid, _userid, _remarks,_phybilldate ,_outputParameter };
-            var commandText = "call cts.token_genaration(@in_bill_id, @in_logged_in_user_id,@in_remarks,@in_phybilldate,@token_number_out)";
+            var parameters = new[] { _billid, _userid, _remarks,_phybilldate ,_tokenNumberOutputParameter,_tokenIdOutputParameter };
+            var commandText = "call cts.token_genaration(@in_bill_id, @in_logged_in_user_id,@in_remarks,@in_phybilldate,@token_number_out,@token_id_out)";
 
             await _context.Database.ExecuteSqlRawAsync(commandText, parameters);
-
-            int insertedId = (int)_outputParameter.Value;
-            return insertedId;
+            GeneratedTokenDTO generateTokenDTO = new GeneratedTokenDTO{
+                TokenId = (long)_tokenIdOutputParameter.Value,
+                TokenNumber = (int)_tokenNumberOutputParameter.Value
+            };
+            return generateTokenDTO;
         }
         public async Task<bool> GenerateReturnMemo(long tokenId,string referenceNo,long userId,int ownType)
         {

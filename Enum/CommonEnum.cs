@@ -9,7 +9,7 @@
     }
     public enum BillStatus
     {
-        ForwardedToTreasury = 3,
+        ForwardedToTreasury = 99,
     }
     public enum TokenStatus
     {

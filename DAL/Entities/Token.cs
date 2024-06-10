@@ -28,7 +28,7 @@ public partial class Token
     public long BillId { get; set; }
 
     [Column("reference_no")]
-    [StringLength(13)]
+    [StringLength(20)]
     public string ReferenceNo { get; set; } = null!;
 
     [Column("created_at", TypeName = "timestamp without time zone")]

@@ -51,6 +51,9 @@ public partial class ChequeEntry
     [Column("is_active")]
     public bool? IsActive { get; set; }
 
+    [Column("available_quantity")]
+    public short? AvailableQuantity { get; set; }
+
     [InverseProperty("ChequeEntry")]
     public virtual ICollection<ChequeInvoiceDetail> ChequeInvoiceDetails { get; set; } = new List<ChequeInvoiceDetail>();
 }

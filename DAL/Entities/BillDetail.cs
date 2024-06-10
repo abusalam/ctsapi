@@ -97,7 +97,8 @@ public partial class BillDetail
     public DateOnly? SanctionDate { get; set; }
 
     [Column("sanction_by")]
-    public long? SanctionBy { get; set; }
+    [StringLength(100)]
+    public string? SanctionBy { get; set; }
 
     [Column("remarks")]
     [StringLength(100)]
@@ -140,6 +141,21 @@ public partial class BillDetail
 
     [Column("form_revision_no")]
     public short FormRevisionNo { get; set; }
+
+    /// <summary>
+    /// { name: &apos;Grant-in-Aid in Cash&apos;, code: 1 }, { name: &apos;Grant-in-Aid in Kind&apos;, code: 2 }
+    /// </summary>
+    [Column("sna_grant_type")]
+    public int? SnaGrantType { get; set; }
+
+    /// <summary>
+    /// { name: &apos;Non-SNA&apos;, code: 2 }, { name: &apos;SNA&apos;, code: 1 }
+    /// </summary>
+    [Column("css_ben_type")]
+    public int? CssBenType { get; set; }
+
+    [Column("aafs_project_id")]
+    public long? AafsProjectId { get; set; }
 
     [InverseProperty("Bill")]
     public virtual ICollection<BillBtdetail> BillBtdetails { get; set; } = new List<BillBtdetail>();

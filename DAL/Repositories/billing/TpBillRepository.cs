@@ -42,7 +42,7 @@ namespace CTS_BE.DAL.Repositories.billing
                                 FROM billing.""bill_details"" bill
                                 JOIN master.ddo mddo ON bill.ddo_code = mddo.code
                                 LEFT JOIN cts.token tkn ON tkn.reference_no = bill.reference_no
-                                WHERE bill.status = 99  AND tkn.reference_no IS NULL AND  bill.treasury_code = '{treasuryCode}'";
+                                WHERE bill.status = '{(short)Enum.BillStatus.ForwardedToTreasury}'  AND tkn.reference_no IS NULL AND  bill.treasury_code = '{treasuryCode}'";
                 IEnumerable<BillsListDTO> results = connection.QueryAsync<BillsListDTO, HOAChain, BillsListDTO>(sql, (BillBtdetailDTO, HOAChain) => { BillBtdetailDTO.HOAChain = HOAChain; return BillBtdetailDTO; },new{status=99,treasury_code=treasuryCode},splitOn: "demand").Result.ToList();
 
                 return results;
@@ -55,7 +55,7 @@ namespace CTS_BE.DAL.Repositories.billing
                 string sql = $@"SELECT tp.bill_id
                             FROM billing.""bill_details"" tp
                             LEFT JOIN cts.token tkn ON tkn.reference_no = tp.reference_no
-                            WHERE tp.status = 99 AND tkn.reference_no IS NULL AND  tp.treasury_code = '{treasuryCode}'";
+                            WHERE tp.status = '{(short)Enum.BillStatus.ForwardedToTreasury}' AND tkn.reference_no IS NULL AND  tp.treasury_code = '{treasuryCode}'";
                 int results = connection.Query<BillsListDTO>(sql).Count();
                 return results;
             }
