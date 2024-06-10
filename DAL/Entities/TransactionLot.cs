@@ -53,4 +53,7 @@ public partial class TransactionLot
 
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime? CreatedAt { get; set; }
+
+    [InverseProperty("TransactionLot")]
+    public virtual ICollection<TransactionLotHasBeneficiary> TransactionLotHasBeneficiaries { get; set; } = new List<TransactionLotHasBeneficiary>();
 }
