@@ -6,6 +6,8 @@ using CTS_BE.Model.e_Kuber;
 using Microsoft.AspNetCore.Mvc;
 using System.IO.Compression;
 using System.Text;
+using System;
+//using System.IO.File;
 
 namespace CTS_BE.Controllers
 {
@@ -207,18 +209,42 @@ namespace CTS_BE.Controllers
         //        writer.WriteEndDocument();
         //    }
         //}
-
-        [HttpGet("GeneretXML")]
-        public async Task<APIResponse<bool>> GenerateXMLAsync()
+        [HttpGet("PushtoRBI/{fileName}")]
+        public async Task<APIResponse<bool>> PushtoRBI(string fileName)
         {
             APIResponse<bool> aPIResponse = new();
+            try
+            {
+                
+                SFTPHelper.UploadFile("1.6.198.15", 22, "GOWB", "Gowb1234$", fileName + ".zip", "/EPAY/IN/" + fileName + ".zip");
+                
+                aPIResponse.Message = "Pushed to RBI Successfully";
+                aPIResponse.result = true;
+                aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Success;
+                return aPIResponse;
+            }
+            catch (Exception ex)
+            {
+                aPIResponse.Message = ex.Message;
+                aPIResponse.result = false;
+                aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Error;
+                return aPIResponse;
+            }
+        }
+
+        [HttpGet("GeneretXML")]
+        public async Task<APIResponse<string>> GenerateXMLAsync()
+        {
+            APIResponse<string> aPIResponse = new();
+            string fileName = "";
+            string filePath = "";
             try
             {
                 List<TransactionLotModel> pendingLots = await _transactionLotService.pendingLots();
                 foreach (TransactionLotModel pendingLot in pendingLots)
                 {
                     EKuber eKuberData = await _transactionLotService.GetXMLData(pendingLot.Id);
-                    string fileName = eKuberData.requestPayload.AppHdr.BizMsgIdr;
+                    fileName = eKuberData.requestPayload.AppHdr.BizMsgIdr;
                     _paymandateService.GenerateXML(eKuberData, fileName, fileName + ".xml");
                     bool isValid = XmlHelper.ValidateXml(fileName + ".xml", "pain.001.001.08v2.4.xsd");
                     if (isValid)
@@ -228,35 +254,25 @@ namespace CTS_BE.Controllers
                         using (var zip = ZipFile.Open(ZipFileName, ZipArchiveMode.Create))
                         {
                             zip.CreateEntryFromFile(fileName + ".xml", fileName + ".xml");
-                            // zip.CreateEntryFromFile(fileName+".sig", fileName+".sig");
+                            zip.CreateEntryFromFile(fileName+".sig", fileName+".sig");
                         }
-                        SFTPHelper.UploadFile("10.176.100.62", 22, "admin", "admin", fileName + ".xml", "/CTS/" + fileName + ".xml");
+                        filePath = "./" + fileName + ".zip";
+                        //var tstFile = File.OpenRead(filePath);
+                        SFTPHelper.UploadFile("1.6.198.15", 22, "GOWB", "Gowb1234$",filePath, "EPAY/IN//" + fileName + ".zip");
                     }
+                    break;
                 }
 
-                //=========================================================================
-                // EKuber data = _paymandateService.GetXMLData();
-                // string fileName = data.requestPayload.AppHdr.BizMsgIdr;
-                // _paymandateService.GenerateXML(data, fileName, fileName + ".xml");
-                // XmlHelper.ValidateXml(fileName + ".xml", "pain.001.001.08v2.4.xsd");
-                // SignHelper.signdocument1("EPV80116001516701174202404150001" + ".xml", "ifms.gowb.pfx", "temp", "");
-                // string ZipFileName = "EPV80116001516701174202404150001" + ".zip";
-                // using (var zip = ZipFile.Open(ZipFileName, ZipArchiveMode.Create))
-                // {
-                //     // Add files to the zip file
-                //     zip.CreateEntryFromFile("EPV80116001516701174202404150001" + ".xml", "EPV80116001516701174202404150001" + ".xml");
-                //     zip.CreateEntryFromFile("temp.sig", "temp.sig");
-                // }
-                //SFTPHelper.UploadFile("10.176.100.62",22,"admin","admin","EPV80116001516701174202404150001.xml","/CTS/EPV80116001516701174202404150001.xml");
+               
                 aPIResponse.Message = "XML Generated & Signed Successfully";
-                aPIResponse.result = true;
+                aPIResponse.result = fileName;
                 aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Success;
                 return aPIResponse;
             }
             catch (Exception ex)
             {
                 aPIResponse.Message = ex.Message;
-                aPIResponse.result = false;
+                aPIResponse.result = filePath;
                 aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Error;
                 return aPIResponse;
             }

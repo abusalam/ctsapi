@@ -16,10 +16,14 @@ namespace CTS_BE.Helper
 
             try
             {
+                if(!File.Exists(localPath))
+                {
+                    throw new Exception("Local file not found!");
+                }
                 client.Connect();
                 if (client.IsConnected)
                 {
-                    client.ChangeDirectory("CTS");
+                    //client.ChangeDirectory("CTS");
                     client.UploadFile(File.OpenRead(localPath), uploadPath);
                     client.Disconnect();
                 }

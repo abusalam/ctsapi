@@ -24,18 +24,18 @@
 		<BizMsgIdr>EPV80116001516701174202404150055</BizMsgIdr>
 		<MsgDefIdr>pain.001.001.08</MsgDefIdr>
 		<BizSvc>CustomerCreditTransferInitiationV08</BizSvc>
-		<CreDt>2024-06-07T14:55:47</CreDt>
+		<CreDt>2024-06-10T12:33:19</CreDt>
 	</AppHdr>
 	<Document>
 		<CstmrCdtTrfInitn>
 			<GrpHdr>
 				<MsgId>EPV80116001516701174202404150055</MsgId>
-				<CreDtTm>2024-06-07T14:55:47</CreDtTm>
+				<CreDtTm>2024-06-10T12:33:19</CreDtTm>
 				<Authstn>
 					<Prtry>ALL</Prtry>
 				</Authstn>
 				<NbOfTxs>2</NbOfTxs>
-				<CtrlSum>1099.00</CtrlSum>
+				<CtrlSum>20.00</CtrlSum>
 				<InitgPty>
 					<Nm>WEST BENGAL</Nm>
 					<Id>
@@ -55,14 +55,14 @@
 				<PmtMtd>TRF</PmtMtd>
 				<BtchBookg>true</BtchBookg>
 				<NbOfTxs>2</NbOfTxs>
-				<CtrlSum>1099.00</CtrlSum>
+				<CtrlSum>20.00</CtrlSum>
 				<PmtTpInf>
 					<InstrPrty>HIGH</InstrPrty>
 					<SvcLvl>
 						<Prtry>NEFT</Prtry>
 					</SvcLvl>
 				</PmtTpInf>
-				<ReqdExctnDt>2024-06-07</ReqdExctnDt>
+				<ReqdExctnDt>2024-06-10</ReqdExctnDt>
 				<Dbtr>
 					<Nm>FINANCE DEPT</Nm>
 					<PstlAdr>
@@ -93,11 +93,11 @@
 				<CdtTrfTxInf>
 					<PmtId>
 						<InstrId>DRNPAYEE001</InstrId>
-						<EndToEndId>EP011600151670117424159000001</EndToEndId>
+						<EndToEndId>EP011600151670117424162000001</EndToEndId>
 					</PmtId>
 					<Amt>
 						<InstdAmt>
-							<Amt>999.00</Amt>
+							<Amt>10.00</Amt>
 							<CcyOfTrf>INR</CcyOfTrf>
 						</InstdAmt>
 					</Amt>
@@ -117,7 +117,7 @@
 					<CdtrAcct>
 						<Id>
 							<Othr>
-								<Id>3654</Id>
+								<Id>10345679766</Id>
 							</Othr>
 						</Id>
 						<Tp>
@@ -128,11 +128,11 @@
 				<CdtTrfTxInf>
 					<PmtId>
 						<InstrId>DRNPAYEE001</InstrId>
-						<EndToEndId>EP011600151670117424159000001</EndToEndId>
+						<EndToEndId>EP011600151670117424162000001</EndToEndId>
 					</PmtId>
 					<Amt>
 						<InstdAmt>
-							<Amt>100.00</Amt>
+							<Amt>10.00</Amt>
 							<CcyOfTrf>INR</CcyOfTrf>
 						</InstdAmt>
 					</Amt>
@@ -152,7 +152,7 @@
 					<CdtrAcct>
 						<Id>
 							<Othr>
-								<Id>3654</Id>
+								<Id>10345679765</Id>
 							</Othr>
 						</Id>
 						<Tp>
