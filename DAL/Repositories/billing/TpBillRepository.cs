@@ -3,6 +3,8 @@ using CTS_BE.DAL.Entities;
 using CTS_BE.DAL.Interfaces.billing;
 using CTS_BE.DTOs;
 using Dapper;
+
+// using Dapper;
 using Npgsql;
 
 namespace CTS_BE.DAL.Repositories.billing
@@ -26,13 +28,23 @@ namespace CTS_BE.DAL.Repositories.billing
                                         bill.reference_no AS ""ReferenceNo"",
                                         bill.ddo_code AS ""DdoCode"",
                                         mddo.designation AS ""DdoDesignation"",
+                                        bill.gross_amount AS ""GrossAmount"",
+                                        net_amount AS ""NetAmount"",
                                         bill.bill_no AS ""BillNo"",
-                                        bill.bill_date AS ""BillDate""
+                                        bill.bill_date AS ""BillDate"",
+                                        bill.demand AS  ""Demand"",      
+                                        bill.major_head AS ""MajorHead"",
+                                        bill.sub_major_head AS ""SubMajorHead"",
+                                        bill.minor_head AS ""MinorHead"",
+                                        bill.scheme_head AS ""SchemeHead"",
+                                        bill.voted_charged AS ""VotedCharged"",
+                                        bill.detail_head AS ""DetailHead""
                                 FROM billing.""bill_details"" bill
                                 JOIN master.ddo mddo ON bill.ddo_code = mddo.code
                                 LEFT JOIN cts.token tkn ON tkn.reference_no = bill.reference_no
-                                WHERE bill.status = 3 AND tkn.reference_no IS NULL AND  bill.treasury_code = '{treasuryCode}'";
-                IEnumerable<BillsListDTO> results = connection.Query<BillsListDTO>(sql).ToList();
+                                WHERE bill.status = 99  AND tkn.reference_no IS NULL AND  bill.treasury_code = '{treasuryCode}'";
+                IEnumerable<BillsListDTO> results = connection.QueryAsync<BillsListDTO, HOAChain, BillsListDTO>(sql, (BillBtdetailDTO, HOAChain) => { BillBtdetailDTO.HOAChain = HOAChain; return BillBtdetailDTO; },new{status=99,treasury_code=treasuryCode},splitOn: "demand").Result.ToList();
+
                 return results;
             }
         }
@@ -43,7 +55,7 @@ namespace CTS_BE.DAL.Repositories.billing
                 string sql = $@"SELECT tp.bill_id
                             FROM billing.""bill_details"" tp
                             LEFT JOIN cts.token tkn ON tkn.reference_no = tp.reference_no
-                            WHERE tp.status = 3 AND tkn.reference_no IS NULL AND  tp.treasury_code = '{treasuryCode}'";
+                            WHERE tp.status = 99 AND tkn.reference_no IS NULL AND  tp.treasury_code = '{treasuryCode}'";
                 int results = connection.Query<BillsListDTO>(sql).Count();
                 return results;
             }
