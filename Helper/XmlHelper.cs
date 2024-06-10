@@ -11,46 +11,46 @@ namespace CTS_BE.Helper
     {
         public static bool ValidateXml(string xmlFilePath, string xsdFilePath)
         {
-        try
-        {
-            // Create XmlReaderSettings and set validation type to schema.
-            XmlReaderSettings settings = new XmlReaderSettings();
-            settings.ValidationType = ValidationType.Schema;
-
-            // Load XSD schema from file path.
-            using (var xsdReader = XmlReader.Create(xsdFilePath))
+            try
             {
-                settings.Schemas.Add(null, xsdReader);
+                // Create XmlReaderSettings and set validation type to schema.
+                XmlReaderSettings settings = new XmlReaderSettings();
+                settings.ValidationType = ValidationType.Schema;
+
+                // Load XSD schema from file path.
+                using (var xsdReader = XmlReader.Create(xsdFilePath))
+                {
+                    settings.Schemas.Add(null, xsdReader);
+                }
+
+                // Specify validation event handler.
+                settings.ValidationEventHandler += ValidationCallback;
+
+                // Load XML document from file path.
+                using (var xmlReader = XmlReader.Create(xmlFilePath, settings))
+                {
+                    // Read XML content to trigger validation.
+                    while (xmlReader.Read()) { }
+                }
+
+                // If validation succeeds, return true.
+                return true;
             }
-
-            // Specify validation event handler.
-            settings.ValidationEventHandler += ValidationCallback;
-
-            // Load XML document from file path.
-            using (var xmlReader = XmlReader.Create(xmlFilePath, settings))
+            catch (Exception ex)
             {
-                // Read XML content to trigger validation.
-                while (xmlReader.Read()) { }
+                // If validation fails, catch the exception and return false.
+                Console.WriteLine($"Validation failed: {ex.Message}");
+                return false;
             }
-
-            // If validation succeeds, return true.
-            return true;
         }
-        catch (Exception ex)
+
+        // Validation callback method to handle validation errors.
+        static void ValidationCallback(object sender, ValidationEventArgs e)
         {
-            // If validation fails, catch the exception and return false.
-            Console.WriteLine($"Validation failed: {ex.Message}");
-            return false;
+            if (e.Severity == XmlSeverityType.Error)
+                throw new Exception($"Validation error: {e.Message}");
+            else if (e.Severity == XmlSeverityType.Warning)
+                Console.WriteLine($"Validation warning: {e.Message}");
         }
-    }
-
-    // Validation callback method to handle validation errors.
-    static void ValidationCallback(object sender, ValidationEventArgs e)
-    {
-        if (e.Severity == XmlSeverityType.Error)
-            Console.WriteLine($"Validation error: {e.Message}");
-        else if (e.Severity == XmlSeverityType.Warning)
-            Console.WriteLine($"Validation warning: {e.Message}");
-    }
     }
 }

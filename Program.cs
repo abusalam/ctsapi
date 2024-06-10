@@ -48,6 +48,7 @@ builder.Services.AddTransient<IGobalObjectionRepository, GobalObjectionRepositor
 builder.Services.AddTransient<IDdoRepository, DdoRepository>();
 builder.Services.AddTransient<ITpBillRepository, TpBillRepository>();
 builder.Services.AddTransient<ITokenRepository, TokenRepository>();
+builder.Services.AddTransient<ITransactionLotRepository, TransactionLotRepository>();
 
 //Services
 builder.Services.AddTransient<IChequeCountService, ChequeCountService>();
@@ -67,6 +68,7 @@ builder.Services.AddTransient<ITpBillService, TpBillService>();
 builder.Services.AddTransient<ITokenService, TokenService>();
 
 builder.Services.AddTransient<IPaymandateService, PaymandateService>();
+builder.Services.AddTransient<ITransactionLotService, TransactionLotService>();
 
 builder.Services.AddTransient<ITokenHelper, TokenHelper>();
 builder.Services.AddSingleton<ITokencache, Tokencache>();
@@ -134,7 +136,7 @@ app.UseHttpsRedirection();
 
 //app.UseAuthorization();
 
-// app.UseAuthTokenMiddleware();
+app.UseAuthTokenMiddleware();
 
 app.MapControllers();
 

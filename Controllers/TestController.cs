@@ -1,5 +1,7 @@
-﻿using CTS_BE.BAL.Interfaces.paymandate;
+﻿using CTS_BE.BAL.Interfaces;
+using CTS_BE.BAL.Interfaces.paymandate;
 using CTS_BE.Helper;
+using CTS_BE.Model;
 using CTS_BE.Model.e_Kuber;
 using Microsoft.AspNetCore.Mvc;
 using System.IO.Compression;
@@ -12,10 +14,12 @@ namespace CTS_BE.Controllers
     public class TestController : Controller
     {
         private readonly IPaymandateService _paymandateService;
+        private readonly ITransactionLotService _transactionLotService;
 
-        public TestController(IPaymandateService paymandateService)
+        public TestController(IPaymandateService paymandateService, ITransactionLotService transactionLotService)
         {
             _paymandateService = paymandateService;
+            _transactionLotService = transactionLotService;
         }
         //[HttpGet("GeneretXML")]
         //public void GenerateXML()
@@ -205,11 +209,32 @@ namespace CTS_BE.Controllers
         //}
 
         [HttpGet("GeneretXML")]
-        public APIResponse<bool> GenerateXML()
+        public async Task<APIResponse<bool>> GenerateXMLAsync()
         {
             APIResponse<bool> aPIResponse = new();
             try
             {
+                List<TransactionLotModel> pendingLots = await _transactionLotService.pendingLots();
+                foreach (TransactionLotModel pendingLot in pendingLots)
+                {
+                    EKuber eKuberData = await _transactionLotService.GetXMLData(pendingLot.Id);
+                    string fileName = eKuberData.requestPayload.AppHdr.BizMsgIdr;
+                    _paymandateService.GenerateXML(eKuberData, fileName, fileName + ".xml");
+                    bool isValid = XmlHelper.ValidateXml(fileName + ".xml", "pain.001.001.08v2.4.xsd");
+                    if (isValid)
+                    {
+                        SignHelper.signdocument1(fileName + ".xml", "ifms.gowb.pfx", fileName, "");
+                        string ZipFileName = fileName + ".zip";
+                        using (var zip = ZipFile.Open(ZipFileName, ZipArchiveMode.Create))
+                        {
+                            zip.CreateEntryFromFile(fileName + ".xml", fileName + ".xml");
+                            // zip.CreateEntryFromFile(fileName+".sig", fileName+".sig");
+                        }
+                        SFTPHelper.UploadFile("10.176.100.62", 22, "admin", "admin", fileName + ".xml", "/CTS/" + fileName + ".xml");
+                    }
+                }
+
+                //=========================================================================
                 // EKuber data = _paymandateService.GetXMLData();
                 // string fileName = data.requestPayload.AppHdr.BizMsgIdr;
                 // _paymandateService.GenerateXML(data, fileName, fileName + ".xml");
@@ -222,7 +247,7 @@ namespace CTS_BE.Controllers
                 //     zip.CreateEntryFromFile("EPV80116001516701174202404150001" + ".xml", "EPV80116001516701174202404150001" + ".xml");
                 //     zip.CreateEntryFromFile("temp.sig", "temp.sig");
                 // }
-                SFTPHelper.UploadFile("10.176.100.62",22,"admin","admin","EPV80116001516701174202404150001.xml","/CTS/EPV80116001516701174202404150001.xml");
+                //SFTPHelper.UploadFile("10.176.100.62",22,"admin","admin","EPV80116001516701174202404150001.xml","/CTS/EPV80116001516701174202404150001.xml");
                 aPIResponse.Message = "XML Generated & Signed Successfully";
                 aPIResponse.result = true;
                 aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Success;
@@ -259,6 +284,25 @@ namespace CTS_BE.Controllers
                 return aPIResponse;
             }
         }
-
+        [HttpGet("CreateLot")]
+        public async Task<APIResponse<bool>> CreateLot()
+        {
+            APIResponse<bool> aPIResponse = new();
+            try
+            {
+                await _transactionLotService.CreateLot(1);
+                aPIResponse.Message = "Lot Created Successfully";
+                aPIResponse.result = true;
+                aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Success;
+                return aPIResponse;
+            }
+            catch (Exception ex)
+            {
+                aPIResponse.Message = ex.Message;
+                aPIResponse.result = false;
+                aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Error;
+                return aPIResponse;
+            }
+        }
     }
 }

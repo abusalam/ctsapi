@@ -151,17 +151,25 @@ namespace CTS_BE.BAL.Services.paymandate
             string LotType = "01";
             string PaymentAdviceDate = "20240415";
             string PaymentAdviceYYMM = "202402";
-            string ReservedField = DbtrAcctNo.PadLeft(12,'0');
-            string FileName = "EPV8"+UDCH+ReservedField+DateofAuthorization+FileSequenceNumber;
+            string ReservedField = DbtrAcctNo.PadLeft(12, '0');
+            string FileName = "EPV8" + UDCH + ReservedField + DateofAuthorization + FileSequenceNumber;
             EKuber data = new EKuber
             {
                 requestPayload = new RequestPayload
                 {
-                    
+
                     AppHdr = new AppHdr
                     {
-                        Fr = new Fr{OrgId = new OrgId{Id = new Id{OrgId = new OrgId{Othr = new Othr{Id = UDCH}}}}},
-                        To = new To{FIId = new FIId{FinInstnId = new FinInstnId{ClrSysMmbId = new ClrSysMmbId{MmbId = "RBI"
+                        Fr = new Fr { OrgId = new OrgId { Id = new Id { OrgId = new OrgId { Othr = new Othr { Id = UDCH } } } } },
+                        To = new To
+                        {
+                            FIId = new FIId
+                            {
+                                FinInstnId = new FinInstnId
+                                {
+                                    ClrSysMmbId = new ClrSysMmbId
+                                    {
+                                        MmbId = "RBI"
                                     }
                                 }
                             }
@@ -206,7 +214,7 @@ namespace CTS_BE.BAL.Services.paymandate
                             },
                             PmtInf = new PmtInf
                             {
-                                PmtInfId = UDCH+LotNumber+LotType+PaymentAdviceDate+PaymentAdviceYYMM,
+                                PmtInfId = UDCH + LotNumber + LotType + PaymentAdviceDate + PaymentAdviceYYMM,
                                 PmtMtd = "TRF",
                                 BtchBookg = "true",
                                 NbOfTxs = 2,
@@ -519,7 +527,8 @@ namespace CTS_BE.BAL.Services.paymandate
                 //*Identification of a division
                 writer.WriteElementString("Dept", kuber.requestPayload.Document.CstmrCdtTrfInitn.PmtInf.Dbtr.PstlAdr.Dept);//TODO:: Change it to Department
                 //*Identification of a sub-division
-                if(kuber.requestPayload.Document.CstmrCdtTrfInitn.PmtInf.Dbtr.PstlAdr.SubDept!=""){
+                if (kuber.requestPayload.Document.CstmrCdtTrfInitn.PmtInf.Dbtr.PstlAdr.SubDept != "")
+                {
                     writer.WriteElementString("SubDept", kuber.requestPayload.Document.CstmrCdtTrfInitn.PmtInf.Dbtr.PstlAdr.SubDept);//TODO:: Change it to Sub Department
                 }
                 writer.WriteEndElement(); // PstlAdr
