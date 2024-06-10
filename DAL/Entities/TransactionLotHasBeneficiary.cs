@@ -21,7 +21,8 @@ public partial class TransactionLotHasBeneficiary
     public short? FinancialYearId { get; set; }
 
     [Column("amount")]
-    public int? Amount { get; set; }
+    [Precision(10, 2)]
+    public decimal? Amount { get; set; }
 
     [Column("beneficiary_name", TypeName = "character varying")]
     public string? BeneficiaryName { get; set; }

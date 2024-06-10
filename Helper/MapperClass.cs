@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using CTS_BE.DTOs;
 using System.Data.Common;
-
+using CTS_BE.Model;
+using CTS_BE.DAL.Entities;
 namespace CTS_BE.Helper
 {
     public class MapperClass : Profile
@@ -14,7 +15,8 @@ namespace CTS_BE.Helper
             .ForMember(dest => dest.DdoDesignation, opt => opt.MapFrom(src => src["designation"]))
             .ForMember(dest => dest.BillNo, opt => opt.MapFrom(src => src["bill_no"]))
             .ForMember(dest => dest.BillDate, opt => opt.MapFrom(src => src["bill_date"]));
-            
+            CreateMap<TransactionLot,TransactionLotModel>();
+            CreateMap<TransactionLotModel, TransactionLot>();
         }
     }
 }
