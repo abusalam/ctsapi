@@ -225,7 +225,8 @@ namespace CTS_BE.Controllers
                 foreach (TransactionLotModel pendingLot in pendingLots)
                 {
                     EKuber eKuberData = await _transactionLotService.GetXMLData(pendingLot.Id);
-                    fileName = eKuberData.requestPayload.AppHdr.BizMsgIdr;
+                    // fileName = eKuberData.requestPayload.AppHdr.BizMsgIdr;
+                    fileName = "EPV80116001516701174202404150055";
                     _paymandateService.GenerateXML(eKuberData, fileName, fileName + ".xml");
                     bool isValid = XmlHelper.ValidateXml(fileName + ".xml", "pain.001.001.08v2.4.xsd");
                     if (isValid)
