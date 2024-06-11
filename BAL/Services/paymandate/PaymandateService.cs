@@ -418,7 +418,7 @@ namespace CTS_BE.BAL.Services.paymandate
                 writer.WriteEndElement(); // FIId
                 writer.WriteEndElement(); // To
                 // *Identification of the Business Message Same as file name
-                writer.WriteElementString("BizMsgIdr", kuber.requestPayload.AppHdr.BizMsgIdr);//??? WHAT WIIL BE THE FILE NAME FORMAT ???
+                writer.WriteElementString("BizMsgIdr", fileName);//??? WHAT WIIL BE THE FILE NAME FORMAT ???
                 // *Identification of the Message Definition Default pain.001.001.08
                 writer.WriteElementString("MsgDefIdr", "pain.001.001.08");//DEFAULT
                 // *Business Service
@@ -437,7 +437,7 @@ namespace CTS_BE.BAL.Services.paymandate
                 *  Point to point reference, as assigned by the chain to unambiguously identify the message. 
                 *  instructing party, and sent to the next party in the chain.Same as file name
                 */
-                writer.WriteElementString("MsgId", kuber.requestPayload.Document.CstmrCdtTrfInitn.GrpHdr.MsgId);//?? IS IT ALLWAS THE FILE NAME ???
+                writer.WriteElementString("MsgId", fileName);//?? IS IT ALLWAS THE FILE NAME ???
                 // *Date and time at which the message was created.
                 writer.WriteElementString("CreDtTm", currentDateTime);
                 writer.WriteStartElement("Authstn");
