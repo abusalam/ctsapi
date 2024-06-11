@@ -35,8 +35,8 @@ namespace CTS_BE.BAL
             string DateofAuthorization = "20240415";
             string LotNumber = "CKP000210";
             string LotType = "01";
-            string PaymentAdviceDate = "20240415";
-            string PaymentAdviceYYMM = "202402";
+            string PaymentAdviceDate = "20240710";
+            string PaymentAdviceYYMM = "202407";
             string ReservedField = DbtrAcctNo.PadLeft(12, '0');
             string FileName = "EPV8" + UDCH + ReservedField + DateofAuthorization + FileSequenceNumber;
             EKuber eKuberData = await _TransactionLotRepository.GetSingleSelectedColumnByConditionAsync(e => e.Id == lotId, e => new EKuber

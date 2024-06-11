@@ -382,7 +382,7 @@ namespace CTS_BE.BAL.Services.paymandate
             {
                 Indent = true,
                 IndentChars = "\t",
-                Encoding = System.Text.Encoding.UTF8
+                Encoding = new System.Text.UTF8Encoding(false) // set false to not include BOM
             };
 
             using (XmlWriter writer = XmlWriter.Create(filePath, settings))

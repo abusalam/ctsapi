@@ -35,6 +35,13 @@ namespace CTS_BE.Helper
                 throw ex;
             }
         }
+        public static bool VerifyXMLSignatures(string xmlFile,string sigFile)
+        {
+                FileInfo xmlfileInfo = new FileInfo(xmlFile);
+                FileStream sigfileInfo = new FileStream(sigFile, FileMode.Open);
+                bool isVerify = SignHelper.verifySignaturesRBI(xmlfileInfo, sigfileInfo);
+                return isVerify;
+        }
         public static X509Certificate2 GetFileCertificate1(string path)
         {
             X509Certificate2 x509Certificate = null;

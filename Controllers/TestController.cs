@@ -215,9 +215,9 @@ namespace CTS_BE.Controllers
             APIResponse<bool> aPIResponse = new();
             try
             {
-                
+
                 SFTPHelper.UploadFile("1.6.198.15", 22, "GOWB", "Gowb1234$", fileName + ".zip", "/EPAY/IN/" + fileName + ".zip");
-                
+
                 aPIResponse.Message = "Pushed to RBI Successfully";
                 aPIResponse.result = true;
                 aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Success;
@@ -254,16 +254,16 @@ namespace CTS_BE.Controllers
                         using (var zip = ZipFile.Open(ZipFileName, ZipArchiveMode.Create))
                         {
                             zip.CreateEntryFromFile(fileName + ".xml", fileName + ".xml");
-                            zip.CreateEntryFromFile(fileName+".sig", fileName+".sig");
+                            zip.CreateEntryFromFile(fileName + ".sig", fileName + ".sig");
                         }
                         filePath = "./" + fileName + ".zip";
                         //var tstFile = File.OpenRead(filePath);
-                        SFTPHelper.UploadFile("1.6.198.15", 22, "GOWB", "Gowb1234$",filePath, "EPAY/IN//" + fileName + ".zip");
+                        SFTPHelper.UploadFile("1.6.198.15", 22, "GOWB", "Gowb1234$", filePath, "EPAY/IN//" + fileName + ".zip");
                     }
                     break;
                 }
 
-               
+
                 aPIResponse.Message = "XML Generated & Signed Successfully";
                 aPIResponse.result = fileName;
                 aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Success;
@@ -283,8 +283,8 @@ namespace CTS_BE.Controllers
             APIResponse<bool> aPIResponse = new();
             try
             {
-                System.IO.FileInfo xmlfile = new System.IO.FileInfo("EPV80116001516701174202404150001" + ".xml");
-                System.IO.FileStream sigfile = new System.IO.FileStream("temp.sig", System.IO.FileMode.Open);
+                System.IO.FileInfo xmlfile = new System.IO.FileInfo("./ACK/EPV80116001516701174202404150001" + ".xml");
+                System.IO.FileStream sigfile = new System.IO.FileStream("./ACK/temp.sig", System.IO.FileMode.Open);
                 bool verify = SignHelper.verifySignaturesRBI(xmlfile, sigfile);
                 sigfile.Close();
                 aPIResponse.result = verify;
@@ -300,13 +300,58 @@ namespace CTS_BE.Controllers
                 return aPIResponse;
             }
         }
+        [HttpGet("INACK/{fileName}")]
+        public async Task<APIResponse<string>> DownloadandVerifyACK(string fileName)
+        {
+            APIResponse<string> aPIResponse = new();
+            try
+            {
+                string localFilePath = "./ACK/" + fileName + ".zip";
+                string fileNameTrim = fileName.Substring(3);
+                string xmlFileName = fileNameTrim + ".xml";
+                string xmlFilePath = "./ACK/" + xmlFileName;
+                string xmlSigFileName = "temp.sig";
+                string xmlSigFilePath = "./ACK/" + xmlSigFileName;
+                // SFTPHelper.MoveFile("10.176.100.62", 22, "admin", "admin", "/CTS/", "/CTS/Done/", fileName + ".zip");
+                // SFTPHelper.DownloadFile("1.6.198.15", 22, "GOWB", "Gowb1234$", "/EPAY/INACK" + fileName + ".zip", localFilePath);
+                SFTPHelper.DownloadFile("10.176.100.62", 22, "admin", "admin", "/CTS/" + fileName + ".zip", localFilePath);
+                using (ZipArchive archive = ZipFile.OpenRead(localFilePath))
+                {
+                    foreach (ZipArchiveEntry entry in archive.Entries)
+                    {
+                        entry.ExtractToFile("./ACK/" + entry.FullName);
+                    }
+                }
+                if (SignHelper.VerifyXMLSignatures(xmlFilePath, xmlSigFilePath))
+                {
+                    // SFTPHelper.MoveFile("10.176.100.62", 22, "admin", "admin","/CTS/"+xmlFileName,"/CTS/Done/"+xmlFileName,fileName+".zip");
+                    SFTPHelper.MoveFile("10.176.100.62", 22, "admin", "admin", "/CTS/", "/CTS/Done/", fileName + ".zip");
+                    aPIResponse.Message = "INACK Downloaded and Verified Successfully";
+                    aPIResponse.result = "true";
+                    aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Success;
+                    return aPIResponse;
+                }
+                aPIResponse.Message = "INACK Downloaded and Verified Faild";
+                aPIResponse.result = "False";
+                aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Error;
+                return aPIResponse;
+            }
+            catch (Exception ex)
+            {
+                aPIResponse.Message = ex.Message;
+                aPIResponse.result = "false";
+                aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Error;
+                return aPIResponse;
+            }
+        }
+
         [HttpGet("CreateLot")]
         public async Task<APIResponse<bool>> CreateLot()
         {
             APIResponse<bool> aPIResponse = new();
             try
             {
-                await _transactionLotService.CreateLot(1);
+
                 aPIResponse.Message = "Lot Created Successfully";
                 aPIResponse.result = true;
                 aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Success;
