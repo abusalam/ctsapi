@@ -28,7 +28,7 @@ namespace CTS_BE.BAL
         }
         public async Task<EKuber> GetXMLData(long lotId)
         {
-            string UDCH = "0116";
+            string UDCH = "116";
             string DbtrAcctNo = "01516701174";
             string DebtorIFSC = "RBIS0GOWBEP";
             string FileSequenceNumber = "0055";
