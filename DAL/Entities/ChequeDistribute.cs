@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
-using NpgsqlTypes;
 
 namespace CTS_BE.DAL.Entities;
 
@@ -12,26 +11,26 @@ namespace CTS_BE.DAL.Entities;
 public partial class ChequeDistribute
 {
     [Column("id")]
-    public long? Id { get; set; }
+    public long Id { get; set; }
 
-    [Column("range")]
-    public NpgsqlRange<int>[]? Range { get; set; }
-
-    [Column("quantity")]
-    public short? Quantity { get; set; }
-
-    [Column("distribute_to", TypeName = "char")]
-    public char? DistributeTo { get; set; }
-
-    [Column("cheque_series_info", TypeName = "char")]
-    public char? ChequeSeriesInfo { get; set; }
+    [Column("micr_code", TypeName = "char")]
+    public char? MicrCode { get; set; }
 
     [Column("user_id")]
     public short? UserId { get; set; }
 
-    [Column("received_id")]
-    public short? ReceivedId { get; set; }
+    [Column("start")]
+    public short? Start { get; set; }
 
-    [Column("created_at")]
-    public DateTime? CreatedAt { get; set; }
+    [Column("end")]
+    public short? End { get; set; }
+
+    [Column("quantity")]
+    public short? Quantity { get; set; }
+
+    [Column("distributor")]
+    public short? Distributor { get; set; }
+
+    [Column("series_no", TypeName = "character varying")]
+    public string? SeriesNo { get; set; }
 }

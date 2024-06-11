@@ -114,6 +114,10 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<StampVendorType> StampVendorTypes { get; set; }
 
+    public virtual DbSet<StampWallet> StampWallets { get; set; }
+
+    public virtual DbSet<StampWalletTransaction> StampWalletTransactions { get; set; }
+
     public virtual DbSet<Status> Statuses { get; set; }
 
     public virtual DbSet<SubDetailHead> SubDetailHeads { get; set; }
@@ -224,6 +228,7 @@ public partial class CTSDBContext : DbContext
 
             entity.Property(e => e.BillNo).IsFixedLength();
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
+            entity.Property(e => e.CssBenType).HasComment("{ name: 'Non-SNA', code: 2 }, { name: 'SNA', code: 1 }");
             entity.Property(e => e.DdoCode).IsFixedLength();
             entity.Property(e => e.Demand).IsFixedLength();
             entity.Property(e => e.DetailHead).IsFixedLength();
@@ -234,6 +239,7 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.PlanStatus).IsFixedLength();
             entity.Property(e => e.ReferenceNo).IsFixedLength();
             entity.Property(e => e.SchemeHead).IsFixedLength();
+            entity.Property(e => e.SnaGrantType).HasComment("{ name: 'Grant-in-Aid in Cash', code: 1 }, { name: 'Grant-in-Aid in Kind', code: 2 }");
             entity.Property(e => e.SubMajorHead).IsFixedLength();
             entity.Property(e => e.TreasuryCode).IsFixedLength();
             entity.Property(e => e.VersionNo).HasDefaultValueSql("1");
@@ -370,6 +376,11 @@ public partial class CTSDBContext : DbContext
         modelBuilder.Entity<ChequeDamage>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("cheque_damage_pkey");
+        });
+
+        modelBuilder.Entity<ChequeDistribute>(entity =>
+        {
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
         });
 
         modelBuilder.Entity<ChequeEntry>(entity =>
@@ -722,6 +733,31 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.IsActive).HasDefaultValueSql("true");
         });
 
+        modelBuilder.Entity<StampWallet>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("stamp_wallet_pkey");
+
+            entity.Property(e => e.TreasuryCode).IsFixedLength();
+        });
+
+        modelBuilder.Entity<StampWalletTransaction>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("stamp_wallet_transaction_pkey");
+
+            entity.Property(e => e.FromTreasuryCode).IsFixedLength();
+            entity.Property(e => e.ToTreasuryCode).IsFixedLength();
+
+            entity.HasOne(d => d.StampWallet).WithMany(p => p.StampWalletTransactions)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("stamp_wallet_transaction_stamp_wallet_id_fkey");
+
+            entity.HasOne(d => d.ToTreasuryCodeNavigation).WithMany(p => p.StampWalletTransactions)
+                .HasPrincipalKey(p => p.Code)
+                .HasForeignKey(d => d.ToTreasuryCode)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("stamp_wallet_transaction_to_treasury_code_fkey");
+        });
+
         modelBuilder.Entity<Status>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("status_pkey");
@@ -813,6 +849,7 @@ public partial class CTSDBContext : DbContext
 
             entity.Property(e => e.DrnNo).IsFixedLength();
             entity.Property(e => e.LotNo).IsFixedLength();
+            entity.Property(e => e.Status).HasComment("1=lot generate");
         });
 
         modelBuilder.Entity<TransactionLotHasBeneficiary>(entity =>
@@ -823,6 +860,8 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.AccountNumber).IsFixedLength();
             entity.Property(e => e.IfscCode).IsFixedLength();
             entity.Property(e => e.MobileNo).IsFixedLength();
+
+            entity.HasOne(d => d.TransactionLot).WithMany(p => p.TransactionLotHasBeneficiaries).HasConstraintName("transaction_lot_fky");
         });
 
         modelBuilder.Entity<TransactionLotHistory>(entity =>

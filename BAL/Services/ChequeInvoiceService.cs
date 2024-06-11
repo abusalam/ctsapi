@@ -19,7 +19,7 @@ namespace CTS_BE.BAL
         public async Task<bool> InsertIndentInvoice(ChequeInvoiceDTO chequeInvoiceDTO)
         {
             string chequeInvoiceData = JSONHelper.ObjectToJson(chequeInvoiceDTO);
-            return await _ChequeInvoiceRepository.Insert(chequeInvoiceData);
+            return await _ChequeInvoiceRepository.Insert(chequeInvoiceData);    
         }
         public async Task<IEnumerable<ChequeInvoiceListDTO>> ChequeInvoiceList(DynamicListQueryParameters dynamicListQueryParameters, List<int> statusIds)
         {

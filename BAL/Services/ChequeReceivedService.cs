@@ -82,8 +82,9 @@ namespace CTS_BE.BAL.Services
                                     InvoiceId = cr.InvoiceId,
                                     Start = cr.Start,
                                     End = cr.End,
-                                    Quantity = (short?)(cr.End - cr.Start),
-                                    MicrCode = ce.MicrCode
+                                    Quantity = (short?)((cr.End - cr.Start) + 1),
+                                    MicrCode = ce.MicrCode,
+                                    Series = ce.SeriesNo
                                 }).ToListAsync();
 
             return result;

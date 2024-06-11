@@ -9,7 +9,7 @@ namespace CTS_BE.Helper
     {
         public static int calculateAvailableQuantity(short currentPosition, short end, short start)
         {
-            return (currentPosition == 0) ? (end - start) + 1 : end - currentPosition;
+            return (currentPosition == 0) ? (end - start) + 1 : (end - currentPosition) + 1;
         }
 
         public static List<(int start, int end)> SplitRange(int start, int end, List<int> exclusions)

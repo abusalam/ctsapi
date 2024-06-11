@@ -154,7 +154,7 @@ namespace CTS_BE.DTOs
 
     }
 
-    public class UserListDTO{
+    public class UserListDTO {
         public short? UserId { get; set; }
         public string? UserName { get; set; }
         public string? TreasurieCode { get; set; }
@@ -168,6 +168,24 @@ namespace CTS_BE.DTOs
         public short? End { get; set; }
         public string MicrCode { get; set; }
         public short? Quantity { get; set; }
+        public string Series { get; set; }
+    }
+
+    public class ChequeDistributionDTO
+    {
+        public string MicrCode { get; set; }
+
+        public string Series { get; set; }
+        public string distributor { get; set; }
+
+        public List<ChequeDistributeToUserDTO> ChequeDistributeToUse { get; set; }
+    }
+
+    public class ChequeDistributeToUserDTO{
+        public short? Start { get; set; }
+        public short? End { get; set; }
+        public short? Quantity { get; set; }
+        public short? UserId { get; set; }
     }
 
 }

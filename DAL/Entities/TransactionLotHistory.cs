@@ -22,6 +22,12 @@ public partial class TransactionLotHistory
     [Column("response", TypeName = "character varying")]
     public string? Response { get; set; }
 
+    [Column("file_name", TypeName = "character varying")]
+    public string? FileName { get; set; }
+
+    [Column("file_data")]
+    public byte[]? FileData { get; set; }
+
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime? CreatedAt { get; set; }
 }

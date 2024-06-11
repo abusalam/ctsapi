@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.DAL.Entities;
 
 [Table("transaction_lot_has_beneficiaries", Schema = "cts_payment")]
+[Index("TransactionLotId", Name = "fki_transaction_lot_fky")]
 public partial class TransactionLotHasBeneficiary
 {
     [Key]
@@ -20,7 +21,8 @@ public partial class TransactionLotHasBeneficiary
     public short? FinancialYearId { get; set; }
 
     [Column("amount")]
-    public int? Amount { get; set; }
+    [Precision(10, 2)]
+    public decimal? Amount { get; set; }
 
     [Column("beneficiary_name", TypeName = "character varying")]
     public string? BeneficiaryName { get; set; }
@@ -45,4 +47,8 @@ public partial class TransactionLotHasBeneficiary
 
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime? CreatedAt { get; set; }
+
+    [ForeignKey("TransactionLotId")]
+    [InverseProperty("TransactionLotHasBeneficiaries")]
+    public virtual TransactionLot? TransactionLot { get; set; }
 }
