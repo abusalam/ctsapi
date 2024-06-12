@@ -354,6 +354,51 @@ namespace CTS_BE.Controllers
                 return aPIResponse;
             }
         }
+        [HttpGet("DownloadandVerify")]
+        public async Task<APIResponse<string>> DownloadandVerify([FromQuery]string fileName,[FromQuery]string localPath,[FromQuery]string remotePath)
+        {
+            APIResponse<string> aPIResponse = new();
+            try
+            {
+                string localFilePath = localPath + fileName + ".zip";
+                string remoteFilePath = remotePath + fileName + ".zip";
+                // string fileNameTrim = fileName.Substring(3);
+                string xmlFileName = fileName + ".xml";
+                string xmlFilePath = localPath + xmlFileName;
+                string xmlSigFileName = fileName+".sig";
+                string xmlSigFilePath = localPath + xmlSigFileName;
+                // SFTPHelper.MoveFile("10.176.100.62", 22, "admin", "admin", "/CTS/", "/CTS/Done/", fileName + ".zip");
+                // SFTPHelper.DownloadFile("1.6.198.15", 22, "GOWB", "Gowb1234$", "/EPAY/INACK" + fileName + ".zip", localFilePath);
+                SFTPHelper.DownloadFile("10.176.100.62", 22, "admin", "admin", remoteFilePath, localFilePath);
+                using (ZipArchive archive = ZipFile.OpenRead(localFilePath))
+                {
+                    foreach (ZipArchiveEntry entry in archive.Entries)
+                    {
+                        entry.ExtractToFile(localPath + entry.FullName);
+                    }
+                }
+                if (SignHelper.VerifyXMLSignatures(xmlFilePath, xmlSigFilePath))
+                {
+                    // SFTPHelper.MoveFile("10.176.100.62", 22, "admin", "admin","/CTS/"+xmlFileName,"/CTS/Done/"+xmlFileName,fileName+".zip");
+                    SFTPHelper.MoveFile("10.176.100.62", 22, "admin", "admin", remotePath, remotePath+"/Done/", fileName + ".zip");
+                    aPIResponse.Message = "INACK Downloaded and Verified Successfully";
+                    aPIResponse.result = "true";
+                    aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Success;
+                    return aPIResponse;
+                }
+                aPIResponse.Message = "INACK Downloaded and Verified Faild";
+                aPIResponse.result = "False";
+                aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Error;
+                return aPIResponse;
+            }
+            catch (Exception ex)
+            {
+                aPIResponse.Message = ex.Message;
+                aPIResponse.result = "false";
+                aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Error;
+                return aPIResponse;
+            }
+        }
 
         [HttpGet("CreateLot")]
         public async Task<APIResponse<bool>> CreateLot()

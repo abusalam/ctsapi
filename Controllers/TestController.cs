@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.IO.Compression;
 using System.Text;
 using System;
+using System.ComponentModel.DataAnnotations;
 //using System.IO.File;
 
 namespace CTS_BE.Controllers
@@ -94,8 +95,8 @@ namespace CTS_BE.Controllers
                 return aPIResponse;
             }
         }
-        [HttpGet("INACK/{fileName}")]
-        public async Task<APIResponse<string>> DownloadandVerifyACK(string fileName)
+        [HttpGet("INACK")]
+        public async Task<APIResponse<string>> DownloadandVerifyACK([FromQuery] [Required]string fileName)
         {
             APIResponse<string> aPIResponse = new();
             try
@@ -155,6 +156,47 @@ namespace CTS_BE.Controllers
             {
                 aPIResponse.Message = ex.Message;
                 aPIResponse.result = false;
+                aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Error;
+                return aPIResponse;
+            }
+        }
+                [HttpGet("DownloadandVerify")]
+        public async Task<APIResponse<string>> DownloadandVerify([FromQuery]string fileName,[FromQuery]string localPath,[FromQuery]string remotePath)
+        {
+            APIResponse<string> aPIResponse = new();
+            try
+            {
+                string localFilePath = localPath + fileName + ".zip";
+                string remoteFilePath = remotePath + fileName + ".zip";
+                string xmlFileName = fileName + ".xml";
+                string xmlFilePath = localPath + xmlFileName;
+                string xmlSigFileName = fileName+".sig";
+                string xmlSigFilePath = localPath + xmlSigFileName;
+                SFTPHelper.DownloadFile("1.6.198.15", 22, "GOWB", "Gowb1234$", remoteFilePath, localFilePath);
+                using (ZipArchive archive = ZipFile.OpenRead(localFilePath))
+                {
+                    foreach (ZipArchiveEntry entry in archive.Entries)
+                    {
+                        entry.ExtractToFile(localPath + entry.FullName);
+                    }
+                }
+                if (SignHelper.VerifyXMLSignatures(xmlFilePath, xmlSigFilePath))
+                {
+                    SFTPHelper.MoveFile("1.6.198.15", 22, "GOWB", "Gowb1234$", remotePath, remotePath+"/Done/", fileName + ".zip");
+                    aPIResponse.Message = "File Downloaded and Verified Successfully";
+                    aPIResponse.result = "true";
+                    aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Success;
+                    return aPIResponse;
+                }
+                aPIResponse.Message = "Verified Faild";
+                aPIResponse.result = "False";
+                aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Error;
+                return aPIResponse;
+            }
+            catch (Exception ex)
+            {
+                aPIResponse.Message = ex.Message;
+                aPIResponse.result = "false";
                 aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Error;
                 return aPIResponse;
             }
