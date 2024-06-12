@@ -26,19 +26,19 @@ namespace CTS_BE.BAL
             List<TransactionLot> transactionLots = (List<TransactionLot>) await _TransactionLotRepository.GetAllByConditionAsync(e => e.Status == 1);
             return _mapper.Map<List<TransactionLotModel>>(transactionLots);
         }
-        public async Task<EKuber> GetXMLData(long lotId)
+        public async Task<EKuber> GetXMLData(long lotId,string FileSequenceNumber,string paymentDate)
         {
             string UDCH = "116";
             string DbtrAcctNo = "01516701174";
             string DebtorIFSC = "RBIS0GOWBEP";
-            string FileSequenceNumber = "0055";
+            // string FileSequenceNumber = "0055";
             string DateofAuthorization = "20240415";
-            string LotNumber = "CKP000210";
+            // string LotNumber = "CKP000210";
             string LotType = "01";
-            string PaymentAdviceDate = "20240710";
-            string PaymentAdviceYYMM = "202407";
+            string PaymentAdviceDate = DateTime.Now.ToString("yyyymmdd");
+            string PaymentAdviceYYMM = DateTime.Now.ToString("yyyymm") ;
             string ReservedField = DbtrAcctNo.PadLeft(12, '0');
-            string FileName = "EPV8" + UDCH + ReservedField + DateofAuthorization + FileSequenceNumber;
+            string FileName = "EPV8" + UDCH.PadLeft(4,'0') + ReservedField + DateofAuthorization + FileSequenceNumber;
             EKuber eKuberData = await _TransactionLotRepository.GetSingleSelectedColumnByConditionAsync(e => e.Id == lotId, e => new EKuber
             {
                 requestPayload = new RequestPayload
@@ -101,7 +101,7 @@ namespace CTS_BE.BAL
                                         Prtry = "NEFT"
                                     }
                                 },
-                                ReqdExctnDt = DateTime.Now.ToString("yyyy-MM-dd"),
+                                ReqdExctnDt = paymentDate ,
                                 Dbtr = new Debtor
                                 {
                                     Nm = "FINANCE DEPT",
@@ -145,7 +145,7 @@ namespace CTS_BE.BAL
                                     PmtId = new PaymentId
                                     {
                                         InstrId = "DRNPAYEE001",//TODO:: What will be the "InstrId"
-                                        EndToEndId = "EP"+UDCH+ReservedField+DateTimeHelper.GetJulianDate(DateTime.Now)+"000001"
+                                        EndToEndId = "EP"+UDCH+ReservedField+DateTimeHelper.GetJulianDate(DateTime.Now)+lotBeneficiarie.Id.ToString().PadLeft(6,'0')
                                     },
                                     Amt = new Amount
                                     {

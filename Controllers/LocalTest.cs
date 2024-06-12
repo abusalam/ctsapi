@@ -224,7 +224,7 @@ namespace CTS_BE.Controllers
                 List<TransactionLotModel> pendingLots = await _transactionLotService.pendingLots();
                 foreach (TransactionLotModel pendingLot in pendingLots)
                 {
-                    EKuber eKuberData = await _transactionLotService.GetXMLData(pendingLot.Id);
+                    EKuber eKuberData = await _transactionLotService.GetXMLData(pendingLot.Id,"","");
                     // fileName = eKuberData.requestPayload.AppHdr.BizMsgIdr;
                     fileName = "EPV80116001516701174202404150055";
                     _paymandateService.GenerateXML(eKuberData, fileName, fileName + ".xml");

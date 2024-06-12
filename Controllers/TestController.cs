@@ -48,7 +48,7 @@ namespace CTS_BE.Controllers
         }
 
         [HttpGet("GeneretXML")]
-        public async Task<APIResponse<string>> GenerateXMLAsync([FromQuery] bool pushFile = true)
+        public async Task<APIResponse<string>> GenerateXMLAsync([FromQuery] string fileSequenceNumber, [FromQuery] string paymentDate, [FromQuery] bool pushFile = true)
         {
             APIResponse<string> aPIResponse = new();
             string fileName = "";
@@ -58,9 +58,8 @@ namespace CTS_BE.Controllers
                 List<TransactionLotModel> pendingLots = await _transactionLotService.pendingLots();
                 foreach (TransactionLotModel pendingLot in pendingLots)
                 {
-                    EKuber eKuberData = await _transactionLotService.GetXMLData(pendingLot.Id);
-                    // fileName = eKuberData.requestPayload.AppHdr.BizMsgIdr;
-                    fileName = "EPV80116001516701174202404150055";
+                    EKuber eKuberData = await _transactionLotService.GetXMLData(pendingLot.Id,fileSequenceNumber,paymentDate);
+                    fileName = eKuberData.requestPayload.AppHdr.BizMsgIdr;
                     _paymandateService.GenerateXML(eKuberData, fileName, fileName + ".xml");
                     bool isValid = XmlHelper.ValidateXml(fileName + ".xml", "pain.001.001.08v2.4.xsd");
                     if (isValid)
@@ -96,7 +95,7 @@ namespace CTS_BE.Controllers
             }
         }
         [HttpGet("INACK")]
-        public async Task<APIResponse<string>> DownloadandVerifyACK([FromQuery] [Required]string fileName)
+        public async Task<APIResponse<string>> DownloadandVerifyACK([FromQuery][Required] string fileName)
         {
             APIResponse<string> aPIResponse = new();
             try
@@ -160,8 +159,8 @@ namespace CTS_BE.Controllers
                 return aPIResponse;
             }
         }
-                [HttpGet("DownloadandVerify")]
-        public async Task<APIResponse<string>> DownloadandVerify([FromQuery]string fileName,[FromQuery]string localPath,[FromQuery]string remotePath)
+        [HttpGet("DownloadandVerify")]
+        public async Task<APIResponse<string>> DownloadandVerify([FromQuery] string fileName, [FromQuery] string localPath, [FromQuery] string remotePath)
         {
             APIResponse<string> aPIResponse = new();
             try
@@ -170,7 +169,7 @@ namespace CTS_BE.Controllers
                 string remoteFilePath = remotePath + fileName + ".zip";
                 string xmlFileName = fileName + ".xml";
                 string xmlFilePath = localPath + xmlFileName;
-                string xmlSigFileName = fileName+".sig";
+                string xmlSigFileName = fileName + ".sig";
                 string xmlSigFilePath = localPath + xmlSigFileName;
                 SFTPHelper.DownloadFile("1.6.198.15", 22, "GOWB", "Gowb1234$", remoteFilePath, localFilePath);
                 using (ZipArchive archive = ZipFile.OpenRead(localFilePath))
@@ -182,7 +181,7 @@ namespace CTS_BE.Controllers
                 }
                 if (SignHelper.VerifyXMLSignatures(xmlFilePath, xmlSigFilePath))
                 {
-                    SFTPHelper.MoveFile("1.6.198.15", 22, "GOWB", "Gowb1234$", remotePath, remotePath+"Done/", fileName + ".zip");
+                    SFTPHelper.MoveFile("1.6.198.15", 22, "GOWB", "Gowb1234$", remotePath, remotePath + "Done/", fileName + ".zip");
                     aPIResponse.Message = "File Downloaded and Verified Successfully";
                     aPIResponse.result = "true";
                     aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Success;

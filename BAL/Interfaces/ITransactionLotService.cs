@@ -7,6 +7,6 @@ namespace CTS_BE.BAL.Interfaces
     {
         public Task<bool> CreateLot(long userId);
         public Task<List<TransactionLotModel>> pendingLots();
-        public Task<EKuber> GetXMLData(long lotId);
+        public Task<EKuber> GetXMLData(long lotId,string FileSequenceNumber,string paymentDate);
     }
 }
