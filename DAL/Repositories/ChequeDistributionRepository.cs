@@ -27,7 +27,7 @@ namespace CTS_BE.DAL.Repositories
             _outputParameter.Direction = ParameterDirection.InputOutput;
             _outputParameter.Value = 0;
             var parameters = new[] { _chequeDistributeData, _outputParameter };
-            var commandText = "call cts.cheque_distribute(@in_cheque_distribute_data,@is_done_out)";
+            var commandText = "call cts.cheque_distribute(@in_cheque_distribute_data, @is_done_out)";
             await _context.Database.ExecuteSqlRawAsync(commandText, parameters);
             int isDone = (Int16)_outputParameter.Value;
             return (isDone == 0) ? false : true;

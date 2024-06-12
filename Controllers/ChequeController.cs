@@ -824,25 +824,25 @@ namespace CTS_BE.Controllers
             return response;
         }
 
-        //[HttpPost]
-        //public async Task<APIResponse<bool>> SaveChequeDistribution([FromBody] ChequeDistributionDTO chequeDistributionDTO)
-        //{
-        //    APIResponse<bool> response = new();
-        //    try
-        //    {
-        //        var result = await _chequeDistributionService.saveChequeDistribution(chequeDistributionDTO);
-        //        response.apiResponseStatus = Enum.APIResponseStatus.Success;
-        //        response.result = result;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        response.apiResponseStatus = Enum.APIResponseStatus.Error;
-        //        response.Message = ex.Message;
-        //    }
-        //    return response;
-        //}
+        [HttpPost("save-Cheque-Distribution")]
+        public async Task<APIResponse<bool>>savechequedistribution(ChequeDistributionDTO chequeDistributionDTO)
+        {
+            APIResponse<bool> response = new();
+            try
+            {
+                var result = await _chequeDistributionService.saveChequeDistribution(chequeDistributionDTO);
+                response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                response.result = result;
+            }
+            catch (Exception ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = ex.Message;
+            }
+                return response;
+        }
+    
     }
-
 }
 
 

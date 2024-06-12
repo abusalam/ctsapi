@@ -52,6 +52,9 @@ builder.Services.AddTransient<ITokenRepository, TokenRepository>();
 builder.Services.AddTransient<IChequeInvoiceDetailRepository, ChequeInvoiceDetailRepository>();
 builder.Services.AddTransient<IChequeReceivedRepository, ChequeReceivedRepository>();
 
+builder.Services.AddTransient<IChequeDistributionRepository, ChequeDistributionRepository>();
+
+
 
 
 //Services
