@@ -182,7 +182,7 @@ namespace CTS_BE.Controllers
                 }
                 if (SignHelper.VerifyXMLSignatures(xmlFilePath, xmlSigFilePath))
                 {
-                    SFTPHelper.MoveFile("1.6.198.15", 22, "GOWB", "Gowb1234$", remotePath, remotePath+"/Done/", fileName + ".zip");
+                    SFTPHelper.MoveFile("1.6.198.15", 22, "GOWB", "Gowb1234$", remotePath, remotePath+"Done/", fileName + ".zip");
                     aPIResponse.Message = "File Downloaded and Verified Successfully";
                     aPIResponse.result = "true";
                     aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Success;
