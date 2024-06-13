@@ -79,6 +79,7 @@ namespace CTS_BE.BAL.Services
                                 join ce in _context.ChequeEntries on cid.ChequeEntryId equals ce.Id
                                 select new ChequeReceivedDataWithMICRDTO
                                 {
+                                    Id = cr.Id,
                                     InvoiceId = cr.InvoiceId,
                                     Start = cr.Start,
                                     End = cr.End,

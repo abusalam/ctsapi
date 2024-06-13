@@ -163,6 +163,7 @@ namespace CTS_BE.DTOs
 
     public class ChequeReceivedDataWithMICRDTO
     {
+        public long Id { get; set; }
         public long? InvoiceId { get; set; }
         public short? Start { get; set; }
         public short? End { get; set; }
