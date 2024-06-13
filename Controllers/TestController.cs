@@ -58,7 +58,7 @@ namespace CTS_BE.Controllers
                 List<TransactionLotModel> pendingLots = await _transactionLotService.pendingLots();
                 foreach (TransactionLotModel pendingLot in pendingLots)
                 {
-                    EKuber eKuberData = await _transactionLotService.GetXMLData(pendingLot.Id,fileSequenceNumber,paymentDate);
+                    EKuber eKuberData = await _transactionLotService.GetXMLData(pendingLot.Id, fileSequenceNumber.PadLeft(4, '0'), paymentDate);
                     fileName = eKuberData.requestPayload.AppHdr.BizMsgIdr;
                     _paymandateService.GenerateXML(eKuberData, fileName, fileName + ".xml");
                     bool isValid = XmlHelper.ValidateXml(fileName + ".xml", "pain.001.001.08v2.4.xsd");
@@ -200,5 +200,79 @@ namespace CTS_BE.Controllers
                 return aPIResponse;
             }
         }
+
+        // [HttpGet("PushACK")]
+        // public APIResponse<string> PushACK([FromQuery] string fileName, [FromQuery] string localPath, [FromQuery] string remotePath)
+        // {
+        //     APIResponse<string> aPIResponse = new();
+        //     try
+        //     {
+        //         // string localFilePath = localPath + fileName + ".zip";
+        //         // string remoteFilePath = remotePath + fileName + ".zip";
+        //         // string xmlFileName = fileName + ".xml";
+        //         // string xmlFilePath = localPath + xmlFileName;
+        //         // string xmlSigFileName = fileName + ".sig";
+        //         // string xmlSigFilePath = localPath + xmlSigFileName;
+        //         EKuber ackData = _paymandateService.GetDCACKXMLData(fileName);
+        //         string ackFileName = ackData.requestPayload.AppHdr.BizMsgIdr;
+        //         _paymandateService.GenerateDNACKXML(ackData, ackFileName, ackFileName + "xml");
+        //          bool isValid = XmlHelper.ValidateXml(fileName + ".xml", "pain.001.001.08v2.4.xsd");
+        //             if (isValid)
+        //             {
+        //                 SignHelper.signdocument1(fileName + ".xml", "ifms.gowb.pfx", fileName, "");
+        //                 string ZipFileName = fileName + ".zip";
+        //                 using (var zip = ZipFile.Open(ZipFileName, ZipArchiveMode.Create))
+        //                 {
+        //                     zip.CreateEntryFromFile(fileName + ".xml", fileName + ".xml");
+        //                     zip.CreateEntryFromFile(fileName + ".sig", fileName + ".sig");
+        //                 }
+        //                 //var tstFile = File.OpenRead(filePath);
+        //                 if (pushFile)
+        //                 {
+        //                     filePath = "./" + fileName + ".zip";
+        //                     SFTPHelper.UploadFile("1.6.198.15", 22, "GOWB", "Gowb1234$", filePath, "EPAY/IN//" + fileName + ".temp");
+        //                     SFTPHelper.RenameFile("1.6.198.15", 22, "GOWB", "Gowb1234$", fileName + ".temp", fileName + ".zip", "EPAY/IN//");
+        //                 }
+        //             }
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         aPIResponse.Message = ex.Message;
+        //         aPIResponse.result = "false";
+        //         aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Error;
+        //         return aPIResponse;
+        //     }
+        // }
+        [HttpGet("sign-and-zip")]
+        public async Task<APIResponse<string>> SigndocumentZip([FromQuery] string fileName,[FromQuery] string xsdFileName)
+        {
+            APIResponse<string> aPIResponse = new();
+            try
+            {
+                bool isValid = XmlHelper.ValidateXml(fileName + ".xml", xsdFileName);
+                if (isValid)
+                {
+                    // SignHelper.signdocument1(fileName + ".xml", "ifms.gowb.pfx", fileName, "");
+                    string ZipFileName = fileName + ".zip";
+                    using (var zip = ZipFile.Open(ZipFileName, ZipArchiveMode.Create))
+                    {
+                        zip.CreateEntryFromFile(fileName + ".xml", fileName + ".xml");
+                        // zip.CreateEntryFromFile(fileName + ".sig", fileName + ".sig");
+                    }
+                }
+                aPIResponse.Message = "XML Generated & Signed Successfully";
+                aPIResponse.result = fileName;
+                aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Success;
+                return aPIResponse;
+            }
+            catch (Exception ex)
+            {
+                aPIResponse.Message = ex.Message;
+                aPIResponse.result = "";
+                aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Error;
+                return aPIResponse;
+            }
+        }
+
     }
 }
