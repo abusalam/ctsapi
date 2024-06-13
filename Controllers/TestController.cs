@@ -252,18 +252,22 @@ namespace CTS_BE.Controllers
                 bool isValid = XmlHelper.ValidateXml(fileName + ".xml", xsdFileName);
                 if (isValid)
                 {
-                    // SignHelper.signdocument1(fileName + ".xml", "ifms.gowb.pfx", fileName, "");
+                    SignHelper.signdocument1(fileName + ".xml", "ifms.gowb.pfx", fileName, "");
                     string ZipFileName = fileName + ".zip";
                     using (var zip = ZipFile.Open(ZipFileName, ZipArchiveMode.Create))
                     {
                         zip.CreateEntryFromFile(fileName + ".xml", fileName + ".xml");
-                        // zip.CreateEntryFromFile(fileName + ".sig", fileName + ".sig");
+                        zip.CreateEntryFromFile(fileName + ".sig", fileName + ".sig");
                     }
+                     aPIResponse.Message = "XML Generated & Signed Successfully";
+                    aPIResponse.result = fileName;
+                    aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Success;
+                    return aPIResponse;
                 }
-                aPIResponse.Message = "XML Generated & Signed Successfully";
-                aPIResponse.result = fileName;
-                aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Success;
-                return aPIResponse;
+                    aPIResponse.Message = "XML Generated & Signed Faild";
+                    aPIResponse.result = fileName;
+                    aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Success;
+                    return aPIResponse;
             }
             catch (Exception ex)
             {
