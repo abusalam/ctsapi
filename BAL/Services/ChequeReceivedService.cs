@@ -81,6 +81,7 @@ namespace CTS_BE.BAL.Services
                                 {
                                     Id = cr.Id,
                                     InvoiceId = cr.InvoiceId,
+                                    InvoiceDeatilsId = cr.ChequeInvoiceDetailsId,
                                     Start = cr.Start,
                                     End = cr.End,
                                     Quantity = (short?)((cr.End - cr.Start) + 1),

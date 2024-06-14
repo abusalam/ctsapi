@@ -165,6 +165,7 @@ namespace CTS_BE.DTOs
     {
         public long Id { get; set; }
         public long? InvoiceId { get; set; }
+        public long? InvoiceDeatilsId { get; set; }
         public short? Start { get; set; }
         public short? End { get; set; }
         public string MicrCode { get; set; }
@@ -177,14 +178,15 @@ namespace CTS_BE.DTOs
         public string MicrCode { get; set; }
 
         public string Series { get; set; }
+        public long? InvoiceDeatilsId { get; set; }
         public string distributor { get; set; }
 
         public List<ChequeDistributeToUserDTO> ChequeDistributeToUse { get; set; }
     }
 
     public class ChequeDistributeToUserDTO{
-        public short? Start { get; set; }
-        public short? End { get; set; }
+        //public short? Start { get; set; }
+        //public short? End { get; set; }
         public short? Quantity { get; set; }
         public short? UserId { get; set; }
     }
