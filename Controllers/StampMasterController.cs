@@ -86,13 +86,12 @@ namespace CTS_BE.Controllers
                 if (labelList.Count() > 0)
                 {
                     response.Message = AppConstants.DataFound;
-                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
                 }
                 else
                 {
-                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
                     response.Message = AppConstants.DataNotFound;
                 }
+                response.apiResponseStatus = Enum.APIResponseStatus.Success;
                 response.result = result;
                 return response;
             }
@@ -118,7 +117,7 @@ namespace CTS_BE.Controllers
                     response.result = allStampLabels;
                     return response;
                 }
-                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.apiResponseStatus = Enum.APIResponseStatus.Success;
                 response.Message = AppConstants.DataNotFound;
                 return response;
             }
@@ -144,7 +143,7 @@ namespace CTS_BE.Controllers
                     response.Message = AppConstants.DataFound;
                     return response;
                 }
-                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.apiResponseStatus = Enum.APIResponseStatus.Success;
                 response.Message = AppConstants.DataNotFound;
                 return response;
             }
@@ -318,7 +317,7 @@ namespace CTS_BE.Controllers
                     response.Message = AppConstants.DataFound;
                     return response;
                 }
-                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.apiResponseStatus = Enum.APIResponseStatus.Success;
                 response.Message = AppConstants.DataNotFound;
                 return response;
             }
@@ -344,7 +343,7 @@ namespace CTS_BE.Controllers
                     response.Message = AppConstants.DataFound;
                     return response;
                 }
-                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.apiResponseStatus = Enum.APIResponseStatus.Success;
                 response.Message = AppConstants.DataNotFound;
                 return response;
             }
@@ -370,7 +369,7 @@ namespace CTS_BE.Controllers
                     response.Message = AppConstants.DataFound;
                     return response;
                 }
-                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.apiResponseStatus = Enum.APIResponseStatus.Success;
                 response.Message = AppConstants.DataNotFound;
                 return response;
             }
@@ -571,7 +570,7 @@ namespace CTS_BE.Controllers
                 else
                 {
                     response.Message = AppConstants.DataNotFound;
-                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
                 }
                 response.result = result;
                 return response;
@@ -598,7 +597,7 @@ namespace CTS_BE.Controllers
                     response.Message = AppConstants.DataFound;
                     return response;
                 }
-                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.apiResponseStatus = Enum.APIResponseStatus.Success;
                 response.Message = AppConstants.DataNotFound;
                 return response;
             }
@@ -624,7 +623,7 @@ namespace CTS_BE.Controllers
                     response.Message = AppConstants.DataFound;
                     return response;
                 }
-                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.apiResponseStatus = Enum.APIResponseStatus.Success;
                 response.Message = AppConstants.DataNotFound;
                 return response;
             }
@@ -650,7 +649,7 @@ namespace CTS_BE.Controllers
                     response.Message = AppConstants.DataFound;
                     return response;
                 }
-                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.apiResponseStatus = Enum.APIResponseStatus.Success;
                 response.Message = AppConstants.DataNotFound;
                 return response;
             }
@@ -662,14 +661,52 @@ namespace CTS_BE.Controllers
             }
         }
         [HttpPost("CreateStampVendor")]
-        public async Task<APIResponse<bool>> CreateStampVendor(StampVendorInsertDTO stampVendor)
+        public async Task<APIResponse<bool>> CreateStampVendor([FromForm] StampVendorInsertDTO stampVendor, IFormFile vendorPhoto, IFormFile vendorPanPhoto, IFormFile vendorLicencePhoto)
         {
             APIResponse<bool> response = new();
             try
             {
                 if (stampVendor != null)
                 {
-                    if(await _stampMasterService.CreateNewStampVendor(stampVendor))
+                    // Ensure the uploads directory exists
+                    var uploadsDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
+                    if (!Directory.Exists(uploadsDir))
+                    {
+                        Directory.CreateDirectory(uploadsDir);
+                    }
+
+                    string photoPath = "";
+                    string panPhotoPath = "";
+                    string licencePhotoPath = "";
+
+                    if (vendorPhoto != null)
+                    {
+                        photoPath = Path.Combine(uploadsDir, Path.GetFileName(vendorPhoto.FileName));
+                        using (var stream = new FileStream(photoPath, FileMode.Create))
+                        {
+                            await vendorPhoto.CopyToAsync(stream);
+                        }
+                    }
+
+                    if (vendorPanPhoto != null)
+                    {
+                        panPhotoPath = Path.Combine(uploadsDir, Path.GetFileName(vendorPanPhoto.FileName));
+                        using (var stream = new FileStream(panPhotoPath, FileMode.Create))
+                        {
+                            await vendorPanPhoto.CopyToAsync(stream);
+                        }
+                    }
+
+                    if (vendorLicencePhoto != null)
+                    {
+                        licencePhotoPath = Path.Combine(uploadsDir, Path.GetFileName(vendorLicencePhoto.FileName));
+                        using (var stream = new FileStream(licencePhotoPath, FileMode.Create))
+                        {
+                            await vendorLicencePhoto.CopyToAsync(stream);
+                        }
+                    }
+
+                    if (await _stampMasterService.CreateNewStampVendor(stampVendor, photoPath, panPhotoPath, licencePhotoPath))
                     {
                         response.apiResponseStatus = Enum.APIResponseStatus.Success;
                         response.Message = AppConstants.DataAdded;
@@ -677,6 +714,7 @@ namespace CTS_BE.Controllers
                         return response;
                     }
                 }
+
                 response.apiResponseStatus = Enum.APIResponseStatus.Error;
                 response.result = false;
                 response.Message = AppConstants.MissingField;
@@ -689,6 +727,7 @@ namespace CTS_BE.Controllers
                 return response;
             }
         }
+
 
         [HttpDelete("DeleteStampVendorsById")]
         public async Task<APIResponse<bool>> DeleteStampVendorsById(long id)
@@ -787,7 +826,7 @@ namespace CTS_BE.Controllers
                 else
                 {
                     response.Message = AppConstants.DataNotFound;
-                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
                 }
                 response.result = result;
                 return response;
@@ -814,7 +853,7 @@ namespace CTS_BE.Controllers
                     response.Message = AppConstants.DataFound;
                     return response;
                 }
-                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.apiResponseStatus = Enum.APIResponseStatus.Success;
                 response.Message = AppConstants.DataNotFound;
                 return response;
             }
@@ -841,7 +880,7 @@ namespace CTS_BE.Controllers
                     response.Message = AppConstants.DataFound;
                     return response;
                 }
-                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.apiResponseStatus = Enum.APIResponseStatus.Success;
                 response.Message = AppConstants.DataNotFound;
                 return response;
             }
@@ -1014,7 +1053,7 @@ namespace CTS_BE.Controllers
                 else
                 {
                     response.Message = AppConstants.DataNotFound;
-                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
                 }
                 response.result = result;
                 return response;
@@ -1171,7 +1210,7 @@ namespace CTS_BE.Controllers
                 else
                 {
                     response.Message = AppConstants.DataNotFound;
-                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
                 }
                 response.result = result;
                 return response;
@@ -1198,7 +1237,7 @@ namespace CTS_BE.Controllers
                     response.result = allStampCombinations;
                     return response;
                 }
-                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.apiResponseStatus = Enum.APIResponseStatus.Success;
                 response.Message = AppConstants.DataNotFound;
                 return response;
             }

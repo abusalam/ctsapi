@@ -38,10 +38,6 @@ public partial class StampCombination
     [InverseProperty("StampCombinations")]
     public virtual StampCategory StampCategory { get; set; } = null!;
 
-    [ForeignKey("StampDenominationId")]
-    [InverseProperty("StampCombinationStampDenominations")]
-    public virtual StampType StampDenomination { get; set; } = null!;
-
     [InverseProperty("StampCombination")]
     public virtual ICollection<StampIndent> StampIndents { get; set; } = new List<StampIndent>();
 
@@ -50,6 +46,6 @@ public partial class StampCombination
     public virtual StampLabelMaster StampLabel { get; set; } = null!;
 
     [ForeignKey("StampTypeId")]
-    [InverseProperty("StampCombinationStampTypes")]
+    [InverseProperty("StampCombinations")]
     public virtual StampType StampType { get; set; } = null!;
 }

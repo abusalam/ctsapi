@@ -124,8 +124,6 @@ namespace CTS_BE.DTOs
         [RegularExpression(@"^[A-Z]{5}[0-9]{4}[A-Z]{1}$", ErrorMessage = "Invalid PAN Number.")]
         public string PanNumber { get; set; } = null!;
 
-        public bool? IsActive { get; set; }
-
         public bool? ActiveAtGrips { get; set; }
 
     }

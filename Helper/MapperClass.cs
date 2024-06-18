@@ -32,6 +32,7 @@ namespace CTS_BE.Helper
             CreateMap<StampIndentInsertDTO, StampIndent>();
             CreateMap<StampIndent, StampIndentDTO>();
             CreateMap<StampInvoiceInsertDTO, StampInvoice>();
+            CreateMap<StampWalletInsertDTO, StampWallet>();
 
         }
     }

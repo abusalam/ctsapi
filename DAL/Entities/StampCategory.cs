@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.DAL.Entities;
 
 [Table("stamp_category", Schema = "cts_master")]
+[Index("StampCategory1", Name = "stamp_category_stamp_category_stamp_category1_key", IsUnique = true)]
 public partial class StampCategory
 {
     [Column("stamp_category")]

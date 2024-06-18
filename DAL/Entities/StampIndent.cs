@@ -53,6 +53,10 @@ public partial class StampIndent
     [StringLength(3)]
     public string? RaisedToTreasuryCode { get; set; }
 
+    [Column("raised_by_treasury_code")]
+    [StringLength(3)]
+    public string? RaisedByTreasuryCode { get; set; }
+
     [ForeignKey("StampCombinationId")]
     [InverseProperty("StampIndents")]
     public virtual StampCombination StampCombination { get; set; } = null!;

@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.DAL.Entities;
 
 [Table("stamp_vendor_type", Schema = "cts_master")]
+[Index("VendorType", Name = "stamp_vendor_type_vendor_type_vendor_type1_key", IsUnique = true)]
 public partial class StampVendorType
 {
     [Key]

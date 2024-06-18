@@ -23,7 +23,7 @@ namespace CTS_BE.BAL.Interfaces.stamp
          Task<IEnumerable<StampVendorDTO>> ListAllStampVendors(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null);
          Task<IEnumerable<StampVendorDTO>> GetAllStampVendors();
          Task<IEnumerable<VendorTypeDTO>> GetAllStampVendorTypes();
-         Task<bool> CreateNewStampVendor(StampVendorInsertDTO stampVendor);
+         Task<bool> CreateNewStampVendor(StampVendorInsertDTO stampVendor, String vendorPhoto, String vendorPanPhoto, String vendorLicencePhot);
          Task<IEnumerable<StampVendorDTO>> GetStampVendorById(long id);
          Task<bool> DeleteStampVendorsById(long id);
 

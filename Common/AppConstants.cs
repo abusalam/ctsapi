@@ -55,5 +55,8 @@ namespace CTS_BE.Common
         public const string RejectStatusFail = "Rejection Status Update Failed";
         public const string ReceiveStatusDone = "Receive Status Updated Successfully";
         public const string ReceiveStatusFail = "Receive Status Update Failed";
+        public const string InsufficientBalance = "You don't have enough balance";
+        public const string InvalidTreasuryCode = "Treasury code does not exists.";
+        public const string WalletUpdated = "Wallet updated successfully.";
     }
 }

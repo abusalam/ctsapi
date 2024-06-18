@@ -13,6 +13,7 @@ namespace CTS_BE.DTOs
         public DateTime MemoDate { get; set; }
         public string? Remarks { get; set; }
         public string? RaisedToTreasuryCode { get; set; }
+        public string? RaisedByTreasuryCode { get; set; }
         public string StmapCategory { get; set; } = null!;
         public string Description { get; set; } = null!;
         public decimal Denomination { get; set; }

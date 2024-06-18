@@ -245,11 +245,14 @@ namespace CTS_BE.BAL.Services.stamp
             return stampVendor;
         }
 
-        public async Task<bool> CreateNewStampVendor(StampVendorInsertDTO stampVendor)
+        public async Task<bool> CreateNewStampVendor(StampVendorInsertDTO stampVendor, String vendorPhoto, String vendorPanPhoto, String vendorLicencePhot)
         {
             var stampVen = _mapper.Map<StampVendor>(stampVendor);
             stampVen.CreatedAt = DateTime.Now;
             stampVen.CreatedBy = _auth.GetUserId();
+            stampVen.VendorPhoto = vendorPhoto;
+            stampVen.VendorPanPhoto = vendorPanPhoto;
+            stampVen.VendorLicencePhoto = vendorLicencePhot;
             _stampVendorRepo.Add(stampVen);
             _stampVendorRepo.SaveChangesManaged();
             return await Task.FromResult(true);
@@ -411,7 +414,7 @@ namespace CTS_BE.BAL.Services.stamp
             StampCombinationId = entity.StampCombinationId,
             StampCategory1 = entity.StampCategory.StampCategory1,
             Description = entity.StampCategory.Description,
-            Denomination = entity.StampDenomination.Denomination,
+            Denomination = entity.StampType.Denomination,
             StampDenominationId = entity.StampDenominationId,
             NoLabelPerSheet = entity.StampLabel.NoLabelPerSheet,
             StampLabelId = entity.StampLabelId,
@@ -456,7 +459,7 @@ namespace CTS_BE.BAL.Services.stamp
                 StampCombinationId = entity.StampCombinationId,
                 StampCategory1 = entity.StampCategory.StampCategory1,
                 Description = entity.StampCategory.Description,
-                Denomination = entity.StampDenomination.Denomination,
+                Denomination = entity.StampType.Denomination,
                 NoLabelPerSheet = entity.StampLabel.NoLabelPerSheet
             });
             return stampCombinations;

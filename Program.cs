@@ -23,6 +23,11 @@ using CTS_BE.DAL.Repositories.stamp;
 using CTS_BE.BAL.Interfaces.stamp;
 using CTS_BE.BAL.Services.stamp;
 using Swashbuckle.AspNetCore.SwaggerUI;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.AspNetCore.Mvc;
+using CTS_BE.Enum;
+using CTS_BE.Helper;
+using System.Collections;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -63,6 +68,7 @@ builder.Services.AddTransient<IStampCategoryTypeRepository, StampCateroryTypeRep
 builder.Services.AddTransient<IStampCombinationRepository, StampCombinationRepository>();
 builder.Services.AddTransient<IStampIndentRepository, StampIndentRepository>();
 builder.Services.AddTransient<IStampInvoiceRepository, StampInvoiceRepository>();
+builder.Services.AddTransient<IStampWalletRepository, StampWalletRepository>();
 
 
 //Services
@@ -83,6 +89,7 @@ builder.Services.AddTransient<ITpBillService, TpBillService>();
 builder.Services.AddTransient<ITokenService, TokenService>();
 builder.Services.AddTransient<IStampMasterService, StampMasterService>();
 builder.Services.AddTransient<IStampService, StampService>();
+builder.Services.AddTransient<IStampWalletService, StampWalletService>();
 
 
 builder.Services.AddTransient<IPaymandateService, PaymandateService>();
@@ -140,6 +147,32 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.AddHttpContextAccessor();
+builder.Services.Configure<ApiBehaviorOptions>(config =>
+{
+
+    config.InvalidModelStateResponseFactory = ctx => new OkObjectResult(new APIResponse<IEnumerable>()
+    {
+        apiResponseStatus = APIResponseStatus.Error,
+        result = ctx.ModelState.Values,
+        Message = "DTO validation error :: result field specifies error location." + ctx.ModelState.Values
+    }
+
+
+  // new BaseResponse(
+  // success: ctx.ModelState.IsValid,
+  // errors: ctx.ModelState.Values
+  //     .Where(v => v.ValidationState == ModelValidationState.Invalid)
+  //     .SelectMany(v => v.Errors)
+  //     .Select(e => new ErrorDetails
+  //     {
+  //         Code = "ModelError",
+  //         Description = e.ErrorMessage
+  //     })
+  //     .ToList()
+  // )
+
+            );
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -160,7 +193,14 @@ if (app.Environment.IsDevelopment())
 app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 app.UseHttpsRedirection();
 
-//app.UseAuthorization();
+app.UseAuthorization();
+app.UseStaticFiles();
+app.UseDirectoryBrowser(new DirectoryBrowserOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads")),
+    RequestPath = "/uploads"
+});
 
 app.UseAuthTokenMiddleware();
 

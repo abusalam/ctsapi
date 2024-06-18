@@ -30,7 +30,7 @@ namespace CTS_BE.Controllers
             APIResponse<DynamicListResult<IEnumerable<StampIndentDTO>>> response = new();
             try
             {
-                IEnumerable<StampIndentDTO> labelList = await _stampService.ListAllStampIndentsProcessed(dynamicListQueryParameters.filterParameters, dynamicListQueryParameters.PageIndex, dynamicListQueryParameters.PageSize, dynamicListQueryParameters.sortParameters);
+                IEnumerable<StampIndentDTO> indentList = await _stampService.ListAllStampIndentsProcessed(dynamicListQueryParameters.filterParameters, dynamicListQueryParameters.PageIndex, dynamicListQueryParameters.PageSize, dynamicListQueryParameters.sortParameters);
                 DynamicListResult<IEnumerable<StampIndentDTO>> result = new DynamicListResult<IEnumerable<StampIndentDTO>>
                 {
                     Headers = new List<ListHeader>
@@ -214,17 +214,17 @@ namespace CTS_BE.Controllers
 
                     },
 
-                    Data = labelList,
+                    Data = indentList,
                     DataCount = 1
                 };
-                if (labelList.Count() > 0)
+                if (indentList.Count() > 0)
                 {
                     response.Message = AppConstants.DataFound;
                     response.apiResponseStatus = Enum.APIResponseStatus.Success;
                 }
                 else
                 {
-                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
                     response.Message = AppConstants.DataNotFound;
                 }
                 response.result = result;
@@ -442,6 +442,229 @@ namespace CTS_BE.Controllers
                     response.apiResponseStatus = Enum.APIResponseStatus.Error;
                     response.Message = AppConstants.DataNotFound;
                 }
+                
+                response.result = result;
+                return response;
+            }
+            catch (Exception Ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = Ex.Message;
+                return response;
+            }
+        }
+
+        // Stamp indent
+        [HttpPatch("StampIndentList")]
+        public async Task<APIResponse<DynamicListResult<IEnumerable<StampIndentDTO>>>> StampIndentList(DynamicListQueryParameters dynamicListQueryParameters)
+        {
+            //Get all stamp labels with sort & filter parameters
+            APIResponse<DynamicListResult<IEnumerable<StampIndentDTO>>> response = new();
+            try
+            {
+                IEnumerable<StampIndentDTO> labelList = await _stampService.StampIndentList(dynamicListQueryParameters.filterParameters, dynamicListQueryParameters.PageIndex, dynamicListQueryParameters.PageSize, dynamicListQueryParameters.sortParameters);
+                DynamicListResult<IEnumerable<StampIndentDTO>> result = new DynamicListResult<IEnumerable<StampIndentDTO>>
+                {
+                    Headers = new List<ListHeader>
+                    {
+                        new ListHeader
+                        {
+                            Name ="Stamp Indent Id",
+                            DataType = "numeric",
+                            FieldName = "stampIndentId",
+                            FilterField = "stampIndentId",
+                            IsFilterable = false,
+                            IsSortable = false,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Memo Number",
+                            DataType = "string",
+                            FieldName = "memoNumber",
+                            FilterField = "MemoNumber",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Memo Date",
+                            DataType = "datetime",
+                            FieldName = "memoDate",
+                            FilterField = "MemoDate",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Remarks",
+                            DataType = "string",
+                            FieldName = "remarks",
+                            FilterField = "Remarks",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Raised To Treasury Code",
+                            DataType = "string",
+                            FieldName = "raisedToTreasuryCode",
+                            FilterField = "RaisedToTreasuryCodes",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Stamp Category",
+                            DataType = "string",
+                            FieldName = "stmapCategory",
+                            FilterField = "StmapCategory",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Description",
+                            DataType = "string",
+                            FieldName = "description",
+                            FilterField = "Description",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Denomination",
+                            DataType = "decimal",
+                            FieldName = "denomination",
+                            FilterField = "Denomination",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Label Per Sheet",
+                            DataType = "numeric",
+                            FieldName = "labelPerSheet",
+                            FilterField = "LabelPerSheet",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Sheet",
+                            DataType = "numeric",
+                            FieldName = "sheet",
+                            FilterField = "Sheet",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Label",
+                            DataType = "numeric",
+                            FieldName = "label",
+                            FilterField = "Label",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Quantity",
+                            DataType = "numeric",
+                            FieldName = "quantity",
+                            FilterField = "Quantity",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Amount",
+                            DataType = "decimal",
+                            FieldName = "amount",
+                            FilterField = "Amount",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Created At",
+                            DataType = "datetime",
+                            FieldName = "createdAt",
+                            FilterField = "CreatedAt",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Status",
+                            DataType = "object",
+                            ObjectTypeValueField="status",
+                            FieldName = "status",
+                            FilterField = "Status",
+                            FilterEnums = new List<FilterEnum>
+                            {
+                                new FilterEnum
+                                {
+                                    Value = (int) Enum.StampIndentStatusEnum.ForwardedToSuperintendent,
+                                    Label = "Forwarded To Superintendent",
+                                    StyleClass = "primary"
+                                },
+                                new FilterEnum
+                                {
+                                    Value = (int) Enum.StampIndentStatusEnum.ForwardedToTreasuryOfficer,
+                                    Label = "Forwarded To Treasury Office",
+                                    StyleClass = "primary"
+                                },
+                                new FilterEnum
+                                {
+                                    Value = (int) Enum.StampIndentStatusEnum.ApproveBySuperintendent,
+                                    Label = "Approve by Superintendent",
+                                    StyleClass = "success"
+                                },
+                                new FilterEnum
+                                {
+                                    Value = (int) Enum.StampIndentStatusEnum.ApproveByTreasuryOfficer,
+                                    Label = "Approve by Treasury Office",
+                                    StyleClass = "success"
+                                },
+                                new FilterEnum
+                                {
+                                    Value = (int) Enum.StampIndentStatusEnum.RejectBySuperintendent,
+                                    Label = "Reject by Superintendent",
+                                    StyleClass = "warning"
+                                },
+                                new FilterEnum
+                                {
+                                    Value = (int) Enum.StampIndentStatusEnum.RejectByTreasuryOfficer,
+                                    Label = "Reject by Treasury Office",
+                                    StyleClass = "warning"
+                                },
+                                new FilterEnum
+                                {
+                                    Value = (int) Enum.StampIndentStatusEnum.RecievedByTreasuryOfficer,
+                                    Label = "Received by Treasury Office",
+                                    StyleClass = "success"
+                                },
+
+                            },
+                            IsFilterable = true,
+                            IsSortable = true,
+                        }
+
+                    },
+
+                    Data = labelList,
+                    DataCount = 1
+                };
+                if (labelList.Count() > 0)
+                {
+                    response.Message = AppConstants.DataFound;
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                }
+                else
+                {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                    response.Message = AppConstants.DataNotFound;
+                }
                 response.result = result;
                 return response;
             }
@@ -502,7 +725,7 @@ namespace CTS_BE.Controllers
                 //}
                 response.apiResponseStatus = Enum.APIResponseStatus.Error;
                 response.result = false;
-                response.Message = AppConstants.ApproveStatusFail;
+                response.Message = AppConstants.InsufficientBalance;
                 return response;
             }
             catch (Exception ex)
@@ -616,15 +839,15 @@ namespace CTS_BE.Controllers
                         IsFilterable = true,
                         IsSortable = true,
                     },
-                    new ListHeader
-                    {
-                        Name = "Remarks",
-                        DataType = "string",
-                        FieldName = "remarks",
-                        FilterField = "Remarks",
-                        IsFilterable = true,
-                        IsSortable = true,
-                    },
+                    //new ListHeader
+                    //{
+                    //    Name = "Remarks",
+                    //    DataType = "string",
+                    //    FieldName = "remarks",
+                    //    FilterField = "Remarks",
+                    //    IsFilterable = true,
+                    //    IsSortable = true,
+                    //},
                     new ListHeader
                     {
                         Name = "Stamp Invoice Id",
@@ -840,6 +1063,8 @@ namespace CTS_BE.Controllers
             APIResponse<bool> response = new();
             try
             {
+                Console.WriteLine(" " + stampInvoice.Amount, stampInvoice.Sheet, stampInvoice.Label, stampInvoice.InvoiceDate, stampInvoice.StampIndentId, stampInvoice.Quantity, stampInvoice.InvoiceNumber);
+
                 if (stampInvoice != null)
                 {
                     if (await _stampService.CreateNewStampInvoice(stampInvoice))
@@ -847,6 +1072,12 @@ namespace CTS_BE.Controllers
                         response.apiResponseStatus = Enum.APIResponseStatus.Success;
                         response.Message = AppConstants.DataAdded;
                         response.result = true;
+                        return response;
+                    } else
+                    {
+                        response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                        response.result = false;
+                        response.Message = AppConstants.InsufficientBalance;
                         return response;
                     }
                 }
