@@ -132,6 +132,9 @@ namespace CTS_BE.DTOs
     {
         public int InvoiceId { get; set; }
         public int Status { get; set; }
+        public string TreasuryCode { get; set; }
+        public string MicrCode { get; set; }
+        public string Series { get; set; }
         public List<ChequeReceivedDamagedDetailsDTO> ChequeReceivedDamagedDetails { get; set; }
 
     }
@@ -184,7 +187,7 @@ namespace CTS_BE.DTOs
         public List<ChequeDistributeToUserDTO> ChequeDistributeToUse { get; set; }
     }
 
-    public class ChequeDistributeToUserDTO{
+    public class ChequeDistributeToUserDTO {
         //public short? Start { get; set; }
         //public short? End { get; set; }
         public short? Quantity { get; set; }

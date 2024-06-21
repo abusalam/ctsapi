@@ -44,7 +44,7 @@ namespace CTS_BE.BAL.Services
                 List<(int start, int end)> values = CommonHelper.SplitRange(invoiceDetails.Start, invoiceDetails.End, exclusions);
                 foreach (var item in values)
                 {
-                    chequeReceivedModel.Add(new ChequeReceivedModel { Start = item.start, End = item.end, Quantity = (item.end - item.start) + 1, InvoiceDeatilsId = invoiceDeatilsId });
+                    chequeReceivedModel.Add(new ChequeReceivedModel { Start = item.start, End = item.end, Quantity = (item.end - item.start) + 1, InvoiceDeatilsId = invoiceDeatilsId, Status = chequeReceivedDTO.Status, TreasuryCode = chequeReceivedDTO.TreasuryCode, MicrCode = chequeReceivedDTO.MicrCode, Series = chequeReceivedDTO.Series });
                 }
                 //
                 Tuple<Int16, List<int>> exclusion = new(chequeReceivedDamagedDetail.DamageType, exclusions);
@@ -66,6 +66,7 @@ namespace CTS_BE.BAL.Services
                     Id = entity.Id,
                     InvoiceDeatilsId = entity.ChequeInvoiceDetailsId,
                     Quantity = entity.Quantity,
+
                 },
                 dynamicListQueryParameters);
 

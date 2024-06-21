@@ -15,5 +15,8 @@ namespace CTS_BE.Model.Cheque
         public int InvoiceId { get; set; }
         public int InvoiceDeatilsId { get; set; }
         public int Status { get; set; }
+        public string TreasuryCode { get; set; }
+        public string MicrCode { get; set; }
+        public string Series { get; set; }
     }
 }
