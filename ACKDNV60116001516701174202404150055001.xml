@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RequestPayload>
+	<AppHdr>
+		<Fr>
+			<OrgId>
+				<Id>
+					<OrgId>
+						<Othr>
+							<Id>116</Id>
+						</Othr>
+					</OrgId>
+				</Id>
+			</OrgId>
+		</Fr>
+		<To>
+			<FIId>
+				<FinInstnId>
+					<ClrSysMmbId>
+						<MmbId>RBI</MmbId>
+					</ClrSysMmbId>
+				</FinInstnId>
+			</FIId>
+		</To>
+		<BizMsgIdr>ACKDNV60116001516701174202404150055001</BizMsgIdr>
+		<MsgDefIdr>admi.004.001.02</MsgDefIdr>
+		<BizSvc>SystemEventNotificationV02</BizSvc>
+		<CreDt>2024-06-12T17:58:24</CreDt>
+	</AppHdr>
+	<Document>
+		<SysEvtNtfctn>
+			<EvtInf>
+				<EvtCd>ACCP</EvtCd>
+				<EvtTm>2024-06-12T17:58:24</EvtTm>
+			</EvtInf>
+		</SysEvtNtfctn>
+	</Document>
+</RequestPayload>

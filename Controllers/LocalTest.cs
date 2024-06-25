@@ -224,7 +224,7 @@ namespace CTS_BE.Controllers
                 List<TransactionLotModel> pendingLots = await _transactionLotService.pendingLots();
                 foreach (TransactionLotModel pendingLot in pendingLots)
                 {
-                    EKuber eKuberData = await _transactionLotService.GetXMLData(pendingLot.Id,"","");
+                    EKuber eKuberData = await _transactionLotService.GetXMLData(pendingLot.Id, "", "");
                     // fileName = eKuberData.requestPayload.AppHdr.BizMsgIdr;
                     fileName = "EPV80116001516701174202404150055";
                     _paymandateService.GenerateXML(eKuberData, fileName, fileName + ".xml");
@@ -355,7 +355,7 @@ namespace CTS_BE.Controllers
             }
         }
         [HttpGet("DownloadandVerify")]
-        public async Task<APIResponse<string>> DownloadandVerify([FromQuery]string fileName,[FromQuery]string localPath,[FromQuery]string remotePath)
+        public async Task<APIResponse<string>> DownloadandVerify([FromQuery] string fileName, [FromQuery] string localPath, [FromQuery] string remotePath)
         {
             APIResponse<string> aPIResponse = new();
             try
@@ -365,7 +365,7 @@ namespace CTS_BE.Controllers
                 // string fileNameTrim = fileName.Substring(3);
                 string xmlFileName = fileName + ".xml";
                 string xmlFilePath = localPath + xmlFileName;
-                string xmlSigFileName = fileName+".sig";
+                string xmlSigFileName = fileName + ".sig";
                 string xmlSigFilePath = localPath + xmlSigFileName;
                 // SFTPHelper.MoveFile("10.176.100.62", 22, "admin", "admin", "/CTS/", "/CTS/Done/", fileName + ".zip");
                 // SFTPHelper.DownloadFile("1.6.198.15", 22, "GOWB", "Gowb1234$", "/EPAY/INACK" + fileName + ".zip", localFilePath);
@@ -380,7 +380,7 @@ namespace CTS_BE.Controllers
                 if (SignHelper.VerifyXMLSignatures(xmlFilePath, xmlSigFilePath))
                 {
                     // SFTPHelper.MoveFile("10.176.100.62", 22, "admin", "admin","/CTS/"+xmlFileName,"/CTS/Done/"+xmlFileName,fileName+".zip");
-                    SFTPHelper.MoveFile("10.176.100.62", 22, "admin", "admin", remotePath, remotePath+"/Done/", fileName + ".zip");
+                    SFTPHelper.MoveFile("10.176.100.62", 22, "admin", "admin", remotePath, remotePath + "/Done/", fileName + ".zip");
                     aPIResponse.Message = "INACK Downloaded and Verified Successfully";
                     aPIResponse.result = "true";
                     aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Success;
@@ -416,6 +416,83 @@ namespace CTS_BE.Controllers
             {
                 aPIResponse.Message = ex.Message;
                 aPIResponse.result = false;
+                aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Error;
+                return aPIResponse;
+            }
+        }
+        [HttpGet("PushACK")]
+        public APIResponse<string> PushACK([FromQuery] string fileName,[FromQuery] string xsdfileName,  [FromQuery] string remotePath,[FromQuery] string acknowledgementType,[FromQuery] string eventCode)
+        {
+            APIResponse<string> aPIResponse = new();
+            try
+            {
+                EKuber ackData = _paymandateService.GetDNAcknowledgementXMLData(fileName,acknowledgementType,eventCode);
+                string ackFileName = ackData.requestPayload.AppHdr.BizMsgIdr;
+                _paymandateService.GenerateDNACKXML(ackData, ackFileName, ackFileName + ".xml");
+                bool isValid = XmlHelper.ValidateXml(ackFileName + ".xml", xsdfileName+".xsd");
+                if (isValid)
+                {
+                    // SignHelper.signdocument1(ackFileName + ".xml", "ifms.gowb.pfx", ackFileName, "");
+                    string ZipFileName = ackFileName + ".zip";
+                    using (var zip = ZipFile.Open(ZipFileName, ZipArchiveMode.Create))
+                    {
+                        zip.CreateEntryFromFile(ackFileName + ".xml", ackFileName + ".xml");
+                        // zip.CreateEntryFromFile(ackFileName + ".sig", ackFileName + ".sig");
+                    }
+                    //var tstFile = File.OpenRead(filePath);
+
+                    string filePath = "./" + ackFileName + ".zip";
+                    SFTPHelper.UploadFile("10.176.100.62", 22, "admin", "admin", filePath, remotePath + ackFileName + ".temp");
+                    SFTPHelper.RenameFile("10.176.100.62", 22, "admin", "admin", ackFileName + ".temp", ackFileName + ".zip", remotePath);
+                }
+                aPIResponse.Message = " ACK PUSH Successfully";
+                aPIResponse.result = fileName;
+                aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Success;
+                return aPIResponse;
+            }
+            catch (Exception ex)
+            {
+                aPIResponse.Message = ex.Message;
+                aPIResponse.result = "false";
+                aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Error;
+                return aPIResponse;
+            }
+        }
+        [HttpGet("Recall")]
+        public APIResponse<string> Recall()
+        {
+            APIResponse<string> aPIResponse = new();
+            try
+            {
+                EKuber data = _paymandateService.GetRecallXMLData();
+                _paymandateService.GenerateRecallXMLData(data);
+                // string ackFileName = ackData.requestPayload.AppHdr.BizMsgIdr;
+                // _paymandateService.GenerateDNACKXML(ackData, ackFileName, ackFileName + ".xml");
+                // bool isValid = XmlHelper.ValidateXml(ackFileName + ".xml", "admi.004.001.02.xsd");
+                // if (isValid)
+                // {
+                //     // SignHelper.signdocument1(ackFileName + ".xml", "ifms.gowb.pfx", ackFileName, "");
+                //     string ZipFileName = ackFileName + ".zip";
+                //     using (var zip = ZipFile.Open(ZipFileName, ZipArchiveMode.Create))
+                //     {
+                //         zip.CreateEntryFromFile(ackFileName + ".xml", ackFileName + ".xml");
+                //         // zip.CreateEntryFromFile(ackFileName + ".sig", ackFileName + ".sig");
+                //     }
+                //     //var tstFile = File.OpenRead(filePath);
+
+                //     string filePath = "./" + ackFileName + ".zip";
+                //     SFTPHelper.UploadFile("10.176.100.62", 22, "admin", "admin", filePath, remotePath + ackFileName + ".temp");
+                //     SFTPHelper.RenameFile("10.176.100.62", 22, "admin", "admin", ackFileName + ".temp", ackFileName + ".zip", remotePath);
+                // }
+                aPIResponse.Message = " Recall Successfully";
+                aPIResponse.result = "";
+                aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Success;
+                return aPIResponse;
+            }
+            catch (Exception ex)
+            {
+                aPIResponse.Message = ex.Message;
+                aPIResponse.result = "false";
                 aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Error;
                 return aPIResponse;
             }

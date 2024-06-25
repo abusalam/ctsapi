@@ -21,16 +21,16 @@
 				</FinInstnId>
 			</FIId>
 		</To>
-		<BizMsgIdr>EPV80116001516701174202404150055</BizMsgIdr>
+		<BizMsgIdr>EPV8011600151670117420240415044</BizMsgIdr>
 		<MsgDefIdr>pain.001.001.08</MsgDefIdr>
 		<BizSvc>CustomerCreditTransferInitiationV08</BizSvc>
-		<CreDt>2024-06-11T18:08:23</CreDt>
+		<CreDt>2024-06-12T14:53:04</CreDt>
 	</AppHdr>
 	<Document>
 		<CstmrCdtTrfInitn>
 			<GrpHdr>
-				<MsgId>EPV80116001516701174202404150055</MsgId>
-				<CreDtTm>2024-06-11T18:08:23</CreDtTm>
+				<MsgId>EPV8011600151670117420240415044</MsgId>
+				<CreDtTm>2024-06-12T14:53:04</CreDtTm>
 				<Authstn>
 					<Prtry>ALL</Prtry>
 				</Authstn>
@@ -62,7 +62,7 @@
 						<Prtry>NEFT</Prtry>
 					</SvcLvl>
 				</PmtTpInf>
-				<ReqdExctnDt>2024-06-11</ReqdExctnDt>
+				<ReqdExctnDt>2024-06-24</ReqdExctnDt>
 				<Dbtr>
 					<Nm>FINANCE DEPT</Nm>
 					<PstlAdr>
@@ -93,7 +93,7 @@
 				<CdtTrfTxInf>
 					<PmtId>
 						<InstrId>DRNPAYEE001</InstrId>
-						<EndToEndId>EP11600151670117424163000005</EndToEndId>
+						<EndToEndId>EP11600151670117424164000005</EndToEndId>
 					</PmtId>
 					<Amt>
 						<InstdAmt>
@@ -128,7 +128,7 @@
 				<CdtTrfTxInf>
 					<PmtId>
 						<InstrId>DRNPAYEE001</InstrId>
-						<EndToEndId>EP11600151670117424163000006</EndToEndId>
+						<EndToEndId>EP11600151670117424164000006</EndToEndId>
 					</PmtId>
 					<Amt>
 						<InstdAmt>

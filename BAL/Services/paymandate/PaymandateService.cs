@@ -1,4 +1,5 @@
 ﻿using System.Xml;
+using System.Xml.Serialization;
 using CTS_BE.BAL.Interfaces.paymandate;
 using CTS_BE.DAL.Interfaces;
 using CTS_BE.DTOs;
@@ -375,6 +376,118 @@ namespace CTS_BE.BAL.Services.paymandate
             };
             return data;
         }
+        public EKuber GetRecallXMLData()
+        {
+            string UDCH = "0116";
+            string DbtrAcctNo = "01516701174";
+            string DebtorIFSC = "RBIS0GOWBEP";
+            string FileSequenceNumber = "0001";
+            string DateofAuthorization = "20240415";
+            string LotNumber = "CKP000210";
+            string LotType = "01";
+            string PaymentAdviceDate = "20240415";
+            string PaymentAdviceYYMM = "202402";
+            string ReservedField = DbtrAcctNo.PadLeft(12, '0');
+            string FileName = "EPV8" + UDCH + ReservedField + DateofAuthorization + FileSequenceNumber;
+            EKuber data = new EKuber
+            {
+                requestPayload = new RequestPayload
+                {
+                    AppHdr = new AppHdr
+                    {
+                        Fr = new Fr
+                        {
+                            OrgId = new OrgId
+                            {
+                                Id = new Id
+                                {
+                                    OrgId = new OrgId
+                                    {
+                                        Othr = new Othr
+                                        {
+                                            Id = "116"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        To = new To
+                        {
+                            FIId = new FIId
+                            {
+                                FinInstnId = new FinInstnId
+                                {
+                                    ClrSysMmbId = new ClrSysMmbId
+                                    {
+                                        MmbId = "RBI"
+                                    }
+                                }
+                            }
+                        },
+                        BizMsgIdr = "EPV80116001516701101201909170175",
+                        MsgDefIdr = "pain.007.001.07",
+                        BizSvc = "CustomerPaymentReversalV07",
+                        CreDt = DateTime.Now
+                    },
+                    Document = new Document
+                    {
+                        CstmrPmtRvsl = new CstmrPmtRvsl
+                        {
+                            GrpHdr = new GrpHdr
+                            {
+                                MsgId = "EPV80116001516701101201909170175",
+                                CreDtTm = DateTime.Now,
+                                NbOfTxs = 1,
+                                CtrlSum = 2000,
+                                GrpRvsl = true,
+                                InitgPty = new InitgPty
+                                {
+                                    Nm = "GOVERNMENT OF WEST BENGAL",
+                                    Id = new Id
+                                    {
+                                        OrgId = new OrgId
+                                        {
+                                            Othr = new Othr
+                                            {
+                                                Id = "116"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            OrgnlGrpInf = new OrgnlGrpInf
+                            {
+                                OrgnlMsgId = "EPV80116001516701101201909170175",
+                                OrgnlMsgNmId = "pain.001.001.08",
+                                OrgnlCreDtTm = DateTime.Now
+                            },
+                            OrgnlPmtInfAndRvsl = new OrgnlPmtInfAndRvsl
+                            {
+                                TxInf = new TxInf
+                                {
+                                    RvslId = "EPV80116001516701101201909170175",
+                                    OrgnlInstrId = 7405003,
+                                    OrgnlEndToEndId = "EP011600500300007419260000001",
+                                    OrgnlInstdAmt = 2000,
+                                    RvslRsnInf = new RvslRsnInf
+                                    {
+                                        Rsn = new Rsn
+                                        {
+                                            Cd = "RC0005"
+                                        },
+                                        AddtlInf = "Wrong Payment Date"
+
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                }
+            };
+            return data;
+        }
+
         public void GenerateXML(EKuber kuber, string fileName, string filePath)
         {
             string currentDateTime = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
@@ -640,6 +753,146 @@ namespace CTS_BE.BAL.Services.paymandate
                 writer.WriteEndElement(); // RequestPayload
 
                 writer.WriteEndDocument();
+            }
+        }
+        public EKuber GetDNAcknowledgementXMLData(string fileName, string acknowledgementType, string eventCode)
+        {
+            string FullFileName = acknowledgementType + fileName;
+            EKuber data = new EKuber
+            {
+                requestPayload = new RequestPayload
+                {
+                    AppHdr = new AppHdr
+                    {
+                        Fr = new Fr
+                        {
+                            OrgId = new OrgId
+
+                            {
+                                Id = new Id
+                                {
+                                    OrgId = new OrgId
+                                    {
+                                        Othr = new Othr
+                                        {
+                                            Id = "116"
+                                        }
+                                    }
+
+                                }
+                            }
+                        },
+                        To = new To
+                        {
+                            FIId = new FIId
+                            {
+                                FinInstnId = new FinInstnId
+                                {
+                                    ClrSysMmbId = new ClrSysMmbId
+                                    {
+                                        MmbId = "RBI"
+                                    }
+                                }
+                            }
+                        },
+                        BizMsgIdr = FullFileName,
+                        MsgDefIdr = "admi.004.001.02",
+                        BizSvc = "SystemEventNotificationV02",
+                        CreDt = DateTime.Now,
+                    },
+                    Document = new Document
+                    {
+                        SysEvtNtfctn = new SysEvtNtfctn
+                        {
+                            EvtInf = new EvtInf
+                            {
+                                EvtCd = eventCode,
+                                EvtTm = ""
+                            }
+                        }
+                    }
+                }
+            };
+            return data;
+        }
+        public void GenerateDNACKXML(EKuber kuber, string fileName, string filePath)
+        {
+            string currentDateTime = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
+            XmlWriterSettings settings = new XmlWriterSettings
+            {
+                Indent = true,
+                IndentChars = "\t",
+                Encoding = new System.Text.UTF8Encoding(false) // set false to not include BOM
+            };
+
+            using (XmlWriter writer = XmlWriter.Create(filePath, settings))
+            {
+                writer.WriteStartDocument();
+                // Start RequestPayload element
+                writer.WriteStartElement("RequestPayload");
+                // Write AppHdr element
+                writer.WriteStartElement("AppHdr");
+                // Write Fr element
+                writer.WriteStartElement("Fr");
+                writer.WriteStartElement("OrgId");
+                writer.WriteStartElement("Id");
+                writer.WriteStartElement("OrgId");
+                writer.WriteStartElement("Othr");
+                //*UDCH code of Govt - Message Sender Identification (or) System code e.g. PFMS
+                writer.WriteElementString("Id", kuber.requestPayload.AppHdr.Fr.OrgId.Id.OrgId.Othr.Id);//???
+                writer.WriteEndElement(); // Othr
+                writer.WriteEndElement(); // OrgId
+                writer.WriteEndElement(); // Id
+                writer.WriteEndElement(); // OrgId
+                writer.WriteEndElement(); // Fr
+
+                // Write To element
+                writer.WriteStartElement("To");
+                writer.WriteStartElement("FIId");
+                writer.WriteStartElement("FinInstnId");
+                writer.WriteStartElement("ClrSysMmbId");
+                // *Message Receiver identification – Default “RBI”
+                writer.WriteElementString("MmbId", kuber.requestPayload.AppHdr.To.FIId.FinInstnId.ClrSysMmbId.MmbId);//DEFAULT "RBI"
+                writer.WriteEndElement(); // ClrSysMmbId
+                writer.WriteEndElement(); // FinInstnId
+                writer.WriteEndElement(); // FIId
+                writer.WriteEndElement(); // To
+                // *Identification of the Business Message Same as file name
+                writer.WriteElementString("BizMsgIdr", kuber.requestPayload.AppHdr.BizMsgIdr);//??? WHAT WIIL BE THE FILE NAME FORMAT ???
+                // *Identification of the Message Definition Default 
+                writer.WriteElementString("MsgDefIdr", kuber.requestPayload.AppHdr.MsgDefIdr);//DEFAULT
+                // *Business Service
+                writer.WriteElementString("BizSvc", kuber.requestPayload.AppHdr.BizSvc);//DEFAULT
+                // *Creation Date
+                writer.WriteElementString("CreDt", currentDateTime);
+
+                writer.WriteEndElement(); // AppHdr
+                // Write Document element
+                writer.WriteStartElement("Document");
+                // Write SysEvtNtfctn element
+                writer.WriteStartElement("SysEvtNtfctn");
+                writer.WriteStartElement("EvtInf");
+                writer.WriteElementString("EvtCd", kuber.requestPayload.Document.SysEvtNtfctn.EvtInf.EvtCd);
+                writer.WriteElementString("EvtTm", currentDateTime);
+                writer.WriteEndElement(); // EvtInf
+
+                writer.WriteEndElement(); // SysEvtNtfctn
+
+                writer.WriteEndElement(); // Document
+
+                writer.WriteEndElement(); // RequestPayload
+
+                writer.WriteEndDocument();
+            }
+        }
+        public void GenerateRecallXMLData(EKuber eKuber)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(EKuber));
+            XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
+            ns.Add(string.Empty, string.Empty);
+            using (TextWriter writer = new StreamWriter("fileName.xml"))
+            {
+                serializer.Serialize(writer, eKuber,ns);
             }
         }
     }

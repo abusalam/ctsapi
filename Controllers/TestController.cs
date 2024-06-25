@@ -264,10 +264,10 @@ namespace CTS_BE.Controllers
                     aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Success;
                     return aPIResponse;
                 }
-                    aPIResponse.Message = "XML Generated & Signed Faild";
-                    aPIResponse.result = fileName;
-                    aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Success;
-                    return aPIResponse;
+                aPIResponse.Message = "XML Generated & Signed Faild";
+                aPIResponse.result = fileName;
+                aPIResponse.apiResponseStatus = Enum.APIResponseStatus.Success;
+                return aPIResponse;
             }
             catch (Exception ex)
             {

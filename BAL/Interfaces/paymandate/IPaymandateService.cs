@@ -9,5 +9,10 @@ namespace CTS_BE.BAL.Interfaces.paymandate
         public Task<bool> NewShortList(long loggendInUserId, List<NewShortlistDTO> newShortlistDTO);
         public EKuber GetXMLData();
         public void GenerateXML(EKuber kuber, string fileName, string filePath);
+        public EKuber GetDNAcknowledgementXMLData(string fileName, string acknowledgementType, string eventCode);
+        public void GenerateDNACKXML(EKuber kuber, string fileName, string filePath);
+
+        public EKuber GetRecallXMLData();
+        public void GenerateRecallXMLData(EKuber eKuber);
     }
 }
