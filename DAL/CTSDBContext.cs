@@ -380,7 +380,9 @@ public partial class CTSDBContext : DbContext
 
         modelBuilder.Entity<ChequeDistribute>(entity =>
         {
+            entity.Property(e => e.Distributor).IsFixedLength();
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
+            entity.Property(e => e.MicrCode).IsFixedLength();
         });
 
         modelBuilder.Entity<ChequeEntry>(entity =>
@@ -452,6 +454,9 @@ public partial class CTSDBContext : DbContext
         modelBuilder.Entity<ChequeReceived>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("cheque_received_pkey");
+
+            entity.Property(e => e.MicrCode).IsFixedLength();
+            entity.Property(e => e.TreasurieCode).IsFixedLength();
         });
 
         modelBuilder.Entity<Ddo>(entity =>
@@ -762,7 +767,7 @@ public partial class CTSDBContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("status_pkey");
 
-            entity.Property(e => e.Type).HasComment("1 = token flow ,2 = Cheque indent,3 Cheque invoice");
+            entity.Property(e => e.Type).HasComment("1 = token flow ,2 = Cheque indent,3 Cheque invoice, 4 = Cheque Received");
         });
 
         modelBuilder.Entity<SubDetailHead>(entity =>

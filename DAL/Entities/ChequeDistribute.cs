@@ -13,8 +13,9 @@ public partial class ChequeDistribute
     [Column("id")]
     public long Id { get; set; }
 
-    [Column("micr_code", TypeName = "char")]
-    public char? MicrCode { get; set; }
+    [Column("micr_code")]
+    [StringLength(9)]
+    public string? MicrCode { get; set; }
 
     [Column("user_id")]
     public short? UserId { get; set; }
@@ -28,9 +29,11 @@ public partial class ChequeDistribute
     [Column("quantity")]
     public short? Quantity { get; set; }
 
-    [Column("distributor")]
-    public short? Distributor { get; set; }
-
-    [Column("series_no", TypeName = "character varying")]
+    [Column("series_no")]
+    [StringLength(11)]
     public string? SeriesNo { get; set; }
+
+    [Column("distributor")]
+    [StringLength(3)]
+    public string? Distributor { get; set; }
 }

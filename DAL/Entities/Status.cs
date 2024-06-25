@@ -20,7 +20,7 @@ public partial class Status
     public string Slug { get; set; } = null!;
 
     /// <summary>
-    /// 1 = token flow ,2 = Cheque indent,3 Cheque invoice
+    /// 1 = token flow ,2 = Cheque indent,3 Cheque invoice, 4 = Cheque Received
     /// </summary>
     [Column("type")]
     public short Type { get; set; }
