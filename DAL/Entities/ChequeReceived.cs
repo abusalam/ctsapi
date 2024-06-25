@@ -36,4 +36,22 @@ public partial class ChequeReceived
 
     [Column("status")]
     public int? Status { get; set; }
+
+    [Column("available_quantity")]
+    public short? AvailableQuantity { get; set; }
+
+    [Column("treasurie_code")]
+    [StringLength(3)]
+    public string? TreasurieCode { get; set; }
+
+    [Column("micr_code")]
+    [StringLength(10)]
+    public string? MicrCode { get; set; }
+
+    [Column("series_no")]
+    [StringLength(11)]
+    public string? SeriesNo { get; set; }
+
+    [Column("current_position")]
+    public short? CurrentPosition { get; set; }
 }
