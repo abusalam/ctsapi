@@ -18,5 +18,13 @@ namespace CTS_BE.Helper
                 return null; // Return null or handle the error as appropriate for your use case
             }
         }
+
+        internal static T JsonToObject<T>(string? v)
+        {
+            T obj;
+            
+            // Use JsonSerializer to serialize the object to a JSON string
+            return JsonSerializer.Deserialize<T>(v);
+        }
     }
 }

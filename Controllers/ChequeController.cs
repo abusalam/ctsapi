@@ -1,5 +1,7 @@
 ﻿using CTS_BE.BAL.Interfaces;
+using CTS_BE.BAL.Services;
 using CTS_BE.DAL.Entities;
+using CTS_BE.DAL.Interfaces;
 using CTS_BE.DTOs;
 using CTS_BE.Helper;
 using CTS_BE.Helper.Authentication;
@@ -18,14 +20,18 @@ namespace CTS_BE.Controllers
         private readonly IChequeInvoiceService _chequeInvoiceService;
         private readonly IClaimService _claimService;
         private readonly IChequeCountService _chequeCountService;
+        private readonly IChequeReceivedService _chequeReceivedService;
+        private readonly IChequeDistributionService _chequeDistributionService;
 
-        public ChequeController(IChequeCountService chequeCountService,IChequeEntryService chequeEntryService, IChequeIndentService chequeIndentService, IChequeInvoiceService chequeInvoiceService, IClaimService claimService)
+        public ChequeController(IChequeCountService chequeCountService, IChequeEntryService chequeEntryService, IChequeIndentService chequeIndentService, IChequeInvoiceService chequeInvoiceService, IClaimService claimService, IChequeReceivedService chequeReceivedService, IChequeDistributionService chequeDistributionService)
         {
             _chequeEntryService = chequeEntryService;
             _chequeIndentService = chequeIndentService;
             _chequeInvoiceService = chequeInvoiceService;
             _claimService = claimService;
-            _chequeCountService =chequeCountService;
+            _chequeCountService = chequeCountService;
+            _chequeReceivedService = chequeReceivedService;
+            _chequeDistributionService = chequeDistributionService;
         }
         [HttpPost("new-cheque-entry")]
         public async Task<APIResponse<string>> ChequeEntry(ChequeEntryDTO chequeEntryDTO)
@@ -45,6 +51,7 @@ namespace CTS_BE.Controllers
                     Start = chequeEntryDTO.Start,
                     End = chequeEntryDTO.End,
                     Quantity = quantity,
+                    AvailableQuantity = quantity,
                     CreatedBy = userId,
                 };
                 if (await _chequeEntryService.Insert(chequeEntry))
@@ -231,7 +238,7 @@ namespace CTS_BE.Controllers
                 ChequeIndentModel chequeIndentModel = new()
                 {
                     IndentDate = chequeIndentDTO.IndentDate,
-                    TreasurieCode = (role=="DTA")? chequeIndentDTO.TreasurieCode:_claimService.GetScope(),
+                    TreasurieCode = (role == "DTA") ? chequeIndentDTO.TreasurieCode : _claimService.GetScope(),
                     MemoDate = chequeIndentDTO.MemoDate,
                     MemoNumber = chequeIndentDTO.MemoNumber,
                     Remarks = chequeIndentDTO.Remarks,
@@ -422,7 +429,7 @@ namespace CTS_BE.Controllers
                 }
                 else
                 {
-                    statusIds = new List<int> {(int)Enum.InvoiceStatus.FrowardToTreasuryOfficer };
+                    statusIds = new List<int> { (int)Enum.InvoiceStatus.FrowardToTreasuryOfficer };
                 }
                 DynamicListResult<IEnumerable<ChequeInvoiceListDTO>> result = new DynamicListResult<IEnumerable<ChequeInvoiceListDTO>>
                 {
@@ -673,5 +680,170 @@ namespace CTS_BE.Controllers
                 return response;
             }
         }
+
+        [HttpGet("getChequeInvoiceDetails")]
+        public async Task<APIResponse<ChequeInvoiceDetailsByIdDTO>> getChequeInvoiceDetails([FromQuery] long invoiceId)
+        {
+            APIResponse<ChequeInvoiceDetailsByIdDTO> response = new();
+            try
+            {
+                ChequeInvoiceDetailsByIdDTO invoiceDetails = await _chequeInvoiceService.ChequeInvoiceAndInvoiceDetailsById(invoiceId);
+                if (invoiceDetails != null)
+                {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                    response.result = invoiceDetails;
+                    return response;
+                }
+                else
+                {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Warning;
+                    response.Message = "Invoice not found!";
+                    return response;
+                }
+
+            }
+            catch (Exception Ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = Ex.Message;
+                return response;
+            }
+        }
+
+        [HttpPost("cheque-received")]
+        public async Task<APIResponse<string>> ChequeReceived(ChequeReceivedDTO chequeReceivedDTO)
+        {
+            APIResponse<string> response = new();
+            try
+            {
+                var result = _chequeReceivedService.ChequeReceived(chequeReceivedDTO);
+                if (result != null)
+                {
+                    await result;
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                    response.Message = "Cheque received successfully!";
+                    return response;
+                }
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = "Cheque received failed!";
+                return response;
+            }
+            catch (Exception Ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = Ex.Message;
+                return response;
+            }
+        }
+
+        [HttpPatch("cheque-received-list")]
+        public async Task<APIResponse<DynamicListResult<IEnumerable<ChequeReceivedListDTO>>>> ListOfChequeReceived(DynamicListQueryParameters dynamicListQueryParameters)
+        {
+            APIResponse<DynamicListResult<IEnumerable<ChequeReceivedListDTO>>> response = new();
+            try
+            {
+                // List<int> statusIds = ChequeStatusManagerHelper.getStatus(_claimService.GetPermissions());
+                List<int> statusIds = new List<int> { 20 };
+                DynamicListResult<IEnumerable<ChequeReceivedListDTO>> result = new DynamicListResult<IEnumerable<ChequeReceivedListDTO>>
+                {
+                    Headers = new List<ListHeader>
+                    {
+                        new ListHeader
+                        {
+                            Name = "Invoice Details Id",
+                            DataType = "numeric",
+                            FieldName = "InvoiceDeatilsId",
+                            FilterField = "cheque_invoice_details_id",
+                            IsFilterable = true,
+                            IsSortable = true,
+
+                        },
+
+                        new ListHeader
+                        {
+                            Name = "Quantity",
+                            DataType = "numeric",
+                            FieldName = "quantity",
+                            FilterField = "quantity",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        }
+
+                    },
+                    Data = await _chequeReceivedService.ChequeReceivedList(dynamicListQueryParameters, statusIds),
+                    DataCount = 1
+                };
+                response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                response.Message = "";
+                response.result = result;
+                return response;
+            }
+            catch (Exception Ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = Ex.Message;
+                return response;
+            }
+
+        }
+        [HttpGet("user-list")]
+        public async Task<APIResponse<IEnumerable<UserListDTO>>> UserList()
+        {
+            APIResponse<IEnumerable<UserListDTO>> response = new();
+
+            try
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                response.result = await _chequeDistributionService.UserList();
+                response.Message = "Success";
+            }
+            catch (Exception ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = ex.Message;
+            }
+
+            return response;
+        }
+
+        [HttpGet("getChequeReceivedDetails")]
+        public async Task<APIResponse<IEnumerable<ChequeReceivedDataWithMICRDTO>>> getChequeReceivedDetails()
+        {
+            APIResponse<IEnumerable<ChequeReceivedDataWithMICRDTO>> response = new();
+            try
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                response.result = await _chequeReceivedService.AllChequeReceivedList();
+                response.Message = "Success";
+            }
+            catch (Exception ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
+
+        [HttpPost("save-Cheque-Distribution")]
+        public async Task<APIResponse<bool>>savechequedistribution(ChequeDistributionDTO chequeDistributionDTO)
+        {
+            APIResponse<bool> response = new();
+            try
+            {
+                var result = await _chequeDistributionService.saveChequeDistribution(chequeDistributionDTO);
+                response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                response.result = result;
+            }
+            catch (Exception ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = ex.Message;
+            }
+                return response;
+        }
+    
     }
 }
+
+
+

@@ -14,6 +14,7 @@ namespace CTS_BE.Model.Cheque
         public short Start { get; set; }
         public short End { get; set; }
         public short Quantity { get; set; }
+        public short AvailableQuantity { get; set; }
         public long CreatedBy { get; set; }
     }
 }

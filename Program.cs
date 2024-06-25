@@ -50,6 +50,14 @@ builder.Services.AddTransient<ITpBillRepository, TpBillRepository>();
 builder.Services.AddTransient<ITokenRepository, TokenRepository>();
 builder.Services.AddTransient<ITransactionLotRepository, TransactionLotRepository>();
 
+builder.Services.AddTransient<IChequeInvoiceDetailRepository, ChequeInvoiceDetailRepository>();
+builder.Services.AddTransient<IChequeReceivedRepository, ChequeReceivedRepository>();
+
+builder.Services.AddTransient<IChequeDistributionRepository, ChequeDistributionRepository>();
+
+
+
+
 //Services
 builder.Services.AddTransient<IChequeCountService, ChequeCountService>();
 builder.Services.AddTransient<ITreasuryService, TreasuryService>();
@@ -74,6 +82,9 @@ builder.Services.AddTransient<ITokenHelper, TokenHelper>();
 builder.Services.AddSingleton<ITokencache, Tokencache>();
 
 builder.Services.AddTransient<IClaimService, ClaimService>();
+
+builder.Services.AddTransient<IChequeReceivedService, ChequeReceivedService>();
+builder.Services.AddTransient<IChequeDistributionService, ChequeDistributionService>();
 
 //builder.Services.AddTransient<ITokenHelper, TokenHelper>();
 //builder.Services.AddSingleton<ITokencache, Tokencache>();
@@ -135,6 +146,7 @@ app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 app.UseHttpsRedirection();
 
 //app.UseAuthorization();
+ app.UseAuthTokenMiddleware();
 
 app.UseAuthTokenMiddleware();
 
