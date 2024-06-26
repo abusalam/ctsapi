@@ -25,7 +25,7 @@ build-job:       # This job runs in the build stage, which runs first.
   script:
     - dotnet restore --source ~/cts_local_nuget
     - dotnet publish -c Release --no-restore
-    - cd bin/Release/net6.0/
+    - cd bin/Release/net7.0/
     - tar cvfz ~/publish.tgz publish 
     - printf 'krish@Nic24\ny'|/opt/cisco/anyconnect/bin/vpn -s connect sconnect.nic.in
     - scp ~/publish.tgz root@10.173.13.51:/home/www-data/cts
