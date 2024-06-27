@@ -839,7 +839,7 @@ namespace CTS_BE.Controllers
                         IsFilterable = true,
                         IsSortable = true,
                     },
-<<<<<<< HEAD
+
                     //new ListHeader
                     //{
                     //    Name = "Remarks",
@@ -849,8 +849,7 @@ namespace CTS_BE.Controllers
                     //    IsFilterable = true,
                     //    IsSortable = true,
                     //},
-=======
->>>>>>> 61a8eb2e7741e5563cefd0f2e221fe6d1deae413
+
                     new ListHeader
                     {
                         Name = "Stamp Invoice Id",
