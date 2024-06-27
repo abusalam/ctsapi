@@ -64,7 +64,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Created At",
-                            DataType = "string",
+                            DataType = "text",
                             FieldName = "createdAt",
                             FilterField = "Created At",
                             IsFilterable = true,
@@ -236,7 +236,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Stamp Category",
-                            DataType = "string",
+                            DataType = "text",
                             FieldName = "stampCategory1",
                             FilterField = "StampCategory1",
                             IsFilterable = true,
@@ -245,7 +245,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Description",
-                            DataType = "string",
+                            DataType = "text",
                             FieldName = "description",
                             FilterField = "Description",
                             IsFilterable = true,
@@ -263,7 +263,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Created At",
-                            DataType = "string",
+                            DataType = "text",
                             FieldName = "createdAt",
                             FilterField = "CreatedAt",
                             IsFilterable = true,
@@ -471,7 +471,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="License No",
-                            DataType = "string",
+                            DataType = "text",
                             FieldName = "licenseNo",
                             FilterField = "LicenseNo",
                             IsFilterable = true,
@@ -480,7 +480,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Address",
-                            DataType = "string",
+                            DataType = "text",
                             FieldName = "address",
                             FilterField = "Address",
                             IsFilterable = true,
@@ -498,7 +498,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Effective From",
-                            DataType = "string",
+                            DataType = "text",
                             FieldName = "effectiveFrom",
                             FilterField = "EffectiveFrom",
                             IsFilterable = true,
@@ -507,7 +507,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Valid Upto",
-                            DataType = "string",
+                            DataType = "text",
                             FieldName = "validUpto",
                             FilterField = "ValidUpto",
                             IsFilterable = true,
@@ -516,7 +516,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Pan Number",
-                            DataType = "string",
+                            DataType = "text",
                             FieldName = "panNumber",
                             FilterField = "PanNumber",
                             IsFilterable = true,
@@ -543,7 +543,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Created At",
-                            DataType = "string",
+                            DataType = "text",
                             FieldName = "createdAt",
                             FilterField = "CreatedAt",
                             IsFilterable = true,
@@ -799,7 +799,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Created At",
-                            DataType = "string",
+                            DataType = "text",
                             FieldName = "createdAt",
                             FilterField = "Created At",
                             IsFilterable = true,
@@ -972,7 +972,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Denomination From",
-                            DataType = "string",
+                            DataType = "text",
                             FieldName = "denominationFrom",
                             FilterField = "Denomination From",
                             IsFilterable = true,
@@ -981,7 +981,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Denomination To",
-                            DataType = "string",
+                            DataType = "text",
                             FieldName = "denominationTo",
                             FilterField = "Denomination To",
                             IsFilterable = true,
@@ -999,7 +999,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Vendor Type",
-                            DataType = "string",
+                            DataType = "text",
                             FieldName = "vendorType",
                             FilterField = "Vendor Type",
                             IsFilterable = true,
@@ -1008,7 +1008,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Stamp Category",
-                            DataType = "string",
+                            DataType = "text",
                             FieldName = "stampCategory",
                             FilterField = "StampCategory",
                             IsFilterable = true,
@@ -1026,7 +1026,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Created At",
-                            DataType = "string",
+                            DataType = "text",
                             FieldName = "createdAt",
                             FilterField = "CreatedAt",
                             IsFilterable = true,
@@ -1129,7 +1129,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Stamp Category",
-                            DataType = "string",
+                            DataType = "text",
                             FieldName = "stampCategory1",
                             FilterField = "StampCategory1",
                             IsFilterable = true,
@@ -1138,7 +1138,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Description",
-                            DataType = "string",
+                            DataType = "text",
                             FieldName = "description",
                             FilterField = "Description",
                             IsFilterable = true,
@@ -1183,7 +1183,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Created At",
-                            DataType = "string",
+                            DataType = "text",
                             FieldName = "createdAt",
                             FilterField = "CreatedAt",
                             IsFilterable = true,
