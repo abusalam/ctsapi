@@ -47,7 +47,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Memo Number",
-                            DataType = "string",
+                            DataType = "text",
                             FieldName = "memoNumber",
                             FilterField = "MemoNumber",
                             IsFilterable = true,
@@ -65,7 +65,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Remarks",
-                            DataType = "string",
+                            DataType = "text",
                             FieldName = "remarks",
                             FilterField = "Remarks",
                             IsFilterable = true,
@@ -74,7 +74,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Raised To Treasury Code",
-                            DataType = "string",
+                            DataType = "text",
                             FieldName = "raisedToTreasuryCode",
                             FilterField = "RaisedToTreasuryCodes",
                             IsFilterable = true,
@@ -83,7 +83,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Stamp Category",
-                            DataType = "string",
+                            DataType = "text",
                             FieldName = "stmapCategory",
                             FilterField = "StmapCategory",
                             IsFilterable = true,
@@ -92,7 +92,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Description",
-                            DataType = "string",
+                            DataType = "text",
                             FieldName = "description",
                             FilterField = "Description",
                             IsFilterable = true,
@@ -262,7 +262,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Memo Number",
-                            DataType = "string",
+                            DataType = "text",
                             FieldName = "memoNumber",
                             FilterField = "MemoNumber",
                             IsFilterable = true,
@@ -280,7 +280,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Remarks",
-                            DataType = "string",
+                            DataType = "text",
                             FieldName = "remarks",
                             FilterField = "Remarks",
                             IsFilterable = true,
@@ -289,7 +289,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Raised To Treasury Code",
-                            DataType = "string",
+                            DataType = "text",
                             FieldName = "raisedToTreasuryCode",
                             FilterField = "RaisedToTreasuryCodes",
                             IsFilterable = true,
@@ -298,7 +298,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Stamp Category",
-                            DataType = "string",
+                            DataType = "text",
                             FieldName = "stmapCategory",
                             FilterField = "StmapCategory",
                             IsFilterable = true,
@@ -307,7 +307,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Description",
-                            DataType = "string",
+                            DataType = "text",
                             FieldName = "description",
                             FilterField = "Description",
                             IsFilterable = true,
@@ -479,7 +479,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Memo Number",
-                            DataType = "string",
+                            DataType = "text",
                             FieldName = "memoNumber",
                             FilterField = "MemoNumber",
                             IsFilterable = true,
@@ -497,7 +497,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Remarks",
-                            DataType = "string",
+                            DataType = "text",
                             FieldName = "remarks",
                             FilterField = "Remarks",
                             IsFilterable = true,
@@ -506,7 +506,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Raised To Treasury Code",
-                            DataType = "string",
+                            DataType = "text",
                             FieldName = "raisedToTreasuryCode",
                             FilterField = "RaisedToTreasuryCodes",
                             IsFilterable = true,
@@ -515,7 +515,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Stamp Category",
-                            DataType = "string",
+                            DataType = "text",
                             FieldName = "stmapCategory",
                             FilterField = "StmapCategory",
                             IsFilterable = true,
@@ -524,7 +524,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Description",
-                            DataType = "string",
+                            DataType = "text",
                             FieldName = "description",
                             FilterField = "Description",
                             IsFilterable = true,
@@ -824,7 +824,7 @@ namespace CTS_BE.Controllers
                     new ListHeader
                     {
                         Name = "Memo Number",
-                        DataType = "string",
+                        DataType = "text",
                         FieldName = "memoNumber",
                         FilterField = "MemoNumber",
                         IsFilterable = true,
@@ -839,17 +839,15 @@ namespace CTS_BE.Controllers
                         IsFilterable = true,
                         IsSortable = true,
                     },
-
                     //new ListHeader
                     //{
                     //    Name = "Remarks",
-                    //    DataType = "string",
+                    //    DataType = "text",
                     //    FieldName = "remarks",
                     //    FilterField = "Remarks",
                     //    IsFilterable = true,
                     //    IsSortable = true,
                     //},
-
                     new ListHeader
                     {
                         Name = "Stamp Invoice Id",
@@ -862,7 +860,7 @@ namespace CTS_BE.Controllers
                     new ListHeader
                     {
                         Name = "Invoice Number",
-                        DataType = "string",
+                        DataType = "text",
                         FieldName = "invoiceNumber",
                         FilterField = "InvoiceNumber",
                         IsFilterable = true,
@@ -880,7 +878,7 @@ namespace CTS_BE.Controllers
                     //new ListHeader
                     //{
                     //    Name = "Raised To Treasury Code",
-                    //    DataType = "string",
+                    //    DataType = "text",
                     //    FieldName = "raisedToTreasuryCode",
                     //    FilterField = "RaisedToTreasuryCode",
                     //    IsFilterable = true,
@@ -889,7 +887,7 @@ namespace CTS_BE.Controllers
                     new ListHeader
                     {
                         Name = "Stamp Category",
-                        DataType = "string",
+                        DataType = "text",
                         FieldName = "stmapCategory",
                         FilterField = "StmapCategory",
                         IsFilterable = true,
@@ -898,7 +896,7 @@ namespace CTS_BE.Controllers
                     new ListHeader
                     {
                         Name = "Description",
-                        DataType = "string",
+                        DataType = "text",
                         FieldName = "description",
                         FilterField = "Description",
                         IsFilterable = true,
