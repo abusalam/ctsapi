@@ -1070,7 +1070,7 @@ namespace CTS_BE.Controllers
                     if (await _stampService.CreateNewStampInvoice(stampInvoice))
                     {
                         response.apiResponseStatus = Enum.APIResponseStatus.Success;
-                        response.Message = AppConstants.DataAdded;
+                        response.Message = AppConstants.ApproveStatusDone;
                         response.result = true;
                         return response;
                     } else
