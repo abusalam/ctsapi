@@ -56,7 +56,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Memo Date",
-                            DataType = "datetime",
+                            DataType = "date",
                             FieldName = "memoDate",
                             FilterField = "MemoDate",
                             IsFilterable = true,
@@ -101,7 +101,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Denomination",
-                            DataType = "decimal",
+                            DataType = "numeric",
                             FieldName = "denomination",
                             FilterField = "Denomination",
                             IsFilterable = true,
@@ -146,7 +146,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Amount",
-                            DataType = "decimal",
+                            DataType = "numeric",
                             FieldName = "amount",
                             FilterField = "Amount",
                             IsFilterable = true,
@@ -155,7 +155,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Created At",
-                            DataType = "datetime",
+                            DataType = "date",
                             FieldName = "createdAt",
                             FilterField = "CreatedAt",
                             IsFilterable = true,
@@ -271,7 +271,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Memo Date",
-                            DataType = "datetime",
+                            DataType = "date",
                             FieldName = "memoDate",
                             FilterField = "MemoDate",
                             IsFilterable = true,
@@ -316,7 +316,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Denomination",
-                            DataType = "decimal",
+                            DataType = "numeric",
                             FieldName = "denomination",
                             FilterField = "Denomination",
                             IsFilterable = true,
@@ -361,7 +361,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Amount",
-                            DataType = "decimal",
+                            DataType = "numeric",
                             FieldName = "amount",
                             FilterField = "Amount",
                             IsFilterable = true,
@@ -370,7 +370,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Created At",
-                            DataType = "datetime",
+                            DataType = "date",
                             FieldName = "createdAt",
                             FilterField = "CreatedAt",
                             IsFilterable = true,
@@ -488,7 +488,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Memo Date",
-                            DataType = "datetime",
+                            DataType = "date",
                             FieldName = "memoDate",
                             FilterField = "MemoDate",
                             IsFilterable = true,
@@ -533,7 +533,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Denomination",
-                            DataType = "decimal",
+                            DataType = "numeric",
                             FieldName = "denomination",
                             FilterField = "Denomination",
                             IsFilterable = true,
@@ -578,7 +578,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Amount",
-                            DataType = "decimal",
+                            DataType = "numeric",
                             FieldName = "amount",
                             FilterField = "Amount",
                             IsFilterable = true,
@@ -587,7 +587,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Created At",
-                            DataType = "datetime",
+                            DataType = "date",
                             FieldName = "createdAt",
                             FilterField = "CreatedAt",
                             IsFilterable = true,
@@ -833,7 +833,7 @@ namespace CTS_BE.Controllers
                     new ListHeader
                     {
                         Name = "Memo Date",
-                        DataType = "datetime",
+                        DataType = "date",
                         FieldName = "memoDate",
                         FilterField = "MemoDate",
                         IsFilterable = true,
@@ -869,7 +869,7 @@ namespace CTS_BE.Controllers
                     new ListHeader
                     {
                         Name = "Invoice Date",
-                        DataType = "datetime",
+                        DataType = "date",
                         FieldName = "invoiceDate",
                         FilterField = "InvoiceDate",
                         IsFilterable = true,
@@ -905,7 +905,7 @@ namespace CTS_BE.Controllers
                     new ListHeader
                     {
                         Name = "Denomination",
-                        DataType = "decimal",
+                        DataType = "numeric",
                         FieldName = "denomination",
                         FilterField = "Denomination",
                         IsFilterable = true,
@@ -968,7 +968,7 @@ namespace CTS_BE.Controllers
                     new ListHeader
                     {
                         Name = "Amount",
-                        DataType = "decimal",
+                        DataType = "numeric",
                         FieldName = "amount",
                         FilterField = "Amount",
                         IsFilterable = true,
