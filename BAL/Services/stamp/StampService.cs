@@ -233,7 +233,7 @@ namespace CTS_BE.BAL.Services.stamp
                 Label = entity.Label,
                 Quantity = entity.Quantity,
                 Amount = entity.Amount,
-                Status = entity.StampIndent.StatusId
+                Status = entity.StampIndent.Status.Name
                 //CreatedBy = entity.CreatedBy,   // todo raised by treasury code
             }, pageIndex, pageSize, filters, (sortParameters != null) ? sortParameters.Field : null, (sortParameters != null) ? sortParameters.Order : null);
             return stampInvoiceList;

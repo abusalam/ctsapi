@@ -53,7 +53,7 @@ namespace CTS_BE.DTOs
         public short Label { get; set; }
         public short Quantity { get; set; }
         public decimal Amount { get; set; }
-        public int Status { get; set; }
+        public string? Status { get; set; }
         public long StampInvoiceId { get; set; }
         public string InvoiceNumber { get; set; } = null!;
         public DateTime InvoiceDate { get; set; }

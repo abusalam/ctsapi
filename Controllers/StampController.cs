@@ -165,7 +165,7 @@ namespace CTS_BE.Controllers
                         {
                             Name ="Status",
                             DataType = "object",
-                            ObjectTypeValueField="status",
+                            ObjectTypeValueField="statusId",
                             FieldName = "status",
                             FilterField = "Status",
                             FilterEnums = new List<FilterEnum>
@@ -380,7 +380,7 @@ namespace CTS_BE.Controllers
                         {
                             Name ="Status",
                             DataType = "object",
-                            ObjectTypeValueField="status",
+                            ObjectTypeValueField="statusId",
                             FieldName = "status",
                             FilterField = "Status",
                             FilterEnums = new List<FilterEnum>
@@ -597,7 +597,7 @@ namespace CTS_BE.Controllers
                         {
                             Name ="Status",
                             DataType = "object",
-                            ObjectTypeValueField="status",
+                            ObjectTypeValueField="statusId",
                             FieldName = "status",
                             FilterField = "Status",
                             FilterEnums = new List<FilterEnum>
@@ -687,7 +687,7 @@ namespace CTS_BE.Controllers
                     if(await _stampService.CreateNewStampIndent(stampIndent))
                     {
                         response.apiResponseStatus = Enum.APIResponseStatus.Success;
-                        response.Message = AppConstants.DataAdded;
+                        response.Message = AppConstants.IndentRaised;
                         response.result = true;
                         return response;
                     }
@@ -978,7 +978,7 @@ namespace CTS_BE.Controllers
                     {
                             Name ="Status",
                             DataType = "object",
-                            ObjectTypeValueField="status",
+                            ObjectTypeValueField="statusId",
                             FieldName = "status",
                             FilterField = "Status",
                             FilterEnums = new List<FilterEnum>
