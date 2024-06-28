@@ -542,6 +542,31 @@ namespace CTS_BE.Controllers
                         },
                         new ListHeader
                         {
+                            Name ="Vendor Photo",
+                            DataType = "text",
+                            FieldName = "vendorPhoto",
+                            FilterField = "VendorPhoto",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },new ListHeader
+                        {
+                            Name ="Vendor Pan Photo",
+                            DataType = "text",
+                            FieldName = "vendorPanPhoto",
+                            FilterField = "VendorPanPhoto",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },new ListHeader
+                        {
+                            Name ="vendor Licence Photo",
+                            DataType = "text",
+                            FieldName = "vendorLicencePhoto",
+                            FilterField = "VendorLicencePhoto",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
                             Name ="Created At",
                             DataType = "text",
                             FieldName = "createdAt",

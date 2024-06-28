@@ -220,6 +220,9 @@ namespace CTS_BE.BAL.Services.stamp
                 CreatedAt = entity.CreatedAt,
                 CreatedBy = entity.CreatedBy,
                 VendorType = entity.VendorType,
+                VendorLicencePhoto = entity.VendorPhoto,
+                VendorPanPhoto = entity.VendorPanPhoto,
+                VendorPhoto = entity.VendorPhoto,
 
             }, pageIndex, pageSize, filters, (sortParameters != null) ? sortParameters.Field : null, (sortParameters != null) ? sortParameters.Order : null);
             return stampVendorList;
@@ -241,6 +244,9 @@ namespace CTS_BE.BAL.Services.stamp
                 CreatedAt = entity.CreatedAt,
                 CreatedBy = entity.CreatedBy,
                 VendorType = entity.VendorType,
+                VendorLicencePhoto = entity.VendorPhoto,
+                VendorPanPhoto = entity.VendorPanPhoto,
+                VendorPhoto = entity.VendorPhoto,
             });
             return stampVendor;
         }
@@ -271,6 +277,9 @@ namespace CTS_BE.BAL.Services.stamp
                 ActiveAtGrips = entity.ActiveAtGrips,
                 ValidUpto = entity.ValidUpto.ToString(),
                 IsActive = entity.IsActive,
+                VendorLicencePhoto = entity.VendorPhoto,
+                VendorPanPhoto = entity.VendorPanPhoto,
+                VendorPhoto = entity.VendorPhoto,
                 CreatedAt = entity.CreatedAt,
                 CreatedBy = entity.CreatedBy,
             });

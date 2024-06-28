@@ -89,6 +89,11 @@ namespace CTS_BE.DTOs
         public bool? IsActive { get; set; }
 
         public bool? ActiveAtGrips { get; set; }
+        public string? VendorPhoto { get; set; }
+
+        public string? VendorPanPhoto { get; set; }
+
+        public string? VendorLicencePhoto { get; set; }
 
         public DateTime? CreatedAt { get; set; }
 
@@ -125,7 +130,6 @@ namespace CTS_BE.DTOs
         public string PanNumber { get; set; } = null!;
 
         public bool? ActiveAtGrips { get; set; }
-
     }
     public class StampTypeDTO
     {
