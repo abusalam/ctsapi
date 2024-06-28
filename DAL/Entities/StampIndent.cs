@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.DAL.Entities;
 
 [Table("stamp_indent", Schema = "cts")]
+[Index("MemoNumber", Name = "stamp_indent_memo_number_memo_number1_key", IsUnique = true)]
 public partial class StampIndent
 {
     [Key]
@@ -40,8 +41,8 @@ public partial class StampIndent
     [Precision(10, 2)]
     public decimal Amount { get; set; }
 
-    [Column("status")]
-    public short Status { get; set; }
+    [Column("status_id")]
+    public int StatusId { get; set; }
 
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime CreatedAt { get; set; }
@@ -63,4 +64,8 @@ public partial class StampIndent
 
     [InverseProperty("StampIndent")]
     public virtual ICollection<StampInvoice> StampInvoices { get; set; } = new List<StampInvoice>();
+
+    [ForeignKey("StatusId")]
+    [InverseProperty("StampIndents")]
+    public virtual Status Status { get; set; } = null!;
 }

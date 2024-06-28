@@ -34,8 +34,6 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<BtDetail> BtDetails { get; set; }
 
-    public virtual DbSet<CategoryType> CategoryTypes { get; set; }
-
     public virtual DbSet<Challan> Challans { get; set; }
 
     public virtual DbSet<ChallanEntry> ChallanEntries { get; set; }
@@ -228,6 +226,7 @@ public partial class CTSDBContext : DbContext
 
             entity.Property(e => e.BillNo).IsFixedLength();
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
+            entity.Property(e => e.CssBenType).HasComment("{ name: 'Non-SNA', code: 2 }, { name: 'SNA', code: 1 }");
             entity.Property(e => e.DdoCode).IsFixedLength();
             entity.Property(e => e.Demand).IsFixedLength();
             entity.Property(e => e.DetailHead).IsFixedLength();
@@ -238,6 +237,7 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.PlanStatus).IsFixedLength();
             entity.Property(e => e.ReferenceNo).IsFixedLength();
             entity.Property(e => e.SchemeHead).IsFixedLength();
+            entity.Property(e => e.SnaGrantType).HasComment("{ name: 'Grant-in-Aid in Cash', code: 1 }, { name: 'Grant-in-Aid in Kind', code: 2 }");
             entity.Property(e => e.SubMajorHead).IsFixedLength();
             entity.Property(e => e.TreasuryCode).IsFixedLength();
             entity.Property(e => e.VersionNo).HasDefaultValueSql("1");
@@ -340,11 +340,6 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.Submajor).IsFixedLength();
         });
 
-        modelBuilder.Entity<CategoryType>(entity =>
-        {
-            entity.HasKey(e => e.CategoryTypeId).HasName("category_type_pkey");
-        });
-
         modelBuilder.Entity<Challan>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("challan_pkey");
@@ -374,6 +369,13 @@ public partial class CTSDBContext : DbContext
         modelBuilder.Entity<ChequeDamage>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("cheque_damage_pkey");
+        });
+
+        modelBuilder.Entity<ChequeDistribute>(entity =>
+        {
+            entity.Property(e => e.Distributor).IsFixedLength();
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+            entity.Property(e => e.MicrCode).IsFixedLength();
         });
 
         modelBuilder.Entity<ChequeEntry>(entity =>
@@ -445,6 +447,9 @@ public partial class CTSDBContext : DbContext
         modelBuilder.Entity<ChequeReceived>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("cheque_received_pkey");
+
+            entity.Property(e => e.MicrCode).IsFixedLength();
+            entity.Property(e => e.TreasurieCode).IsFixedLength();
         });
 
         modelBuilder.Entity<Ddo>(entity =>
@@ -681,6 +686,10 @@ public partial class CTSDBContext : DbContext
             entity.HasOne(d => d.StampCombination).WithMany(p => p.StampIndents)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("stamp_indent_stamp_combination_id_fkey");
+
+            entity.HasOne(d => d.Status).WithMany(p => p.StampIndents)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("stamp_indent_status_fkey");
         });
 
         modelBuilder.Entity<StampInvoice>(entity =>
@@ -747,7 +756,7 @@ public partial class CTSDBContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("status_pkey");
 
-            entity.Property(e => e.Type).HasComment("1 = token flow ,2 = Cheque indent,3 Cheque invoice");
+            entity.Property(e => e.Type).HasComment("1 = token flow ,2 = Cheque indent,3 Cheque invoice, 4 = Cheque Received");
         });
 
         modelBuilder.Entity<SubDetailHead>(entity =>
@@ -834,6 +843,7 @@ public partial class CTSDBContext : DbContext
 
             entity.Property(e => e.DrnNo).IsFixedLength();
             entity.Property(e => e.LotNo).IsFixedLength();
+            entity.Property(e => e.Status).HasComment("1=lot generate");
         });
 
         modelBuilder.Entity<TransactionLotHasBeneficiary>(entity =>
@@ -844,6 +854,8 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.AccountNumber).IsFixedLength();
             entity.Property(e => e.IfscCode).IsFixedLength();
             entity.Property(e => e.MobileNo).IsFixedLength();
+
+            entity.HasOne(d => d.TransactionLot).WithMany(p => p.TransactionLotHasBeneficiaries).HasConstraintName("transaction_lot_fky");
         });
 
         modelBuilder.Entity<TransactionLotHistory>(entity =>
@@ -925,6 +937,7 @@ public partial class CTSDBContext : DbContext
         modelBuilder.HasSequence("stamp_label_master_label_id_seq", "cts_master");
         modelBuilder.HasSequence("stamp_type_denomination_id_seq", "cts_master");
         modelBuilder.HasSequence("stamp_vendor_vendor_code_seq", "cts_master");
+        modelBuilder.HasSequence("stamp_wallet_transaction_id_seq", "master");
         modelBuilder.HasSequence("vendor_type_vendor_type_id_seq", "cts_master");
 
         OnModelCreatingPartial(modelBuilder);

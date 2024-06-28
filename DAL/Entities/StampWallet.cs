@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.DAL.Entities;
 
 [Table("stamp_wallet", Schema = "master")]
-[Index("TreasuryCode", Name = "stamp_wallet_treasury_code_treasury_code1_key", IsUnique = true)]
 public partial class StampWallet
 {
     [Key]

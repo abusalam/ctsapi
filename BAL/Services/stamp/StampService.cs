@@ -36,7 +36,7 @@ namespace CTS_BE.BAL.Services.stamp
             Console.WriteLine(_auth);
             IEnumerable<StampIndentDTO> stampIndentList = await _stampIndentRepo.GetSelectedColumnByConditionAsync(
                 // if _auth user is superintendent
-                entity => entity.CreatedBy == _auth.GetUserId() && (entity.Status == (short)StampIndentStatusEnum.ApproveBySuperintendent || entity.Status == (short)StampIndentStatusEnum.ApproveByTreasuryOfficer ),
+                entity => entity.CreatedBy == _auth.GetUserId() && (entity.StatusId == (short)StampIndentStatusEnum.ApproveBySuperintendent || entity.StatusId == (short)StampIndentStatusEnum.ApproveByTreasuryOfficer ),
             entity => new StampIndentDTO
             {
                 StampIndentId = entity.Id,
@@ -54,7 +54,7 @@ namespace CTS_BE.BAL.Services.stamp
                 Amount = entity.Amount,
                 CreatedAt = entity.CreatedAt,
                 CreatedBy = entity.CreatedBy,
-                Status = entity.Status
+                Status = entity.Status.Name
 
             }, pageIndex, pageSize, filters, (sortParameters != null) ? sortParameters.Field : null, (sortParameters != null) ? sortParameters.Order : null);
             return stampIndentList;
@@ -84,7 +84,7 @@ namespace CTS_BE.BAL.Services.stamp
                 Amount = entity.Amount,
                 CreatedAt = entity.CreatedAt,
                 CreatedBy = entity.CreatedBy,
-                Status = entity.Status
+                Status = entity.Status.Name
 
             }, pageIndex, pageSize, filters, (sortParameters != null) ? sortParameters.Field : null, (sortParameters != null) ? sortParameters.Order : null);
             return stampIndentList;
@@ -96,7 +96,7 @@ namespace CTS_BE.BAL.Services.stamp
             //Console.WriteLine(_auth.GetScope());
             IEnumerable<StampIndentDTO> stampIndentList = await _stampIndentRepo.GetSelectedColumnByConditionAsync(
                 // if _auth user is superintendent
-                entity => entity.RaisedToTreasuryCode == _auth.GetScope() && (entity.Status == (short)StampIndentStatusEnum.ForwardedToSuperintendent || entity.Status == (short)StampIndentStatusEnum.ForwardedToTreasuryOfficer),
+                entity => entity.RaisedToTreasuryCode == _auth.GetScope() && (entity.StatusId == (short)StampIndentStatusEnum.ForwardedToSuperintendent || entity.StatusId == (short)StampIndentStatusEnum.ForwardedToTreasuryOfficer),
             entity => new StampIndentDTO
             {
                 StampIndentId = entity.Id,
@@ -114,7 +114,7 @@ namespace CTS_BE.BAL.Services.stamp
                 Amount = entity.Amount,
                 CreatedAt = entity.CreatedAt,
                 CreatedBy = entity.CreatedBy,
-                Status = entity.Status
+                Status = entity.Status.Name
 
             }, pageIndex, pageSize, filters, (sortParameters != null) ? sortParameters.Field : null, (sortParameters != null) ? sortParameters.Order : null);
             return stampIndentList;
@@ -126,7 +126,7 @@ namespace CTS_BE.BAL.Services.stamp
                 stampIndentInput.CreatedAt = DateTime.Now;
                 stampIndentInput.CreatedBy = _auth.GetUserId();
                 stampIndentInput.RaisedByTreasuryCode = _auth.GetScope();
-                stampIndentInput.Status = stampIndentInput.RaisedToTreasuryCode == null ? (short) 10 : (short) 11;
+                stampIndentInput.StatusId = stampIndentInput.RaisedToTreasuryCode == null ? (int) 23 : (int) 26;
                 _stampIndentRepo.Add(stampIndentInput);
                 _stampIndentRepo.SaveChangesManaged();
                 return await Task.FromResult(true);
@@ -147,13 +147,13 @@ namespace CTS_BE.BAL.Services.stamp
 
                 if (await _stampIndentRepo.IndentApprove(data.RaisedToTreasuryCode, data.Quantity))
                 {    
-                    if(data.Status == 10)
+                    if(data.StatusId == 23)
                     {
-                        data.Status = 15;
+                        data.StatusId = 24;
                     }
-                    else if (data.Status == 11)
+                    else if (data.StatusId == 26)
                     {
-                        data.Status = 12;
+                        data.StatusId = 27;
                     }
                     _stampIndentRepo.Update(data);
                     _stampIndentRepo.SaveChangesManaged();
@@ -168,13 +168,13 @@ namespace CTS_BE.BAL.Services.stamp
             var data = await _stampIndentRepo.GetSingleAysnc(e => e.Id == stampIndentId);
             if (data != null)
             {
-                if (data.Status == 10)
+                if (data.StatusId == 23)
                 {
-                    data.Status = 16;
+                    data.StatusId = 25;
                 }
-                else if (data.Status == 11)
+                else if (data.StatusId == 26)
                 {
-                    data.Status = 13;
+                    data.StatusId = 28;
                 }
                 _stampIndentRepo.Update(data);
                 _stampIndentRepo.SaveChangesManaged();
@@ -188,13 +188,13 @@ namespace CTS_BE.BAL.Services.stamp
         //    var data = await _stampIndentRepo.GetSingleAysnc(e => e.Id == stampIndentId);
         //    if (data != null)
         //    {
-        //        if (data.Status == 15)
+        //        if (data.StatusId == 15)
         //        {
-        //            data.Status = 14;
+        //            data.StatusId = 14;
         //        }
-        //        else if (data.Status == 12)
+        //        else if (data.StatusId == 12)
         //        {
-        //            data.Status = 14;
+        //            data.StatusId = 14;
         //        }
         //        _stampIndentRepo.Update(data);
         //        _stampIndentRepo.SaveChangesManaged();
@@ -212,7 +212,7 @@ namespace CTS_BE.BAL.Services.stamp
             Console.WriteLine(_auth);
             IEnumerable<StampInvoiceDTO> stampInvoiceList = await _stampInvoiceRepo.GetSelectedColumnByConditionAsync(
                 // if _auth user is superintenvoice
-            entity => entity.CreatedBy == _auth.GetUserId() && (entity.StampIndent.Status == (short)StampIndentStatusEnum.ApproveBySuperintendent || entity.StampIndent.Status == (short)StampIndentStatusEnum.ApproveByTreasuryOfficer ),
+            entity => entity.CreatedBy == _auth.GetUserId() && (entity.StampIndent.StatusId == (short)StampIndentStatusEnum.ApproveBySuperintendent || entity.StampIndent.StatusId == (short)StampIndentStatusEnum.ApproveByTreasuryOfficer ),
             entity => new StampInvoiceDTO
             {
                 StampIndentId = entity.StampIndentId,
@@ -233,7 +233,7 @@ namespace CTS_BE.BAL.Services.stamp
                 Label = entity.Label,
                 Quantity = entity.Quantity,
                 Amount = entity.Amount,
-                Status = entity.StampIndent.Status,
+                Status = entity.StampIndent.StatusId
                 //CreatedBy = entity.CreatedBy,   // todo raised by treasury code
             }, pageIndex, pageSize, filters, (sortParameters != null) ? sortParameters.Field : null, (sortParameters != null) ? sortParameters.Order : null);
             return stampInvoiceList;
@@ -277,7 +277,7 @@ namespace CTS_BE.BAL.Services.stamp
                             Quantity = e.Quantity,
                             Amount = e.Amount,
                             CreatedAt = e.CreatedAt,
-                            Status = e.Status,
+                            //Status = e.Status,
 
                     }
                 );
@@ -293,7 +293,7 @@ namespace CTS_BE.BAL.Services.stamp
                 //IndentRecieve(string RaisedToTreasuryCode, string RaisedByTreasuryCode, int Quantity, long IndentId)
                 if (await _stampIndentRepo.IndentRecieve(data.RaisedToTreasuryCode, data.RaisedByTreasuryCode, data.Quantity, data.Id))
                 {
-                    ////data.Status = 14;
+                    ////data.StatusId = 14;
                     //_stampIndentRepo.Update(data);
                     //_stampIndentRepo.SaveChangesManaged();
                     return await Task.FromResult(true);
