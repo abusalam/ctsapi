@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.DAL.Entities;
 
 [Table("stamp_invoice", Schema = "cts")]
+[Index("InvoiceNumber", Name = "stamp_invoice_invoice_number_invoice_number1_key", IsUnique = true)]
 public partial class StampInvoice
 {
     [Key]

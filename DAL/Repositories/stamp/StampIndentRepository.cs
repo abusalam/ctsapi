@@ -14,6 +14,9 @@ namespace CTS_BE.DAL.Repositories.stamp
             _context = context;
             _context.Set<StampIndent>()
                 .Include(t => t.StampCombination);
+            _context.Set<StampIndent>()
+                .Include(t => t.Status);
+
         }
 
         public async Task<bool> IndentApprove(string RaisedToTreasuryCode, int Quantity)

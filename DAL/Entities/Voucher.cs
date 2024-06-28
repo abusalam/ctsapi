@@ -14,8 +14,7 @@ public partial class Voucher
     public long Id { get; set; }
 
     [Column("voucher_no")]
-    [MaxLength(1)]
-    public char VoucherNo { get; set; }
+    public int VoucherNo { get; set; }
 
     [Column("voucher_date")]
     public DateOnly VoucherDate { get; set; }
