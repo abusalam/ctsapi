@@ -32,5 +32,8 @@ public partial class Status
     public virtual ICollection<ChequeInvoice> ChequeInvoices { get; set; } = new List<ChequeInvoice>();
 
     [InverseProperty("Status")]
+    public virtual ICollection<StampIndent> StampIndents { get; set; } = new List<StampIndent>();
+
+    [InverseProperty("Status")]
     public virtual ICollection<TokenFlow> TokenFlows { get; set; } = new List<TokenFlow>();
 }

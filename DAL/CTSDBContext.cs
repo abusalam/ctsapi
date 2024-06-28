@@ -34,8 +34,6 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<BtDetail> BtDetails { get; set; }
 
-    public virtual DbSet<CategoryType> CategoryTypes { get; set; }
-
     public virtual DbSet<Challan> Challans { get; set; }
 
     public virtual DbSet<ChallanEntry> ChallanEntries { get; set; }
@@ -342,11 +340,6 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.Submajor).IsFixedLength();
         });
 
-        modelBuilder.Entity<CategoryType>(entity =>
-        {
-            entity.HasKey(e => e.CategoryTypeId).HasName("category_type_pkey");
-        });
-
         modelBuilder.Entity<Challan>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("challan_pkey");
@@ -380,9 +373,9 @@ public partial class CTSDBContext : DbContext
 
         modelBuilder.Entity<ChequeDistribute>(entity =>
         {
-            entity.Property(e => e.Distributor).IsFixedLength();
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.MicrCode).IsFixedLength();
+            entity.Property(e => e.TreasurieCode).IsFixedLength();
         });
 
         modelBuilder.Entity<ChequeEntry>(entity =>
@@ -677,15 +670,11 @@ public partial class CTSDBContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("stamp_combination_stamp_category_id_fkey");
 
-            entity.HasOne(d => d.StampDenomination).WithMany(p => p.StampCombinationStampDenominations)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("stamp_combination_stamp_denomination_id_fkey");
-
             entity.HasOne(d => d.StampLabel).WithMany(p => p.StampCombinations)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("stamp_combination_stamp_label_id_fkey");
 
-            entity.HasOne(d => d.StampType).WithMany(p => p.StampCombinationStampTypes)
+            entity.HasOne(d => d.StampType).WithMany(p => p.StampCombinations)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("stamp_combination_stamp_type_id_fkey");
         });
@@ -697,6 +686,10 @@ public partial class CTSDBContext : DbContext
             entity.HasOne(d => d.StampCombination).WithMany(p => p.StampIndents)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("stamp_indent_stamp_combination_id_fkey");
+
+            entity.HasOne(d => d.Status).WithMany(p => p.StampIndents)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("stamp_indent_status_fkey");
         });
 
         modelBuilder.Entity<StampInvoice>(entity =>
@@ -751,10 +744,6 @@ public partial class CTSDBContext : DbContext
 
             entity.Property(e => e.FromTreasuryCode).IsFixedLength();
             entity.Property(e => e.ToTreasuryCode).IsFixedLength();
-
-            entity.HasOne(d => d.StampWallet).WithMany(p => p.StampWalletTransactions)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("stamp_wallet_transaction_stamp_wallet_id_fkey");
 
             entity.HasOne(d => d.ToTreasuryCodeNavigation).WithMany(p => p.StampWalletTransactions)
                 .HasPrincipalKey(p => p.Code)
@@ -948,6 +937,7 @@ public partial class CTSDBContext : DbContext
         modelBuilder.HasSequence("stamp_label_master_label_id_seq", "cts_master");
         modelBuilder.HasSequence("stamp_type_denomination_id_seq", "cts_master");
         modelBuilder.HasSequence("stamp_vendor_vendor_code_seq", "cts_master");
+        modelBuilder.HasSequence("stamp_wallet_transaction_id_seq", "master");
         modelBuilder.HasSequence("vendor_type_vendor_type_id_seq", "cts_master");
 
         OnModelCreatingPartial(modelBuilder);

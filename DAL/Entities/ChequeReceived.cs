@@ -54,4 +54,7 @@ public partial class ChequeReceived
 
     [Column("current_position")]
     public short? CurrentPosition { get; set; }
+
+    [Column("is_used")]
+    public bool? IsUsed { get; set; }
 }
