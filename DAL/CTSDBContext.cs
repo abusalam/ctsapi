@@ -373,9 +373,9 @@ public partial class CTSDBContext : DbContext
 
         modelBuilder.Entity<ChequeDistribute>(entity =>
         {
-            entity.Property(e => e.Distributor).IsFixedLength();
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.MicrCode).IsFixedLength();
+            entity.Property(e => e.TreasurieCode).IsFixedLength();
         });
 
         modelBuilder.Entity<ChequeEntry>(entity =>
