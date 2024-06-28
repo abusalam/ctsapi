@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CTS_BE.DAL.Entities;
 using CTS_BE.DTOs;
 using System.Data.Common;
 using CTS_BE.Model;
@@ -17,6 +18,26 @@ namespace CTS_BE.Helper
             .ForMember(dest => dest.BillDate, opt => opt.MapFrom(src => src["bill_date"]));
             CreateMap<TransactionLot,TransactionLotModel>();
             CreateMap<TransactionLotModel, TransactionLot>();
+
+            CreateMap<StampLabelMaster, StampLabelMasterDTO>();
+            CreateMap<StampLabelMasterInsertDTO, StampLabelMaster>();
+            CreateMap<StampCategory, StampCategoryDTO>();
+            CreateMap<StampCategoryInsertDTO, StampCategory>();
+            CreateMap<StampVendor, StampVendorDTO>()
+                .ForMember(d => d.EffectiveFrom, opt => opt.MapFrom(src => src.EffectiveFrom.ToString()))
+                .ForMember(d => d.ValidUpto, opt => opt.MapFrom(src => src.ValidUpto.ToString()));
+            CreateMap<StampVendorInsertDTO, StampVendor>();
+            CreateMap<StampVendorInsertDTO, StampVendor>()
+            .ForMember(d => d.EffectiveFrom, opt => opt.MapFrom(src => src.EffectiveFrom.HasValue ? DateOnly.FromDateTime(src.EffectiveFrom.Value) : default))
+            .ForMember(d => d.ValidUpto, opt => opt.MapFrom(src => src.ValidUpto.HasValue ? DateOnly.FromDateTime(src.ValidUpto.Value) : default));
+            CreateMap<StampTypeInsertDTO, StampType>();
+            CreateMap<StampType, StampTypeDTO>();
+            CreateMap<DiscountDetailsInsertDTO, DiscountDetail>();
+            CreateMap<StampIndentInsertDTO, StampIndent>();
+            CreateMap<StampIndent, StampIndentDTO>();
+            CreateMap<StampInvoiceInsertDTO, StampInvoice>();
+            CreateMap<StampWalletInsertDTO, StampWallet>();
+
         }
     }
 }

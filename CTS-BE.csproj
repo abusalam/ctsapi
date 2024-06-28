@@ -50,6 +50,7 @@
 
   <ItemGroup>
     <Folder Include="Common\" />
+    <Folder Include="wwwroot\uploads\" />
   </ItemGroup>
 
   <ItemGroup>

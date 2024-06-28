@@ -18,6 +18,16 @@ using CTS_BE.Helper.Authentication;
 using CTS_BE.BAL.Services.paymandate;
 using CTS_BE.BAL.Interfaces.paymandate;
 using Microsoft.OpenApi.Models;
+using CTS_BE.DAL.Interfaces.stamp;
+using CTS_BE.DAL.Repositories.stamp;
+using CTS_BE.BAL.Interfaces.stamp;
+using CTS_BE.BAL.Services.stamp;
+using Swashbuckle.AspNetCore.SwaggerUI;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.AspNetCore.Mvc;
+using CTS_BE.Enum;
+using CTS_BE.Helper;
+using System.Collections;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,6 +66,17 @@ builder.Services.AddTransient<IChequeReceivedRepository, ChequeReceivedRepositor
 builder.Services.AddTransient<IChequeDistributionRepository, ChequeDistributionRepository>();
 
 
+builder.Services.AddTransient<IStampLabelRepository, StampLabelRepository>();
+builder.Services.AddTransient<IStampCategoryRepository, StampCategoryRepository>();
+builder.Services.AddTransient<IStampVendorRepository, StampVendorRepository>();
+builder.Services.AddTransient<IStampTypeRepository, StampTypeRepository>();
+builder.Services.AddTransient<IDiscountDetailsRepository, DiscountDetailsRepository>();
+builder.Services.AddTransient<IStampVendorTypeRepository, StampVendorTypeRepository>();
+builder.Services.AddTransient<IStampCategoryTypeRepository, StampCateroryTypeRepository>();
+builder.Services.AddTransient<IStampCombinationRepository, StampCombinationRepository>();
+builder.Services.AddTransient<IStampIndentRepository, StampIndentRepository>();
+builder.Services.AddTransient<IStampInvoiceRepository, StampInvoiceRepository>();
+builder.Services.AddTransient<IStampWalletRepository, StampWalletRepository>();
 
 
 //Services
@@ -74,6 +95,10 @@ builder.Services.AddTransient<IGobalObjectionService, GobalObjectionService>();
 builder.Services.AddTransient<IDdoService, DdoService>();
 builder.Services.AddTransient<ITpBillService, TpBillService>();
 builder.Services.AddTransient<ITokenService, TokenService>();
+builder.Services.AddTransient<IStampMasterService, StampMasterService>();
+builder.Services.AddTransient<IStampService, StampService>();
+builder.Services.AddTransient<IStampWalletService, StampWalletService>();
+
 
 builder.Services.AddTransient<IPaymandateService, PaymandateService>();
 builder.Services.AddTransient<ITransactionLotService, TransactionLotService>();
@@ -134,19 +159,60 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.AddHttpContextAccessor();
+builder.Services.Configure<ApiBehaviorOptions>(config =>
+{
+
+    config.InvalidModelStateResponseFactory = ctx => new OkObjectResult(new APIResponse<IEnumerable>()
+    {
+        apiResponseStatus = APIResponseStatus.Error,
+        result = ctx.ModelState.Values,
+        Message = "DTO validation error :: result field specifies error location." + ctx.ModelState.Values
+    }
+
+
+  // new BaseResponse(
+  // success: ctx.ModelState.IsValid,
+  // errors: ctx.ModelState.Values
+  //     .Where(v => v.ValidationState == ModelValidationState.Invalid)
+  //     .SelectMany(v => v.Errors)
+  //     .Select(e => new ErrorDetails
+  //     {
+  //         Code = "ModelError",
+  //         Description = e.ErrorMessage
+  //     })
+  //     .ToList()
+  // )
+
+            );
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        options.EnableFilter();
+        options.EnablePersistAuthorization();
+        options.EnableValidator();
+        options.EnableDeepLinking();
+        options.DisplayRequestDuration();
+        options.ShowExtensions();
+        options.DocExpansion(DocExpansion.None);
+    });
 }
 app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 app.UseHttpsRedirection();
 
-//app.UseAuthorization();
- app.UseAuthTokenMiddleware();
+app.UseAuthorization();
+app.UseStaticFiles();
+app.UseDirectoryBrowser(new DirectoryBrowserOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads")),
+    RequestPath = "/uploads"
+});
 
 app.UseAuthTokenMiddleware();
 
