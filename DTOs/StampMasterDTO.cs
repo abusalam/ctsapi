@@ -122,9 +122,9 @@ namespace CTS_BE.DTOs
         [RegularExpression(@"^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$", ErrorMessage = "Invalid Phone Number.")]
         public long? PhoneNumber { get; set; }
 
-        public DateOnly? EffectiveFrom { get; set; }
+        public DateTime? EffectiveFrom { get; set; }
 
-        public DateOnly? ValidUpto { get; set; }
+        public DateTime? ValidUpto { get; set; }
 
         [RegularExpression(@"^[A-Z]{5}[0-9]{4}[A-Z]{1}$", ErrorMessage = "Invalid PAN Number.")]
         public string PanNumber { get; set; } = null!;

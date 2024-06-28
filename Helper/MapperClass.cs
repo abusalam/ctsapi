@@ -24,8 +24,9 @@ namespace CTS_BE.Helper
                 .ForMember(d => d.EffectiveFrom, opt => opt.MapFrom(src => src.EffectiveFrom.ToString()))
                 .ForMember(d => d.ValidUpto, opt => opt.MapFrom(src => src.ValidUpto.ToString()));
             CreateMap<StampVendorInsertDTO, StampVendor>();
-                //.ForMember(d => d.EffectiveFrom, opt => opt.MapFrom(src => src.EffectiveFrom.HasValue ? src.EffectiveFrom.Value : default))
-                //.ForMember(d => d.ValidUpto, opt => opt.MapFrom(src => src.ValidUpto.HasValue ? src.ValidUpto.Value: default));
+            CreateMap<StampVendorInsertDTO, StampVendor>()
+            .ForMember(d => d.EffectiveFrom, opt => opt.MapFrom(src => src.EffectiveFrom.HasValue ? DateOnly.FromDateTime(src.EffectiveFrom.Value) : default))
+            .ForMember(d => d.ValidUpto, opt => opt.MapFrom(src => src.ValidUpto.HasValue ? DateOnly.FromDateTime(src.ValidUpto.Value) : default));
             CreateMap<StampTypeInsertDTO, StampType>();
             CreateMap<StampType, StampTypeDTO>();
             CreateMap<DiscountDetailsInsertDTO, DiscountDetail>();
