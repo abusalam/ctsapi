@@ -998,7 +998,7 @@ namespace CTS_BE.Controllers
                                 new FilterEnum
                                 {
                                     Value = (int) Enum.StampIndentStatusEnum.ApproveBySuperintendent,
-                                    Label = "Approve by Superintendent",
+                                    Label = "Approve by Superintendent",    
                                     StyleClass = "success"
                                 },
                                 new FilterEnum
