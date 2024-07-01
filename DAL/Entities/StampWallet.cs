@@ -22,7 +22,4 @@ public partial class StampWallet
 
     [Column("ledger_balance")]
     public short LedgerBalance { get; set; }
-
-    [InverseProperty("StampWallet")]
-    public virtual ICollection<StampWalletTransaction> StampWalletTransactions { get; set; } = new List<StampWalletTransaction>();
 }
