@@ -454,3 +454,6 @@ $RECYCLE.BIN/
 !.vscode/extensions.json
 bin/*
 obj/*
+
+
+wwwroot/uploads/*

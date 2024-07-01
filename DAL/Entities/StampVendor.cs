@@ -56,4 +56,13 @@ public partial class StampVendor
 
     [Column("vendor_type", TypeName = "character varying")]
     public string VendorType { get; set; } = null!;
+
+    [Column("vendorPhoto")]
+    public string? VendorPhoto { get; set; }
+
+    [Column("vendorPanPhoto")]
+    public string? VendorPanPhoto { get; set; }
+
+    [Column("vendorLicencePhoto")]
+    public string? VendorLicencePhoto { get; set; }
 }

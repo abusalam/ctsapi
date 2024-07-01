@@ -13,9 +13,6 @@ public partial class StampWalletTransaction
     [Column("id")]
     public long Id { get; set; }
 
-    [Column("stamp_wallet_id")]
-    public long StampWalletId { get; set; }
-
     [Column("from_treasury_code")]
     [StringLength(3)]
     public string? FromTreasuryCode { get; set; }
@@ -26,10 +23,6 @@ public partial class StampWalletTransaction
 
     [Column("stamp_number")]
     public short StampNumber { get; set; }
-
-    [ForeignKey("StampWalletId")]
-    [InverseProperty("StampWalletTransactions")]
-    public virtual StampWallet StampWallet { get; set; } = null!;
 
     public virtual Treasury ToTreasuryCodeNavigation { get; set; } = null!;
 }

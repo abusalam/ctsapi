@@ -321,7 +321,7 @@ namespace CTS_BE.Controllers
                             DataType = "object",
                             FieldName = "chequeType",
                             FilterField = "ChequeIndentDetails.ChequeType",
-                                                        FilterEnums = new List<FilterEnum>
+                            FilterEnums = new List<FilterEnum>
                             {
                                 new FilterEnum
                                 {

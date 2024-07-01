@@ -42,7 +42,22 @@ namespace CTS_BE.Common
         public const string Time_Format = "h:mm:ss tt";
 
         public const string HeadrKeyAccessToken = "cat";
-        public const string HeadrKeyRefreshToken = "crt";       
+        public const string HeadrKeyRefreshToken = "crt";
 
+        public const string DataFound = "Data collected successfully";
+        public const string IndentRaised = "New Indent Raised";
+        public const string DataNotFound = "No data found in the record";
+        public const string DataAdded = "Data added successfully";
+        public const string MissingField = "Missing fields in form body";
+        public const string Deleted = "Data deleted Successfully";
+        public const string ApproveStatusDone = "Approve Status Updated Successfully";
+        public const string ApproveStatusFail = "Approve Status Update Failed";
+        public const string RejectStatusDone = "Rejection Status Updated Successfully";
+        public const string RejectStatusFail = "Rejection Status Update Failed";
+        public const string ReceiveStatusDone = "Receive Status Updated Successfully";
+        public const string ReceiveStatusFail = "Receive Status Update Failed";
+        public const string InsufficientBalance = "You don't have enough balance";
+        public const string InvalidTreasuryCode = "Treasury code does not exists.";
+        public const string WalletUpdated = "Wallet updated successfully.";
     }
 }
