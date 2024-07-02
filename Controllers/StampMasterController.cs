@@ -104,12 +104,12 @@ namespace CTS_BE.Controllers
         }
 
         [HttpGet("GetALLStampLabels")]
-        public async Task<APIResponse<IEnumerable<StampLabelMasterDTO>>> GetALLStampLabels()
+        public async Task<APIResponse<IEnumerable<StampLabelDTO>>> GetALLStampLabels()
         {
-            APIResponse<IEnumerable<StampLabelMasterDTO>> response = new();
+            APIResponse<IEnumerable<StampLabelDTO>> response = new();
             try
             {
-                IEnumerable<StampLabelMasterDTO> allStampLabels = await _stampMasterService.GetAllStampLabels();
+                IEnumerable<StampLabelDTO> allStampLabels = await _stampMasterService.GetAllStampLabels();
                 if (allStampLabels.Count() > 0)
                 {
                     response.Message = AppConstants.DataFound;
@@ -328,12 +328,12 @@ namespace CTS_BE.Controllers
         }
 
         [HttpGet("GetALLStampCategoryTypes")]
-        public async Task<APIResponse<IEnumerable<StampCategoryDTO>>> GetALLStampCategoryTypes()
+        public async Task<APIResponse<IEnumerable<CategoryTypeDTO>>> GetALLStampCategoryTypes()
         {
-            APIResponse<IEnumerable<StampCategoryDTO>> response = new();
+            APIResponse<IEnumerable<CategoryTypeDTO>> response = new();
             try
             {
-                IEnumerable<StampCategoryDTO> allStampCategorys = await _stampMasterService.GetAllCategoryType();
+                IEnumerable<CategoryTypeDTO> allStampCategorys = await _stampMasterService.GetAllCategoryType();
                 if (allStampCategorys.Count() > 0)
                 {
                     response.apiResponseStatus = Enum.APIResponseStatus.Success;
@@ -862,12 +862,12 @@ namespace CTS_BE.Controllers
         }
 
         [HttpGet("GetALLStampTypes")]
-        public async Task<APIResponse<IEnumerable<StampTypeDTO>>> GetALLStampTypes()
+        public async Task<APIResponse<IEnumerable<StampTypeDataDTO>>> GetALLStampTypes()
         {
-            APIResponse<IEnumerable<StampTypeDTO>> response = new();
+            APIResponse<IEnumerable<StampTypeDataDTO>> response = new();
             try
             {
-                IEnumerable<StampTypeDTO> allStampTypes = await _stampMasterService.GetAllStampTypes();
+                IEnumerable<StampTypeDataDTO> allStampTypes = await _stampMasterService.GetAllStampTypes();
                 if (allStampTypes.Count() > 0)
                 {
                     response.apiResponseStatus = Enum.APIResponseStatus.Success;

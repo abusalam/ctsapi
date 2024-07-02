@@ -22,7 +22,14 @@ namespace CTS_BE.DTOs   // TODO: Update API will be required in future.
 
         public long LabelId { get; set; }
     }
-    
+
+    public class StampLabelDTO
+    {
+        public short NoLabelPerSheet { get; set; }
+
+        public long LabelId { get; set; }
+    }
+
     public class StampLabelMasterInsertDTO
     {
         [Required]
@@ -154,7 +161,14 @@ namespace CTS_BE.DTOs   // TODO: Update API will be required in future.
 
         public long DenominationId { get; set; }
     }
-    
+
+    public class StampTypeDataDTO
+    {
+        public decimal Denomination { get; set; }
+
+        public long DenominationId { get; set; }
+    }
+
     public class StampTypeInsertDTO
     {
         [Required]

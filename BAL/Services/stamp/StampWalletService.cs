@@ -33,10 +33,10 @@ namespace CTS_BE.BAL.Services.stamp
             return await Task.FromResult(false);
         }
 
-        public async Task<short> GetWalletBalanceByTreasuryCode(string TreasuryCode)
+        public async Task<short> GetWalletBalanceByTreasuryCode(string TreasuryCode, decimal Denomination)
         {
             var data = await _stampWalletRepo.GetSingleSelectedColumnByConditionAsync(
-                    e => e.TreasuryCode == TreasuryCode,
+                    e => e.TreasuryCode == TreasuryCode && e.Denomination == Denomination,
                     e => new StampWalletBalanceDTO
                         {
                             ClearBalance = e.ClearBalance

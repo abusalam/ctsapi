@@ -6,7 +6,7 @@ namespace CTS_BE.BAL.Interfaces.stamp
     {
         // Stamp Label Interfaces
          Task<IEnumerable<StampLabelMasterDTO>> ListAllStampLabels(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null);
-         Task<IEnumerable<StampLabelMasterDTO>> GetAllStampLabels();
+         Task<IEnumerable<StampLabelDTO>> GetAllStampLabels();
          Task<bool> CreateNewStampLabel(StampLabelMasterInsertDTO stampLabel);
          Task<IEnumerable<StampLabelMasterDTO>> GetStampLabelById(long id);
          Task<bool> DeleteStampLabelsById(long id);
@@ -14,7 +14,7 @@ namespace CTS_BE.BAL.Interfaces.stamp
         // Stamp category Interfaces
          Task<IEnumerable<StampCategoryDTO>> ListAllStampCategories(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null);
          Task<IEnumerable<StampCategoryDTO>> GetAllStampCategories();
-         Task<IEnumerable<StampCategoryDTO>> GetAllCategoryType();
+         Task<IEnumerable<CategoryTypeDTO>> GetAllCategoryType();
          Task<bool> CreateNewStampCategory(StampCategoryInsertDTO stampCategory);
          Task<IEnumerable<StampCategoryDTO>> GetStampCategoryById(long id);
          Task<bool> DeleteStampCategorysById(long id);
@@ -30,7 +30,7 @@ namespace CTS_BE.BAL.Interfaces.stamp
         // Stamp Type Interfaces
         
          Task<IEnumerable<StampTypeDTO>> ListAllStampTypes(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null);
-         Task<IEnumerable<StampTypeDTO>> GetAllStampTypes();
+         Task<IEnumerable<StampTypeDataDTO>> GetAllStampTypes();
          Task<bool> CreateNewStampType(StampTypeInsertDTO stampType);
          Task<IEnumerable<StampTypeDTO>> GetStampTypeById(long id);
          Task<bool> DeleteStampTypesById(long id);

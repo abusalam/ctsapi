@@ -59,12 +59,12 @@ namespace CTS_BE.Controllers
         }
         
         [HttpGet("getStampWalletBalanceByTreasuryCode")]
-        public async Task<APIResponse<short>> getStampWalletBalanceByTreasuryCode(string treasuryCode)
+        public async Task<APIResponse<short>> getStampWalletBalanceByTreasuryCode(string treasuryCode, decimal denomination)
         {
             APIResponse<short> response = new();
             try
             {
-                        short balance = await _stampWalletService.GetWalletBalanceByTreasuryCode(treasuryCode);
+                        short balance = await _stampWalletService.GetWalletBalanceByTreasuryCode(treasuryCode, denomination);
                         response.apiResponseStatus = Enum.APIResponseStatus.Success;
                         response.Message = AppConstants.DataFound;
                         response.result = balance;

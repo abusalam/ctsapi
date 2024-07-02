@@ -66,15 +66,15 @@ namespace CTS_BE.BAL.Services.stamp
             return stampLabelList;
         }
         
-        public async Task<IEnumerable<StampLabelMasterDTO>> GetAllStampLabels()
+        public async Task<IEnumerable<StampLabelDTO>> GetAllStampLabels()
         {
-            IEnumerable<StampLabelMasterDTO> stampLabelMasters = await _stampLabelRepo.GetSelectedColumnAsync(entity=>new StampLabelMasterDTO
+            IEnumerable<StampLabelDTO> stampLabelMasters = await _stampLabelRepo.GetSelectedColumnAsync(entity=>new StampLabelDTO
             {
                 LabelId = entity.LabelId,
-                IsActive = entity.IsActive,
+                //IsActive = entity.IsActive,
                 NoLabelPerSheet = entity.NoLabelPerSheet,
-                CreatedAt = entity.CreatedAt,
-                CreatedBy = entity.CreatedBy,
+                //CreatedAt = entity.CreatedAt,
+                //CreatedBy = entity.CreatedBy,
             });
             return stampLabelMasters;
         }
@@ -113,9 +113,9 @@ namespace CTS_BE.BAL.Services.stamp
         }
 
         // Stamp Category Services
-        public async Task<IEnumerable<StampCategoryDTO>> GetAllCategoryType()
+        public async Task<IEnumerable<CategoryTypeDTO>> GetAllCategoryType()
         {
-            IEnumerable<StampCategoryDTO> categoryType = await _stampCategoryRepo.GetSelectedColumnAsync(entity => new StampCategoryDTO
+            IEnumerable<CategoryTypeDTO> categoryType = await _stampCategoryRepo.GetSelectedColumnAsync(entity => new CategoryTypeDTO
             {
                 StampCategoryId = entity.StampCategoryId,
                 StampCategory1 = entity.StampCategory1 
@@ -316,15 +316,12 @@ namespace CTS_BE.BAL.Services.stamp
             return stampTypeList;
         }
 
-         public async Task<IEnumerable<StampTypeDTO>> GetAllStampTypes()
+         public async Task<IEnumerable<StampTypeDataDTO>> GetAllStampTypes()
         {
-            IEnumerable<StampTypeDTO> stampType = await _stampTypeRepo.GetSelectedColumnAsync(entity => new StampTypeDTO { 
+            IEnumerable<StampTypeDataDTO> stampType = await _stampTypeRepo.GetSelectedColumnAsync(entity => new StampTypeDataDTO { 
             
                 DenominationId = entity.DenominationId,
-                Denomination = entity.Denomination,
-                IsActive = entity.IsActive,
-                CreatedAt = entity.CreatedAt,
-                CreatedBy = entity.CreatedBy
+                Denomination = entity.Denomination
             });
             return stampType;
         }
