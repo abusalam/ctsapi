@@ -65,6 +65,7 @@ namespace CTS_BE.BAL.Services.stamp
             }, pageIndex, pageSize, filters, (sortParameters != null) ? sortParameters.Field : null, (sortParameters != null) ? sortParameters.Order : null);
             return stampLabelList;
         }
+        
         public async Task<IEnumerable<StampLabelMasterDTO>> GetAllStampLabels()
         {
             IEnumerable<StampLabelMasterDTO> stampLabelMasters = await _stampLabelRepo.GetSelectedColumnAsync(entity=>new StampLabelMasterDTO
@@ -92,6 +93,7 @@ namespace CTS_BE.BAL.Services.stamp
 
             return stampLabelMasters;
         }
+        
         public async Task<bool> DeleteStampLabelsById(long id)
         {
             var stampLabelMasters = await _stampLabelRepo.GetAllByConditionAsync(a=>a.LabelId == id);
@@ -110,9 +112,7 @@ namespace CTS_BE.BAL.Services.stamp
 
         }
 
-
         // Stamp Category Services
-
         public async Task<IEnumerable<StampCategoryDTO>> GetAllCategoryType()
         {
             IEnumerable<StampCategoryDTO> categoryType = await _stampCategoryRepo.GetSelectedColumnAsync(entity => new StampCategoryDTO
@@ -122,8 +122,6 @@ namespace CTS_BE.BAL.Services.stamp
             });
             return categoryType;
         }
-
-
 
         public async Task<IEnumerable<StampCategoryDTO>> ListAllStampCategories(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null)
         {
@@ -202,7 +200,6 @@ namespace CTS_BE.BAL.Services.stamp
         }
 
         // Stamp Vendor Services
-
         public async Task<IEnumerable<StampVendorDTO>> ListAllStampVendors(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null)
         {
             //Get all stamp vendors with sort & filter parameters
@@ -374,7 +371,6 @@ namespace CTS_BE.BAL.Services.stamp
         }
 
         // Stamp discount details
-        
         public async Task<IEnumerable<DiscountDetailsDTO>> ListAllDiscountDetails(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null)
         {
             
@@ -442,7 +438,6 @@ namespace CTS_BE.BAL.Services.stamp
             // Return the list of StampCombinationDTO
             return stampCombinationEntities;
         }
-
 
         public async Task<bool> DeleteStampCombinationById(long id)
         {

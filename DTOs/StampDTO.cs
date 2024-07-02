@@ -27,18 +27,36 @@ namespace CTS_BE.DTOs
         public string? Status { get; set; }
 
     }
+    
     public class StampIndentInsertDTO
     {
         public long StampCombinationId { get; set; }
+
+        [Required]
         public string MemoNumber { get; set; } = null!;
+
+        [Required]
         public DateTime MemoDate { get; set; }
+
+        [Required]
         public string? Remarks { get; set; }
+
+        [Required]
         public short Sheet { get; set; }
+
+        [Required]
         public short Label { get; set; }
+
+        [Required]
         public short Quantity { get; set; }
+
+        [Required]
         public decimal Amount { get; set; }
+
+        [Required, StringLength(2, ErrorMessage = "String Length must be 2.")]
         public string? RaisedToTreasuryCode { get; set; }
     }
+    
     public class StampInvoiceDTO
     {
         public long StampIndentId { get; set; }
@@ -62,14 +80,27 @@ namespace CTS_BE.DTOs
         //public short IndentedLabel { get; set; }
         //public long CreatedBy { get; set; }
     }
+    
     public class StampInvoiceInsertDTO
     {
         public long StampIndentId { get; set; }
+
+        [Required]
         public short Sheet { get; set; }
+
+        [Required]
         public short Label { get; set; }
+
+        [Required]
         public string InvoiceNumber { get; set; } = null!;
+
+        [Required]
         public DateTime InvoiceDate { get; set; }
+
+        [Required]
         public decimal Amount { get; set; }
+
+        [Required]
         public short Quantity { get; set; }
     }
 }

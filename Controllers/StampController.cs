@@ -16,17 +16,16 @@ namespace CTS_BE.Controllers
     public class StampController : Controller
     {
         private readonly IStampService _stampService;
-
         public StampController(IStampService stampService)
         {
             _stampService = stampService;
         }
 
-        // Stamp indent
+        // Stamp Indent Processed
         [HttpPatch("StampIndentListProcessed")]
         public async Task<APIResponse<DynamicListResult<IEnumerable<StampIndentDTO>>>> StampIndentListProcessed(DynamicListQueryParameters dynamicListQueryParameters)
         {
-            //Get all stamp labels with sort & filter parameters
+            //Get all stamp Processed Indents with sort & filter parameters
             APIResponse<DynamicListResult<IEnumerable<StampIndentDTO>>> response = new();
             try
             {
@@ -238,14 +237,15 @@ namespace CTS_BE.Controllers
             }
         }
 
+        // Stamp Indent Unprocessed
         [HttpPatch("StampIndentListProcessing")]
         public async Task<APIResponse<DynamicListResult<IEnumerable<StampIndentDTO>>>> StampIndentListProcessing(DynamicListQueryParameters dynamicListQueryParameters)
         {
-            //Get all stamp labels with sort & filter parameters
+            //Get all stamp Unprocessed Indents with sort & filter parameters
             APIResponse<DynamicListResult<IEnumerable<StampIndentDTO>>> response = new();
             try
             {
-                IEnumerable<StampIndentDTO> labelList = await _stampService.ListAllStampIndentsProcessing(dynamicListQueryParameters.filterParameters, dynamicListQueryParameters.PageIndex, dynamicListQueryParameters.PageSize, dynamicListQueryParameters.sortParameters);
+                IEnumerable<StampIndentDTO> unProcessedIndents = await _stampService.ListAllStampIndentsProcessing(dynamicListQueryParameters.filterParameters, dynamicListQueryParameters.PageIndex, dynamicListQueryParameters.PageSize, dynamicListQueryParameters.sortParameters);
                 DynamicListResult<IEnumerable<StampIndentDTO>> result = new DynamicListResult<IEnumerable<StampIndentDTO>>
                 {
                     Headers = new List<ListHeader>
@@ -429,10 +429,10 @@ namespace CTS_BE.Controllers
 
                     },
 
-                    Data = labelList,
+                    Data = unProcessedIndents,
                     DataCount = 1
                 };
-                if (labelList.Count() > 0)
+                if (unProcessedIndents.Count() > 0)
                 {
                     response.Message = AppConstants.DataFound;
                     response.apiResponseStatus = Enum.APIResponseStatus.Success;
@@ -454,15 +454,15 @@ namespace CTS_BE.Controllers
             }
         }
 
-        // Stamp indent
+        // Stamp Indent List
         [HttpPatch("StampIndentList")]
         public async Task<APIResponse<DynamicListResult<IEnumerable<StampIndentDTO>>>> StampIndentList(DynamicListQueryParameters dynamicListQueryParameters)
         {
-            //Get all stamp labels with sort & filter parameters
+            //Get all stamp Indents with sort & filter parameters
             APIResponse<DynamicListResult<IEnumerable<StampIndentDTO>>> response = new();
             try
             {
-                IEnumerable<StampIndentDTO> labelList = await _stampService.StampIndentList(dynamicListQueryParameters.filterParameters, dynamicListQueryParameters.PageIndex, dynamicListQueryParameters.PageSize, dynamicListQueryParameters.sortParameters);
+                IEnumerable<StampIndentDTO> allIndents = await _stampService.StampIndentList(dynamicListQueryParameters.filterParameters, dynamicListQueryParameters.PageIndex, dynamicListQueryParameters.PageSize, dynamicListQueryParameters.sortParameters);
                 DynamicListResult<IEnumerable<StampIndentDTO>> result = new DynamicListResult<IEnumerable<StampIndentDTO>>
                 {
                     Headers = new List<ListHeader>
@@ -652,10 +652,10 @@ namespace CTS_BE.Controllers
 
                     },
 
-                    Data = labelList,
+                    Data = allIndents,
                     DataCount = 1
                 };
-                if (labelList.Count() > 0)
+                if (allIndents.Count() > 0)
                 {
                     response.Message = AppConstants.DataFound;
                     response.apiResponseStatus = Enum.APIResponseStatus.Success;
@@ -676,6 +676,7 @@ namespace CTS_BE.Controllers
             }
         }
 
+        // New Stamp Indent
         [HttpPost("CreateStampIndent")]
         public async Task<APIResponse<bool>> CreateStampIndent(StampIndentInsertDTO stampIndent)
         {
@@ -705,8 +706,7 @@ namespace CTS_BE.Controllers
             }
         }
 
-        // approve
-
+        // Indent Approve
         [HttpGet("ApproveStampIndent")]
         public async Task<APIResponse<bool>> ApproveStampIndent(long stampIndentId)
         {
@@ -736,16 +736,13 @@ namespace CTS_BE.Controllers
             }
         }
 
-        // receive
-
+        // Indent Receive
         [HttpGet("ReceiveStampIndent")]
         public async Task<APIResponse<bool>> ReceiveStampIndent(long stampIndentId)
         {
             APIResponse<bool> response = new();
             try
             {
-                //if (stampIndentId != null)
-                //{
                 if (await _stampService.ReceiveStampIndent(stampIndentId))
                 {
                     response.apiResponseStatus = Enum.APIResponseStatus.Success;
@@ -753,7 +750,6 @@ namespace CTS_BE.Controllers
                     response.result = true;
                     return response;
                 }
-                //}
                 response.apiResponseStatus = Enum.APIResponseStatus.Error;
                 response.result = false;
                 response.Message = AppConstants.ReceiveStatusFail;
@@ -767,17 +763,13 @@ namespace CTS_BE.Controllers
             }
         }
 
-
-
-        // reject stamp Indent
+        // Reject Stamp Indent
         [HttpGet("RejectStampIndent")]
         public async Task<APIResponse<bool>> RejectStampIndent(long stampIndentId)
         {
             APIResponse<bool> response = new();
             try
             {
-                //if (stampIndentId != null)
-                //{
                     if (await _stampService.RejectStampIndent(stampIndentId))
                     {
                         response.apiResponseStatus = Enum.APIResponseStatus.Success;
@@ -785,7 +777,6 @@ namespace CTS_BE.Controllers
                         response.result = true;
                         return response;
                     }
-                //}
                 response.apiResponseStatus = Enum.APIResponseStatus.Error;
                 response.result = false;
                 response.Message = AppConstants.RejectStatusFail;
@@ -799,15 +790,15 @@ namespace CTS_BE.Controllers
             }
         }
 
-        // Stamp invoice
+        // Stamp Invoice List
         [HttpPatch("StampInvoiceList")]
         public async Task<APIResponse<DynamicListResult<IEnumerable<StampInvoiceDTO>>>> StampInvoiceList(DynamicListQueryParameters dynamicListQueryParameters)
         {
-            //Get all stamp labels with sort & filter parameters
+            //Get all stamp Invoice with sort & filter parameters
             APIResponse<DynamicListResult<IEnumerable<StampInvoiceDTO>>> response = new();
             try
             {
-                IEnumerable<StampInvoiceDTO> labelList = await _stampService.ListAllStampInvoices(dynamicListQueryParameters.filterParameters, dynamicListQueryParameters.PageIndex, dynamicListQueryParameters.PageSize, dynamicListQueryParameters.sortParameters);
+                IEnumerable<StampInvoiceDTO> allInvoices = await _stampService.ListAllStampInvoices(dynamicListQueryParameters.filterParameters, dynamicListQueryParameters.PageIndex, dynamicListQueryParameters.PageSize, dynamicListQueryParameters.sortParameters);
                 DynamicListResult<IEnumerable<StampInvoiceDTO>> result = new DynamicListResult<IEnumerable<StampInvoiceDTO>>
                 {
                     Headers = new List<ListHeader>
@@ -1033,10 +1024,10 @@ namespace CTS_BE.Controllers
                     //    IsSortable = true,
                     //},
                 },
-                    Data = labelList,
+                    Data = allInvoices,
                     DataCount = 1
                 };
-                if (labelList.Count() > 0)
+                if (allInvoices.Count() > 0)
                 {
                     response.Message = AppConstants.DataFound;
                     response.apiResponseStatus = Enum.APIResponseStatus.Success;
@@ -1057,6 +1048,7 @@ namespace CTS_BE.Controllers
             }
         }
 
+        //New Stamp Invoice
         [HttpPost("CreateStampInvoice")]
         public async Task<APIResponse<bool>> CreateStampInvoice(StampInvoiceInsertDTO stampInvoice)
         {
@@ -1094,7 +1086,7 @@ namespace CTS_BE.Controllers
             }
         }
 
-
+        // Get One Invoice By Id
         [HttpGet("IndentDetailsById")]
         public async Task<APIResponse<StampIndentDTO>> IndentDetailsById(long id)
         {
@@ -1120,9 +1112,6 @@ namespace CTS_BE.Controllers
                 return response;
             }
         }
-
-
-
     }
 }
 

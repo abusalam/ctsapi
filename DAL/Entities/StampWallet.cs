@@ -22,4 +22,8 @@ public partial class StampWallet
 
     [Column("ledger_balance")]
     public short LedgerBalance { get; set; }
+
+    [Column("denomination")]
+    [Precision(10, 2)]
+    public decimal Denomination { get; set; }
 }

@@ -33,7 +33,10 @@ public partial class ChequeDistribute
     [StringLength(11)]
     public string? SeriesNo { get; set; }
 
-    [Column("distributor")]
+    [Column("treasurie_code")]
     [StringLength(3)]
-    public string? Distributor { get; set; }
+    public string? TreasurieCode { get; set; }
+
+    [Column("currrent_position")]
+    public short? CurrrentPosition { get; set; }
 }

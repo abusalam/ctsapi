@@ -13,11 +13,16 @@ namespace CTS_BE.DTOs
         public short ClearBalance { get; set; }
         public short LedgerBalance { get; set; }
     }
+    
     public class StampWalletInsertDTO
     {
+        [Required]
         public string? TreasuryCode { get; set; }
+
+        [Required]
         public short ClearBalance { get; set; }
     }
+    
     public class StampWalletBalanceDTO
     {
         public short ClearBalance { get; set; }

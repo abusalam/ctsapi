@@ -20,6 +20,8 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<AdvanceVoucherDetail> AdvanceVoucherDetails { get; set; }
 
+    public virtual DbSet<Advice> Advices { get; set; }
+
     public virtual DbSet<Available> Availables { get; set; }
 
     public virtual DbSet<Bank> Banks { get; set; }
@@ -95,6 +97,10 @@ public partial class CTSDBContext : DbContext
     public virtual DbSet<PaymentAdvice> PaymentAdvices { get; set; }
 
     public virtual DbSet<PaymentAdviceHasBeneficiary> PaymentAdviceHasBeneficiarys { get; set; }
+
+    public virtual DbSet<Reference> References { get; set; }
+
+    public virtual DbSet<ReferenceDetail> ReferenceDetails { get; set; }
 
     public virtual DbSet<StampCategory> StampCategories { get; set; }
 
@@ -181,6 +187,13 @@ public partial class CTSDBContext : DbContext
             entity.HasKey(e => e.Id).HasName("advance_voucher_details_pkey");
 
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
+        });
+
+        modelBuilder.Entity<Advice>(entity =>
+        {
+            entity.HasKey(e => e.AdviceId).HasName("advice_pkey");
+
+            entity.Property(e => e.AdviceId).ValueGeneratedNever();
         });
 
         modelBuilder.Entity<Bank>(entity =>
@@ -373,9 +386,9 @@ public partial class CTSDBContext : DbContext
 
         modelBuilder.Entity<ChequeDistribute>(entity =>
         {
-            entity.Property(e => e.Distributor).IsFixedLength();
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.MicrCode).IsFixedLength();
+            entity.Property(e => e.TreasurieCode).IsFixedLength();
         });
 
         modelBuilder.Entity<ChequeEntry>(entity =>
@@ -650,6 +663,20 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.IfscCode).IsFixedLength();
             entity.Property(e => e.PanNo).IsFixedLength();
+        });
+
+        modelBuilder.Entity<Reference>(entity =>
+        {
+            entity.HasKey(e => e.RefId).HasName("reference_pkey");
+
+            entity.Property(e => e.Status).HasDefaultValueSql("2");
+            entity.Property(e => e.TreasuryCode).IsFixedLength();
+        });
+
+        modelBuilder.Entity<ReferenceDetail>(entity =>
+        {
+            entity.Property(e => e.RefId).ValueGeneratedOnAdd();
+            entity.Property(e => e.TreasuryCode).IsFixedLength();
         });
 
         modelBuilder.Entity<StampCategory>(entity =>

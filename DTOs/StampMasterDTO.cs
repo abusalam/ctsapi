@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using CTS_BE.Common;
 using CTS_BE.DAL.Entities;
 
-namespace CTS_BE.DTOs
+namespace CTS_BE.DTOs   // TODO: Update API will be required in future.
 {
     public class StampLabelMasterDTO
     {
@@ -22,11 +22,11 @@ namespace CTS_BE.DTOs
 
         public long LabelId { get; set; }
     }
+    
     public class StampLabelMasterInsertDTO
     {
+        [Required]
         public short NoLabelPerSheet { get; set; }
-
-        public bool? IsActive { get; set; }
     }
 
     public class StampCategoryDTO
@@ -58,13 +58,12 @@ namespace CTS_BE.DTOs
     public class StampCategoryInsertDTO
     {
 
+        [Required]
         [StringLength(2, ErrorMessage = "String Length must be 2.")]
         public string StampCategory1 { get; set; } = null!;
 
         [Required]
         public string Description { get; set; } = null!;
-        public bool? IsActive { get; set; }
-
     }
 
     public class StampVendorDTO
@@ -106,31 +105,39 @@ namespace CTS_BE.DTOs
 
     public class VendorTypeDTO
     {
-
         public string? VendorType { get; set; }
 
         public long StampVendorId { get; set; }
     }
-        public class StampVendorInsertDTO
+    
+    public class StampVendorInsertDTO
     {
+        [Required]
         public string? VendorType { get; set; }
 
+        [Required]
         public string LicenseNo { get; set; } = null!;
 
+        [Required]
         public string Address { get; set; } = null!;
 
+        [Required]
         [RegularExpression(@"^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$", ErrorMessage = "Invalid Phone Number.")]
         public long? PhoneNumber { get; set; }
 
+        [Required]
         public DateTime? EffectiveFrom { get; set; }
 
+        [Required]
         public DateTime? ValidUpto { get; set; }
 
+        [Required]
         [RegularExpression(@"^[A-Z]{5}[0-9]{4}[A-Z]{1}$", ErrorMessage = "Invalid PAN Number.")]
         public string PanNumber { get; set; } = null!;
 
         public bool? ActiveAtGrips { get; set; }
     }
+    
     public class StampTypeDTO
     {
         public decimal Denomination { get; set; }
@@ -147,12 +154,12 @@ namespace CTS_BE.DTOs
 
         public long DenominationId { get; set; }
     }
+    
     public class StampTypeInsertDTO
     {
-
+        [Required]
         [Precision(10, 2)]
         public decimal Denomination { get; set; }
-        public bool? IsActive { get; set; }
     }
 
     public class DiscountDetailsDTO
@@ -178,19 +185,24 @@ namespace CTS_BE.DTOs
 
     public class DiscountDetailsInsertDTO
     {
-
+        [Required, Precision(10, 2)]
         public decimal DenominationFrom { get; set; }
 
+        [Required, Precision(10, 2)]
         public decimal DenominationTo { get; set; }
 
+        [Required]
         public decimal Discount { get; set; }
 
+        [Required]
         public string? VendorType { get; set; }
 
+        [Required]
         [StringLength(2, ErrorMessage = "String Length must be 2.")]
         public string? StampCategory { get; set; }
 
     }
+    
     public class StampCombinationDTO
     {
         public long StampCombinationId { get; set; }
@@ -206,6 +218,7 @@ namespace CTS_BE.DTOs
         public DateTime? CreatedAt { get; set; }
         public long? CreatedBy { get; set; }
     }
+    
     public class GetAllStampCombinationDTO
     {
         public long StampCombinationId { get; set; }
@@ -218,10 +231,14 @@ namespace CTS_BE.DTOs
     public class DiscountDetailsUpdateDTO
     {
         public long DiscountId { get; set; }
+
+        [Required]
         public decimal DenominationFrom { get; set; }
 
+        [Required]
         public decimal DenominationTo { get; set; }
 
+        [Required]
         public decimal Discount { get; set; }
 
     }

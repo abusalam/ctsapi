@@ -28,8 +28,7 @@ namespace CTS_BE.BAL.Services.stamp
         {
             if (stampWallet != null && (await _stampWalletRepo.WalletRefil(stampWallet.TreasuryCode, stampWallet.ClearBalance)))
             {
-              
-                    return await Task.FromResult(true);
+                return await Task.FromResult(true);
             }
             return await Task.FromResult(false);
         }

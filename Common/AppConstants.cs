@@ -26,9 +26,7 @@ namespace CTS_BE.Common
         public const string UnAuthenticated = "UnAuthenticated";
         public const string Unauthorized_Acess = "Unauthorized Acess";
         public const string Validation_Failed = "Validation Failed";
-
         public const string Transaction_Not_Started = "Transaction_Not_Started";
-
         public const string No_valid_data_found_to_update = "No valid data found to update";
         public const string Record_not_found_to_update = "Record not found to update";
         public const string Record_Already_Exists = "Record already exists";
@@ -40,16 +38,14 @@ namespace CTS_BE.Common
     {
         public const string Date_Format = "dd-MM-YYYY";
         public const string Time_Format = "h:mm:ss tt";
-
         public const string HeadrKeyAccessToken = "cat";
         public const string HeadrKeyRefreshToken = "crt";
-
         public const string DataFound = "Data collected successfully";
-        public const string IndentRaised = "New Indent Raised";
         public const string DataNotFound = "No data found in the record";
         public const string DataAdded = "Data added successfully";
         public const string MissingField = "Missing fields in form body";
         public const string Deleted = "Data deleted Successfully";
+        public const string IndentRaised = "New Indent Raised";
         public const string ApproveStatusDone = "Approve Status Updated Successfully";
         public const string ApproveStatusFail = "Approve Status Update Failed";
         public const string RejectStatusDone = "Rejection Status Updated Successfully";
@@ -61,3 +57,6 @@ namespace CTS_BE.Common
         public const string WalletUpdated = "Wallet updated successfully.";
     }
 }
+
+
+

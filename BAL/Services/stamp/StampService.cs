@@ -29,11 +29,10 @@ namespace CTS_BE.BAL.Services.stamp
             _mapper = mapper;
             _auth = claim;
         }
-
+        
+        // ======================Stamp Indents===========================
         public async Task<IEnumerable<StampIndentDTO>> ListAllStampIndentsProcessed(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null)
         {
-            //Get all stamp labels with sort & filter parameters
-            Console.WriteLine(_auth);
             IEnumerable<StampIndentDTO> stampIndentList = await _stampIndentRepo.GetSelectedColumnByConditionAsync(
                 // if _auth user is superintendent
                 entity => entity.CreatedBy == _auth.GetUserId() && (entity.StatusId == (short)StampIndentStatusEnum.ApproveBySuperintendent || entity.StatusId == (short)StampIndentStatusEnum.ApproveByTreasuryOfficer ),
@@ -62,8 +61,6 @@ namespace CTS_BE.BAL.Services.stamp
 
         public async Task<IEnumerable<StampIndentDTO>> StampIndentList(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null)
         {
-            //Get all stamp labels with sort & filter parameters
-            //Console.WriteLine(_auth);
             IEnumerable<StampIndentDTO> stampIndentList = await _stampIndentRepo.GetSelectedColumnByConditionAsync(
                 // if _auth user is superintendent
                 entity => entity.RaisedByTreasuryCode == _auth.GetScope(),
@@ -92,8 +89,6 @@ namespace CTS_BE.BAL.Services.stamp
 
         public async Task<IEnumerable<StampIndentDTO>> ListAllStampIndentsProcessing(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null)
         {
-            //Get all stamp labels with sort & filter parameters
-            //Console.WriteLine(_auth.GetScope());
             IEnumerable<StampIndentDTO> stampIndentList = await _stampIndentRepo.GetSelectedColumnByConditionAsync(
                 // if _auth user is superintendent
                 entity => entity.RaisedToTreasuryCode == _auth.GetScope() && (entity.StatusId == (short)StampIndentStatusEnum.ForwardedToSuperintendent || entity.StatusId == (short)StampIndentStatusEnum.ForwardedToTreasuryOfficer),
@@ -132,19 +127,11 @@ namespace CTS_BE.BAL.Services.stamp
                 return await Task.FromResult(true);
         }
 
-
-
         public async Task<bool> ApproveStampIndent(long stampIndentId)
         {
             var data = await _stampIndentRepo.GetSingleAysnc(e=>e.Id == stampIndentId);
             if (data != null)
             {
-                //var walletBalance = await _stampWalletRepo.GetSingleAysnc(
-                //    entity=>entity.TreasuryCode == data.RaisedToTreasuryCode
-                //);
-
-                //CALL approve_stamp_indent(data.RaisedToTreasuryCode, data.Quantity, is_done_out)
-
                 if (await _stampIndentRepo.IndentApprove(data.RaisedToTreasuryCode, data.Quantity))
                 {    
                     if(data.StatusId == 23)
@@ -183,33 +170,10 @@ namespace CTS_BE.BAL.Services.stamp
             return await Task.FromResult(false);
         }
 
-        //public async Task<bool> ReceiveStampIndent(long stampIndentId)
-        //{
-        //    var data = await _stampIndentRepo.GetSingleAysnc(e => e.Id == stampIndentId);
-        //    if (data != null)
-        //    {
-        //        if (data.StatusId == 15)
-        //        {
-        //            data.StatusId = 14;
-        //        }
-        //        else if (data.StatusId == 12)
-        //        {
-        //            data.StatusId = 14;
-        //        }
-        //        _stampIndentRepo.Update(data);
-        //        _stampIndentRepo.SaveChangesManaged();
-        //        return await Task.FromResult(true);
-        //    }
-        //    return await Task.FromResult(false);
-        //}
 
-
-        // stamp invoice
-
+        // =========================Stamp Invoice==========================
         public async Task<IEnumerable<StampInvoiceDTO>> ListAllStampInvoices(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null)
         {
-            //Get all stamp labels with sort & filter parameters
-            Console.WriteLine(_auth);
             IEnumerable<StampInvoiceDTO> stampInvoiceList = await _stampInvoiceRepo.GetSelectedColumnByConditionAsync(
                 // if _auth user is superintenvoice
             entity => entity.CreatedBy == _auth.GetUserId() && (entity.StampIndent.StatusId == (short)StampIndentStatusEnum.ApproveBySuperintendent || entity.StampIndent.StatusId == (short)StampIndentStatusEnum.ApproveByTreasuryOfficer ),
@@ -238,7 +202,6 @@ namespace CTS_BE.BAL.Services.stamp
             }, pageIndex, pageSize, filters, (sortParameters != null) ? sortParameters.Field : null, (sortParameters != null) ? sortParameters.Order : null);
             return stampInvoiceList;
         }
-
 
         public async Task<bool> CreateNewStampInvoice(StampInvoiceInsertDTO stampInvoice)
         {
@@ -277,9 +240,9 @@ namespace CTS_BE.BAL.Services.stamp
                             Quantity = e.Quantity,
                             Amount = e.Amount,
                             CreatedAt = e.CreatedAt,
-                            //Status = e.Status,
+                            Status = e.Status.Name
 
-                    }
+                }
                 );
             return _mapper.Map<StampIndentDTO>(stampIndent);
 
@@ -290,12 +253,8 @@ namespace CTS_BE.BAL.Services.stamp
             var data = await _stampIndentRepo.GetSingleAysnc(e => e.Id == stampIndentId);
             if (data != null)
             {
-                //IndentRecieve(string RaisedToTreasuryCode, string RaisedByTreasuryCode, int Quantity, long IndentId)
                 if (await _stampIndentRepo.IndentRecieve(data.RaisedToTreasuryCode, data.RaisedByTreasuryCode, data.Quantity, data.Id))
                 {
-                    ////data.StatusId = 14;
-                    //_stampIndentRepo.Update(data);
-                    //_stampIndentRepo.SaveChangesManaged();
                     return await Task.FromResult(true);
                 }
             }

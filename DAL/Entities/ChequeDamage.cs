@@ -30,4 +30,10 @@ public partial class ChequeDamage
 
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime? CreatedAt { get; set; }
+
+    [Column("series_no", TypeName = "character varying")]
+    public string? SeriesNo { get; set; }
+
+    [Column("damage_status", TypeName = "character varying")]
+    public string? DamageStatus { get; set; }
 }

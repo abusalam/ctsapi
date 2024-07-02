@@ -211,7 +211,6 @@ namespace CTS_BE.Controllers
         }
 
         // Stamp Category
-
         [HttpPatch("StampCategoryList")]
         public async Task<APIResponse<DynamicListResult<IEnumerable<StampCategoryDTO>>>> StampCategoryList(DynamicListQueryParameters dynamicListQueryParameters)
         {
@@ -302,7 +301,6 @@ namespace CTS_BE.Controllers
             }
         }
 
-
         [HttpGet("GetALLStampCategories")]
         public async Task<APIResponse<IEnumerable<StampCategoryDTO>>> GetALLStampCategories()
         {
@@ -380,6 +378,7 @@ namespace CTS_BE.Controllers
                 return response;
             }
         }
+        
         [HttpPost("CreateStampCategory")]
         public async Task<APIResponse<bool>> CreateStampCategory(StampCategoryInsertDTO stampCategory)
         {
@@ -437,7 +436,6 @@ namespace CTS_BE.Controllers
         }
         
         // Stamp Vendor
-
         [HttpPatch("StampVendorList")]
         public async Task<APIResponse<DynamicListResult<IEnumerable<StampVendorDTO>>>> StampVendorList(DynamicListQueryParameters dynamicListQueryParameters)
         {
@@ -752,7 +750,6 @@ namespace CTS_BE.Controllers
                 return response;
             }
         }
-
 
         [HttpDelete("DeleteStampVendorsById")]
         public async Task<APIResponse<bool>> DeleteStampVendorsById(long id)
@@ -1092,7 +1089,6 @@ namespace CTS_BE.Controllers
         }
 
         [HttpPost("CreateStampDiscountDetails")]
-
         public async Task<APIResponse<bool>> CreateStampDiscountDetails(DiscountDetailsInsertDTO stampDiscountDetails)
         {
             APIResponse<bool> response = new();
@@ -1120,6 +1116,7 @@ namespace CTS_BE.Controllers
                 return response;
             }
         }
+        
         // Stamp combination details
         [HttpPatch("StampCombinationList")]
         public async Task<APIResponse<DynamicListResult<IEnumerable<StampCombinationDTO>>>> StampCombinationList(DynamicListQueryParameters dynamicListQueryParameters)
