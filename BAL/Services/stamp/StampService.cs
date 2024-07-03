@@ -83,7 +83,12 @@ namespace CTS_BE.BAL.Services.stamp
                 CreatedBy = entity.CreatedBy,
                 Status = entity.Status.Name
 
-            }, pageIndex, pageSize, filters, (sortParameters != null) ? sortParameters.Field : null, (sortParameters != null) ? sortParameters.Order : null);
+            }, 
+            pageIndex, 
+            pageSize, 
+            filters, 
+            (sortParameters != null) ? sortParameters.Field : null, 
+            (sortParameters != null) ? sortParameters.Order : null);
             return stampIndentList;
         }
 

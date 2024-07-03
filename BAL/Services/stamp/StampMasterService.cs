@@ -4,6 +4,7 @@ using CTS_BE.DAL.Entities;
 using CTS_BE.DAL.Interfaces.stamp;
 using CTS_BE.DTOs;
 using CTS_BE.Helper.Authentication;
+using static Dapper.SqlMapper;
 namespace CTS_BE.BAL.Services.stamp
 {
     public class StampMasterService: IStampMasterService
@@ -54,7 +55,9 @@ namespace CTS_BE.BAL.Services.stamp
         public async Task<IEnumerable<StampLabelMasterDTO>> ListAllStampLabels(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null)
         {
             //Get all stamp labels with sort & filter parameters
-            IEnumerable<StampLabelMasterDTO> stampLabelList = await _stampLabelRepo.GetSelectedColumnByConditionAsync(entity => true, entity => new StampLabelMasterDTO
+            IEnumerable<StampLabelMasterDTO> stampLabelList = await _stampLabelRepo.GetSelectedColumnByConditionAsync(
+                entity => entity.IsActive == true, 
+                entity => new StampLabelMasterDTO
             {
                 LabelId = entity.LabelId,
                 IsActive = entity.IsActive,
@@ -68,13 +71,12 @@ namespace CTS_BE.BAL.Services.stamp
         
         public async Task<IEnumerable<StampLabelDTO>> GetAllStampLabels()
         {
-            IEnumerable<StampLabelDTO> stampLabelMasters = await _stampLabelRepo.GetSelectedColumnAsync(entity=>new StampLabelDTO
+            IEnumerable<StampLabelDTO> stampLabelMasters = await _stampLabelRepo.GetSelectedColumnByConditionAsync(
+                entity => entity.IsActive == true,
+                entity =>new StampLabelDTO
             {
                 LabelId = entity.LabelId,
-                //IsActive = entity.IsActive,
                 NoLabelPerSheet = entity.NoLabelPerSheet,
-                //CreatedAt = entity.CreatedAt,
-                //CreatedBy = entity.CreatedBy,
             });
             return stampLabelMasters;
         }
@@ -82,7 +84,9 @@ namespace CTS_BE.BAL.Services.stamp
         public async Task<IEnumerable<StampLabelMasterDTO>> GetStampLabelById(long id)
         {
 
-            IEnumerable<StampLabelMasterDTO> stampLabelMasters = await _stampLabelRepo.GetSelectedColumnByConditionAsync(e => e.LabelId == id, entity => new StampLabelMasterDTO
+            IEnumerable<StampLabelMasterDTO> stampLabelMasters = await _stampLabelRepo.GetSelectedColumnByConditionAsync(
+                e => e.LabelId == id, 
+                entity => new StampLabelMasterDTO
             {
                 LabelId = entity.LabelId,
                 IsActive = entity.IsActive,
@@ -115,7 +119,9 @@ namespace CTS_BE.BAL.Services.stamp
         // Stamp Category Services
         public async Task<IEnumerable<CategoryTypeDTO>> GetAllCategoryType()
         {
-            IEnumerable<CategoryTypeDTO> categoryType = await _stampCategoryRepo.GetSelectedColumnAsync(entity => new CategoryTypeDTO
+            IEnumerable<CategoryTypeDTO> categoryType = await _stampCategoryRepo.GetSelectedColumnByConditionAsync(
+                entity => entity.IsActive == true,
+                entity => new CategoryTypeDTO
             {
                 StampCategoryId = entity.StampCategoryId,
                 StampCategory1 = entity.StampCategory1 
@@ -126,7 +132,9 @@ namespace CTS_BE.BAL.Services.stamp
         public async Task<IEnumerable<StampCategoryDTO>> ListAllStampCategories(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null)
         {
             //Get all stamp categories with sort & filter parameters
-            IEnumerable<StampCategoryDTO> stampCategoryList = await _stampCategoryRepo.GetSelectedColumnByConditionAsync(entity => true, entity => new StampCategoryDTO
+            IEnumerable<StampCategoryDTO> stampCategoryList = await _stampCategoryRepo.GetSelectedColumnByConditionAsync(
+                entity => entity.IsActive == true, 
+                entity => new StampCategoryDTO
             {
                 StampCategoryId = entity.StampCategoryId,
                 StampCategory1 = entity.StampCategory1,
@@ -141,7 +149,9 @@ namespace CTS_BE.BAL.Services.stamp
 
         public async Task<IEnumerable<StampCategoryDTO>> GetAllStampCategories()
         {
-            IEnumerable<StampCategoryDTO> stampCategory = await _stampCategoryRepo.GetSelectedColumnAsync(entity => new StampCategoryDTO
+            IEnumerable<StampCategoryDTO> stampCategory = await _stampCategoryRepo.GetSelectedColumnByConditionAsync(
+                entity => entity.IsActive == true, 
+                entity => new StampCategoryDTO
             {
                 StampCategoryId = entity.StampCategoryId,
                 StampCategory1 = entity.StampCategory1,
@@ -203,7 +213,9 @@ namespace CTS_BE.BAL.Services.stamp
         public async Task<IEnumerable<StampVendorDTO>> ListAllStampVendors(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null)
         {
             //Get all stamp vendors with sort & filter parameters
-            IEnumerable<StampVendorDTO> stampVendorList = await _stampVendorRepo.GetSelectedColumnByConditionAsync(entity => true, entity => new StampVendorDTO
+            IEnumerable<StampVendorDTO> stampVendorList = await _stampVendorRepo.GetSelectedColumnByConditionAsync(
+                entity => entity.IsActive == true, 
+                entity => new StampVendorDTO
             {
                 LicenseNo = entity.LicenseNo,
                 EffectiveFrom = entity.EffectiveFrom.ToString(),
@@ -227,7 +239,9 @@ namespace CTS_BE.BAL.Services.stamp
 
         public async Task<IEnumerable<StampVendorDTO>> GetAllStampVendors()
         {
-            IEnumerable<StampVendorDTO> stampVendor = await _stampVendorRepo.GetSelectedColumnAsync(entity => new StampVendorDTO {
+            IEnumerable<StampVendorDTO> stampVendor = await _stampVendorRepo.GetSelectedColumnByConditionAsync(
+                entity => entity.IsActive == true, 
+                entity => new StampVendorDTO {
                
                 LicenseNo = entity.LicenseNo,
                 EffectiveFrom = entity.EffectiveFrom.ToString(),
@@ -304,7 +318,9 @@ namespace CTS_BE.BAL.Services.stamp
         public async Task<IEnumerable<StampTypeDTO>> ListAllStampTypes(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null)
         {
             //Get all stamp types with sort & filter parameters
-            IEnumerable<StampTypeDTO> stampTypeList = await _stampTypeRepo.GetSelectedColumnByConditionAsync(entity => true, entity => new StampTypeDTO
+            IEnumerable<StampTypeDTO> stampTypeList = await _stampTypeRepo.GetSelectedColumnByConditionAsync(
+                entity => entity.IsActive == true, 
+                entity => new StampTypeDTO
             {
                 DenominationId = entity.DenominationId,
                 Denomination = entity.Denomination,
@@ -318,7 +334,9 @@ namespace CTS_BE.BAL.Services.stamp
 
          public async Task<IEnumerable<StampTypeDataDTO>> GetAllStampTypes()
         {
-            IEnumerable<StampTypeDataDTO> stampType = await _stampTypeRepo.GetSelectedColumnAsync(entity => new StampTypeDataDTO { 
+            IEnumerable<StampTypeDataDTO> stampType = await _stampTypeRepo.GetSelectedColumnByConditionAsync(
+                entity => entity.IsActive == true, 
+                entity => new StampTypeDataDTO { 
             
                 DenominationId = entity.DenominationId,
                 Denomination = entity.Denomination
@@ -371,7 +389,9 @@ namespace CTS_BE.BAL.Services.stamp
         public async Task<IEnumerable<DiscountDetailsDTO>> ListAllDiscountDetails(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null)
         {
             
-            IEnumerable<DiscountDetailsDTO> discountDetailList = await _discountDetailRepo.GetSelectedColumnByConditionAsync(entity => true, entity => new DiscountDetailsDTO
+            IEnumerable<DiscountDetailsDTO> discountDetailList = await _discountDetailRepo.GetSelectedColumnByConditionAsync(
+                entity => entity.IsActive == true, 
+                entity => new DiscountDetailsDTO
             {
                 DiscountId = entity.DiscountId,
                 DenominationFrom = entity.DenominationFrom,
@@ -389,7 +409,9 @@ namespace CTS_BE.BAL.Services.stamp
 
         public async Task<IEnumerable<VendorTypeDTO>> GetAllStampVendorTypes()
         {
-            IEnumerable<VendorTypeDTO> allVendorTypes = await _stampVendorTypeRepo.GetSelectedColumnAsync(entity => new VendorTypeDTO
+            IEnumerable<VendorTypeDTO> allVendorTypes = await _stampVendorTypeRepo.GetSelectedColumnByConditionAsync(
+                entity => entity.IsActive == true,
+                entity => new VendorTypeDTO
             {
                 StampVendorId = entity.VendorTypeId,
                 VendorType = entity.VendorType,
@@ -455,7 +477,9 @@ namespace CTS_BE.BAL.Services.stamp
 
         public async Task<IEnumerable<GetAllStampCombinationDTO>> GetAllStampCombinations()
         {
-            IEnumerable<GetAllStampCombinationDTO> stampCombinations = await _stampCombinationRepo.GetSelectedColumnByConditionAsync(entity => entity.IsActive == true, entity => new GetAllStampCombinationDTO
+            IEnumerable<GetAllStampCombinationDTO> stampCombinations = await _stampCombinationRepo.GetSelectedColumnByConditionAsync(
+                entity => entity.IsActive == true, 
+                entity => new GetAllStampCombinationDTO
             {
                 StampCombinationId = entity.StampCombinationId,
                 StampCategory1 = entity.StampCategory.StampCategory1,
