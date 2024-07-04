@@ -53,7 +53,7 @@ namespace CTS_BE.DTOs
         [Required]
         public decimal Amount { get; set; }
 
-        [Required, StringLength(2, ErrorMessage = "String Length must be 2.")]
+        [Required, StringLength(3, ErrorMessage = "String Length must be 3.")]
         public string? RaisedToTreasuryCode { get; set; }
     }
     

@@ -60,6 +60,9 @@ namespace CTS_BE.DTOs   // TODO: Update API will be required in future.
         public string? StampCategory1 { get; set; }
 
         public long StampCategoryId { get; set; }
+
+        public string Description { get; set; } = null!;
+
     }
 
     public class StampCategoryInsertDTO

@@ -118,7 +118,8 @@ namespace CTS_BE.BAL.Services.stamp
             IEnumerable<CategoryTypeDTO> categoryType = await _stampCategoryRepo.GetSelectedColumnAsync(entity => new CategoryTypeDTO
             {
                 StampCategoryId = entity.StampCategoryId,
-                StampCategory1 = entity.StampCategory1 
+                StampCategory1 = entity.StampCategory1,
+                Description = entity.Description,
             });
             return categoryType;
         }
