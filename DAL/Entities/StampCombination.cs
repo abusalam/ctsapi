@@ -48,4 +48,7 @@ public partial class StampCombination
     [ForeignKey("StampTypeId")]
     [InverseProperty("StampCombinations")]
     public virtual StampType StampType { get; set; } = null!;
+
+    [InverseProperty("Combination")]
+    public virtual ICollection<StampWallet> StampWallets { get; set; } = new List<StampWallet>();
 }

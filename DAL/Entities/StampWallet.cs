@@ -17,13 +17,22 @@ public partial class StampWallet
     [StringLength(3)]
     public string? TreasuryCode { get; set; }
 
-    [Column("clear_balance")]
-    public short ClearBalance { get; set; }
+    [Column("sheet_clear_balance")]
+    public short SheetClearBalance { get; set; }
 
-    [Column("ledger_balance")]
-    public short LedgerBalance { get; set; }
+    [Column("sheet_ledger_balance")]
+    public short SheetLedgerBalance { get; set; }
 
-    [Column("denomination")]
-    [Precision(10, 2)]
-    public decimal Denomination { get; set; }
+    [Column("combination_id")]
+    public long CombinationId { get; set; }
+
+    [Column("label_clear_balance")]
+    public short LabelClearBalance { get; set; }
+
+    [Column("label_ledger_balance")]
+    public short LabelLedgerBalance { get; set; }
+
+    [ForeignKey("CombinationId")]
+    [InverseProperty("StampWallets")]
+    public virtual StampCombination Combination { get; set; } = null!;
 }

@@ -21,15 +21,17 @@ namespace CTS_BE.DTOs
         public string? TreasuryCode { get; set; }
 
         [Required]
-        public decimal Denomination { get; set; }
+        public long CombinationId { get; set; }
 
         [Required]
-        public short ClearBalance { get; set; }
+        public short AddSheet { get; set; }
+        [Required] 
+        public short AddLabel { get; set; }
     }
     
     public class StampWalletBalanceDTO
     {
-
-        public short ClearBalance { get; set; }
+        public short SheetLedgerBalance { get; set; }
+        public short LabelLedgerBalance { get; set; }
     }
 }

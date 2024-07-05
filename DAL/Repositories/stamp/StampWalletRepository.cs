@@ -12,21 +12,34 @@ namespace CTS_BE.DAL.Repositories.stamp
         public StampWalletRepository(CTSDBContext context) : base(context)
         {
             _context = context;
+            _context.Set<StampWallet>()
+                    .Include(t => t.Combination);
         }
 
-        async Task<bool> IStampWalletRepository.WalletRefil(string TreasuryCode, short ClearBalance)
+        public async Task<bool> WalletRefil(string TreasuryCode, long CombinationId, short AddSheet, short AddLabel)
         {
+            // return type change
             var _treasuryCode = new NpgsqlParameter("@_treasury_code", NpgsqlTypes.NpgsqlDbType.Varchar);
-            var _clearBalance = new NpgsqlParameter("@_clear_balance", NpgsqlTypes.NpgsqlDbType.Smallint);
+            var _add_sheet = new NpgsqlParameter("@_add_sheet", NpgsqlTypes.NpgsqlDbType.Smallint);
+            var _add_label = new NpgsqlParameter("@_add_label", NpgsqlTypes.NpgsqlDbType.Smallint);
+            var _combination_id = new NpgsqlParameter("@_combination_id", NpgsqlTypes.NpgsqlDbType.Bigint);
+
             _treasuryCode.Value = TreasuryCode;
-            _clearBalance.Value = ClearBalance;
+            _add_sheet.Value = AddSheet;
+            _add_label.Value = AddLabel;
+            _combination_id.Value = CombinationId;
 
             var _is_done_out = new NpgsqlParameter("@_is_done_out", NpgsqlTypes.NpgsqlDbType.Boolean);
+            var _out_message = new NpgsqlParameter("@_out_message", NpgsqlTypes.NpgsqlDbType.Text);
+
             _is_done_out.Direction = ParameterDirection.InputOutput;
             _is_done_out.Value = false;
 
-            var parameters = new[] { _treasuryCode, _clearBalance, _is_done_out };
-            var commandText = "CALL master.wallet_refill(@_treasury_code, @_clear_balance, @_is_done_out)";
+            _out_message.Direction = ParameterDirection.InputOutput;
+            _out_message.Value = "";
+
+            var parameters = new[] { _treasuryCode, _combination_id, _add_sheet, _add_label, _is_done_out, _out_message };
+            var commandText = "CALL master.wallet_refill(@_treasuryCode, @_combination_id, @_add_sheet, @_add_label, @_is_done_out, @_out_message)";
             await _context.Database.ExecuteSqlRawAsync(commandText, parameters);
             return (bool)_is_done_out.Value;
         }
