@@ -1245,7 +1245,7 @@ namespace CTS_BE.Controllers
             }
         }
 
-        [HttpGet("GetALLStampCombinations")]
+        [HttpGet("GetALLStampCombinations")]        
         public async Task<APIResponse<IEnumerable<GetAllStampCombinationDTO>>> GetALLStampCombinations()
         {
             APIResponse<IEnumerable<GetAllStampCombinationDTO>> response = new();
@@ -1270,6 +1270,36 @@ namespace CTS_BE.Controllers
                 return response;
             }
         }
+        [HttpPost("CreateStampCombination")]
+        public async Task<APIResponse<bool>> CreateStampCombination(StampCombinationInsertDTO newStampCombination)
+        {
+            APIResponse<bool> response = new();
+            try
+            {
+                if (newStampCombination != null)
+                {
+                    if (await _stampMasterService.CreateNewStampCombination(newStampCombination))
+                    {
+                        response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                        response.Message = AppConstants.DataAdded;
+                        response.result = true;
+                        return response;
+                    }
+                }
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.result = false;
+                response.Message = AppConstants.MissingField;
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = ex.Message;
+                return response;
+            }
+        }
+
     }
+
 }
 

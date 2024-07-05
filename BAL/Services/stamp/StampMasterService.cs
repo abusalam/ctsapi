@@ -440,7 +440,7 @@ namespace CTS_BE.BAL.Services.stamp
             StampCategory1 = entity.StampCategory.StampCategory1,
             Description = entity.StampCategory.Description,
             Denomination = entity.StampType.Denomination,
-            StampDenominationId = entity.StampDenominationId,
+            StampDenominationId = entity.StampTypeId,
             NoLabelPerSheet = entity.StampLabel.NoLabelPerSheet,
             StampLabelId = entity.StampLabelId,
             IsActive = (bool)entity.IsActive,
@@ -489,6 +489,16 @@ namespace CTS_BE.BAL.Services.stamp
                 NoLabelPerSheet = entity.StampLabel.NoLabelPerSheet
             });
             return stampCombinations;
+        }
+
+        public async Task<bool> CreateNewStampCombination(StampCombinationInsertDTO newStampCombination)
+        {
+            var stampCombination = _mapper.Map<StampCombination>(newStampCombination);
+            stampCombination.CreatedAt = DateTime.Now;
+            stampCombination.CreatedBy = _auth.GetUserId();
+            _stampCombinationRepo.Add(stampCombination);
+            _stampCombinationRepo.SaveChangesManaged();
+            return await Task.FromResult(true);
         }
     }
 }

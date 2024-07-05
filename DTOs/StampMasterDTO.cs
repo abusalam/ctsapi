@@ -244,6 +244,17 @@ namespace CTS_BE.DTOs   // TODO: Update API will be required in future.
         public decimal Denomination { get; set; }
         public int NoLabelPerSheet { get; set; }
     }
+    public class StampCombinationInsertDTO
+    {
+        [Required]
+        public long StampCategoryId { get; set; }
+
+        [Required]
+        public long StampDenominationId { get; set; }
+
+        [Required] 
+        public long StampLabelId { get; set; }
+    }
 
     public class DiscountDetailsUpdateDTO
     {

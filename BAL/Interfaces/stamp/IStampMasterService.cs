@@ -43,6 +43,7 @@ namespace CTS_BE.BAL.Interfaces.stamp
         // stamp combonation
          Task<IEnumerable<StampCombinationDTO>> StampCombinationList(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null);
          Task<bool> DeleteStampCombinationById(long id);
+         Task<bool> CreateNewStampCombination(StampCombinationInsertDTO newStampCombination);
          Task<IEnumerable<GetAllStampCombinationDTO>> GetAllStampCombinations();
     }
 }
