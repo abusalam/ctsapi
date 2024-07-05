@@ -19,9 +19,6 @@ public partial class StampCombination
     [Column("stamp_category_id")]
     public long StampCategoryId { get; set; }
 
-    [Column("stamp_denomination_id")]
-    public long StampDenominationId { get; set; }
-
     [Column("is_active")]
     public bool? IsActive { get; set; }
 

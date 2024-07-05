@@ -797,6 +797,9 @@ public partial class CTSDBContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("stamp_indent_pkey");
 
+            entity.Property(e => e.RaisedByTreasuryCode).IsFixedLength();
+            entity.Property(e => e.RaisedToTreasuryCode).IsFixedLength();
+
             entity.HasOne(d => d.StampCombination).WithMany(p => p.StampIndents)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("stamp_indent_stamp_combination_id_fkey");

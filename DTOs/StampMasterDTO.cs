@@ -250,7 +250,7 @@ namespace CTS_BE.DTOs   // TODO: Update API will be required in future.
         public long StampCategoryId { get; set; }
 
         [Required]
-        public long StampDenominationId { get; set; }
+        public long StampTypeId { get; set; }
 
         [Required] 
         public long StampLabelId { get; set; }
