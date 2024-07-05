@@ -708,14 +708,15 @@ namespace CTS_BE.Controllers
 
         // Indent Approve
         [HttpGet("ApproveStampIndent")]
-        public async Task<APIResponse<bool>> ApproveStampIndent(long stampIndentId)
+        public async Task<APIResponse<bool>> ApproveStampIndent(long stampIndentId, short sheet, short label)
         {
             APIResponse<bool> response = new();
             try
             {
                 //if (stampIndentId != null)
                 //{
-                    if (await _stampService.ApproveStampIndent(stampIndentId))
+                // long stampIndentId, short sheet, short label
+                if (await _stampService.ApproveStampIndent(stampIndentId, sheet, label))
                     {
                         response.apiResponseStatus = Enum.APIResponseStatus.Success;
                         response.Message = AppConstants.ApproveStatusDone;
@@ -738,12 +739,12 @@ namespace CTS_BE.Controllers
 
         // Indent Receive
         [HttpGet("ReceiveStampIndent")]
-        public async Task<APIResponse<bool>> ReceiveStampIndent(long stampIndentId)
+        public async Task<APIResponse<bool>> ReceiveStampIndent(short sheet, short label, long stampIndentId)
         {
             APIResponse<bool> response = new();
             try
             {
-                if (await _stampService.ReceiveStampIndent(stampIndentId))
+                if (await _stampService.ReceiveStampIndent(sheet, label, stampIndentId))
                 {
                     response.apiResponseStatus = Enum.APIResponseStatus.Success;
                     response.Message = AppConstants.ReceiveStatusDone;

@@ -19,12 +19,12 @@ namespace CTS_BE.DAL.Repositories.stamp
         public async Task<bool> WalletRefil(string TreasuryCode, long CombinationId, short AddSheet, short AddLabel)
         {
             // return type change
-            var _treasuryCode = new NpgsqlParameter("@_treasury_code", NpgsqlTypes.NpgsqlDbType.Varchar);
+            var _treasury_code = new NpgsqlParameter("@_treasury_code", NpgsqlTypes.NpgsqlDbType.Varchar);
             var _add_sheet = new NpgsqlParameter("@_add_sheet", NpgsqlTypes.NpgsqlDbType.Smallint);
             var _add_label = new NpgsqlParameter("@_add_label", NpgsqlTypes.NpgsqlDbType.Smallint);
             var _combination_id = new NpgsqlParameter("@_combination_id", NpgsqlTypes.NpgsqlDbType.Bigint);
 
-            _treasuryCode.Value = TreasuryCode;
+            _treasury_code.Value = TreasuryCode;
             _add_sheet.Value = AddSheet;
             _add_label.Value = AddLabel;
             _combination_id.Value = CombinationId;
@@ -38,8 +38,8 @@ namespace CTS_BE.DAL.Repositories.stamp
             _out_message.Direction = ParameterDirection.InputOutput;
             _out_message.Value = "";
 
-            var parameters = new[] { _treasuryCode, _combination_id, _add_sheet, _add_label, _is_done_out, _out_message };
-            var commandText = "CALL master.wallet_refill(@_treasuryCode, @_combination_id, @_add_sheet, @_add_label, @_is_done_out, @_out_message)";
+            var parameters = new[] { _treasury_code, _combination_id, _add_sheet, _add_label, _is_done_out, _out_message };
+            var commandText = "CALL master.wallet_refill(@_treasury_code, @_combination_id, @_add_sheet, @_add_label, @_is_done_out, @_out_message)";
             await _context.Database.ExecuteSqlRawAsync(commandText, parameters);
             return (bool)_is_done_out.Value;
         }

@@ -10,8 +10,8 @@ namespace CTS_BE.BAL.Interfaces.stamp
         Task<IEnumerable<StampIndentDTO>> ListAllStampIndentsProcessed(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null);
         Task<StampIndentDTO> GetStampIndentById(long IndentId);
         Task<bool> CreateNewStampIndent(StampIndentInsertDTO stampIndent);
-        Task<bool> ApproveStampIndent(long stampIndentId);
-        Task<bool> ReceiveStampIndent(long stampIndentId);
+        Task<bool> ApproveStampIndent(long stampIndentId, short sheet, short label);
+        Task<bool> ReceiveStampIndent(short sheet, short label, long stampIndentId);
         Task<bool> RejectStampIndent(long stampIndentId);
 
         // Stamp Invoice Interfaces

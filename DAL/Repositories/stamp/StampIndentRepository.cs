@@ -19,48 +19,54 @@ namespace CTS_BE.DAL.Repositories.stamp
 
         }
 
-        public async Task<bool> IndentApprove(string RaisedToTreasuryCode, int Quantity)
+        public async Task<bool> IndentApprove(string RaisedToTreasuryCode, short sheet, short label, long combinationId)
         {
             var _raisedToTreasuryCode = new NpgsqlParameter("@_sender_treasury_code", NpgsqlTypes.NpgsqlDbType.Varchar);
-            var _quantity = new NpgsqlParameter("@_stamp_number", NpgsqlTypes.NpgsqlDbType.Smallint);
-            _raisedToTreasuryCode.Value = RaisedToTreasuryCode;
-            _quantity.Value = Quantity;
-
+            var _label_number = new NpgsqlParameter("@_label_number", NpgsqlTypes.NpgsqlDbType.Smallint);
+            var _sheet_number = new NpgsqlParameter("@_sheet_number", NpgsqlTypes.NpgsqlDbType.Smallint);
+            var _combination_id = new NpgsqlParameter("@_combination_id", NpgsqlTypes.NpgsqlDbType.Bigint);
             var _is_done_out = new NpgsqlParameter("@_is_done_out", NpgsqlTypes.NpgsqlDbType.Boolean);
+            var _out_message = new NpgsqlParameter("@_out_message", NpgsqlTypes.NpgsqlDbType.Text);
+            
             _is_done_out.Direction = ParameterDirection.InputOutput;
+            _out_message.Direction = ParameterDirection.InputOutput;
+
+
+            _raisedToTreasuryCode.Value = RaisedToTreasuryCode;
+            _label_number.Value = label;
+            _sheet_number.Value = sheet;
+            _combination_id.Value = combinationId;
+            _out_message.Value = "";
             _is_done_out.Value = false;
 
-            var parameters = new[] { _raisedToTreasuryCode, _quantity, _is_done_out };
-            var commandText = "CALL master.approve_stamp_indent(@_sender_treasury_code, @_stamp_number, @_is_done_out)";
+
+            var parameters = new[] { _raisedToTreasuryCode, _sheet_number, _label_number, _combination_id, _is_done_out, _out_message };
+            var commandText = "CALL master.approve_stamp_indent(@_sender_treasury_code, @_sheet_number, @_label_number, @_combination_id, @_is_done_out, @_out_message)";
             await _context.Database.ExecuteSqlRawAsync(commandText, parameters);
             //Boolean isDone = (Boolean)is_done_out.Value;
             return (bool)_is_done_out.Value;
         }
         
-        public async Task<bool> IndentRecieve(string RaisedToTreasuryCode, string RaisedByTreasuryCode, int Quantity, long IndentId)
+        public async Task<bool> IndentRecieve(short sheet, short label, long IndentId)
         {
-            var _stamp_number = new NpgsqlParameter("@_stamp_number", NpgsqlTypes.NpgsqlDbType.Smallint);
-            var _receiver_treasury_code = new NpgsqlParameter("@_receiver_treasury_code", NpgsqlTypes.NpgsqlDbType.Varchar);
-            //var _receiver_wallet_id = new NpgsqlParameter("@_receiver_wallet_id", NpgsqlTypes.NpgsqlDbType.Varchar);
-            var _sender_treasury_code = new NpgsqlParameter("@_sender_treasury_code", NpgsqlTypes.NpgsqlDbType.Varchar);
+            var _label_number = new NpgsqlParameter("@_label_number", NpgsqlTypes.NpgsqlDbType.Smallint);
+            var _sheet_number = new NpgsqlParameter("@_sheet_number", NpgsqlTypes.NpgsqlDbType.Smallint);
             var _indent_id = new NpgsqlParameter("@_indent_id", NpgsqlTypes.NpgsqlDbType.Bigint);
 
-            _stamp_number.Value = Quantity;
-            _receiver_treasury_code.Value = RaisedByTreasuryCode;
-            //_receiver_wallet_id.Value = "000"; // debug
-            _sender_treasury_code.Value = RaisedToTreasuryCode;
+            _label_number.Value = label;
+            _sheet_number.Value = sheet;
             _indent_id.Value = IndentId;
 
             var _is_done_out = new NpgsqlParameter("@_is_done_out", NpgsqlTypes.NpgsqlDbType.Boolean);
             _is_done_out.Direction = ParameterDirection.InputOutput;
             _is_done_out.Value = false;
 
-            //var parameters = new[] { _stamp_number, _receiver_wallet_id, _receiver_treasury_code, _sender_treasury_code, _indent_id, _is_done_out };
-            //var commandText = "CALL master.receive_stamp_indent(@_stamp_number, @_receiver_wallet_id, @_receiver_treasury_code, @_sender_treasury_code, @_indent_id, @_is_done_out)";
-            //await _context.Database.ExecuteSqlRawAsync(commandText, parameters);
-            
-            var parameters = new[] { _indent_id, _sender_treasury_code,  _receiver_treasury_code, _stamp_number, _is_done_out };
-            var commandText = "CALL master.receive_stamp_indent(@_indent_id, @_sender_treasury_code,  @_receiver_treasury_code,  @_stamp_number, @_is_done_out)";
+            var _out_message = new NpgsqlParameter("@_out_message", NpgsqlTypes.NpgsqlDbType.Text);
+            _out_message.Direction = ParameterDirection.InputOutput;
+            _out_message.Value = "";
+
+            var parameters = new[] { _indent_id, _sheet_number, _label_number, _is_done_out, _out_message };
+            var commandText = "CALL master.receive_stamp_indent(@_indent_id, @_sheet_number, @_label_number, @_is_done_out, @_out_message)";
             await _context.Database.ExecuteSqlRawAsync(commandText, parameters);
             //Boolean isDone = (Boolean)is_done_out.Value;
             return (bool)_is_done_out.Value;

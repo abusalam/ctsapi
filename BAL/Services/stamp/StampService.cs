@@ -5,6 +5,8 @@ using CTS_BE.DAL.Interfaces.stamp;
 using CTS_BE.DTOs;
 using CTS_BE.Enum;
 using CTS_BE.Helper.Authentication;
+using Renci.SshNet;
+using System.Reflection.Emit;
 
 namespace CTS_BE.BAL.Services.stamp
 {
@@ -132,12 +134,13 @@ namespace CTS_BE.BAL.Services.stamp
                 return await Task.FromResult(true);
         }
 
-        public async Task<bool> ApproveStampIndent(long stampIndentId)
+        public async Task<bool> ApproveStampIndent(long stampIndentId, short sheet, short label)
         {
             var data = await _stampIndentRepo.GetSingleAysnc(e=>e.Id == stampIndentId);
             if (data != null)
             {
-                if (await _stampIndentRepo.IndentApprove(data.RaisedToTreasuryCode, data.Quantity))
+                if (await _stampIndentRepo.IndentApprove(data.RaisedToTreasuryCode, sheet, label, data.StampCombinationId))
+                    //IndentApprove(data.RaisedToTreasuryCode, data.Quantity))
                 {    
                     if(data.StatusId == 23)
                     {
@@ -214,7 +217,11 @@ namespace CTS_BE.BAL.Services.stamp
             stampInvoiceInput.CreatedBy = _auth.GetUserId();
             stampInvoiceInput.CreatedAt = DateTime.Now;
             _stampInvoiceRepo.Add(stampInvoiceInput);
-            bool res = await this.ApproveStampIndent(stampInvoice.StampIndentId);
+            bool res = await this.ApproveStampIndent(
+                stampInvoiceInput.StampIndentId,
+                stampInvoiceInput.Sheet, 
+                stampInvoiceInput.Label
+                );
             if (res)
             {
                 _stampInvoiceRepo.SaveChangesManaged();
@@ -253,18 +260,13 @@ namespace CTS_BE.BAL.Services.stamp
 
         }
 
-        public async Task<bool> ReceiveStampIndent(long stampIndentId)
+        public async Task<bool> ReceiveStampIndent(short sheet, short label, long stampIndentId)
         {
-            var data = await _stampIndentRepo.GetSingleAysnc(e => e.Id == stampIndentId);
-            if (data != null)
-            {
-                if (await _stampIndentRepo.IndentRecieve(data.RaisedToTreasuryCode, data.RaisedByTreasuryCode, data.Quantity, data.Id))
+                if (await _stampIndentRepo.IndentRecieve(sheet, label, stampIndentId))
                 {
                     return await Task.FromResult(true);
                 }
-            }
             return await Task.FromResult(false);
         }
-
     }
 }
