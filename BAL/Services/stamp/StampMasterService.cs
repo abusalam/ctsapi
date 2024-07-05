@@ -276,6 +276,18 @@ namespace CTS_BE.BAL.Services.stamp
             return await Task.FromResult(true);
         }
 
+        public async Task<IEnumerable<VendorTypeDTO>> GetAllStampVendorTypes()
+        {
+            IEnumerable<VendorTypeDTO> allVendorTypes = await _stampVendorTypeRepo.GetSelectedColumnByConditionAsync(
+                entity => entity.IsActive == true,
+                entity => new VendorTypeDTO
+                {
+                    StampVendorId = entity.VendorTypeId,
+                    VendorType = entity.VendorType,
+                });
+            return allVendorTypes;
+        }
+        
         public async Task<IEnumerable<StampVendorDTO>> GetStampVendorById(long id)
         {
             IEnumerable<StampVendorDTO> stampVendor = await _stampVendorRepo.GetSelectedColumnByConditionAsync(e => e.StampVendorId == id, entity => new StampVendorDTO
@@ -408,17 +420,6 @@ namespace CTS_BE.BAL.Services.stamp
             return discountDetailList;
         }
 
-        public async Task<IEnumerable<VendorTypeDTO>> GetAllStampVendorTypes()
-        {
-            IEnumerable<VendorTypeDTO> allVendorTypes = await _stampVendorTypeRepo.GetSelectedColumnByConditionAsync(
-                entity => entity.IsActive == true,
-                entity => new VendorTypeDTO
-            {
-                StampVendorId = entity.VendorTypeId,
-                VendorType = entity.VendorType,
-            });
-            return allVendorTypes;
-        }
         public async Task<bool> CreateNewStampDiscountDetails(DiscountDetailsInsertDTO stampDiscountDetails)
         {
             var stampDiscount = _mapper.Map<DiscountDetail>(stampDiscountDetails);
@@ -429,6 +430,24 @@ namespace CTS_BE.BAL.Services.stamp
             return await Task.FromResult(true);
         }
 
+        public async Task<bool> DeleteStampDiscountDetailsById(long id)
+        {
+            var stampComb = await _discountDetailRepo.GetAllByConditionAsync(a => a.DiscountId == id);
+            if (stampComb.Count > 0)
+            {
+                foreach (var item in stampComb)
+                {
+                    item.IsActive = false;
+                    _discountDetailRepo.Update(item);
+
+                }
+                _discountDetailRepo.SaveChangesManaged();
+                return await Task.FromResult(true);
+            }
+            return await Task.FromResult(false);
+        }
+
+        // Stamp combination
         public async Task<IEnumerable<StampCombinationDTO>> StampCombinationList(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null)
         {
 
@@ -458,6 +477,31 @@ namespace CTS_BE.BAL.Services.stamp
             // Return the list of StampCombinationDTO
             return stampCombinationEntities;
         }
+        
+        public async Task<bool> CreateNewStampCombination(StampCombinationInsertDTO newStampCombination)
+        {
+            var stampCombination = _mapper.Map<StampCombination>(newStampCombination);
+            stampCombination.CreatedAt = DateTime.Now;
+            stampCombination.CreatedBy = _auth.GetUserId();
+            _stampCombinationRepo.Add(stampCombination);
+            _stampCombinationRepo.SaveChangesManaged();
+            return await Task.FromResult(true);
+        }
+        
+        public async Task<IEnumerable<GetAllStampCombinationDTO>> GetAllStampCombinations()
+        {
+            IEnumerable<GetAllStampCombinationDTO> stampCombinations = await _stampCombinationRepo.GetSelectedColumnByConditionAsync(
+                entity => entity.IsActive == true, 
+                entity => new GetAllStampCombinationDTO
+            {
+                StampCombinationId = entity.StampCombinationId,
+                StampCategory1 = entity.StampCategory.StampCategory1,
+                Description = entity.StampCategory.Description,
+                Denomination = entity.StampType.Denomination,
+                NoLabelPerSheet = entity.StampLabel.NoLabelPerSheet
+            });
+            return stampCombinations;
+        }
 
         public async Task<bool> DeleteStampCombinationById(long id)
         {
@@ -476,29 +520,7 @@ namespace CTS_BE.BAL.Services.stamp
             return await Task.FromResult(false);
         }
 
-        public async Task<IEnumerable<GetAllStampCombinationDTO>> GetAllStampCombinations()
-        {
-            IEnumerable<GetAllStampCombinationDTO> stampCombinations = await _stampCombinationRepo.GetSelectedColumnByConditionAsync(
-                entity => entity.IsActive == true, 
-                entity => new GetAllStampCombinationDTO
-            {
-                StampCombinationId = entity.StampCombinationId,
-                StampCategory1 = entity.StampCategory.StampCategory1,
-                Description = entity.StampCategory.Description,
-                Denomination = entity.StampType.Denomination,
-                NoLabelPerSheet = entity.StampLabel.NoLabelPerSheet
-            });
-            return stampCombinations;
-        }
 
-        public async Task<bool> CreateNewStampCombination(StampCombinationInsertDTO newStampCombination)
-        {
-            var stampCombination = _mapper.Map<StampCombination>(newStampCombination);
-            stampCombination.CreatedAt = DateTime.Now;
-            stampCombination.CreatedBy = _auth.GetUserId();
-            _stampCombinationRepo.Add(stampCombination);
-            _stampCombinationRepo.SaveChangesManaged();
-            return await Task.FromResult(true);
-        }
+
     }
 }

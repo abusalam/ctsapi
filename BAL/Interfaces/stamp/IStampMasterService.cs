@@ -38,10 +38,10 @@ namespace CTS_BE.BAL.Interfaces.stamp
         // discount details
          Task<IEnumerable<DiscountDetailsDTO>> ListAllDiscountDetails(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null);
          Task<bool> CreateNewStampDiscountDetails(DiscountDetailsInsertDTO stampDiscountDetails);
-
+         Task<bool> DeleteStampDiscountDetailsById(long id);
 
         // stamp combonation
-         Task<IEnumerable<StampCombinationDTO>> StampCombinationList(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null);
+        Task<IEnumerable<StampCombinationDTO>> StampCombinationList(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null);
          Task<bool> DeleteStampCombinationById(long id);
          Task<bool> CreateNewStampCombination(StampCombinationInsertDTO newStampCombination);
          Task<IEnumerable<GetAllStampCombinationDTO>> GetAllStampCombinations();

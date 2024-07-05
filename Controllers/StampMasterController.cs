@@ -1116,7 +1116,34 @@ namespace CTS_BE.Controllers
                 return response;
             }
         }
-        
+
+        [HttpDelete("DeleteStampDiscountDetailsById")]
+        public async Task<APIResponse<bool>> DeleteStampDiscountDetailsById(long id)
+        {
+            APIResponse<bool> response = new();
+            try
+            {
+                
+                if (await _stampMasterService.DeleteStampDiscountDetailsById(id))
+                {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                    response.result = true;
+                    response.Message = AppConstants.Deleted;
+                    return response;
+                }
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.result = false;
+                response.Message = AppConstants.DataNotFound;
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = ex.Message;
+                return response;
+            }
+        }
+       
         // Stamp combination details
         [HttpPatch("StampCombinationList")]
         public async Task<APIResponse<DynamicListResult<IEnumerable<StampCombinationDTO>>>> StampCombinationList(DynamicListQueryParameters dynamicListQueryParameters)
@@ -1299,6 +1326,32 @@ namespace CTS_BE.Controllers
             }
         }
 
+        [HttpDelete("DeleteStampCombinationById")]
+        public async Task<APIResponse<bool>> DeleteStampCombinationById(long id)
+        {
+            APIResponse<bool> response = new();
+            try
+            {
+                ;
+                if (await _stampMasterService.DeleteStampCombinationById(id))
+                {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                    response.result = true;
+                    response.Message = AppConstants.Deleted;
+                    return response;
+                }
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.result = false;
+                response.Message = AppConstants.DataNotFound;
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = ex.Message;
+                return response;
+            }
+        }
     }
 
 }
