@@ -30,10 +30,12 @@ public partial class ReferenceDetail
     public int? SchemeCode { get; set; }
 
     [Column("gross_amt")]
-    public double? GrossAmt { get; set; }
+    [Precision(10, 2)]
+    public decimal? GrossAmt { get; set; }
 
     [Column("net_amt")]
-    public double? NetAmt { get; set; }
+    [Precision(10, 2)]
+    public decimal? NetAmt { get; set; }
 
     [Column("no_of_beneficiaries")]
     public short? NoOfBeneficiaries { get; set; }
@@ -61,4 +63,9 @@ public partial class ReferenceDetail
 
     [Column("no_of_payee_op")]
     public short? NoOfPayeeOp { get; set; }
+
+    [Column("purpose", TypeName = "character varying")]
+    public string? Purpose { get; set; }
+
+    public virtual Reference? RefNoNavigation { get; set; }
 }

@@ -5,6 +5,6 @@ namespace CTS_BE.BAL.Interfaces.stamp
     public interface IStampWalletService
     {
         Task<bool> CreateOrUpdateStampWallet(StampWalletInsertDTO stampWallet);
-        Task<short> GetWalletBalanceByTreasuryCode(String TreasuryCode, decimal Denomination);
+        Task<StampWalletBalanceDTO> GetWalletBalanceByTreasuryCode(string TreasuryCode, long combinationId);
     }
 }

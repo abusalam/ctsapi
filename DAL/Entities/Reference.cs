@@ -7,12 +7,15 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.DAL.Entities;
 
 [Table("reference", Schema = "lf_pl")]
+[Index("AdviceId", Name = "fki_advic_id_fkey")]
+[Index("RefNo", Name = "ref_no_unique", IsUnique = true)]
 public partial class Reference
 {
     [Key]
     [Column("ref_id")]
     public long RefId { get; set; }
 
+    [Required]
     [Column("ref_no")]
     public long? RefNo { get; set; }
 
@@ -36,10 +39,12 @@ public partial class Reference
     public string? Schemes { get; set; }
 
     [Column("gross_amount")]
-    public double? GrossAmount { get; set; }
+    [Precision(10, 2)]
+    public decimal? GrossAmount { get; set; }
 
     [Column("net_amount")]
-    public double? NetAmount { get; set; }
+    [Precision(10, 2)]
+    public decimal? NetAmount { get; set; }
 
     [Column("no_of_schemes")]
     public short? NoOfSchemes { get; set; }
@@ -52,4 +57,16 @@ public partial class Reference
 
     [Column("total_bt_count")]
     public short? TotalBtCount { get; set; }
+
+    [ForeignKey("AdviceId")]
+    [InverseProperty("References")]
+    public virtual Advice? Advice { get; set; }
+
+    [ForeignKey("RefType")]
+    [InverseProperty("References")]
+    public virtual ReferenceType? RefTypeNavigation { get; set; }
+
+    [ForeignKey("Status")]
+    [InverseProperty("References")]
+    public virtual ReferenceStatusMaster? StatusNavigation { get; set; }
 }
