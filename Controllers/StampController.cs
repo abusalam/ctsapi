@@ -172,37 +172,37 @@ namespace CTS_BE.Controllers
                                 new FilterEnum
                                 {
                                     Value = (int) Enum.StampIndentStatusEnum.ForwardedToSuperintendent,
-                                    Label = "Forwarded To Superintendent",
+                                    Label = "Forwarded to Superintendent",
                                     StyleClass = "primary"
                                 },
                                 new FilterEnum
                                 {
                                     Value = (int) Enum.StampIndentStatusEnum.ForwardedToTreasuryOfficer,
-                                    Label = "Forwarded To Treasury Office",
+                                    Label = "Forwarded to Treasury Officer",
                                     StyleClass = "primary"
                                 },
                                 new FilterEnum
                                 {
                                     Value = (int) Enum.StampIndentStatusEnum.ApproveBySuperintendent,
-                                    Label = "Approve by Superintendent",
+                                    Label = "Approved by Superintendent",
                                     StyleClass = "success"
                                 },
                                 new FilterEnum
                                 {
                                     Value = (int) Enum.StampIndentStatusEnum.ApproveByTreasuryOfficer,
-                                    Label = "Approve by Treasury Office",
+                                    Label = "Approved by Treasury Officer",
                                     StyleClass = "success"
                                 },
                                 new FilterEnum
                                 {
                                     Value = (int) Enum.StampIndentStatusEnum.RejectBySuperintendent,
-                                    Label = "Reject by Superintendent",
+                                    Label = "Rejected by Superintendent",
                                     StyleClass = "warning"
                                 },
                                 new FilterEnum
                                 {
                                     Value = (int) Enum.StampIndentStatusEnum.RejectByTreasuryOfficer,
-                                    Label = "Reject by Treasury Office",
+                                    Label = "Rejected by Treasury Officer",
                                     StyleClass = "warning"
                                 },
 
@@ -388,37 +388,37 @@ namespace CTS_BE.Controllers
                                 new FilterEnum
                                 {
                                     Value = (int) Enum.StampIndentStatusEnum.ForwardedToSuperintendent,
-                                    Label = "Forwarded To Superintendent",
+                                    Label = "Forwarded to Superintendent",
                                     StyleClass = "primary"
                                 },
                                 new FilterEnum
                                 {
                                     Value = (int) Enum.StampIndentStatusEnum.ForwardedToTreasuryOfficer,
-                                    Label = "Forwarded To Treasury Office",
+                                    Label = "Forwarded to Treasury Officer",
                                     StyleClass = "primary"
                                 },
                                 new FilterEnum
                                 {
                                     Value = (int) Enum.StampIndentStatusEnum.ApproveBySuperintendent,
-                                    Label = "Approve by Superintendent",
+                                    Label = "Approved by Superintendent",
                                     StyleClass = "success"
                                 },
                                 new FilterEnum
                                 {
                                     Value = (int) Enum.StampIndentStatusEnum.ApproveByTreasuryOfficer,
-                                    Label = "Approve by Treasury Office",
+                                    Label = "Approved by Treasury Officer",
                                     StyleClass = "success"
                                 },
                                 new FilterEnum
                                 {
                                     Value = (int) Enum.StampIndentStatusEnum.RejectBySuperintendent,
-                                    Label = "Reject by Superintendent",
+                                    Label = "Rejected by Superintendent",
                                     StyleClass = "warning"
                                 },
                                 new FilterEnum
                                 {
                                     Value = (int) Enum.StampIndentStatusEnum.RejectByTreasuryOfficer,
-                                    Label = "Reject by Treasury Office",
+                                    Label = "Rejected by Treasury Officer",
                                     StyleClass = "warning"
                                 },
 
@@ -605,43 +605,43 @@ namespace CTS_BE.Controllers
                                 new FilterEnum
                                 {
                                     Value = (int) Enum.StampIndentStatusEnum.ForwardedToSuperintendent,
-                                    Label = "Forwarded To Superintendent",
+                                    Label = "Forwarded to Superintendent",
                                     StyleClass = "primary"
                                 },
                                 new FilterEnum
                                 {
                                     Value = (int) Enum.StampIndentStatusEnum.ForwardedToTreasuryOfficer,
-                                    Label = "Forwarded To Treasury Office",
+                                    Label = "Forwarded to Treasury Officer",
                                     StyleClass = "primary"
                                 },
                                 new FilterEnum
                                 {
                                     Value = (int) Enum.StampIndentStatusEnum.ApproveBySuperintendent,
-                                    Label = "Approve by Superintendent",
+                                    Label = "Approved by Superintendent",
                                     StyleClass = "success"
                                 },
                                 new FilterEnum
                                 {
                                     Value = (int) Enum.StampIndentStatusEnum.ApproveByTreasuryOfficer,
-                                    Label = "Approve by Treasury Office",
+                                    Label = "Approved by Treasury Officer",
                                     StyleClass = "success"
                                 },
                                 new FilterEnum
                                 {
                                     Value = (int) Enum.StampIndentStatusEnum.RejectBySuperintendent,
-                                    Label = "Reject by Superintendent",
+                                    Label = "Rejected by Superintendent",
                                     StyleClass = "warning"
                                 },
                                 new FilterEnum
                                 {
                                     Value = (int) Enum.StampIndentStatusEnum.RejectByTreasuryOfficer,
-                                    Label = "Reject by Treasury Office",
+                                    Label = "Rejected by Treasury Officer",
                                     StyleClass = "warning"
                                 },
                                 new FilterEnum
                                 {
                                     Value = (int) Enum.StampIndentStatusEnum.RecievedByTreasuryOfficer,
-                                    Label = "Received by Treasury Office",
+                                    Label = "Received by Treasury Officer",
                                     StyleClass = "success"
                                 },
 
@@ -978,37 +978,37 @@ namespace CTS_BE.Controllers
                                 new FilterEnum
                                 {
                                     Value = (int) Enum.StampIndentStatusEnum.ForwardedToSuperintendent,
-                                    Label = "Forwarded To Superintendent",
+                                    Label = "Forwarded to Superintendent",
                                     StyleClass = "primary"
                                 },
                                 new FilterEnum
                                 {
                                     Value = (int) Enum.StampIndentStatusEnum.ForwardedToTreasuryOfficer,
-                                    Label = "Forwarded To Treasury Office",
+                                    Label = "Forwarded to Treasury Officer",
                                     StyleClass = "primary"
                                 },
                                 new FilterEnum
                                 {
                                     Value = (int) Enum.StampIndentStatusEnum.ApproveBySuperintendent,
-                                    Label = "Approve by Superintendent",    
+                                    Label = "Approved by Superintendent",    
                                     StyleClass = "success"
                                 },
                                 new FilterEnum
                                 {
                                     Value = (int) Enum.StampIndentStatusEnum.ApproveByTreasuryOfficer,
-                                    Label = "Approve by Treasury Office",
+                                    Label = "Approved by Treasury Officer",
                                     StyleClass = "success"
                                 },
                                 new FilterEnum
                                 {
                                     Value = (int) Enum.StampIndentStatusEnum.RejectBySuperintendent,
-                                    Label = "Reject by Superintendent",
+                                    Label = "Rejected by Superintendent",
                                     StyleClass = "warning"
                                 },
                                 new FilterEnum
                                 {
                                     Value = (int) Enum.StampIndentStatusEnum.RejectByTreasuryOfficer,
-                                    Label = "Reject by Treasury Office",
+                                    Label = "Rejected by Treasury Officer",
                                     StyleClass = "warning"
                                 },
 

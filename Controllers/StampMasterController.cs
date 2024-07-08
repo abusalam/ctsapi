@@ -459,6 +459,15 @@ namespace CTS_BE.Controllers
                         },
                         new ListHeader
                         {
+                            Name ="Vendor Name",
+                            DataType = "text",
+                            FieldName = "vendorName",
+                            FilterField = "VendorName",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
                             Name ="Vendor Type",
                             DataType = "numeric",
                             FieldName = "vendorType",

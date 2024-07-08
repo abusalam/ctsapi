@@ -11,7 +11,8 @@ namespace CTS_BE.DAL.Repositories.stamp
         {
             _context = context;
             _context.Set<DiscountDetail>()
-                .Include(t => t.VendorTypeNavigation);
+                .Include(t => t.VendorTypeNavigation)
+                .Include(t => t.StampCategory);
         }
 
     }
