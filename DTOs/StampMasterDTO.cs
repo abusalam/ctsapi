@@ -233,11 +233,11 @@ namespace CTS_BE.DTOs   // TODO: Update API will be required in future.
         public decimal Discount { get; set; }
 
         [Required]
-        public string? VendorType { get; set; }
+        public long? VendorType { get; set; }
 
         [Required]
         [StringLength(2, ErrorMessage = "String Length must be 2.")]
-        public string? StampCategory { get; set; }
+        public long? StampCategoryId { get; set; }
 
     }
     

@@ -1108,10 +1108,6 @@ public partial class CTSDBContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("vendor_stamp_requisition_status_id_fkey");
 
-            entity.HasOne(d => d.Vendor).WithMany(p => p.VendorStampRequisitions)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("vendor_stamp_requisition_vendor_id_fkey");
-
             entity.HasOne(d => d.VendorRequisitionApprove).WithMany(p => p.VendorStampRequisitions).HasConstraintName("vendor_stamp_requisition_vendor_requisition_approve_id_fkey");
 
             entity.HasOne(d => d.VendorRequisitionChallanGenerate).WithMany(p => p.VendorStampRequisitions).HasConstraintName("vendor_stamp_requisition_vendor_requisition_challan_genera_fkey");
