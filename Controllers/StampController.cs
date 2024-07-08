@@ -707,35 +707,35 @@ namespace CTS_BE.Controllers
         }
 
         // Indent Approve
-        [HttpGet("ApproveStampIndent")]
-        public async Task<APIResponse<bool>> ApproveStampIndent(long stampIndentId, short sheet, short label)
-        {
-            APIResponse<bool> response = new();
-            try
-            {
-                //if (stampIndentId != null)
-                //{
-                // long stampIndentId, short sheet, short label
-                if (await _stampService.ApproveStampIndent(stampIndentId, sheet, label))
-                    {
-                        response.apiResponseStatus = Enum.APIResponseStatus.Success;
-                        response.Message = AppConstants.ApproveStatusDone;
-                        response.result = true;
-                        return response;
-                    }
-                //}
-                response.apiResponseStatus = Enum.APIResponseStatus.Error;
-                response.result = false;
-                response.Message = AppConstants.InsufficientBalance;
-                return response;
-            }
-            catch (Exception ex)
-            {
-                response.apiResponseStatus = Enum.APIResponseStatus.Error;
-                response.Message = ex.Message;
-                return response;
-            }
-        }
+        //[HttpGet("ApproveStampIndent")]
+        //public async Task<APIResponse<bool>> ApproveStampIndent(long stampIndentId, short sheet, short label)
+        //{
+        //    APIResponse<bool> response = new();
+        //    try
+        //    {
+        //        //if (stampIndentId != null)
+        //        //{
+        //        // long stampIndentId, short sheet, short label
+        //        if (await _stampService.ApproveStampIndent(stampIndentId, sheet, label))
+        //            {
+        //                response.apiResponseStatus = Enum.APIResponseStatus.Success;
+        //                response.Message = AppConstants.ApproveStatusDone;
+        //                response.result = true;
+        //                return response;
+        //            }
+        //        //}
+        //        response.apiResponseStatus = Enum.APIResponseStatus.Error;
+        //        response.result = false;
+        //        response.Message = AppConstants.InsufficientBalance;
+        //        return response;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        response.apiResponseStatus = Enum.APIResponseStatus.Error;
+        //        response.Message = ex.Message;
+        //        return response;
+        //    }
+        //}
 
         // Indent Receive
         [HttpGet("ReceiveStampIndent")]
