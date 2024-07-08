@@ -48,4 +48,7 @@ public partial class StampCombination
 
     [InverseProperty("Combination")]
     public virtual ICollection<StampWallet> StampWallets { get; set; } = new List<StampWallet>();
+
+    [InverseProperty("Combination")]
+    public virtual ICollection<VendorStampRequisition> VendorStampRequisitions { get; set; } = new List<VendorStampRequisition>();
 }

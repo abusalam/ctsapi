@@ -1071,6 +1071,7 @@ namespace CTS_BE.Controllers
                         response.apiResponseStatus = Enum.APIResponseStatus.Error;
                         response.result = false;
                         response.Message = AppConstants.InsufficientBalance;
+                        response.Message = AppConstants.InsufficientBalance;
                         return response;
                     }
                 }

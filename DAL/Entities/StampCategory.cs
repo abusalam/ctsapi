@@ -37,5 +37,8 @@ public partial class StampCategory
     public long StampCategoryId { get; set; }
 
     [InverseProperty("StampCategory")]
+    public virtual ICollection<DiscountDetail> DiscountDetails { get; set; } = new List<DiscountDetail>();
+
+    [InverseProperty("StampCategory")]
     public virtual ICollection<StampCombination> StampCombinations { get; set; } = new List<StampCombination>();
 }

@@ -16,9 +16,8 @@ public partial class DiscountDetail
     [Column("vendor_type")]
     public long VendorType { get; set; }
 
-    [Column("stamp_category")]
-    [StringLength(2)]
-    public string StampCategory { get; set; } = null!;
+    [Column("stamp_category_id")]
+    public long StampCategoryId { get; set; }
 
     [Column("denomination_from")]
     [Precision(10, 2)]
@@ -47,6 +46,10 @@ public partial class DiscountDetail
 
     [Column("updated_by")]
     public long? UpdatedBy { get; set; }
+
+    [ForeignKey("StampCategoryId")]
+    [InverseProperty("DiscountDetails")]
+    public virtual StampCategory StampCategory { get; set; } = null!;
 
     [ForeignKey("VendorType")]
     [InverseProperty("DiscountDetails")]

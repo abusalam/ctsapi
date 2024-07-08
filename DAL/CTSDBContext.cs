@@ -172,6 +172,14 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<VTokenDeatil> VTokenDeatils { get; set; }
 
+    public virtual DbSet<VendorRequisitionApprove> VendorRequisitionApproves { get; set; }
+
+    public virtual DbSet<VendorRequisitionChallanGenerate> VendorRequisitionChallanGenerates { get; set; }
+
+    public virtual DbSet<VendorRequisitionStaging> VendorRequisitionStagings { get; set; }
+
+    public virtual DbSet<VendorStampRequisition> VendorStampRequisitions { get; set; }
+
     public virtual DbSet<Voucher> Vouchers { get; set; }
 
     public virtual DbSet<VoucherEntry> VoucherEntries { get; set; }
@@ -623,6 +631,10 @@ public partial class CTSDBContext : DbContext
 
             entity.Property(e => e.IsActive).HasDefaultValueSql("true");
 
+            entity.HasOne(d => d.StampCategory).WithMany(p => p.DiscountDetails)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("discount_details_stamp_category_id_fkey");
+
             entity.HasOne(d => d.VendorTypeNavigation).WithMany(p => p.DiscountDetails)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("discount_details_vendor_type_fkey");
@@ -1045,6 +1057,68 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.PanNo).IsFixedLength();
         });
 
+        modelBuilder.Entity<VendorRequisitionApprove>(entity =>
+        {
+            entity.HasKey(e => e.VendorRequisitionApproveId).HasName("vendor_requisition_approve_pkey");
+
+            entity.Property(e => e.ApproveDate).HasDefaultValueSql("now()");
+
+            entity.HasOne(d => d.VendorRequisition).WithMany(p => p.VendorRequisitionApproves)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("vendor_requisition_approve_vendor_requisition_id_fkey");
+        });
+
+        modelBuilder.Entity<VendorRequisitionChallanGenerate>(entity =>
+        {
+            entity.HasKey(e => e.VendorRequisitionChallanGenerateId).HasName("vendor_requisition_challan_generate_pkey");
+
+            entity.Property(e => e.VendorRequisitionChallanGenerateId).HasDefaultValueSql("nextval('cts.vendor_requisition_challan_ge_vendor_requisition_challan_ge_seq'::regclass)");
+
+            entity.HasOne(d => d.VendorRequisitionStaging).WithMany(p => p.VendorRequisitionChallanGenerates)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("vendor_requisition_challan_ge_vendor_requisition_staging_i_fkey");
+        });
+
+        modelBuilder.Entity<VendorRequisitionStaging>(entity =>
+        {
+            entity.HasKey(e => e.VendorRequisitionStagingId).HasName("vendor_requisition_staging_pkey");
+
+            entity.HasOne(d => d.VendorRequisition).WithMany(p => p.VendorRequisitionStagings)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("vendor_requisition_staging_vendor_requisition_id_fkey");
+        });
+
+        modelBuilder.Entity<VendorStampRequisition>(entity =>
+        {
+            entity.HasKey(e => e.VendorStampRequisitionId).HasName("vendor_stamp_requisition_pkey");
+
+            entity.Property(e => e.RaisedToTreasury).IsFixedLength();
+
+            entity.HasOne(d => d.Combination).WithMany(p => p.VendorStampRequisitions)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("vendor_stamp_requisition_combination_id_fkey");
+
+            entity.HasOne(d => d.RaisedToTreasuryNavigation).WithMany(p => p.VendorStampRequisitions)
+                .HasPrincipalKey(p => p.Code)
+                .HasForeignKey(d => d.RaisedToTreasury)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("vendor_stamp_requisition_raised_to_treasury_fkey");
+
+            entity.HasOne(d => d.Status).WithMany(p => p.VendorStampRequisitions)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("vendor_stamp_requisition_status_id_fkey");
+
+            entity.HasOne(d => d.Vendor).WithMany(p => p.VendorStampRequisitions)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("vendor_stamp_requisition_vendor_id_fkey");
+
+            entity.HasOne(d => d.VendorRequisitionApprove).WithMany(p => p.VendorStampRequisitions).HasConstraintName("vendor_stamp_requisition_vendor_requisition_approve_id_fkey");
+
+            entity.HasOne(d => d.VendorRequisitionChallanGenerate).WithMany(p => p.VendorStampRequisitions).HasConstraintName("vendor_stamp_requisition_vendor_requisition_challan_genera_fkey");
+
+            entity.HasOne(d => d.VendorRequisitionStaging).WithMany(p => p.VendorStampRequisitions).HasConstraintName("vendor_stamp_requisition_vendor_requisition_staging_id_fkey");
+        });
+
         modelBuilder.Entity<Voucher>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("voucher_pkey");
@@ -1072,6 +1146,10 @@ public partial class CTSDBContext : DbContext
         modelBuilder.HasSequence("stamp_type_denomination_id_seq", "cts_master");
         modelBuilder.HasSequence("stamp_vendor_vendor_code_seq", "cts_master");
         modelBuilder.HasSequence("stamp_wallet_transaction_id_seq", "master");
+        modelBuilder.HasSequence("vendor_requisition_approve_vendor_requisition_approve_id_seq", "cts");
+        modelBuilder.HasSequence("vendor_requisition_challan_ge_vendor_requisition_challan_ge_seq", "cts");
+        modelBuilder.HasSequence("vendor_requisition_staging_vendor_requisition_staging_id_seq", "cts");
+        modelBuilder.HasSequence("vendor_stamp_requisition_vendor_stamp_requisition_id_seq", "cts");
         modelBuilder.HasSequence("vendor_type_vendor_type_id_seq", "cts_master");
 
         OnModelCreatingPartial(modelBuilder);

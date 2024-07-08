@@ -36,4 +36,7 @@ public partial class Status
 
     [InverseProperty("Status")]
     public virtual ICollection<TokenFlow> TokenFlows { get; set; } = new List<TokenFlow>();
+
+    [InverseProperty("Status")]
+    public virtual ICollection<VendorStampRequisition> VendorStampRequisitions { get; set; } = new List<VendorStampRequisition>();
 }
