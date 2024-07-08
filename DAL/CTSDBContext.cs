@@ -26,9 +26,15 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<Bank> Banks { get; set; }
 
+    public virtual DbSet<BankMaster> BankMasters { get; set; }
+
     public virtual DbSet<BeneficiariesMaster> BeneficiariesMasters { get; set; }
 
+    public virtual DbSet<BeneficiaryMaster> BeneficiaryMasters { get; set; }
+
     public virtual DbSet<BeneficiaryType> BeneficiaryTypes { get; set; }
+
+    public virtual DbSet<BeneficiaryType1> BeneficiaryTypes1 { get; set; }
 
     public virtual DbSet<BillBtdetail> BillBtdetails { get; set; }
 
@@ -94,6 +100,8 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<GobalObjection> GobalObjections { get; set; }
 
+    public virtual DbSet<GroupType> GroupTypes { get; set; }
+
     public virtual DbSet<LfplEc> LfplEcs { get; set; }
 
     public virtual DbSet<LocalObjection> LocalObjections { get; set; }
@@ -105,6 +113,8 @@ public partial class CTSDBContext : DbContext
     public virtual DbSet<PaymentAdvice> PaymentAdvices { get; set; }
 
     public virtual DbSet<PaymentAdviceHasBeneficiary> PaymentAdviceHasBeneficiarys { get; set; }
+
+    public virtual DbSet<RbiIfscStock> RbiIfscStocks { get; set; }
 
     public virtual DbSet<Reference> References { get; set; }
 
@@ -230,6 +240,11 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
         });
 
+        modelBuilder.Entity<BankMaster>(entity =>
+        {
+            entity.HasKey(e => e.BankId).HasName("bank_master_pkey");
+        });
+
         modelBuilder.Entity<BeneficiariesMaster>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("beneficiaries_pkey");
@@ -246,9 +261,41 @@ public partial class CTSDBContext : DbContext
                 .HasConstraintName("Fk_beneficiary_type");
         });
 
+        modelBuilder.Entity<BeneficiaryMaster>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("beneficiary_master_pkey");
+
+            entity.Property(e => e.AadhaarNo).IsFixedLength();
+            entity.Property(e => e.GpfNo).IsFixedLength();
+            entity.Property(e => e.GpfPranNumber).IsFixedLength();
+            entity.Property(e => e.MobileNo).IsFixedLength();
+            entity.Property(e => e.PanNo).IsFixedLength();
+            entity.Property(e => e.TrsyCode).IsFixedLength();
+            entity.Property(e => e.VendorGstin).IsFixedLength();
+            entity.Property(e => e.VerifiedByDdo).IsFixedLength();
+
+            entity.HasOne(d => d.BankCodeNavigation).WithMany(p => p.BeneficiaryMasters).HasConstraintName("beneficiary_master_bank_code_fkey");
+
+            entity.HasOne(d => d.BeneficiaryTypeNavigation).WithMany(p => p.BeneficiaryMasters).HasConstraintName("beneficiary_master_beneficiary_type_fkey");
+
+            entity.HasOne(d => d.Group).WithMany(p => p.BeneficiaryMasters).HasConstraintName("beneficiary_master_group_id_fkey");
+
+            entity.HasOne(d => d.IfscCodeNavigation).WithMany(p => p.BeneficiaryMasters).HasConstraintName("beneficiary_master_ifsc_code_fkey");
+
+            entity.HasOne(d => d.VerifiedByDdoNavigation).WithMany(p => p.BeneficiaryMasters)
+                .HasPrincipalKey(p => p.Code)
+                .HasForeignKey(d => d.VerifiedByDdo)
+                .HasConstraintName("beneficiary_master_verified_by_ddo_fkey");
+        });
+
         modelBuilder.Entity<BeneficiaryType>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("Beneficiary_Type_pkey");
+        });
+
+        modelBuilder.Entity<BeneficiaryType1>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("beneficiary_type_pkey");
         });
 
         modelBuilder.Entity<BillBtdetail>(entity =>
@@ -688,6 +735,11 @@ public partial class CTSDBContext : DbContext
             entity.HasKey(e => e.Id).HasName("gobal_objection_pkey");
 
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
+        });
+
+        modelBuilder.Entity<GroupType>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("group_type_pkey");
         });
 
         modelBuilder.Entity<LfplEc>(entity =>

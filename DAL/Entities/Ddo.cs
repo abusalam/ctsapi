@@ -40,6 +40,8 @@ public partial class Ddo
     [StringLength(20)]
     public string? Phone { get; set; }
 
+    public virtual ICollection<BeneficiaryMaster> BeneficiaryMasters { get; set; } = new List<BeneficiaryMaster>();
+
     public virtual ICollection<BillBtdetail> BillBtdetails { get; set; } = new List<BillBtdetail>();
 
     public virtual ICollection<BillDetail> BillDetails { get; set; } = new List<BillDetail>();
