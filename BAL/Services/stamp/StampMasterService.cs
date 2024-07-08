@@ -411,7 +411,7 @@ namespace CTS_BE.BAL.Services.stamp
                 DenominationTo = entity.DenominationTo,
                 Discount = entity.Discount,
                 VendorType = entity.VendorTypeNavigation.VendorType,
-                StampCategory = entity.StampCategory,
+                StampCategory = entity.StampCategory.StampCategory1,
                 IsActive = entity.IsActive,
                 CreatedAt = entity.CreatedAt,
                 CreatedBy  = entity.CreatedBy
