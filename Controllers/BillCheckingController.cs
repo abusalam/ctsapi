@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using CTS_BE.BAL.Interfaces.master;
 using CTS_BE.Filters;
 using CTS_BE.Helper.Authentication;
+using CTS_BE.Common;
 
 namespace CTS_BE.Controllers
 {
@@ -17,16 +18,43 @@ namespace CTS_BE.Controllers
         protected readonly ITokenService _tokenService;
         protected readonly ITokenHasObjectionService _tokenHasObjectionService;
         protected readonly IClaimService _claimService;
-        public BillCheckingController(ITpBillService tpBillService,ITokenService tokenService,ITokenHasObjectionService tokenHasObjectionService,IClaimService claimService)
+        public BillCheckingController(ITpBillService tpBillService, ITokenService tokenService, ITokenHasObjectionService tokenHasObjectionService, IClaimService claimService)
         {
             _tpBillService = tpBillService;
             _tokenService = tokenService;
             _tokenHasObjectionService = tokenHasObjectionService;
             _claimService = claimService;
         }
-        [HttpGet("get-bill-details")]
-        public async Task<APIResponse<BillCheckingBillDetailsDto>> BillDetails([FromQuery]long tokenId)
+        [HttpGet("get-bill-info")]
+        public async Task<APIResponse<IEnumerable<BIllInfoDTO>>> BillInfo([FromQuery] long tokenId)
         {
+            APIResponse<IEnumerable<BIllInfoDTO>> response = new();
+            try
+            {
+                TokenDetailsDto tokenDetailsDto = await _tokenService.TokenDeatisById(tokenId);
+                if (tokenDetailsDto == null)
+                {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.Message = AppConstants.DataNotFound;
+                    return response;
+                }
+                IEnumerable<BIllInfoDTO>  billInfo = await _tpBillService.billInfo(tokenDetailsDto.BillId);
+                response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                response.result = billInfo;
+                response.Message = AppConstants.DataFound;
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = ex.Message;
+                return response;
+            }
+        }
+        [HttpGet("get-bill-details")]
+        public async Task<APIResponse<BillCheckingBillDetailsDto>> BillDetails([FromQuery] long tokenId)
+        {
+
             APIResponse<BillCheckingBillDetailsDto> response = new();
             try
             {
@@ -85,7 +113,7 @@ namespace CTS_BE.Controllers
                     response.Message = "This bill has been checked!";
                     return response;
                 }
-                if (await _tokenHasObjectionService.Insert(billCheckingDto, userId,OwnTypeManager.GetOwnType(userRole)))
+                if (await _tokenHasObjectionService.Insert(billCheckingDto, userId, OwnTypeManager.GetOwnType(userRole)))
                 {
                     response.apiResponseStatus = Enum.APIResponseStatus.Success;
                     response.Message = "Bill Checked!";

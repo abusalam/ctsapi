@@ -17,7 +17,7 @@ namespace CTS_BE.BAL.Services.billing
         }
         public async Task<IEnumerable<BillsListDTO>> Bills()
         {
-            IEnumerable<BillsListDTO> result = await _TpBillRepository.GetSelectedColumnAsync(entity=>new BillsListDTO
+            IEnumerable<BillsListDTO> result = await _TpBillRepository.GetSelectedColumnAsync(entity => new BillsListDTO
             {
                 BillId = entity.BillId,
                 ReferenceNo = entity.ReferenceNo,
@@ -60,43 +60,43 @@ namespace CTS_BE.BAL.Services.billing
                         VotedCharged = billData.VotedCharged,
                         DetailHead = billData.DetailHead,
                     },
-                    SubDeatilsHead = billData.BillSubdetailInfos.Select(subInfo => new SubDeatilsHeadDto
-                    {
-                        SubDeatils = subInfo.ActiveHoa.SubdetailHead,
-                        Description = subInfo.ActiveHoa.SubdetailHead,
-                        Amount = subInfo.Amount,
-                        Allotments = new AllotmentDto
-                        {
-                            HOAChain = new HOAChain
-                            {
-                                Demand = subInfo.ActiveHoa.DemandNo,
-                                MajorHead = subInfo.ActiveHoa.MajorHead,
-                                SubMajorHead = subInfo.ActiveHoa.SubdetailHead,
-                                MinorHead = subInfo.ActiveHoa.MinorHead,
-                                SchemeHead = subInfo.ActiveHoa.SchemeHead,
-                                VotedCharged = subInfo.ActiveHoa.VotedCharged,
-                                DetailHead = subInfo.ActiveHoa.DetailHead,
-                                SubDetailHead = subInfo.ActiveHoa.SubdetailHead,
-                            },
-                            //AllotmentAmount = subInfo.DdoWallet.CeilingAmount,
-                            PreviousBalance = 0,
-                            AdjustedAmount = billData.GrossAmount,
-                            BalanceAmount = 0,
-                            FinalProjectDetails="",
-                            OverDrawalAmount= 0,
-                            SubDetailHead =  subInfo.ActiveHoa.SubdetailHead
-                        }
-                    }).ToList(),
+                    // SubDeatilsHead = billData.BillSubdetailInfos.Select(subInfo => new SubDeatilsHeadDto
+                    // {
+                    //     SubDeatils = subInfo.ActiveHoa.SubdetailHead,
+                    //     Description = subInfo.ActiveHoa.SubdetailHead,
+                    //     Amount = subInfo.Amount,
+                    //     Allotments = new AllotmentDto
+                    //     {
+                    //         HOAChain = new HOAChain
+                    //         {
+                    //             Demand = subInfo.ActiveHoa.DemandNo,
+                    //             MajorHead = subInfo.ActiveHoa.MajorHead,
+                    //             SubMajorHead = subInfo.ActiveHoa.SubdetailHead,
+                    //             MinorHead = subInfo.ActiveHoa.MinorHead,
+                    //             SchemeHead = subInfo.ActiveHoa.SchemeHead,
+                    //             VotedCharged = subInfo.ActiveHoa.VotedCharged,
+                    //             DetailHead = subInfo.ActiveHoa.DetailHead,
+                    //             SubDetailHead = subInfo.ActiveHoa.SubdetailHead,
+                    //         },
+                    //         //AllotmentAmount = subInfo.DdoWallet.CeilingAmount,
+                    //         PreviousBalance = 0,
+                    //         AdjustedAmount = billData.GrossAmount,
+                    //         BalanceAmount = 0,
+                    //         FinalProjectDetails = "",
+                    //         OverDrawalAmount = 0,
+                    //         SubDetailHead = subInfo.ActiveHoa.SubdetailHead
+                    //     }
+                    // }).ToList(),
                     GrossAmount = billData.GrossAmount,
                     NetAmount = billData.NetAmount,
                     TransferAmount = billData.BtAmount,
                     //TODO:: Single bill may have multipale BT
-                    AgBTAmount = billData.BillBtdetails.FirstOrDefault(bt=>bt.BtType == (short)Enum.BTAmountType.AG).Amount,
+                    AgBTAmount = billData.BillBtdetails.FirstOrDefault(bt => bt.BtType == (short)Enum.BTAmountType.AG).Amount,
                     TreasuryBTAmount = billData.BillBtdetails.FirstOrDefault(bt => bt.BtType == (short)Enum.BTAmountType.Treasury).Amount,
                     TotalBTAmount = 0,
                     SanctionNo = billData.SanctionNo,
-                    SanctionDate =  billData.SanctionDate,
-                });;
+                    SanctionDate = billData.SanctionDate,
+                }); ;
             return billDetailsDetailsByRef;
         }
         public async Task<BillDetailsDetailsByRef> BillDetailsByBillId(long billId)
@@ -125,30 +125,10 @@ namespace CTS_BE.BAL.Services.billing
                     SubDeatilsHead = billData.BillSubdetailInfos.Select(subInfo => new SubDeatilsHeadDto
                     {
                         SubDeatils = subInfo.ActiveHoa.SubdetailHead,
-                        Description = subInfo.ActiveHoa.SubdetailHead,
-                        Amount = subInfo.Amount,
-                        Allotments = new AllotmentDto
-                        {
-                            HOAChain = new HOAChain
-                            {
-                                Demand = subInfo.ActiveHoa.DemandNo,
-                                MajorHead = subInfo.ActiveHoa.MajorHead,
-                                SubMajorHead = subInfo.ActiveHoa.SubdetailHead,
-                                MinorHead = subInfo.ActiveHoa.MinorHead,
-                                SchemeHead = subInfo.ActiveHoa.SchemeHead,
-                                VotedCharged = subInfo.ActiveHoa.VotedCharged,
-                                DetailHead = subInfo.ActiveHoa.DetailHead,
-                                SubDetailHead = subInfo.ActiveHoa.SubdetailHead,
-                            },
-                            //AllotmentAmount = subInfo.DdoWallet.CeilingAmount,
-                            PreviousBalance = 0,
-                            AdjustedAmount = billData.GrossAmount,
-                            BalanceAmount = 0,
-                            FinalProjectDetails = "",
-                            OverDrawalAmount = 0,
-                            SubDetailHead = subInfo.ActiveHoa.SubdetailHead
-                        }
+                        Description = subInfo.ActiveHoa.Description,
+                        Amount = subInfo.Amount
                     }).ToList(),
+                    SubDeatilsTotalAmount = billData.BillSubdetailInfos.Sum(subInfo => subInfo.Amount),
                     GrossAmount = billData.GrossAmount,
                     NetAmount = billData.NetAmount,
                     TransferAmount = billData.BtAmount,
@@ -157,13 +137,38 @@ namespace CTS_BE.BAL.Services.billing
                     TreasuryBTAmount = billData.BillBtdetails.FirstOrDefault(bt => bt.BtType == (short)Enum.BTAmountType.Treasury).Amount,
                     TotalBTAmount = 0,
                     SanctionNo = billData.SanctionNo,
-                    SanctionDate =  billData.SanctionDate,
+                    SanctionDate = billData.SanctionDate,
                 });
             return billDetailsDetailsByRef;
         }
         public async Task<int> BillCountByStatus(int statusCode)
         {
-            return _TpBillRepository.CountWithCondition(entity=>entity.Status == statusCode );
+            return _TpBillRepository.CountWithCondition(entity => entity.Status == statusCode);
+        }
+        public async Task<IEnumerable<BIllInfoDTO>> billInfo(long billId)
+        {
+            IEnumerable<BIllInfoDTO> bIllInfos = await _TpBillRepository.GetSingleSelectedColumnByConditionAsync(
+                entity => entity.BillId == billId,
+                entity => new List<BIllInfoDTO>{
+                    new BIllInfoDTO
+                    {
+                        Target = entity.BtAmount!=0?"bt":"null",
+                    },
+                    new BIllInfoDTO
+                    {
+                        Target = entity.PaymentMode==0||entity.PaymentMode==2?"cheque":"null",
+                    },
+                    new BIllInfoDTO
+                    {
+                        Target = entity.PaymentMode==1||entity.PaymentMode==2?"ecs":"null",
+                    },
+                    new BIllInfoDTO
+                    {
+                        Target = entity.PaymentMode==3?"NILL":"null",
+                    },
+                }
+            );
+            return bIllInfos.Where(info => info.Target != "null").ToList();
         }
     }
-}   
+}

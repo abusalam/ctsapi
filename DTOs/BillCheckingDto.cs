@@ -28,4 +28,8 @@
         public int ?TokenObjectionId { get; set; }
         public string ?Remark { get; set; }
     }
+    public class BIllInfoDTO
+    {
+        public string Target { get; set; }
+    }
 }
