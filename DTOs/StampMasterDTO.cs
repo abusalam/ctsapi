@@ -236,7 +236,6 @@ namespace CTS_BE.DTOs   // TODO: Update API will be required in future.
         public long? VendorType { get; set; }
 
         [Required]
-        [StringLength(2, ErrorMessage = "String Length must be 2.")]
         public long? StampCategoryId { get; set; }
 
     }
