@@ -27,4 +27,11 @@ public partial class VendorRequisitionApprove
 
     [Column("approve_date", TypeName = "timestamp without time zone")]
     public DateTime? ApproveDate { get; set; }
+
+    [ForeignKey("VendorRequisitionId")]
+    [InverseProperty("VendorRequisitionApproves")]
+    public virtual VendorStampRequisition VendorRequisition { get; set; } = null!;
+
+    [InverseProperty("VendorRequisitionApprove")]
+    public virtual ICollection<VendorStampRequisition> VendorStampRequisitions { get; set; } = new List<VendorStampRequisition>();
 }

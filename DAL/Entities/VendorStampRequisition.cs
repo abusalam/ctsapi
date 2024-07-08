@@ -32,8 +32,8 @@ public partial class VendorStampRequisition
     [Column("requisition_no", TypeName = "character varying")]
     public string RequisitionNo { get; set; } = null!;
 
-    [Column("requsition_date")]
-    public DateOnly RequsitionDate { get; set; }
+    [Column("requisition_date")]
+    public DateOnly RequisitionDate { get; set; }
 
     [Column("vendor_requisition_staging_id")]
     public long? VendorRequisitionStagingId { get; set; }
@@ -45,7 +45,7 @@ public partial class VendorStampRequisition
     public long? VendorRequisitionApproveId { get; set; }
 
     [Column("status_id")]
-    public short StatusId { get; set; }
+    public int StatusId { get; set; }
 
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime CreatedAt { get; set; }
@@ -58,4 +58,36 @@ public partial class VendorStampRequisition
 
     [Column("updated_by")]
     public long? UpdatedBy { get; set; }
+
+    [ForeignKey("CombinationId")]
+    [InverseProperty("VendorStampRequisitions")]
+    public virtual StampCombination Combination { get; set; } = null!;
+
+    public virtual Treasury RaisedToTreasuryNavigation { get; set; } = null!;
+
+    [ForeignKey("StatusId")]
+    [InverseProperty("VendorStampRequisitions")]
+    public virtual Status Status { get; set; } = null!;
+
+    [ForeignKey("VendorId")]
+    [InverseProperty("VendorStampRequisitions")]
+    public virtual StampVendor Vendor { get; set; } = null!;
+
+    [ForeignKey("VendorRequisitionApproveId")]
+    [InverseProperty("VendorStampRequisitions")]
+    public virtual VendorRequisitionApprove? VendorRequisitionApprove { get; set; }
+
+    [InverseProperty("VendorRequisition")]
+    public virtual ICollection<VendorRequisitionApprove> VendorRequisitionApproves { get; set; } = new List<VendorRequisitionApprove>();
+
+    [ForeignKey("VendorRequisitionChallanGenerateId")]
+    [InverseProperty("VendorStampRequisitions")]
+    public virtual VendorRequisitionChallanGenerate? VendorRequisitionChallanGenerate { get; set; }
+
+    [ForeignKey("VendorRequisitionStagingId")]
+    [InverseProperty("VendorStampRequisitions")]
+    public virtual VendorRequisitionStaging? VendorRequisitionStaging { get; set; }
+
+    [InverseProperty("VendorRequisition")]
+    public virtual ICollection<VendorRequisitionStaging> VendorRequisitionStagings { get; set; } = new List<VendorRequisitionStaging>();
 }

@@ -21,4 +21,14 @@ public partial class VendorRequisitionStaging
 
     [Column("label_by_clerk")]
     public short LabelByClerk { get; set; }
+
+    [ForeignKey("VendorRequisitionId")]
+    [InverseProperty("VendorRequisitionStagings")]
+    public virtual VendorStampRequisition VendorRequisition { get; set; } = null!;
+
+    [InverseProperty("VendorRequisitionStaging")]
+    public virtual ICollection<VendorRequisitionChallanGenerate> VendorRequisitionChallanGenerates { get; set; } = new List<VendorRequisitionChallanGenerate>();
+
+    [InverseProperty("VendorRequisitionStaging")]
+    public virtual ICollection<VendorStampRequisition> VendorStampRequisitions { get; set; } = new List<VendorStampRequisition>();
 }

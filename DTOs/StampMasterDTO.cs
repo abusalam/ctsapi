@@ -78,7 +78,8 @@ namespace CTS_BE.DTOs   // TODO: Update API will be required in future.
 
     public class StampVendorDTO
     {
-
+        public string? VendorName { get; set; }
+        
         public string? VendorType { get; set; }
 
         public long StampVendorId { get; set; }
@@ -118,6 +119,8 @@ namespace CTS_BE.DTOs   // TODO: Update API will be required in future.
     {
         public long StampVendorId { get; set; }
 
+        public string? VendorName { get; set; }
+
         public string? VendorType { get; set; }
 
         public string LicenseNo { get; set; } = null!;
@@ -138,7 +141,10 @@ namespace CTS_BE.DTOs   // TODO: Update API will be required in future.
     public class StampVendorInsertDTO
     {
         [Required]
-        public string? VendorType { get; set; }
+        public long? VendorType { get; set; }
+        
+        [Required]
+        public string? VendorName { get; set; }
 
         [Required]
         public string LicenseNo { get; set; } = null!;

@@ -218,6 +218,7 @@ namespace CTS_BE.BAL.Services.stamp
                 entity => entity.IsActive == true, 
                 entity => new StampVendorDTO
             {
+                VendorName = entity.VendorName,
                 LicenseNo = entity.LicenseNo,
                 EffectiveFrom = entity.EffectiveFrom.ToString(),
                 PanNumber = entity.PanNumber,
@@ -244,12 +245,13 @@ namespace CTS_BE.BAL.Services.stamp
                 entity => entity.IsActive == true, 
                 entity => new StampVendorDetailsDropdownDTO {
                
+                VendorName = entity.VendorName,
                 LicenseNo = entity.LicenseNo,
-                //EffectiveFrom = entity.EffectiveFrom.ToString(),
                 PanNumber = entity.PanNumber,
                 PhoneNumber = entity.PhoneNumber,
                 StampVendorId = entity.StampVendorId,
                 VendorType = entity.VendorTypeNavigation.VendorType,
+                //EffectiveFrom = entity.EffectiveFrom.ToString(),
                 //Address = entity.Address,
                 //ActiveAtGrips = entity.ActiveAtGrips,
                 //ValidUpto = entity.ValidUpto.ToString(),
@@ -263,14 +265,14 @@ namespace CTS_BE.BAL.Services.stamp
             return stampVendor;
         }
 
-        public async Task<bool> CreateNewStampVendor(StampVendorInsertDTO stampVendor, String vendorPhoto, String vendorPanPhoto, String vendorLicencePhot)
+        public async Task<bool> CreateNewStampVendor(StampVendorInsertDTO stampVendor, String vendorPhoto, String vendorPanPhoto, String vendorLicencePhoto)
         {
             var stampVen = _mapper.Map<StampVendor>(stampVendor);
             stampVen.CreatedAt = DateTime.Now;
             stampVen.CreatedBy = _auth.GetUserId();
             stampVen.VendorPhoto = vendorPhoto;
             stampVen.VendorPanPhoto = vendorPanPhoto;
-            stampVen.VendorLicencePhoto = vendorLicencePhot;
+            stampVen.VendorLicencePhoto = vendorLicencePhoto;
             _stampVendorRepo.Add(stampVen);
             _stampVendorRepo.SaveChangesManaged();
             return await Task.FromResult(true);

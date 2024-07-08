@@ -36,4 +36,11 @@ public partial class VendorRequisitionChallanGenerate
 
     [Column("challan_id")]
     public long ChallanId { get; set; }
+
+    [ForeignKey("VendorRequisitionStagingId")]
+    [InverseProperty("VendorRequisitionChallanGenerates")]
+    public virtual VendorRequisitionStaging VendorRequisitionStaging { get; set; } = null!;
+
+    [InverseProperty("VendorRequisitionChallanGenerate")]
+    public virtual ICollection<VendorStampRequisition> VendorStampRequisitions { get; set; } = new List<VendorStampRequisition>();
 }
