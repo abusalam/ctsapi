@@ -229,7 +229,7 @@ namespace CTS_BE.BAL.Services.stamp
                 IsActive = entity.IsActive,
                 CreatedAt = entity.CreatedAt,
                 CreatedBy = entity.CreatedBy,
-                VendorType = entity.VendorType,
+                VendorType = entity.VendorTypeNavigation.VendorType,
                 VendorLicencePhoto = entity.VendorPhoto,
                 VendorPanPhoto = entity.VendorPanPhoto,
                 VendorPhoto = entity.VendorPhoto,
@@ -238,27 +238,27 @@ namespace CTS_BE.BAL.Services.stamp
             return stampVendorList;
         }
 
-        public async Task<IEnumerable<StampVendorDTO>> GetAllStampVendors()
+        public async Task<IEnumerable<StampVendorDetailsDropdownDTO>> GetAllStampVendors()
         {
-            IEnumerable<StampVendorDTO> stampVendor = await _stampVendorRepo.GetSelectedColumnByConditionAsync(
+            IEnumerable<StampVendorDetailsDropdownDTO> stampVendor = await _stampVendorRepo.GetSelectedColumnByConditionAsync(
                 entity => entity.IsActive == true, 
-                entity => new StampVendorDTO {
+                entity => new StampVendorDetailsDropdownDTO {
                
                 LicenseNo = entity.LicenseNo,
-                EffectiveFrom = entity.EffectiveFrom.ToString(),
+                //EffectiveFrom = entity.EffectiveFrom.ToString(),
                 PanNumber = entity.PanNumber,
                 PhoneNumber = entity.PhoneNumber,
                 StampVendorId = entity.StampVendorId,
-                Address = entity.Address,
-                ActiveAtGrips = entity.ActiveAtGrips,
-                ValidUpto = entity.ValidUpto.ToString(),
-                IsActive = entity.IsActive,
-                CreatedAt = entity.CreatedAt,
-                CreatedBy = entity.CreatedBy,
-                VendorType = entity.VendorType,
-                VendorLicencePhoto = entity.VendorPhoto,
-                VendorPanPhoto = entity.VendorPanPhoto,
-                VendorPhoto = entity.VendorPhoto,
+                VendorType = entity.VendorTypeNavigation.VendorType,
+                //Address = entity.Address,
+                //ActiveAtGrips = entity.ActiveAtGrips,
+                //ValidUpto = entity.ValidUpto.ToString(),
+                //IsActive = entity.IsActive,
+                //CreatedAt = entity.CreatedAt,
+                //CreatedBy = entity.CreatedBy,
+                //VendorLicencePhoto = entity.VendorPhoto,
+                //VendorPanPhoto = entity.VendorPanPhoto,
+                //VendorPhoto = entity.VendorPhoto,
             });
             return stampVendor;
         }
@@ -410,7 +410,7 @@ namespace CTS_BE.BAL.Services.stamp
                 DenominationFrom = entity.DenominationFrom,
                 DenominationTo = entity.DenominationTo,
                 Discount = entity.Discount,
-                VendorType = entity.VendorType,
+                VendorType = entity.VendorTypeNavigation.VendorType,
                 StampCategory = entity.StampCategory,
                 IsActive = entity.IsActive,
                 CreatedAt = entity.CreatedAt,
