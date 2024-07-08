@@ -170,7 +170,35 @@ namespace CTS_BE.Controllers
             }
         }
 
-        
+        [HttpPost("CreateStampRequisition")]
+        public async Task<APIResponse<bool>> CreateStampRequisition(StampRequisitionInsertDTO stampRequisition)
+        {
+            APIResponse<bool> response = new();
+            try
+            {
+                if (stampRequisition != null)
+                {
+                    if (await _stampRequisitionService.CreateStampRequisition(stampRequisition))
+                    {
+                        response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                        response.Message = AppConstants.RequisitionRaised;
+                        response.result = true;
+                        return response;
+                    }
+                }
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.result = false;
+                response.Message = AppConstants.MissingField;
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = ex.Message;
+                return response;
+            }
+        }
+
     }
 }
 

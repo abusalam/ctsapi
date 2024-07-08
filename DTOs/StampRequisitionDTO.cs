@@ -15,15 +15,23 @@ namespace CTS_BE.DTOs
         public string VendorType { get; set; }
         public string LicenseNo { get; set; }
         public decimal Amount { get; set; }
+        public short Quantity { get; set; }
         public string Status { get; set; }
         public DateOnly RequisitionDate { get; set; }
         public string RaisedToTreasury { get; set; } = null!;
         public short Sheet { get; set; }
         public short Label { get; set; }
         public string RequisitionNo { get; set; } = null!;
-
-        
-
-
+    }
+    public class StampRequisitionInsertDTO
+    {
+        public long VendorId { get; set; }
+        public short Sheet { get; set; }
+        public short Label { get; set; }
+        public long CombinationId { get; set; }
+        public DateOnly RequisitionDate { get; set; }
+        public string RequisitionNo { get; set; } = null!;
+        public decimal ChallanAmount { get; set; }
+        public string RaisedToTreasury { get; set; } = null!;
     }
 }
