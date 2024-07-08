@@ -98,6 +98,7 @@ namespace CTS_BE.DTOs   // TODO: Update API will be required in future.
         public bool? IsActive { get; set; }
 
         public bool? ActiveAtGrips { get; set; }
+        
         public string? VendorPhoto { get; set; }
 
         public string? VendorPanPhoto { get; set; }
@@ -111,6 +112,20 @@ namespace CTS_BE.DTOs   // TODO: Update API will be required in future.
         public DateTime? UpdatedAt { get; set; }
 
         public long? UpdatedBy { get; set; }
+    }
+    
+    public class StampVendorDetailsDropdownDTO
+    {
+        public long StampVendorId { get; set; }
+
+        public string? VendorType { get; set; }
+
+        public string LicenseNo { get; set; } = null!;
+
+        public long? PhoneNumber { get; set; }
+
+        public string PanNumber { get; set; } = null!;
+
     }
 
     public class VendorTypeDTO

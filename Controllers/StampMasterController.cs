@@ -496,7 +496,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Effective From",
-                            DataType = "text",
+                            DataType = "date",
                             FieldName = "effectiveFrom",
                             FilterField = "EffectiveFrom",
                             IsFilterable = true,
@@ -505,7 +505,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Valid Upto",
-                            DataType = "text",
+                            DataType = "data",
                             FieldName = "validUpto",
                             FilterField = "ValidUpto",
                             IsFilterable = true,
@@ -607,12 +607,12 @@ namespace CTS_BE.Controllers
         }
 
         [HttpGet("GetALLStampVendors")]
-        public async Task<APIResponse<IEnumerable<StampVendorDTO>>> GetALLStampVendors()
+        public async Task<APIResponse<IEnumerable<StampVendorDetailsDropdownDTO>>> GetALLStampVendors()
         {
-            APIResponse<IEnumerable<StampVendorDTO>> response = new();
+            APIResponse<IEnumerable<StampVendorDetailsDropdownDTO>> response = new();
             try
             {
-                IEnumerable<StampVendorDTO> allStampVendors = await _stampMasterService.GetAllStampVendors();
+                IEnumerable<StampVendorDetailsDropdownDTO> allStampVendors = await _stampMasterService.GetAllStampVendors();
                 if (allStampVendors.Count() > 0)
                 {
                     response.apiResponseStatus = Enum.APIResponseStatus.Success;

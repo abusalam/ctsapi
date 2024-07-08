@@ -622,6 +622,10 @@ public partial class CTSDBContext : DbContext
             entity.HasKey(e => e.DiscountId).HasName("discount_details_pkey");
 
             entity.Property(e => e.IsActive).HasDefaultValueSql("true");
+
+            entity.HasOne(d => d.VendorTypeNavigation).WithMany(p => p.DiscountDetails)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("discount_details_vendor_type_fkey");
         });
 
         modelBuilder.Entity<EcsNeftDetail>(entity =>
@@ -843,6 +847,10 @@ public partial class CTSDBContext : DbContext
 
             entity.Property(e => e.StampVendorId).HasDefaultValueSql("nextval('cts_master.stamp_vendor_vendor_code_seq'::regclass)");
             entity.Property(e => e.IsActive).HasDefaultValueSql("true");
+
+            entity.HasOne(d => d.VendorTypeNavigation).WithMany(p => p.StampVendors)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("stamp_vendor_vendor_type_fkey");
         });
 
         modelBuilder.Entity<StampVendorType>(entity =>
