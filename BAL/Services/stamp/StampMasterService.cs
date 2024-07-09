@@ -250,6 +250,7 @@ namespace CTS_BE.BAL.Services.stamp
                 PanNumber = entity.PanNumber,
                 PhoneNumber = entity.PhoneNumber,
                 StampVendorId = entity.StampVendorId,
+                VendorTypeId = entity.VendorType,
                 VendorType = entity.VendorTypeNavigation.VendorType,
                 //EffectiveFrom = entity.EffectiveFrom.ToString(),
                 //Address = entity.Address,
@@ -449,6 +450,20 @@ namespace CTS_BE.BAL.Services.stamp
             return await Task.FromResult(false);
         }
 
+        public async Task<decimal> GetDiscount(long vendorTypeId, long stampCategoryId, decimal amount)
+        {
+            var discount = await _discountDetailRepo.GetSingleSelectedColumnByConditionAsync(
+                entity => entity.IsActive == true && entity.VendorType == vendorTypeId && entity.StampCategoryId == stampCategoryId && amount >= entity.DenominationFrom && amount <= entity.DenominationTo,
+                entity => new DiscountDetailsDTO
+                {
+                    Discount = entity.Discount
+                });
+            if (discount != null )
+            {
+                return discount.Discount;
+            }
+            return 0;
+        }
         // Stamp combination
         public async Task<IEnumerable<StampCombinationDTO>> StampCombinationList(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null)
         {
@@ -497,6 +512,7 @@ namespace CTS_BE.BAL.Services.stamp
                 entity => new GetAllStampCombinationDTO
             {
                 StampCombinationId = entity.StampCombinationId,
+                StampCategoryId = entity.StampCategoryId,
                 StampCategory1 = entity.StampCategory.StampCategory1,
                 Description = entity.StampCategory.Description,
                 Denomination = entity.StampType.Denomination,
@@ -521,8 +537,6 @@ namespace CTS_BE.BAL.Services.stamp
             }
             return await Task.FromResult(false);
         }
-
-
 
     }
 }

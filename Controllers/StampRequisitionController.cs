@@ -91,15 +91,6 @@ namespace CTS_BE.Controllers
                         },
                         new ListHeader
                         {
-                            Name = "Status",
-                            DataType = "string",
-                            FieldName = "status",
-                            FilterField = "Status",
-                            IsFilterable = true,
-                            IsSortable = true,
-                        },
-                        new ListHeader
-                        {
                             Name = "Requisition Date",
                             DataType = "date",
                             FieldName = "requisitionDate",
@@ -142,8 +133,72 @@ namespace CTS_BE.Controllers
                             FilterField = "RequisitionNo",
                             IsFilterable = true,
                             IsSortable = true,
-                        }
+                        },
+                         new ListHeader
+                         {
+                             Name ="Status",
+                            DataType = "object",
+                            ObjectTypeValueField="statusId",
+                            FieldName = "status",
+                            FilterField = "Status",
+                            FilterEnums = new List<FilterEnum>
+                            {
+                                /*
+                                DeliveredToVendor = 37*/
 
+                                new FilterEnum
+                                {
+                                    Value = (int) Enum.StampRequisitionStatusEnum.ForwardedToStampCleck,
+                                    Label = "Forwarded to Stamp Clerk",
+                                    StyleClass = "primary"
+                                },
+                                new FilterEnum
+                                {
+                                    Value = (int) Enum.StampRequisitionStatusEnum.ForwardedToTreasuryOfficer,
+                                    Label = "Forwarded to Treasury Officer",
+                                    StyleClass = "primary"
+                                },
+                                new FilterEnum
+                                {
+                                    Value = (int) Enum.StampRequisitionStatusEnum.RejectedByStampClerk,
+                                    Label = "Rejected By Stamp Clerk",
+                                    StyleClass = "warning"
+                                },
+                                new FilterEnum
+                                {
+                                    Value = (int) Enum.StampRequisitionStatusEnum.WaitingForPayment,
+                                    Label = "Waiting For Payment",
+                                    StyleClass = "primary"
+                                },
+                                new FilterEnum
+                                {
+                                    Value = (int) Enum.StampRequisitionStatusEnum.RejectedByTreasuryOfficer,
+                                    Label = "Rejected by Treasury Officer",
+                                    StyleClass = "warning"
+                                },
+                                new FilterEnum
+                                {
+                                    Value = (int) Enum.StampRequisitionStatusEnum.WaitingForTreasuryOfficerVerification,
+                                    Label = "Waiting For Treasury Officer Verification",
+                                    StyleClass = "primary"
+                                },
+                                new FilterEnum
+                                {
+                                    Value = (int) Enum.StampRequisitionStatusEnum.VerifiedByTreasuryOfficer,
+                                    Label = "Verified By Treasury Officer",
+                                    StyleClass = "success"
+                                },
+                                new FilterEnum
+                                {
+                                    Value = (int) Enum.StampRequisitionStatusEnum.DeliveredToVendor,
+                                    Label = "Delivered To Vendorr",
+                                    StyleClass = "success"
+                                },
+
+                            },
+                            IsFilterable = true,
+                            IsSortable = true,
+                        }
                     },
 
                     Data = indentList,

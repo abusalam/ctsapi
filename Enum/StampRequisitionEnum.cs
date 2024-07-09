@@ -5,10 +5,10 @@
         ForwardedToStampCleck = 30,
 
         ForwardedToTreasuryOfficer = 31,
-        RejectByStampClerk = 32,
+        RejectedByStampClerk = 32,
 
         WaitingForPayment = 33,
-        RejectByTreasuryOfficer = 34,
+        RejectedByTreasuryOfficer = 34,
 
         WaitingForTreasuryOfficerVerification = 35,
         VerifiedByTreasuryOfficer = 36,
