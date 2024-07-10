@@ -16,10 +16,10 @@ public partial class VendorRequisitionChallanGenerate
     [Column("vendor_requisition_staging_id")]
     public long VendorRequisitionStagingId { get; set; }
 
-    [Column("sheet_by_TO")]
+    [Column("sheet_by_to")]
     public short SheetByTo { get; set; }
 
-    [Column("label_by_TO")]
+    [Column("label_by_to")]
     public short LabelByTo { get; set; }
 
     [Column("discounted_amount")]

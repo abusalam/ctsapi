@@ -3,10 +3,7 @@ using CTS_BE.BAL.Interfaces.stampRequisition;
 using CTS_BE.DAL.Entities;
 using CTS_BE.DAL.Interfaces.stampRequisition;
 using CTS_BE.DTOs;
-using CTS_BE.Enum;
 using CTS_BE.Helper.Authentication;
-using Renci.SshNet;
-using System.Reflection.Emit;
 
 namespace CTS_BE.BAL.Services.stampRequisition
 {
@@ -60,6 +57,59 @@ namespace CTS_BE.BAL.Services.stampRequisition
                 _stampRequisitionRepo.SaveChangesManaged();
                 return await Task.FromResult(true);
         }
+
+        public async Task<bool> RequisitionApprovedByStampClerk(StampRequisitionApprovedByClerkDTO stampRequisition)
+        {
+            if(stampRequisition != null && await _stampRequisitionRepo.ApproveByStampClerk(stampRequisition.VendorStampRequisitionId, stampRequisition.SheetByClerk, stampRequisition.LabelByClerk))
+            {
+                return true;
+            }
+            return false;
+        }
+        public async Task<bool> RequisitionRejectedByStampClerk(long stampRequisitionId)
+        {
+                var data = await _stampRequisitionRepo.GetSingleAysnc(e => e.VendorStampRequisitionId == stampRequisitionId);
+                if(data != null)
+                {
+                    data.StatusId = 32;
+                    data.UpdatedBy = _auth.GetUserId();
+                    data.UpdatedAt = DateTime.Now;
+                    _stampRequisitionRepo.Update(data);
+                    _stampRequisitionRepo.SaveChangesManaged();
+                    return true;
+                }
+                return false;
+        }
+
+        public async Task<bool> RequisitionApprovedByTO(StampRequisitionApprovedByTODTO stampRequisition)
+        {
+            //public long VendorRequisitionStagingId { get; set; }
+            //public short SheetByTo { get; set; }
+            //public short LabelByTo { get; set; }
+            //public decimal DiscountedAmount { get; set; }
+            //public decimal TaxAmount { get; set; }
+            //public decimal ChallanAmount { get; set; }
+            if (stampRequisition != null && await _stampRequisitionRepo.ApproveByTO(stampRequisition))
+            {
+                return true;
+            }
+            return false;
+        }
+        //public async Task<bool> RequisitionRejectedByTO(long stampRequisitionStagingId)
+        //{
+        //    var data = await _stampRequisitionRepo.GetSingleAysnc(e => e.VendorStampRequisitionId == stampRequisitionId);
+        //    if (data != null)
+        //    {
+        //        data.StatusId = 34;
+        //        data.UpdatedBy = _auth.GetUserId();
+        //        data.UpdatedAt = DateTime.Now;
+        //        _stampRequisitionRepo.Update(data);
+        //        _stampRequisitionRepo.SaveChangesManaged();
+        //        return true;
+        //    }
+        //    return false;
+        //}
+
 
     }
 }
