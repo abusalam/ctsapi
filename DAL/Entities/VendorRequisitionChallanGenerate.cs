@@ -34,8 +34,11 @@ public partial class VendorRequisitionChallanGenerate
     [Precision(10, 2)]
     public decimal ChallanAmount { get; set; }
 
-    [Column("challan_id")]
-    public long ChallanId { get; set; }
+    [Column("head", TypeName = "character varying")]
+    public string? Head { get; set; }
+
+    [Column("requisition_no", TypeName = "character varying")]
+    public string? RequisitionNo { get; set; }
 
     [ForeignKey("VendorRequisitionStagingId")]
     [InverseProperty("VendorRequisitionChallanGenerates")]

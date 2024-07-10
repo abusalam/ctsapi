@@ -83,32 +83,26 @@ namespace CTS_BE.BAL.Services.stampRequisition
 
         public async Task<bool> RequisitionApprovedByTO(StampRequisitionApprovedByTODTO stampRequisition)
         {
-            //public long VendorRequisitionStagingId { get; set; }
-            //public short SheetByTo { get; set; }
-            //public short LabelByTo { get; set; }
-            //public decimal DiscountedAmount { get; set; }
-            //public decimal TaxAmount { get; set; }
-            //public decimal ChallanAmount { get; set; }
             if (stampRequisition != null && await _stampRequisitionRepo.ApproveByTO(stampRequisition))
             {
                 return true;
             }
             return false;
         }
-        //public async Task<bool> RequisitionRejectedByTO(long stampRequisitionStagingId)
-        //{
-        //    var data = await _stampRequisitionRepo.GetSingleAysnc(e => e.VendorStampRequisitionId == stampRequisitionId);
-        //    if (data != null)
-        //    {
-        //        data.StatusId = 34;
-        //        data.UpdatedBy = _auth.GetUserId();
-        //        data.UpdatedAt = DateTime.Now;
-        //        _stampRequisitionRepo.Update(data);
-        //        _stampRequisitionRepo.SaveChangesManaged();
-        //        return true;
-        //    }
-        //    return false;
-        //}
+        public async Task<bool> RequisitionRejectedByTO(long stampRequisitionStagingId)
+        {
+            var data = await _stampRequisitionRepo.GetSingleAysnc(e => e.VendorRequisitionStagingId == stampRequisitionStagingId);
+            if (data != null)
+            {
+                data.StatusId = 34;
+                data.UpdatedBy = _auth.GetUserId();
+                data.UpdatedAt = DateTime.Now;
+                _stampRequisitionRepo.Update(data);
+                _stampRequisitionRepo.SaveChangesManaged();
+                return true;
+            }
+            return false;
+        }
 
 
     }
