@@ -6,27 +6,32 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Entities;
 
-[Table("ddo_allotment_actual", Schema = "cts")]
-public partial class DdoAllotmentActual
+[Table("ddo_allotment_booked_bill", Schema = "billing")]
+public partial class DdoAllotmentBookedBill
 {
     [Key]
-    [Column("allotment_id")]
-    public long AllotmentId { get; set; }
+    [Column("id")]
+    public int Id { get; set; }
 
-    [Column("active_hoa_id")]
-    public long? ActiveHoaId { get; set; }
+    [Column("bill_id")]
+    public long BillId { get; set; }
+
+    [Column("allotment_id")]
+    public long? AllotmentId { get; set; }
+
+    [Column("amount")]
+    public double Amount { get; set; }
+
+    [Column("ddo_user_id")]
+    public int? DdoUserId { get; set; }
+
+    [Column("ddo_code")]
+    [StringLength(9)]
+    public string DdoCode { get; set; } = null!;
 
     [Column("treasury_code")]
     [StringLength(3)]
     public string TreasuryCode { get; set; } = null!;
-
-    [Column("sao_ddo_code")]
-    [StringLength(12)]
-    public string SaoDdoCode { get; set; } = null!;
-
-    [Column("actual_released_amount")]
-    [Precision(10, 0)]
-    public decimal? ActualReleasedAmount { get; set; }
 
     [Column("created_by_userid")]
     public long? CreatedByUserid { get; set; }
@@ -43,15 +48,18 @@ public partial class DdoAllotmentActual
     [Column("financial_year")]
     public short FinancialYear { get; set; }
 
-    [Column("in_process_amount")]
-    [Precision(10, 2)]
-    public decimal? InProcessAmount { get; set; }
+    [Column("active_hoa_id")]
+    public long ActiveHoaId { get; set; }
+
+    [ForeignKey("AllotmentId")]
+    [InverseProperty("DdoAllotmentBookedBills")]
+    public virtual DdoAllotmentTransaction? Allotment { get; set; }
+
+    public virtual Ddo DdoCodeNavigation { get; set; } = null!;
 
     [ForeignKey("FinancialYear")]
-    [InverseProperty("DdoAllotmentActuals")]
+    [InverseProperty("DdoAllotmentBookedBills")]
     public virtual FinancialYearMaster FinancialYearNavigation { get; set; } = null!;
-
-    public virtual Ddo SaoDdoCodeNavigation { get; set; } = null!;
 
     public virtual Treasury TreasuryCodeNavigation { get; set; } = null!;
 }

@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Entities;
 
-[Table("ddo_wallet_actual", Schema = "cts")]
-[Index("SaoDdoCode", "ActiveHoaId", Name = "ddo_wallet_actual_sao_ddo_code_active_hoa_id_key", IsUnique = true)]
-public partial class DdoWalletActual
+[Table("ddo_wallet_provisional", Schema = "billing")]
+[Index("SaoDdoCode", "ActiveHoaId", Name = "ddo_wallet_provisional_sao_ddo_code_active_hoa_id_key", IsUnique = true)]
+public partial class DdoWalletProvisional
 {
     [Column("treasury_code")]
     [StringLength(3)]
@@ -18,9 +18,9 @@ public partial class DdoWalletActual
     [StringLength(12)]
     public string SaoDdoCode { get; set; } = null!;
 
-    [Column("actual_released_amount")]
+    [Column("provisional_released_amount")]
     [Precision(10, 0)]
-    public decimal? ActualReleasedAmount { get; set; }
+    public decimal? ProvisionalReleasedAmount { get; set; }
 
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime CreatedAt { get; set; }
@@ -44,12 +44,8 @@ public partial class DdoWalletActual
     [Column("active_hoa_id")]
     public long? ActiveHoaId { get; set; }
 
-    [Column("in_process_amount")]
-    [Precision(10, 2)]
-    public decimal? InProcessAmount { get; set; }
-
     [ForeignKey("FinancialYear")]
-    [InverseProperty("DdoWalletActuals")]
+    [InverseProperty("DdoWalletProvisionals")]
     public virtual FinancialYearMaster FinancialYearNavigation { get; set; } = null!;
 
     public virtual Ddo SaoDdoCodeNavigation { get; set; } = null!;
@@ -57,6 +53,6 @@ public partial class DdoWalletActual
     public virtual Treasury TreasuryCodeNavigation { get; set; } = null!;
 
     [ForeignKey("WalletId")]
-    [InverseProperty("DdoWalletActual")]
+    [InverseProperty("DdoWalletProvisional")]
     public virtual DdoWallet Wallet { get; set; } = null!;
 }

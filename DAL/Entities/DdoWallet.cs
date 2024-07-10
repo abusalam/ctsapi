@@ -112,4 +112,7 @@ public partial class DdoWallet
 
     [InverseProperty("Wallet")]
     public virtual DdoWalletActual? DdoWalletActual { get; set; }
+
+    [InverseProperty("Wallet")]
+    public virtual DdoWalletProvisional? DdoWalletProvisional { get; set; }
 }

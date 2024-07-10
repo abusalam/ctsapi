@@ -37,9 +37,13 @@ public partial class Treasury
 
     public virtual ICollection<DdoAllotmentActual> DdoAllotmentActuals { get; set; } = new List<DdoAllotmentActual>();
 
+    public virtual ICollection<DdoAllotmentBookedBill> DdoAllotmentBookedBills { get; set; } = new List<DdoAllotmentBookedBill>();
+
     public virtual ICollection<DdoAllotmentProvisional> DdoAllotmentProvisionals { get; set; } = new List<DdoAllotmentProvisional>();
 
     public virtual ICollection<DdoWalletActual> DdoWalletActuals { get; set; } = new List<DdoWalletActual>();
+
+    public virtual ICollection<DdoWalletProvisional> DdoWalletProvisionals { get; set; } = new List<DdoWalletProvisional>();
 
     public virtual ICollection<StampWalletTransaction> StampWalletTransactions { get; set; } = new List<StampWalletTransaction>();
 

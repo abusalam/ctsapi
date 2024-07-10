@@ -45,8 +45,14 @@ public partial class FinancialYearMaster
     public virtual ICollection<DdoAllotmentActual> DdoAllotmentActuals { get; set; } = new List<DdoAllotmentActual>();
 
     [InverseProperty("FinancialYearNavigation")]
+    public virtual ICollection<DdoAllotmentBookedBill> DdoAllotmentBookedBills { get; set; } = new List<DdoAllotmentBookedBill>();
+
+    [InverseProperty("FinancialYearNavigation")]
     public virtual ICollection<DdoAllotmentProvisional> DdoAllotmentProvisionals { get; set; } = new List<DdoAllotmentProvisional>();
 
     [InverseProperty("FinancialYearNavigation")]
     public virtual ICollection<DdoWalletActual> DdoWalletActuals { get; set; } = new List<DdoWalletActual>();
+
+    [InverseProperty("FinancialYearNavigation")]
+    public virtual ICollection<DdoWalletProvisional> DdoWalletProvisionals { get; set; } = new List<DdoWalletProvisional>();
 }
