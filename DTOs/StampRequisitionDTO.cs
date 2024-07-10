@@ -34,4 +34,19 @@ namespace CTS_BE.DTOs
         public decimal ChallanAmount { get; set; }
         public string RaisedToTreasury { get; set; } = null!;
     }
+    public class StampRequisitionApprovedByClerkDTO
+    {
+        public long VendorStampRequisitionId { get; set; }
+        public short SheetByClerk { get; set; }
+        public short LabelByClerk { get; set; }
+    }
+    public class StampRequisitionApprovedByTODTO
+    {
+        public long VendorRequisitionStagingId { get; set; }
+        public short SheetByTo { get; set; }
+        public short LabelByTo { get; set; }
+        public decimal DiscountedAmount { get; set; }
+        public decimal TaxAmount { get; set; }
+        public decimal ChallanAmount { get; set; }
+    }
 }

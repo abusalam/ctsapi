@@ -56,6 +56,7 @@ namespace CTS_BE.Common
         public const string InvalidTreasuryCode = "Treasury code does not exists.";
         public const string WalletUpdated = "Wallet updated successfully.";
         public const string RequisitionRaised = "Stamp Requisition Raised.";
+        public const string ForwardedToTreasuryOfficer = "Forwarded To Treasury Officer.";
     }
 }
 
