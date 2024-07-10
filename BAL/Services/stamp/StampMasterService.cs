@@ -273,6 +273,7 @@ namespace CTS_BE.BAL.Services.stamp
             var stampVen = _mapper.Map<StampVendor>(stampVendor);
             stampVen.CreatedAt = DateTime.Now;
             stampVen.CreatedBy = _auth.GetUserId();
+            stampVen.Treasury = _auth.GetScope();
             stampVen.VendorPhoto = vendorPhoto;
             stampVen.VendorPanPhoto = vendorPanPhoto;
             stampVen.VendorLicencePhoto = vendorLicencePhoto;

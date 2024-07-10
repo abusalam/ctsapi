@@ -29,7 +29,7 @@ namespace CTS_BE.DTOs
         public short Sheet { get; set; }
         public short Label { get; set; }
         public long CombinationId { get; set; }
-        public DateOnly RequisitionDate { get; set; }
+        public DateTime? RequisitionDate { get; set; }
         public string RequisitionNo { get; set; } = null!;
         public decimal ChallanAmount { get; set; }
         public string RaisedToTreasury { get; set; } = null!;

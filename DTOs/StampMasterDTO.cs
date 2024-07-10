@@ -153,8 +153,8 @@ namespace CTS_BE.DTOs   // TODO: Update API will be required in future.
         [Required]
         public string? VendorName { get; set; }
         
-        [Required]
-        public string? Treasury { get; set; }
+        //[Required]
+        //public string? Treasury { get; set; }
 
         [Required]
         public string LicenseNo { get; set; } = null!;
