@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.DAL.Entities;
 
 [Table("ddo_allotment_booked_bill", Schema = "billing")]
+[Index("AllotmentId", Name = "fki_c")]
 public partial class DdoAllotmentBookedBill
 {
     [Key]
@@ -53,7 +54,11 @@ public partial class DdoAllotmentBookedBill
 
     [ForeignKey("AllotmentId")]
     [InverseProperty("DdoAllotmentBookedBills")]
-    public virtual DdoAllotmentTransaction? Allotment { get; set; }
+    public virtual DdoAllotmentActual? Allotment { get; set; }
+
+    [ForeignKey("AllotmentId")]
+    [InverseProperty("DdoAllotmentBookedBills")]
+    public virtual DdoAllotmentTransaction? AllotmentNavigation { get; set; }
 
     public virtual Ddo DdoCodeNavigation { get; set; } = null!;
 

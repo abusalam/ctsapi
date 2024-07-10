@@ -104,6 +104,67 @@ namespace CTS_BE.BAL.Services.stampRequisition
             return false;
         }
 
+        public async Task<IEnumerable<StampRequisitionDTO>> ListAllStampRequisitionsForClerk(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null)
+        {
+            IEnumerable<StampRequisitionDTO> stampRequisitionList = await _stampRequisitionRepo.GetSelectedColumnByConditionAsync(
+                entity => entity.StatusId == (int) Enum.StampRequisitionStatusEnum.ForwardedToStampCleck,
+            entity => new StampRequisitionDTO
+            {
+                VendorStampRequisitionId = entity.VendorStampRequisitionId,
+                VendorId = entity.VendorId,
+                VendorType = entity.Vendor.VendorTypeNavigation.VendorType,
+                LicenseNo = entity.Vendor.LicenseNo,
+                Quantity = ((short)(entity.Sheet * entity.Combination.StampLabel.NoLabelPerSheet + entity.Label)),
+                Amount = (entity.Sheet * entity.Combination.StampLabel.NoLabelPerSheet + entity.Label) * entity.Combination.StampType.Denomination,
+                Status = entity.Status.Name,
+                RequisitionDate = entity.RequisitionDate,
+                VendorName = entity.Vendor.VendorName,
+                RaisedToTreasury = entity.RaisedToTreasury,
+                RequisitionNo = entity.RequisitionNo,
+                Sheet = entity.Sheet,
+                Label = entity.Label,
+            }, pageIndex, pageSize, filters, (sortParameters != null) ? sortParameters.Field : null, (sortParameters != null) ? sortParameters.Order : null);
+            return stampRequisitionList;
+        }
+
+        public async Task<IEnumerable<StampRequisitionDTO>> ListAllStampRequisitionsForTO(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null)
+        {
+            IEnumerable<StampRequisitionDTO> stampRequisitionList = await _stampRequisitionRepo.GetSelectedColumnByConditionAsync(
+                entity => entity.StatusId == (int)Enum.StampRequisitionStatusEnum.ForwardedToTreasuryOfficer || entity.StatusId == (int)Enum.StampRequisitionStatusEnum.WaitingForTreasuryOfficerVerification,
+            entity => new StampRequisitionDTO
+            {
+                VendorStampRequisitionId = entity.VendorStampRequisitionId,
+                VendorId = entity.VendorId,
+                VendorType = entity.Vendor.VendorTypeNavigation.VendorType,
+                LicenseNo = entity.Vendor.LicenseNo,
+                Quantity = ((short)(entity.Sheet * entity.Combination.StampLabel.NoLabelPerSheet + entity.Label)),
+                Amount = (entity.Sheet * entity.Combination.StampLabel.NoLabelPerSheet + entity.Label) * entity.Combination.StampType.Denomination,
+                Status = entity.Status.Name,
+                RequisitionDate = entity.RequisitionDate,
+                VendorName = entity.Vendor.VendorName,
+                RaisedToTreasury = entity.RaisedToTreasury,
+                RequisitionNo = entity.RequisitionNo,
+                Sheet = entity.Sheet,
+                Label = entity.Label,
+            }, pageIndex, pageSize, filters, (sortParameters != null) ? sortParameters.Field : null, (sortParameters != null) ? sortParameters.Order : null);
+            return stampRequisitionList;
+        }
+
+        public async Task<bool> DeliveredByDEO(long stampRequisitionId)
+        {
+            // store procedure to update the clear balance //todo
+            var data = await _stampRequisitionRepo.GetSingleAysnc(e => e.VendorStampRequisitionId == stampRequisitionId);
+            if (data != null)
+            {
+                data.StatusId = (int) Enum.StampRequisitionStatusEnum.DeliveredToVendor;
+                data.UpdatedBy = _auth.GetUserId();
+                data.UpdatedAt = DateTime.Now;
+                _stampRequisitionRepo.Update(data);
+                _stampRequisitionRepo.SaveChangesManaged();
+                return true;
+            }
+            return false;
+        }
 
     }
 }

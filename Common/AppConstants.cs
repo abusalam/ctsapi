@@ -57,6 +57,7 @@ namespace CTS_BE.Common
         public const string WalletUpdated = "Wallet updated successfully.";
         public const string RequisitionRaised = "Stamp Requisition Raised.";
         public const string ForwardedToTreasuryOfficer = "Forwarded To Treasury Officer.";
+        public const string PaymentRequired = "Waiting For Payment.";
     }
 }
 

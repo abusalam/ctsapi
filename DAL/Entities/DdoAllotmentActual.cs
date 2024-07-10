@@ -47,6 +47,9 @@ public partial class DdoAllotmentActual
     [Precision(10, 2)]
     public decimal? InProcessAmount { get; set; }
 
+    [InverseProperty("Allotment")]
+    public virtual ICollection<DdoAllotmentBookedBill> DdoAllotmentBookedBills { get; set; } = new List<DdoAllotmentBookedBill>();
+
     [ForeignKey("FinancialYear")]
     [InverseProperty("DdoAllotmentActuals")]
     public virtual FinancialYearMaster FinancialYearNavigation { get; set; } = null!;

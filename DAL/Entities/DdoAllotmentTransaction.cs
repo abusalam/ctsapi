@@ -160,6 +160,6 @@ public partial class DdoAllotmentTransaction
     [Column("grant_in_aid_type")]
     public short? GrantInAidType { get; set; }
 
-    [InverseProperty("Allotment")]
+    [InverseProperty("AllotmentNavigation")]
     public virtual ICollection<DdoAllotmentBookedBill> DdoAllotmentBookedBills { get; set; } = new List<DdoAllotmentBookedBill>();
 }

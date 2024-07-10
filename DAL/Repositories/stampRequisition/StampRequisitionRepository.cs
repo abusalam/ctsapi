@@ -64,12 +64,14 @@ namespace CTS_BE.DAL.Repositories.stampRequisition
             _label_number.Value = stampRequisition.LabelByTo;
             _discounted_amount.Value = stampRequisition.DiscountedAmount;
             _tax_amount.Value = stampRequisition.TaxAmount;
+            _requisition_no.Value = stampRequisition.RequisitionNo;
             _challan_amount.Value = stampRequisition.ChallanAmount;
+            _head.Value = stampRequisition.Head;
             _is_done_out.Value = false;
 
 
             var parameters = new[] { _vendor_requisition_staging_id, _sheet_number, _label_number, _discounted_amount, _tax_amount, _challan_amount, _requisition_no, _head, _is_done_out };
-            var commandText = "CALL cts.approve_by_stamp_clerk( @_vendor_requisition_staging_id, @_sheet_number, @_label_number, @_discounted_amount, @_tax_amount, @_challan_amount, @_requisition_no, @_head, @_is_done_out )";
+            var commandText = "CALL cts.approve_by_treasury_officer( @_vendor_requisition_staging_id, @_sheet_number, @_label_number, @_discounted_amount, @_tax_amount, @_challan_amount, @_requisition_no, @_head, @_is_done_out )";
             await _context.Database.ExecuteSqlRawAsync(commandText, parameters);
             return (bool)_is_done_out.Value;
         }

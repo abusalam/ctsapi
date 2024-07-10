@@ -610,7 +610,9 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.DdoCode).IsFixedLength();
             entity.Property(e => e.TreasuryCode).IsFixedLength();
 
-            entity.HasOne(d => d.Allotment).WithMany(p => p.DdoAllotmentBookedBills).HasConstraintName("ddo_allotment_booked_bill_allotment_id_fkey");
+            entity.HasOne(d => d.Allotment).WithMany(p => p.DdoAllotmentBookedBills).HasConstraintName("allotment_id_cts_ddo_allotment_actual_fkey");
+
+            entity.HasOne(d => d.AllotmentNavigation).WithMany(p => p.DdoAllotmentBookedBills).HasConstraintName("ddo_allotment_booked_bill_allotment_id_fkey");
 
             entity.HasOne(d => d.DdoCodeNavigation).WithMany(p => p.DdoAllotmentBookedBills)
                 .HasPrincipalKey(p => p.Code)
@@ -950,6 +952,7 @@ public partial class CTSDBContext : DbContext
 
             entity.Property(e => e.IsActive).HasDefaultValueSql("true");
             entity.Property(e => e.StampCategory1).IsFixedLength();
+            entity.Property(e => e.SubDtlHead).IsFixedLength();
         });
 
         modelBuilder.Entity<StampCombination>(entity =>
