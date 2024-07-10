@@ -26,9 +26,15 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<Bank> Banks { get; set; }
 
+    public virtual DbSet<BankMaster> BankMasters { get; set; }
+
     public virtual DbSet<BeneficiariesMaster> BeneficiariesMasters { get; set; }
 
+    public virtual DbSet<BeneficiaryMaster> BeneficiaryMasters { get; set; }
+
     public virtual DbSet<BeneficiaryType> BeneficiaryTypes { get; set; }
+
+    public virtual DbSet<BeneficiaryType1> BeneficiaryTypes1 { get; set; }
 
     public virtual DbSet<BillBtdetail> BillBtdetails { get; set; }
 
@@ -68,13 +74,15 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<Ddo> Ddos { get; set; }
 
-    public virtual DbSet<DdoAllotmentActualrelease> DdoAllotmentActualreleases { get; set; }
+    public virtual DbSet<DdoAllotmentActual> DdoAllotmentActuals { get; set; }
+
+    public virtual DbSet<DdoAllotmentProvisional> DdoAllotmentProvisionals { get; set; }
 
     public virtual DbSet<DdoAllotmentTransaction> DdoAllotmentTransactions { get; set; }
 
     public virtual DbSet<DdoWallet> DdoWallets { get; set; }
 
-    public virtual DbSet<DdoWalletActualrelease> DdoWalletActualreleases { get; set; }
+    public virtual DbSet<DdoWalletActual> DdoWalletActuals { get; set; }
 
     public virtual DbSet<Department> Departments { get; set; }
 
@@ -94,6 +102,8 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<GobalObjection> GobalObjections { get; set; }
 
+    public virtual DbSet<GroupType> GroupTypes { get; set; }
+
     public virtual DbSet<LfplEc> LfplEcs { get; set; }
 
     public virtual DbSet<LocalObjection> LocalObjections { get; set; }
@@ -105,6 +115,8 @@ public partial class CTSDBContext : DbContext
     public virtual DbSet<PaymentAdvice> PaymentAdvices { get; set; }
 
     public virtual DbSet<PaymentAdviceHasBeneficiary> PaymentAdviceHasBeneficiarys { get; set; }
+
+    public virtual DbSet<RbiIfscStock> RbiIfscStocks { get; set; }
 
     public virtual DbSet<Reference> References { get; set; }
 
@@ -230,6 +242,11 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
         });
 
+        modelBuilder.Entity<BankMaster>(entity =>
+        {
+            entity.HasKey(e => e.BankId).HasName("bank_master_pkey");
+        });
+
         modelBuilder.Entity<BeneficiariesMaster>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("beneficiaries_pkey");
@@ -246,9 +263,43 @@ public partial class CTSDBContext : DbContext
                 .HasConstraintName("Fk_beneficiary_type");
         });
 
+        modelBuilder.Entity<BeneficiaryMaster>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("beneficiary_master_pkey");
+
+            entity.Property(e => e.AadhaarNo).IsFixedLength();
+            entity.Property(e => e.GpfNo).IsFixedLength();
+            entity.Property(e => e.GpfPranNumber).IsFixedLength();
+            entity.Property(e => e.MobileNo).IsFixedLength();
+            entity.Property(e => e.PanNo).IsFixedLength();
+            entity.Property(e => e.TrsyCode).IsFixedLength();
+            entity.Property(e => e.VendorGstin).IsFixedLength();
+            entity.Property(e => e.VerifiedByDdo).IsFixedLength();
+
+            entity.HasOne(d => d.BankCodeNavigation).WithMany(p => p.BeneficiaryMasters).HasConstraintName("beneficiary_master_bank_code_fkey");
+
+            entity.HasOne(d => d.BeneficiaryTypeNavigation).WithMany(p => p.BeneficiaryMasters).HasConstraintName("beneficiary_master_beneficiary_type_fkey");
+
+            entity.HasOne(d => d.Group).WithMany(p => p.BeneficiaryMasters).HasConstraintName("beneficiary_master_group_id_fkey");
+
+            entity.HasOne(d => d.IfscCodeNavigation).WithMany(p => p.BeneficiaryMasters).HasConstraintName("beneficiary_master_ifsc_code_fkey");
+
+            entity.HasOne(d => d.VerifiedByDdoNavigation).WithMany(p => p.BeneficiaryMasters)
+                .HasPrincipalKey(p => p.Code)
+                .HasForeignKey(d => d.VerifiedByDdo)
+                .HasConstraintName("beneficiary_master_verified_by_ddo_fkey");
+        });
+
         modelBuilder.Entity<BeneficiaryType>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("Beneficiary_Type_pkey");
+        });
+
+        modelBuilder.Entity<BeneficiaryType1>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("beneficiary_type_pkey");
+
+            entity.Property(e => e.Id).HasDefaultValueSql("nextval('epradan_master.beneficiary_type_id_seq1'::regclass)");
         });
 
         modelBuilder.Entity<BillBtdetail>(entity =>
@@ -522,25 +573,54 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.TreasuryCode).IsFixedLength();
         });
 
-        modelBuilder.Entity<DdoAllotmentActualrelease>(entity =>
+        modelBuilder.Entity<DdoAllotmentActual>(entity =>
         {
             entity.HasKey(e => e.AllotmentId).HasName("ddo_transactions_pkey");
 
-            entity.Property(e => e.AllotmentId).ValueGeneratedNever();
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
-            entity.Property(e => e.DemandNo).IsFixedLength();
-            entity.Property(e => e.DeptCode).IsFixedLength();
-            entity.Property(e => e.DetailHead).IsFixedLength();
-            entity.Property(e => e.FinancialYear).IsFixedLength();
-            entity.Property(e => e.MajorHead).IsFixedLength();
-            entity.Property(e => e.MinorHead).IsFixedLength();
-            entity.Property(e => e.PlanStatus).IsFixedLength();
-            entity.Property(e => e.ReceiverSaoDdoCode).IsFixedLength();
-            entity.Property(e => e.SchemeHead).IsFixedLength();
-            entity.Property(e => e.SenderSaoDdoCode).IsFixedLength();
-            entity.Property(e => e.SubdetailHead).IsFixedLength();
-            entity.Property(e => e.SubmajorHead).IsFixedLength();
+            entity.Property(e => e.SaoDdoCode).IsFixedLength();
             entity.Property(e => e.TreasuryCode).IsFixedLength();
+
+            entity.HasOne(d => d.FinancialYearNavigation).WithMany(p => p.DdoAllotmentActuals)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("ddo_allotment_actual_financial_year_fkey");
+
+            entity.HasOne(d => d.SaoDdoCodeNavigation).WithMany(p => p.DdoAllotmentActuals)
+                .HasPrincipalKey(p => p.Code)
+                .HasForeignKey(d => d.SaoDdoCode)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("ddo_allotment_actual_sao_ddo_code_fkey");
+
+            entity.HasOne(d => d.TreasuryCodeNavigation).WithMany(p => p.DdoAllotmentActuals)
+                .HasPrincipalKey(p => p.Code)
+                .HasForeignKey(d => d.TreasuryCode)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("ddo_allotment_actual_treasury_code_fkey");
+        });
+
+        modelBuilder.Entity<DdoAllotmentProvisional>(entity =>
+        {
+            entity.HasKey(e => e.AllotmentId).HasName("ddo_transactions_pkey");
+
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
+            entity.Property(e => e.SaoDdoCode).IsFixedLength();
+            entity.Property(e => e.TreasuryCode).IsFixedLength();
+
+            entity.HasOne(d => d.FinancialYearNavigation).WithMany(p => p.DdoAllotmentProvisionals)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("ddo_allotment_provisional_financial_year_fkey");
+
+            entity.HasOne(d => d.SaoDdoCodeNavigation).WithMany(p => p.DdoAllotmentProvisionals)
+                .HasPrincipalKey(p => p.Code)
+                .HasForeignKey(d => d.SaoDdoCode)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("ddo_allotment_provisional_sao_ddo_code_fkey");
+
+            entity.HasOne(d => d.TreasuryCodeNavigation).WithMany(p => p.DdoAllotmentProvisionals)
+                .HasPrincipalKey(p => p.Code)
+                .HasForeignKey(d => d.TreasuryCode)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("ddo_allotment_provisional_treasury_code_fkey");
         });
 
         modelBuilder.Entity<DdoAllotmentTransaction>(entity =>
@@ -588,24 +668,34 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.UpdatedAt).HasDefaultValueSql("now()");
         });
 
-        modelBuilder.Entity<DdoWalletActualrelease>(entity =>
+        modelBuilder.Entity<DdoWalletActual>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("ddo_wallet_pk");
+            entity.HasKey(e => e.WalletId).HasName("ddo_wallet_actual_pkey");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.WalletId).ValueGeneratedNever();
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
-            entity.Property(e => e.DemandNo).IsFixedLength();
-            entity.Property(e => e.DeptCode).IsFixedLength();
-            entity.Property(e => e.DetailHead).IsFixedLength();
-            entity.Property(e => e.MajorHead).IsFixedLength();
-            entity.Property(e => e.MinorHead).IsFixedLength();
-            entity.Property(e => e.PlanStatus).IsFixedLength();
             entity.Property(e => e.SaoDdoCode).IsFixedLength();
-            entity.Property(e => e.SchemeHead).IsFixedLength();
-            entity.Property(e => e.SubdetailHead).IsFixedLength();
-            entity.Property(e => e.SubmajorHead).IsFixedLength();
             entity.Property(e => e.TreasuryCode).IsFixedLength();
-            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("now()");
+
+            entity.HasOne(d => d.FinancialYearNavigation).WithMany(p => p.DdoWalletActuals)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("ddo_wallet_actual_financial_year_fkey");
+
+            entity.HasOne(d => d.SaoDdoCodeNavigation).WithMany(p => p.DdoWalletActuals)
+                .HasPrincipalKey(p => p.Code)
+                .HasForeignKey(d => d.SaoDdoCode)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("ddo_wallet_actual_sao_ddo_code_fkey");
+
+            entity.HasOne(d => d.TreasuryCodeNavigation).WithMany(p => p.DdoWalletActuals)
+                .HasPrincipalKey(p => p.Code)
+                .HasForeignKey(d => d.TreasuryCode)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("ddo_wallet_actual_treasury_code_fkey");
+
+            entity.HasOne(d => d.Wallet).WithOne(p => p.DdoWalletActual)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("ddo_wallet_actual_wallet_id_fkey");
         });
 
         modelBuilder.Entity<Department>(entity =>
@@ -649,6 +739,12 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.IfscCode).IsFixedLength();
             entity.Property(e => e.IsActive).HasDefaultValueSql("1");
             entity.Property(e => e.PanNo).IsFixedLength();
+
+            entity.HasOne(d => d.Bill).WithMany()
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("bill_id_fkey");
+
+            entity.HasOne(d => d.PayeeTypeNavigation).WithMany().HasConstraintName("payee_type_fkey");
         });
 
         modelBuilder.Entity<EcsNeftPaymentStatusDetail>(entity =>
@@ -684,6 +780,11 @@ public partial class CTSDBContext : DbContext
             entity.HasKey(e => e.Id).HasName("gobal_objection_pkey");
 
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
+        });
+
+        modelBuilder.Entity<GroupType>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("group_type_pkey");
         });
 
         modelBuilder.Entity<LfplEc>(entity =>
@@ -859,6 +960,7 @@ public partial class CTSDBContext : DbContext
 
             entity.Property(e => e.StampVendorId).HasDefaultValueSql("nextval('cts_master.stamp_vendor_vendor_code_seq'::regclass)");
             entity.Property(e => e.IsActive).HasDefaultValueSql("true");
+            entity.Property(e => e.Treasury).IsFixedLength();
 
             entity.HasOne(d => d.VendorTypeNavigation).WithMany(p => p.StampVendors)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -1107,6 +1209,10 @@ public partial class CTSDBContext : DbContext
             entity.HasOne(d => d.Status).WithMany(p => p.VendorStampRequisitions)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("vendor_stamp_requisition_status_id_fkey");
+
+            entity.HasOne(d => d.Vendor).WithMany(p => p.VendorStampRequisitions)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("vendor_stamp_requisition_vendor_id_fkey");
 
             entity.HasOne(d => d.VendorRequisitionApprove).WithMany(p => p.VendorStampRequisitions).HasConstraintName("vendor_stamp_requisition_vendor_requisition_approve_id_fkey");
 

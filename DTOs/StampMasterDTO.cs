@@ -90,6 +90,9 @@ namespace CTS_BE.DTOs   // TODO: Update API will be required in future.
 
         public long? PhoneNumber { get; set; }
 
+        public string? VendorTreasury { get; set; }
+
+
         public string? EffectiveFrom { get; set; }
 
         public string? ValidUpto { get; set; }
@@ -124,6 +127,8 @@ namespace CTS_BE.DTOs   // TODO: Update API will be required in future.
         public long? VendorTypeId { get; set; }
         
         public string? VendorType { get; set; }
+        
+        public string? VendorTreasury { get; set; }
 
         public string LicenseNo { get; set; } = null!;
 
@@ -147,6 +152,9 @@ namespace CTS_BE.DTOs   // TODO: Update API will be required in future.
         
         [Required]
         public string? VendorName { get; set; }
+        
+        [Required]
+        public string? Treasury { get; set; }
 
         [Required]
         public string LicenseNo { get; set; } = null!;

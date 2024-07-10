@@ -109,4 +109,7 @@ public partial class DdoWallet
     [Column("treasury_code")]
     [StringLength(3)]
     public string? TreasuryCode { get; set; }
+
+    [InverseProperty("Wallet")]
+    public virtual DdoWalletActual? DdoWalletActual { get; set; }
 }

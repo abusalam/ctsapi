@@ -477,6 +477,15 @@ namespace CTS_BE.Controllers
                         },
                         new ListHeader
                         {
+                            Name ="Treasury",
+                            DataType = "text",
+                            FieldName = "vendorTreasury",
+                            FilterField = "VendorTreasury",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
                             Name ="License No",
                             DataType = "text",
                             FieldName = "licenseNo",
