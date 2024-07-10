@@ -121,6 +121,8 @@ namespace CTS_BE.DTOs   // TODO: Update API will be required in future.
 
         public string? VendorName { get; set; }
 
+        public long? VendorTypeId { get; set; }
+        
         public string? VendorType { get; set; }
 
         public string LicenseNo { get; set; } = null!;
@@ -259,6 +261,7 @@ namespace CTS_BE.DTOs   // TODO: Update API will be required in future.
     public class GetAllStampCombinationDTO
     {
         public long StampCombinationId { get; set; }
+        public long? StampCategoryId { get; set; }
         public string? StampCategory1 { get; set; }
         public string? Description { get; set; }
         public decimal Denomination { get; set; }

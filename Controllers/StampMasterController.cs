@@ -1152,6 +1152,35 @@ namespace CTS_BE.Controllers
                 return response;
             }
         }
+        
+        [HttpGet("GetDiscount")]
+        public async Task<APIResponse<decimal>> GetDiscount(long vendorTypeId, long stampCategoryId, decimal amount)
+        {
+            APIResponse<decimal> response = new();
+            try
+            {
+                var discount = await _stampMasterService.GetDiscount(vendorTypeId, stampCategoryId, amount);
+                if (discount != null)
+                {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                    response.result = discount;
+                    response.Message = AppConstants.DataFound;
+                }
+                else
+                {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.result = 0;
+                    response.Message = AppConstants.DataNotFound;
+                }
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = ex.Message;
+                return response;
+            }
+        }
        
         // Stamp combination details
         [HttpPatch("StampCombinationList")]
