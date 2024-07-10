@@ -308,6 +308,61 @@ namespace CTS_BE.Controllers
                 return response;
             }
         }
+        
+        [HttpPost("StampRequisitionApprovedByTreasuryOfficer")]
+        public async Task<APIResponse<bool>> StampRequisitionApprovedByTreasuryOfficer(StampRequisitionApprovedByTODTO stampRequisition)
+        {
+            APIResponse<bool> response = new();
+            try
+            {
+                if (stampRequisition != null)
+                {
+                    if (await _stampRequisitionService.RequisitionApprovedByTO(stampRequisition))
+                    {
+                        response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                        response.Message = AppConstants.ForwardedToTreasuryOfficer;
+                        response.result = true;
+                        return response;
+                    }
+                }
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.result = false;
+                response.Message = AppConstants.MissingField;
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = ex.Message;
+                return response;
+            }
+        }
+
+        [HttpGet("StampRequisitionRejectedByTreasuryOfficer")]
+        public async Task<APIResponse<bool>> StampRequisitionRejectedByTreasuryOfficer(long stampRequisitionId)
+        {
+            APIResponse<bool> response = new();
+            try
+            {
+                    if (await _stampRequisitionService.RequisitionRejectedByTO(stampRequisitionId))
+                    {
+                        response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                        response.Message = AppConstants.ForwardedToTreasuryOfficer;
+                        response.result = true;
+                        return response;
+                    }
+                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.result = false;
+                    response.Message = AppConstants.MissingField;
+                    return response;
+            }
+            catch (Exception ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = ex.Message;
+                return response;
+            }
+        }
 
     }
 }
