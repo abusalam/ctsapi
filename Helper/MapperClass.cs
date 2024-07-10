@@ -36,7 +36,7 @@ namespace CTS_BE.Helper
             CreateMap<StampInvoiceInsertDTO, StampInvoice>();
             CreateMap<StampWalletInsertDTO, StampWallet>();
             CreateMap<VendorStampRequisition, StampRequisitionDTO>();
-            CreateMap<StampRequisitionInsertDTO, StampRequisitionDTO>()
+            CreateMap<StampRequisitionInsertDTO, VendorStampRequisition>()
                 .ForMember(d => d.RequisitionDate, opt => opt.MapFrom(src => src.RequisitionDate.HasValue? DateOnly.FromDateTime(src.RequisitionDate.Value) : default));
 
         }
