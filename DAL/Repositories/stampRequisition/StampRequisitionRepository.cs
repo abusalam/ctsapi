@@ -53,6 +53,8 @@ namespace CTS_BE.DAL.Repositories.stampRequisition
             var _discounted_amount = new NpgsqlParameter("@_discounted_amount", NpgsqlTypes.NpgsqlDbType.Numeric);
             var _tax_amount = new NpgsqlParameter("@_tax_amount", NpgsqlTypes.NpgsqlDbType.Numeric);
             var _challan_amount = new NpgsqlParameter("@_challan_amount", NpgsqlTypes.NpgsqlDbType.Numeric);
+            var _head = new NpgsqlParameter("@_head", NpgsqlTypes.NpgsqlDbType.Varchar);
+            var _requisition_no = new NpgsqlParameter("@_requisition_no", NpgsqlTypes.NpgsqlDbType.Varchar);
             var _is_done_out = new NpgsqlParameter("@_is_done_out", NpgsqlTypes.NpgsqlDbType.Boolean);
 
             _is_done_out.Direction = ParameterDirection.InputOutput;
@@ -66,8 +68,8 @@ namespace CTS_BE.DAL.Repositories.stampRequisition
             _is_done_out.Value = false;
 
 
-            var parameters = new[] { _vendor_requisition_staging_id, _sheet_number, _label_number, _discounted_amount, _tax_amount, _challan_amount, _is_done_out };
-            var commandText = "CALL cts.approve_by_stamp_clerk( @_vendor_requisition_staging_id, @_sheet_number, @_label_number, @_discounted_amount, @_tax_amount, @_challan_amount, @_is_done_out )";
+            var parameters = new[] { _vendor_requisition_staging_id, _sheet_number, _label_number, _discounted_amount, _tax_amount, _challan_amount, _requisition_no, _head, _is_done_out };
+            var commandText = "CALL cts.approve_by_stamp_clerk( @_vendor_requisition_staging_id, @_sheet_number, @_label_number, @_discounted_amount, @_tax_amount, @_challan_amount, @_requisition_no, @_head, @_is_done_out )";
             await _context.Database.ExecuteSqlRawAsync(commandText, parameters);
             return (bool)_is_done_out.Value;
         }

@@ -48,5 +48,8 @@ namespace CTS_BE.DTOs
         public decimal DiscountedAmount { get; set; }
         public decimal TaxAmount { get; set; }
         public decimal ChallanAmount { get; set; }
+        public string RequisitionNo { get; set; }
+        public string Head { get; set; }
+
     }
 }

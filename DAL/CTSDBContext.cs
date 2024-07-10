@@ -703,7 +703,7 @@ public partial class CTSDBContext : DbContext
         {
             entity.HasKey(e => e.WalletId).HasName("ddo_wallet_actual_pkey");
 
-            entity.Property(e => e.WalletId).ValueGeneratedOnAdd();
+            entity.Property(e => e.WalletId).ValueGeneratedNever();
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
             entity.Property(e => e.SaoDdoCode).IsFixedLength();
             entity.Property(e => e.TreasuryCode).IsFixedLength();
