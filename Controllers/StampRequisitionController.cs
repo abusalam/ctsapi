@@ -30,7 +30,7 @@ namespace CTS_BE.Controllers
             APIResponse<DynamicListResult<IEnumerable<StampRequisitionDTO>>> response = new();
             try
             {
-                IEnumerable<StampRequisitionDTO> indentList = await _stampRequisitionService.ListAllStampRequisitions(dynamicListQueryParameters.filterParameters, dynamicListQueryParameters.PageIndex, dynamicListQueryParameters.PageSize, dynamicListQueryParameters.sortParameters);
+                IEnumerable<StampRequisitionDTO> stampRequisitionList = await _stampRequisitionService.ListAllStampRequisitions(dynamicListQueryParameters.filterParameters, dynamicListQueryParameters.PageIndex, dynamicListQueryParameters.PageSize, dynamicListQueryParameters.sortParameters);
                 DynamicListResult<IEnumerable<StampRequisitionDTO>> result = new DynamicListResult<IEnumerable<StampRequisitionDTO>>
                 {
                     Headers = new List<ListHeader>
@@ -201,10 +201,10 @@ namespace CTS_BE.Controllers
                         }
                     },
 
-                    Data = indentList,
+                    Data = stampRequisitionList,
                     DataCount = 1
                 };
-                if (indentList.Count() > 0)
+                if (stampRequisitionList.Count() > 0)
                 {
                     response.Message = AppConstants.DataFound;
                     response.apiResponseStatus = Enum.APIResponseStatus.Success;
@@ -425,7 +425,7 @@ namespace CTS_BE.Controllers
             APIResponse<DynamicListResult<IEnumerable<StampRequisitionDTO>>> response = new();
             try
             {
-                IEnumerable<StampRequisitionDTO> indentList = await _stampRequisitionService.ListAllStampRequisitionsForTO(dynamicListQueryParameters.filterParameters, dynamicListQueryParameters.PageIndex, dynamicListQueryParameters.PageSize, dynamicListQueryParameters.sortParameters);
+                IEnumerable<StampRequisitionDTO> stampRequisitionList = await _stampRequisitionService.ListAllStampRequisitionsForTO(dynamicListQueryParameters.filterParameters, dynamicListQueryParameters.PageIndex, dynamicListQueryParameters.PageSize, dynamicListQueryParameters.sortParameters);
                 DynamicListResult<IEnumerable<StampRequisitionDTO>> result = new DynamicListResult<IEnumerable<StampRequisitionDTO>>
                 {
                     Headers = new List<ListHeader>
@@ -596,10 +596,10 @@ namespace CTS_BE.Controllers
                         }
                     },
 
-                    Data = indentList,
+                    Data = stampRequisitionList,
                     DataCount = 1
                 };
-                if (indentList.Count() > 0)
+                if (stampRequisitionList.Count() > 0)
                 {
                     response.Message = AppConstants.DataFound;
                     response.apiResponseStatus = Enum.APIResponseStatus.Success;
@@ -628,7 +628,7 @@ namespace CTS_BE.Controllers
             APIResponse<DynamicListResult<IEnumerable<StampRequisitionDTO>>> response = new();
             try
             {
-                IEnumerable<StampRequisitionDTO> indentList = await _stampRequisitionService.ListAllStampRequisitionsForClerk(dynamicListQueryParameters.filterParameters, dynamicListQueryParameters.PageIndex, dynamicListQueryParameters.PageSize, dynamicListQueryParameters.sortParameters);
+                IEnumerable<StampRequisitionDTO> stampRequisitionList = await _stampRequisitionService.ListAllStampRequisitionsForClerk(dynamicListQueryParameters.filterParameters, dynamicListQueryParameters.PageIndex, dynamicListQueryParameters.PageSize, dynamicListQueryParameters.sortParameters);
                 DynamicListResult<IEnumerable<StampRequisitionDTO>> result = new DynamicListResult<IEnumerable<StampRequisitionDTO>>
                 {
                     Headers = new List<ListHeader>
@@ -799,10 +799,10 @@ namespace CTS_BE.Controllers
                         }
                     },
 
-                    Data = indentList,
+                    Data = stampRequisitionList,
                     DataCount = 1
                 };
-                if (indentList.Count() > 0)
+                if (stampRequisitionList.Count() > 0)
                 {
                     response.Message = AppConstants.DataFound;
                     response.apiResponseStatus = Enum.APIResponseStatus.Success;
