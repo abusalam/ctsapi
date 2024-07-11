@@ -178,7 +178,7 @@ namespace CTS_BE.BAL.Services.stampRequisition
                 var data = new VendorRequisitionApprove
                 {
                     VendorRequisitionId = stampRequisition.VendorStampRequisitionId,
-                    TransactionId = stampRequisition.transaction_id,
+                    TransactionId = stampRequisition.GRNNo,
                     ApproveBy = _auth.GetUserId(),
                 };
                 data = _mapper.Map<VendorRequisitionApprove>(data);

@@ -56,7 +56,7 @@ namespace CTS_BE.DTOs
     public class StampRequisitionPaymentDTO
     {
         public long VendorStampRequisitionId { get; set; }
-        public long transaction_id { get; set; }
+        public long GRNNo { get; set; }
 
     }
 }
