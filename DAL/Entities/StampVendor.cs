@@ -69,6 +69,10 @@ public partial class StampVendor
     [Column("vendor_name", TypeName = "character varying")]
     public string? VendorName { get; set; }
 
+    [Column("treasury")]
+    [StringLength(3)]
+    public string? Treasury { get; set; }
+
     [InverseProperty("Vendor")]
     public virtual ICollection<VendorStampRequisition> VendorStampRequisitions { get; set; } = new List<VendorStampRequisition>();
 

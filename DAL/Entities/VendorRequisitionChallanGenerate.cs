@@ -16,10 +16,10 @@ public partial class VendorRequisitionChallanGenerate
     [Column("vendor_requisition_staging_id")]
     public long VendorRequisitionStagingId { get; set; }
 
-    [Column("sheet_by_TO")]
+    [Column("sheet_by_to")]
     public short SheetByTo { get; set; }
 
-    [Column("label_by_TO")]
+    [Column("label_by_to")]
     public short LabelByTo { get; set; }
 
     [Column("discounted_amount")]
@@ -34,8 +34,14 @@ public partial class VendorRequisitionChallanGenerate
     [Precision(10, 2)]
     public decimal ChallanAmount { get; set; }
 
-    [Column("challan_id")]
-    public long ChallanId { get; set; }
+    [Column("hoa", TypeName = "character varying")]
+    public string? Hoa { get; set; }
+
+    [Column("requisition_no", TypeName = "character varying")]
+    public string? RequisitionNo { get; set; }
+
+    [Column("hoa_id")]
+    public long? HoaId { get; set; }
 
     [ForeignKey("VendorRequisitionStagingId")]
     [InverseProperty("VendorRequisitionChallanGenerates")]

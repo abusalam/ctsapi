@@ -9,6 +9,7 @@ namespace CTS_BE.DAL.Entities;
 [Keyless]
 [Table("ecs_neft_details", Schema = "billing")]
 [Index("BillId", Name = "fki_bill_id_fkey")]
+[Index("PayeeType", Name = "fki_payee_type_fkey")]
 public partial class EcsNeftDetail
 {
     [Column("id")]
@@ -84,6 +85,12 @@ public partial class EcsNeftDetail
     [Column("updated_at", TypeName = "timestamp without time zone")]
     public DateTime? UpdatedAt { get; set; }
 
+    [Column("e_pradan_id")]
+    public long? EPradanId { get; set; }
+
     [ForeignKey("BillId")]
     public virtual BillDetail Bill { get; set; } = null!;
+
+    [ForeignKey("PayeeType")]
+    public virtual BeneficiaryType1? PayeeTypeNavigation { get; set; }
 }

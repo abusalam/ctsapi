@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.DAL.Entities;
 
 [Table("beneficiary_master", Schema = "epradan")]
+[Index("BeneficiaryType", Name = "fki_beneficiary_master_beneficiary_type_fkey")]
 public partial class BeneficiaryMaster
 {
     [Column("acc_no")]
@@ -93,7 +94,7 @@ public partial class BeneficiaryMaster
     public string? BeneficiaryName { get; set; }
 
     [Column("beneficiary_type")]
-    public int? BeneficiaryType { get; set; }
+    public short? BeneficiaryType { get; set; }
 
     [Column("status")]
     public int? Status { get; set; }

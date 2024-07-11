@@ -11,7 +11,7 @@ public partial class BeneficiaryType1
 {
     [Key]
     [Column("id")]
-    public int Id { get; set; }
+    public short Id { get; set; }
 
     [Column("desc", TypeName = "character varying")]
     public string? Desc { get; set; }

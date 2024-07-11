@@ -57,6 +57,15 @@ public partial class Token
     [Column("financial_year_id")]
     public short? FinancialYearId { get; set; }
 
+    [Column("status")]
+    public short? Status { get; set; }
+
+    [Column("voucher_no")]
+    public int? VoucherNo { get; set; }
+
+    [Column("voucher_date")]
+    public DateOnly? VoucherDate { get; set; }
+
     [ForeignKey("BillId")]
     [InverseProperty("Tokens")]
     public virtual BillDetail Bill { get; set; } = null!;
