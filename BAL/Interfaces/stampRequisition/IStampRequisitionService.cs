@@ -14,6 +14,6 @@ namespace CTS_BE.BAL.Interfaces.stampRequisition
         Task<IEnumerable<StampRequisitionDTO>> ListAllStampRequisitionsForTO(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null);
         Task<IEnumerable<StampRequisitionDTO>> ListAllStampRequisitionsForClerk(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null);
         Task<bool> PaymentRegisterByDEO(StampRequisitionPaymentDTO stampRequisition);
-
+        Task<IEnumerable<StampRequisitionDTO>> ListAllStampRequisitionsWaitingForPaymentVerification(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null);
     }
 }
