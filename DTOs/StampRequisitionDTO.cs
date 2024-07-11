@@ -52,4 +52,11 @@ namespace CTS_BE.DTOs
         public string Head { get; set; }
 
     }
+
+    public class StampRequisitionPaymentDTO
+    {
+        public long VendorStampRequisitionId { get; set; }
+        public long transaction_id { get; set; }
+
+    }
 }

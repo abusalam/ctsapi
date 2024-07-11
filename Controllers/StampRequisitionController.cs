@@ -389,6 +389,32 @@ namespace CTS_BE.Controllers
                 return response;
             }
         }
+        
+        [HttpGet("PaymentProcessByDEO")]
+        public async Task<APIResponse<bool>> PaymentProcessByDEO(StampRequisitionPaymentDTO stampRequisition)
+        {
+            APIResponse<bool> response = new();
+            try
+            {
+                if (await _stampRequisitionService.PaymentRegisterByDEO(stampRequisition))
+                {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                    response.Message = "Payment Details Entered."; // todo
+                    response.result = true;
+                    return response;
+                }
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.result = false;
+                response.Message = AppConstants.MissingField;
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = ex.Message;
+                return response;
+            }
+        }
 
 
 

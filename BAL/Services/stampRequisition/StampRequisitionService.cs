@@ -4,21 +4,25 @@ using CTS_BE.DAL.Entities;
 using CTS_BE.DAL.Interfaces.stampRequisition;
 using CTS_BE.DTOs;
 using CTS_BE.Helper.Authentication;
+using System.Numerics;
 
 namespace CTS_BE.BAL.Services.stampRequisition
 {
     public class StampRequisitionService : IStampRequisitionService
     {
         private readonly IStampRequisitionRepository _stampRequisitionRepo;
+        private readonly IStampRequisitionApproveRepository _stampRequisitionApproveRepo;
         private readonly IMapper _mapper;
         private readonly IClaimService _auth;
 
         public StampRequisitionService(
             IStampRequisitionRepository stampRequisitionRepo,
+            IStampRequisitionApproveRepository stampRequisitionApproveRepo,
             IMapper mapper,
             IClaimService claim)
         {
             _stampRequisitionRepo = stampRequisitionRepo;
+            _stampRequisitionApproveRepo = stampRequisitionApproveRepo;
             _mapper = mapper;
             _auth = claim;
         }
@@ -166,5 +170,28 @@ namespace CTS_BE.BAL.Services.stampRequisition
             return false;
         }
 
+        public async Task<bool> PaymentRegisterByDEO(StampRequisitionPaymentDTO stampRequisition)
+        {
+            if (stampRequisition != null)
+            {
+
+                var data = new VendorRequisitionApprove
+                {
+                    VendorRequisitionId = stampRequisition.VendorStampRequisitionId,
+                    TransactionId = stampRequisition.transaction_id,
+                    ApproveBy = _auth.GetUserId(),
+                };
+                data = _mapper.Map<VendorRequisitionApprove>(data);
+                _stampRequisitionApproveRepo.Add(data);
+                _stampRequisitionApproveRepo.SaveChangesManaged();
+                long approveId = data.VendorRequisitionApproveId;
+                var stampRequisitionData = await _stampRequisitionRepo.GetSingleAysnc(e => e.VendorStampRequisitionId == stampRequisition.VendorStampRequisitionId);
+                stampRequisitionData.VendorRequisitionApproveId = approveId;
+                _stampRequisitionRepo.Update(stampRequisitionData);
+                _stampRequisitionRepo.SaveChangesManaged();
+                return true;
+            }
+            return false;
+        }
     }
 }
