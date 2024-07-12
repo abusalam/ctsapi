@@ -11,7 +11,7 @@ public partial class PMmPenCommutationRate
 {
     [Key]
     [Column("INT_PEN_COMMUTATION_RATE_ID")]
-    public int IntPenCommutationRateId { get; set; }
+    public long IntPenCommutationRateId { get; set; }
 
     [Column("AGE_ON_NEXT_BIRTHDAY")]
     public int? AgeOnNextBirthday { get; set; }

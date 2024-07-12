@@ -12,7 +12,7 @@ public partial class PTdPenPrepFileProcessLog
 {
     [Key]
     [Column("PEN_FILE_PROCESS_LOG_ID")]
-    public int PenFileProcessLogId { get; set; }
+    public long PenFileProcessLogId { get; set; }
 
     [Column("INT_PENSIONER_ID")]
     public int? IntPensionerId { get; set; }

@@ -11,7 +11,7 @@ public partial class PMdPenPrepCalculatedAmt
 {
     [Key]
     [Column("INT_PREP_CALCULATED_AMT_ID")]
-    public int IntPrepCalculatedAmtId { get; set; }
+    public long IntPrepCalculatedAmtId { get; set; }
 
     [Column("INT_PENSIONER_ID")]
     public int IntPensionerId { get; set; }

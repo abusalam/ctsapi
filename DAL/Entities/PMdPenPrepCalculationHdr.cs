@@ -11,7 +11,7 @@ public partial class PMdPenPrepCalculationHdr
 {
     [Key]
     [Column("INT_PEN_PREP_CALC_HDR_ID")]
-    public int IntPenPrepCalcHdrId { get; set; }
+    public long IntPenPrepCalcHdrId { get; set; }
 
     [Column("INT_PENSIONER_ID")]
     public int IntPensionerId { get; set; }

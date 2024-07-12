@@ -11,7 +11,7 @@ public partial class PMdPenPrepOthOutstanding
 {
     [Key]
     [Column("INT_PEN_OTH_OUTSTANDING_ID")]
-    public int IntPenOthOutstandingId { get; set; }
+    public long IntPenOthOutstandingId { get; set; }
 
     [Column("INT_PENSIONER_ID")]
     public int IntPensionerId { get; set; }

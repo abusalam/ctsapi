@@ -11,7 +11,7 @@ public partial class PMmPenPrepDeclaration
 {
     [Key]
     [Column("INT_PREP_DECLARATION_ID")]
-    public int IntPrepDeclarationId { get; set; }
+    public long IntPrepDeclarationId { get; set; }
 
     /// <summary>
     /// P for pension, C for CVP application etc

@@ -11,7 +11,7 @@ public partial class PMdPensionerAddress
 {
     [Key]
     [Column("INT_PENSIONER_ADDR_ID")]
-    public int IntPensionerAddrId { get; set; }
+    public long IntPensionerAddrId { get; set; }
 
     [Column("INT_EMPLOYEE_ID")]
     public int IntEmployeeId { get; set; }

@@ -11,7 +11,7 @@ public partial class PMmPenHoaMap
 {
     [Key]
     [Column("INT_HOA_MAP_ID")]
-    public int IntHoaMapId { get; set; }
+    public long IntHoaMapId { get; set; }
 
     [Column("FULL_HOA")]
     [StringLength(200)]

@@ -18,7 +18,7 @@ public partial class PMmPenPrepPensionerDetl
     /// </summary>
     [Key]
     [Column("INT_PENSIONER_ID")]
-    public int IntPensionerId { get; set; }
+    public long IntPensionerId { get; set; }
 
     /// <summary>
     /// gpf-tpf number id referencing column from PF_MM_GEN_SUBSCR_DETL

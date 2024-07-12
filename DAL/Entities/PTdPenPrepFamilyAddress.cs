@@ -11,7 +11,7 @@ public partial class PTdPenPrepFamilyAddress
 {
     [Key]
     [Column("INT_FAMILY_ADDR_ID")]
-    public int IntFamilyAddrId { get; set; }
+    public long IntFamilyAddrId { get; set; }
 
     [Column("INT_PENSIONER_ID")]
     public int? IntPensionerId { get; set; }

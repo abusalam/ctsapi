@@ -13,7 +13,7 @@ public partial class PMmPenPrepAttachement
 {
     [Key]
     [Column("INT_PEN_PREP_ATTACHEMENT")]
-    public int IntPenPrepAttachement { get; set; }
+    public long IntPenPrepAttachement { get; set; }
 
     [Column("ATTCHEMENT_DESC")]
     [StringLength(300)]

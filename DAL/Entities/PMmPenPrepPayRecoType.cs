@@ -14,7 +14,7 @@ public partial class PMmPenPrepPayRecoType
     /// </summary>
     [Key]
     [Column("PAY_RECO_TYPE_ID")]
-    public int PayRecoTypeId { get; set; }
+    public long PayRecoTypeId { get; set; }
 
     /// <summary>
     /// Recovery type description..

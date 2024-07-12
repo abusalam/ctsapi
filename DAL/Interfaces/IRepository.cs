@@ -40,6 +40,7 @@ namespace CTS_BE.DAL.Interfaces
         bool Delete(T entity);
 
         void SaveChangesManaged();
+        Task<int> SaveChangesManagedAsync();
         public IExecutionStrategy GetExecutionStrategy();
 
         public Task<object> ExecuteQuery(string sqlQuery, object parameters);

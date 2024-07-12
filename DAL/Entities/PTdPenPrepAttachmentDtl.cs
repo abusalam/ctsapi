@@ -11,7 +11,7 @@ namespace CTS_BE.DAL.Entities;
 public partial class PTdPenPrepAttachmentDtl
 {
     [Column("INT_ATTACHEMENT_DTL_ID")]
-    public int IntAttachementDtlId { get; set; }
+    public long IntAttachementDtlId { get; set; }
 
     [Column("DOCUMENT_ID")]
     public int DocumentId { get; set; }

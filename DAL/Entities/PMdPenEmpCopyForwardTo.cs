@@ -11,7 +11,7 @@ public partial class PMdPenEmpCopyForwardTo
 {
     [Key]
     [Column("INT_COPY_FORWARD_ID")]
-    public int IntCopyForwardId { get; set; }
+    public long IntCopyForwardId { get; set; }
 
     [Column("INT_PENSIONER_ID")]
     public int? IntPensionerId { get; set; }

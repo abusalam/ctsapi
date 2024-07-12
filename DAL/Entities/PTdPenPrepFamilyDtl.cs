@@ -20,7 +20,7 @@ public partial class PTdPenPrepFamilyDtl
     /// </summary>
     [Key]
     [Column("FAMILY_ID")]
-    public int FamilyId { get; set; }
+    public long FamilyId { get; set; }
 
     /// <summary>
     /// name of the family member

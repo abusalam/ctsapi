@@ -11,7 +11,7 @@ public partial class PMdPenPrepEmolumentDtl
 {
     [Key]
     [Column("INT_PEN_PREP_EML_DTLS_ID")]
-    public int IntPenPrepEmlDtlsId { get; set; }
+    public long IntPenPrepEmlDtlsId { get; set; }
 
     [Column("INT_PENSIONER_ID")]
     public int IntPensionerId { get; set; }

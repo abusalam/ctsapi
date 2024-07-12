@@ -13,7 +13,7 @@ public partial class PMdPenPrepAttachment
 {
     [Key]
     [Column("INT_PEN_PREP_ATTACHEMENT")]
-    public int IntPenPrepAttachement { get; set; }
+    public long IntPenPrepAttachement { get; set; }
 
     /// <summary>
     /// For Service book : &apos;S&apos; for Exit Management &apos;E&apos;

@@ -14,7 +14,7 @@ public partial class PMdPenPrepType
     /// Reference column from P_MM_PEN_PREP_CATEGORY..
     /// </summary>
     [Column("CATEGORY_ID")]
-    public int CategoryId { get; set; }
+    public long CategoryId { get; set; }
 
     /// <summary>
     /// Unique pension ID type.

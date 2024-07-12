@@ -11,7 +11,7 @@ public partial class PMmPenRuleSubDtl
 {
     [Key]
     [Column("INT_PEN_RULE_SUB_DTLS_ID")]
-    public int IntPenRuleSubDtlsId { get; set; }
+    public long IntPenRuleSubDtlsId { get; set; }
 
     [Column("INT_PEN_RULE_DTLS_ID")]
     public int IntPenRuleDtlsId { get; set; }

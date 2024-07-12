@@ -11,7 +11,7 @@ public partial class PMmPenProcessingFlag
 {
     [Key]
     [Column("PROCESSING_FLAG")]
-    public int ProcessingFlag { get; set; }
+    public long ProcessingFlag { get; set; }
 
     [Column("DESCRIPTION")]
     [StringLength(100)]

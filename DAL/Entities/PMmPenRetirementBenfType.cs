@@ -11,7 +11,7 @@ public partial class PMmPenRetirementBenfType
 {
     [Key]
     [Column("BENF_TYPE_ID")]
-    public int BenfTypeId { get; set; }
+    public long BenfTypeId { get; set; }
 
     [Column("BENF_DESC")]
     [StringLength(300)]

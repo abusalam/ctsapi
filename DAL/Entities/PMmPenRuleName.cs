@@ -13,7 +13,7 @@ public partial class PMmPenRuleName
 {
     [Key]
     [Column("INT_PEN_RULE_NAME_ID")]
-    public int IntPenRuleNameId { get; set; }
+    public long IntPenRuleNameId { get; set; }
 
     [Column("INT_SERVICE_ID")]
     public int IntServiceId { get; set; }

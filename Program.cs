@@ -28,11 +28,22 @@ using Microsoft.AspNetCore.Mvc;
 using CTS_BE.Enum;
 using CTS_BE.Helper;
 using System.Collections;
+using CTS_BE.BAL.Interfaces.Pension;
+using CTS_BE.BAL.Services.Pension;
+using CTS_BE.DAL.Interfaces.Pension;
+using CTS_BE.DAL.Repositories.Pension;
 
 var builder = WebApplication.CreateBuilder(args);
 
 //Database Connection
 builder.Services.AddDbContext<CTSDBContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DBConnection"),
+    //options => options.CommandTimeout(999)                   
+    options => options.EnableRetryOnFailure(10, TimeSpan.FromSeconds(5), null)
+), ServiceLifetime.Transient);
+
+//Pension Database Connection
+builder.Services.AddDbContext<NewCtsContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DBConnection"),
     //options => options.CommandTimeout(999)                   
     options => options.EnableRetryOnFailure(10, TimeSpan.FromSeconds(5), null)
@@ -78,6 +89,9 @@ builder.Services.AddTransient<IStampIndentRepository, StampIndentRepository>();
 builder.Services.AddTransient<IStampInvoiceRepository, StampInvoiceRepository>();
 builder.Services.AddTransient<IStampWalletRepository, StampWalletRepository>();
 
+//Pension Repositories
+builder.Services.AddTransient<IPensionerDetailsRepository, PensionerDetailsRepository>();
+
 
 //Services
 builder.Services.AddTransient<IChequeCountService, ChequeCountService>();
@@ -110,6 +124,9 @@ builder.Services.AddTransient<IClaimService, ClaimService>();
 
 builder.Services.AddTransient<IChequeReceivedService, ChequeReceivedService>();
 builder.Services.AddTransient<IChequeDistributionService, ChequeDistributionService>();
+
+// Pension Services
+builder.Services.AddTransient<IPensionService, PensionService>();
 
 //builder.Services.AddTransient<ITokenHelper, TokenHelper>();
 //builder.Services.AddSingleton<ITokencache, Tokencache>();

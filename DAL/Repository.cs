@@ -252,5 +252,10 @@ namespace CTS_BE.DAL
         {
             this.CTSDbContext.SaveChanges();
         }
+
+        public async Task<int> SaveChangesManagedAsync()
+        {
+            return await this.CTSDbContext.SaveChangesAsync();
+        }
     }
 }

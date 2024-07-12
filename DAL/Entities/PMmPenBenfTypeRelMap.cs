@@ -11,7 +11,7 @@ public partial class PMmPenBenfTypeRelMap
 {
     [Key]
     [Column("INT_BENF_TYPE_REL_MAP_ID")]
-    public int IntBenfTypeRelMapId { get; set; }
+    public long IntBenfTypeRelMapId { get; set; }
 
     /// <summary>
     /// 5=Family Pension,4=Death Gratuity

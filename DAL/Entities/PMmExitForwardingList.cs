@@ -17,7 +17,7 @@ public partial class PMmExitForwardingList
     /// </summary>
     [Key]
     [Column("INT_FRWDING_LIST_ID")]
-    public int IntFrwdingListId { get; set; }
+    public long IntFrwdingListId { get; set; }
 
     /// <summary>
     /// foreign key from pension master table

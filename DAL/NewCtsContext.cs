@@ -123,7 +123,6 @@ public partial class NewCtsContext : DbContext
 
         modelBuilder.Entity<PMdEmpNomineeDtl>(entity =>
         {
-            entity.Property(e => e.IntPenNomId).ValueGeneratedNever();
             entity.Property(e => e.AgeOnCreatedDate).HasComment("Nominee age on created date for report");
             entity.Property(e => e.CreatedTimestamp)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
@@ -148,15 +147,12 @@ public partial class NewCtsContext : DbContext
         modelBuilder.Entity<PMdPenEmpCopyForwardTo>(entity =>
         {
             entity.HasKey(e => e.IntCopyForwardId).HasName("PK_P_MD_PEN_COPY_FORWARD_TO");
-
-            entity.Property(e => e.IntCopyForwardId).ValueGeneratedNever();
         });
 
         modelBuilder.Entity<PMdPenEmpWiseForwardList>(entity =>
         {
             entity.HasKey(e => e.IntPenForwardingId).HasName("PK_MD_PEN_EMP_WISE_FORWARDING");
 
-            entity.Property(e => e.IntPenForwardingId).ValueGeneratedNever();
             entity.Property(e => e.ActiveFlag)
                 .HasDefaultValueSql("'Y'::character varying")
                 .HasComment("'Y' / 'N' Flag");
@@ -166,7 +162,6 @@ public partial class NewCtsContext : DbContext
         {
             entity.HasKey(e => e.IntPenPrepAttachement).HasName("PK_P_MD_PEN_PREP_ATTACHEMENT");
 
-            entity.Property(e => e.IntPenPrepAttachement).ValueGeneratedNever();
             entity.Property(e => e.ActiveFlag).HasDefaultValueSql("'Y'::character varying");
             entity.Property(e => e.CreatedTimestamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.IntOmiUpdDocType).HasComment("document type from other master master type: 'AFT'");
@@ -179,7 +174,6 @@ public partial class NewCtsContext : DbContext
         {
             entity.HasKey(e => e.IntPrepCalculatedAmtId).HasName("PK_PEN_PREP_CALCULATED_AMT");
 
-            entity.Property(e => e.IntPrepCalculatedAmtId).ValueGeneratedNever();
             entity.Property(e => e.CreatedTimestamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.ModifiedTimestamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
         });
@@ -188,7 +182,6 @@ public partial class NewCtsContext : DbContext
         {
             entity.HasKey(e => e.IntPenPrepCalcHdrId).HasName("PK_PEN_PREP_CALCULATION_HDR");
 
-            entity.Property(e => e.IntPenPrepCalcHdrId).ValueGeneratedNever();
             entity.Property(e => e.CreatedTimestamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.ModifiedTimestamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
         });
@@ -197,7 +190,6 @@ public partial class NewCtsContext : DbContext
         {
             entity.HasKey(e => e.IntPenPrepEmlDtlsId).HasName("PK_P_MD_PEN_PREP_EMOL_DTLS");
 
-            entity.Property(e => e.IntPenPrepEmlDtlsId).ValueGeneratedNever();
             entity.Property(e => e.CreatedTimestamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.ModifiedTimestamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
         });
@@ -206,7 +198,6 @@ public partial class NewCtsContext : DbContext
         {
             entity.HasKey(e => e.IntPenOthOutstandingId).HasName("PK_P_MD_PEN_PREP_OTH_OUTSTAND");
 
-            entity.Property(e => e.IntPenOthOutstandingId).ValueGeneratedNever();
             entity.Property(e => e.CreatedTimestamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.ModifiedTimestamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.OutstandingType).HasComment("'PA'--- Pay Allowance type overdrawl out standing, 'OTH' other outstanding");
@@ -216,7 +207,6 @@ public partial class NewCtsContext : DbContext
         {
             entity.HasKey(e => e.IntPenOutstandingLoanId).HasName("PK_P_MD_PEN_PREP_OS_LOAN");
 
-            entity.Property(e => e.IntPenOutstandingLoanId).ValueGeneratedNever();
             entity.Property(e => e.CreatedTimestamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.ModifiedTimestamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
         });
@@ -225,14 +215,12 @@ public partial class NewCtsContext : DbContext
         {
             entity.HasKey(e => e.IntPenOutstndLoanDtlId).HasName("PK_P_MD_PEN_OUTS_LOAN_DTL");
 
-            entity.Property(e => e.IntPenOutstndLoanDtlId).ValueGeneratedNever();
             entity.Property(e => e.CreatedTimestamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.ModifiedTimestamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
         });
 
         modelBuilder.Entity<PMdPenPrepPayDtl>(entity =>
         {
-            entity.Property(e => e.IntPenPrepPayDtlsId).ValueGeneratedNever();
             entity.Property(e => e.CreatedTimestamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.ModifiedTimestamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
         });
@@ -241,7 +229,6 @@ public partial class NewCtsContext : DbContext
         {
             entity.HasKey(e => e.IntPenProvPensionId).HasName("PK_PEN_PREP_PROV_PENSION_DTL");
 
-            entity.Property(e => e.IntPenProvPensionId).ValueGeneratedNever();
             entity.Property(e => e.CreatedTimestamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.CreatedUserId).HasDefaultValueSql("99999");
             entity.Property(e => e.ModifiedTimestamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
@@ -279,7 +266,9 @@ public partial class NewCtsContext : DbContext
                 .ValueGeneratedNever()
                 .HasComment("Unique pension ID type.");
             entity.Property(e => e.ActiveFlag).HasDefaultValueSql("'Y'::bpchar");
-            entity.Property(e => e.CategoryId).HasComment("Reference column from P_MM_PEN_PREP_CATEGORY..");
+            entity.Property(e => e.CategoryId)
+                .ValueGeneratedOnAdd()
+                .HasComment("Reference column from P_MM_PEN_PREP_CATEGORY..");
             entity.Property(e => e.CreatedTimestamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.ModifiedTimestamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.PenTypeAbbr).HasComment("added kalyan");
@@ -290,7 +279,6 @@ public partial class NewCtsContext : DbContext
 
         modelBuilder.Entity<PMdPensionerAddress>(entity =>
         {
-            entity.Property(e => e.IntPensionerAddrId).ValueGeneratedNever();
             entity.Property(e => e.ActiveFlag).HasDefaultValueSql("'N'::character varying");
             entity.Property(e => e.AddrType)
                 .HasDefaultValueSql("'PM'::character varying")
@@ -308,9 +296,7 @@ public partial class NewCtsContext : DbContext
 
             entity.ToTable("P_MM_EXIT_FORWARDING_LIST", "cts_pension", tb => tb.HasComment("Details required for generating forwarding letter report"));
 
-            entity.Property(e => e.IntFrwdingListId)
-                .ValueGeneratedNever()
-                .HasComment("primary key of this table");
+            entity.Property(e => e.IntFrwdingListId).HasComment("primary key of this table");
             entity.Property(e => e.ActiveFlag).HasComment("value - Y for active and N for inactive");
             entity.Property(e => e.CreatedTimestamp)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
@@ -328,19 +314,12 @@ public partial class NewCtsContext : DbContext
         {
             entity.HasKey(e => e.IntBenfTypeRelMapId).HasName("PK_BENF_TYPE_REL_MAP");
 
-            entity.Property(e => e.IntBenfTypeRelMapId).ValueGeneratedNever();
             entity.Property(e => e.BenfTypeId).HasComment("5=Family Pension,4=Death Gratuity");
             entity.Property(e => e.IntOtherMasterId).HasComment("master_type  = 'RL'");
         });
 
-        modelBuilder.Entity<PMmPenCommutationRate>(entity =>
-        {
-            entity.Property(e => e.IntPenCommutationRateId).ValueGeneratedNever();
-        });
-
         modelBuilder.Entity<PMmPenHoaMap>(entity =>
         {
-            entity.Property(e => e.IntHoaMapId).ValueGeneratedNever();
             entity.Property(e => e.ActiveFlag).HasDefaultValueSql("'Y'::bpchar");
             entity.Property(e => e.CreatedTimestamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.ModifiedTimestamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
@@ -350,14 +329,12 @@ public partial class NewCtsContext : DbContext
         {
             entity.HasKey(e => e.IntPenPrepAttachement).HasName("PK_P_MM_PEN_PREP_ATTACH");
 
-            entity.Property(e => e.IntPenPrepAttachement).ValueGeneratedNever();
             entity.Property(e => e.CreatedTimestamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.ModifiedTimestamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
         });
 
         modelBuilder.Entity<PMmPenPrepCalcHeader>(entity =>
         {
-            entity.Property(e => e.IntPenPrepCalcHeaderId).ValueGeneratedNever();
             entity.Property(e => e.CommutationSanctionedFlag).HasComment("'Y'/'N' flag");
             entity.Property(e => e.CreatedTimestamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.GratuityAgreedPerAmtFlag).HasComment("'P' for percentage 'A' for Amount");
@@ -378,7 +355,6 @@ public partial class NewCtsContext : DbContext
 
         modelBuilder.Entity<PMmPenPrepDeclaration>(entity =>
         {
-            entity.Property(e => e.IntPrepDeclarationId).ValueGeneratedNever();
             entity.Property(e => e.CreatedTimestamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.ModifiedTimestamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.PenTypeId).HasComment("Unique pension ID type.");
@@ -387,9 +363,7 @@ public partial class NewCtsContext : DbContext
 
         modelBuilder.Entity<PMmPenPrepPayRecoType>(entity =>
         {
-            entity.Property(e => e.PayRecoTypeId)
-                .ValueGeneratedNever()
-                .HasComment("Recovery type id..");
+            entity.Property(e => e.PayRecoTypeId).HasComment("Recovery type id..");
             entity.Property(e => e.ActiveFlag).HasDefaultValueSql("'Y'::bpchar");
             entity.Property(e => e.CreatedTimestamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.ModifiedTimestamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
@@ -407,9 +381,7 @@ public partial class NewCtsContext : DbContext
 
             entity.ToTable("P_MM_PEN_PREP_PENSIONER_DETL", "cts_pension", tb => tb.HasComment("Store Pensioner Personal information"));
 
-            entity.Property(e => e.IntPensionerId)
-                .ValueGeneratedNever()
-                .HasComment("pensioner id which is unique");
+            entity.Property(e => e.IntPensionerId).HasComment("pensioner id which is unique");
             entity.Property(e => e.ActiveFlag).HasDefaultValueSql("'Y'::bpchar");
             entity.Property(e => e.ApprovalAuthDesignation).HasComment("as per CR 208818 Point 1");
             entity.Property(e => e.ApproveTimeStamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
@@ -487,7 +459,6 @@ public partial class NewCtsContext : DbContext
 
         modelBuilder.Entity<PMmPenProcessingFlag>(entity =>
         {
-            entity.Property(e => e.ProcessingFlag).ValueGeneratedNever();
             entity.Property(e => e.ActiveFlag).HasDefaultValueSql("'Y'::character varying");
             entity.Property(e => e.CreatedTimestamp).HasDefaultValueSql("CURRENT_DATE");
             entity.Property(e => e.ModifiedTimestamp).HasDefaultValueSql("CURRENT_DATE");
@@ -497,7 +468,6 @@ public partial class NewCtsContext : DbContext
         {
             entity.HasKey(e => e.BenfTypeId).HasName("PK_P_MM_PEN_RETIRE_BENF_TYPE");
 
-            entity.Property(e => e.BenfTypeId).ValueGeneratedNever();
             entity.Property(e => e.ActiveFlag).HasDefaultValueSql("'Y'::bpchar");
             entity.Property(e => e.CreatedTimestamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.ModifiedTimestamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
@@ -506,13 +476,11 @@ public partial class NewCtsContext : DbContext
 
         modelBuilder.Entity<PMmPenRuleDtl>(entity =>
         {
-            entity.Property(e => e.IntPenRuleDtlsId).ValueGeneratedNever();
             entity.Property(e => e.RopaAbbr).HasComment("pay_allowance_abbr");
         });
 
         modelBuilder.Entity<PMmPenRuleName>(entity =>
         {
-            entity.Property(e => e.IntPenRuleNameId).ValueGeneratedNever();
             entity.Property(e => e.CreatedTimeStamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.ModifiedTimeStamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
         });
@@ -520,15 +488,12 @@ public partial class NewCtsContext : DbContext
         modelBuilder.Entity<PMmPenRuleSubDtl>(entity =>
         {
             entity.HasKey(e => e.IntPenRuleSubDtlsId).HasName("UK_P_MM_PEN_RULE_SUB_DTLS");
-
-            entity.Property(e => e.IntPenRuleSubDtlsId).ValueGeneratedNever();
         });
 
         modelBuilder.Entity<PTdPenPrepAttachementDtl>(entity =>
         {
             entity.HasKey(e => e.IntAttachementDtlId).HasName("PK_P_TD_PEN_PREP_ATTACH_DTL");
 
-            entity.Property(e => e.IntAttachementDtlId).ValueGeneratedNever();
             entity.Property(e => e.ActiveFlag).HasDefaultValueSql("'Y'::character varying");
             entity.Property(e => e.CreatedTimestamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.ModifiedTimestamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
@@ -539,6 +504,7 @@ public partial class NewCtsContext : DbContext
         {
             entity.Property(e => e.ActiveFlag).HasDefaultValueSql("'Y'::character varying");
             entity.Property(e => e.CreatedTimestamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.IntAttachementDtlId).ValueGeneratedOnAdd();
             entity.Property(e => e.IntOmiUpdDocType).HasComment("document type from other master master type: 'AFT'");
             entity.Property(e => e.ModifiedTimestamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.ModifiedUserId).HasDefaultValueSql("0");
@@ -548,7 +514,6 @@ public partial class NewCtsContext : DbContext
         {
             entity.HasKey(e => e.IntFamilyAddrId).HasName("PK_P_TD_PEN_PREP_FAMILY_ADDR");
 
-            entity.Property(e => e.IntFamilyAddrId).ValueGeneratedNever();
             entity.Property(e => e.ActiveFlag).HasDefaultValueSql("'N'::character varying");
             entity.Property(e => e.CreatedTimestamp).HasDefaultValueSql("CURRENT_DATE");
             entity.Property(e => e.ModifiedTimestamp).HasDefaultValueSql("CURRENT_DATE");
@@ -558,9 +523,7 @@ public partial class NewCtsContext : DbContext
 
         modelBuilder.Entity<PTdPenPrepFamilyDtl>(entity =>
         {
-            entity.Property(e => e.FamilyId)
-                .ValueGeneratedNever()
-                .HasComment("unique family id..");
+            entity.Property(e => e.FamilyId).HasComment("unique family id..");
             entity.Property(e => e.BankAcNoObs).HasComment("bank account id..");
             entity.Property(e => e.CreatedTimestamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.DeceasedFlag)
@@ -592,7 +555,6 @@ public partial class NewCtsContext : DbContext
         {
             entity.HasKey(e => e.IntPrepFamilyPenDtl).HasName("PK_P_TD_PEN_PREP_FAM_PEN_DTL");
 
-            entity.Property(e => e.IntPrepFamilyPenDtl).ValueGeneratedNever();
             entity.Property(e => e.CreatedTimestamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.ModifiedTimestamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
         });
@@ -601,7 +563,6 @@ public partial class NewCtsContext : DbContext
         {
             entity.HasKey(e => e.PenFileProcessLogId).HasName("PK_P_TD_PEN_PREP_FILE_PROC_LOG");
 
-            entity.Property(e => e.PenFileProcessLogId).ValueGeneratedNever();
             entity.Property(e => e.ProcessDate).HasDefaultValueSql("CURRENT_TIMESTAMP");
         });
 

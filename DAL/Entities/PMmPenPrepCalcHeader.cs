@@ -13,7 +13,7 @@ public partial class PMmPenPrepCalcHeader
 {
     [Key]
     [Column("INT_PEN_PREP_CALC_HEADER_ID")]
-    public int IntPenPrepCalcHeaderId { get; set; }
+    public long IntPenPrepCalcHeaderId { get; set; }
 
     [Column("INT_PENSIONER_ID")]
     public int IntPensionerId { get; set; }

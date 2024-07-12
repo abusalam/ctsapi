@@ -11,7 +11,7 @@ public partial class PMdPenPrepOutstndLoanDtl
 {
     [Key]
     [Column("INT_PEN_OUTSTND_LOAN_DTL_ID")]
-    public int IntPenOutstndLoanDtlId { get; set; }
+    public long IntPenOutstndLoanDtlId { get; set; }
 
     [Column("INT_PEN_OUTSTANDING_LOAN_ID")]
     public int IntPenOutstandingLoanId { get; set; }

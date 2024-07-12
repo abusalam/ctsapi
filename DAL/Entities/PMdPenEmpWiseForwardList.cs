@@ -11,7 +11,7 @@ public partial class PMdPenEmpWiseForwardList
 {
     [Key]
     [Column("INT_PEN_FORWARDING_ID")]
-    public int IntPenForwardingId { get; set; }
+    public long IntPenForwardingId { get; set; }
 
     [Column("INT_PENSIONER_ID")]
     public int? IntPensionerId { get; set; }
