@@ -36,17 +36,17 @@ namespace CTS_BE.BAL.Services.stamp
 
         public async Task<short> GetWalletBalanceByTreasuryCode(string TreasuryCode)
         {
-            var data = await _stampWalletRepo.GetSingleSelectedColumnByConditionAsync(
-                    e => e.TreasuryCode == TreasuryCode,
-                    e => new StampWalletBalanceDTO
-                        {
-                            ClearBalance = e.ClearBalance
-                        }
-                );
-            if (data != null)
-            {
-                return data.ClearBalance;
-            }
+            // var data = await _stampWalletRepo.GetSingleSelectedColumnByConditionAsync(
+            //         e => e.TreasuryCode == TreasuryCode,
+            //         e => new StampWalletBalanceDTO
+            //             {
+            //                 ClearBalance = e.ClearBalance
+            //             }
+            //     );
+            // if (data != null)
+            // {
+            //     return data.ClearBalance;
+            // }
             return 0;
         }
     }

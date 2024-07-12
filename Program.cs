@@ -43,7 +43,9 @@ builder.Services.AddAutoMapper(typeof(Program));
 
 // Add services to the container.
 //Repositories
+builder.Services.AddTransient<IDdoAllotmentBookedBillRepository, DdoAllotmentBookedBillRepository>();
 builder.Services.AddTransient<IChequeCountRepository, ChequeCountRepository>();
+builder.Services.AddTransient<IEcsNeftDetailRepository, EcsNeftDetailRepository>();
 builder.Services.AddTransient<ITreasuryRepository, TreasuryRepository>();
 builder.Services.AddTransient<IChequeInvoiceRepository, ChequeInvoiceRepository>();
 builder.Services.AddTransient<IBranchRepository, BranchRepository>();
@@ -72,7 +74,7 @@ builder.Services.AddTransient<IStampVendorRepository, StampVendorRepository>();
 builder.Services.AddTransient<IStampTypeRepository, StampTypeRepository>();
 builder.Services.AddTransient<IDiscountDetailsRepository, DiscountDetailsRepository>();
 builder.Services.AddTransient<IStampVendorTypeRepository, StampVendorTypeRepository>();
-builder.Services.AddTransient<IStampCategoryTypeRepository, StampCateroryTypeRepository>();
+// builder.Services.AddTransient<IStampCategoryTypeRepository, StampCateroryTypeRepository>();
 builder.Services.AddTransient<IStampCombinationRepository, StampCombinationRepository>();
 builder.Services.AddTransient<IStampIndentRepository, StampIndentRepository>();
 builder.Services.AddTransient<IStampInvoiceRepository, StampInvoiceRepository>();
@@ -80,7 +82,9 @@ builder.Services.AddTransient<IStampWalletRepository, StampWalletRepository>();
 
 
 //Services
+builder.Services.AddTransient<IDdoAllotmentBookedBillService, DdoAllotmentBookedBillService>();
 builder.Services.AddTransient<IChequeCountService, ChequeCountService>();
+builder.Services.AddTransient<IEcsNeftDetailService, EcsNeftDetailService>();
 builder.Services.AddTransient<ITreasuryService, TreasuryService>();
 builder.Services.AddTransient<IChequeInvoiceService, ChequeInvoiceService>();
 builder.Services.AddTransient<IBranchService, BranchService>();
