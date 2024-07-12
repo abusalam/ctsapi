@@ -10,8 +10,8 @@
         WaitingForPayment = 33,
         RejectedByTreasuryOfficer = 34,
 
-        WaitingForTreasuryOfficerVerification = 35,
-        VerifiedByTreasuryOfficer = 36,
+        WaitingForPaymentVerification = 35,
+        WaitingForDelivery = 36,
 
         DeliveredToVendor = 37
     }
