@@ -170,5 +170,24 @@ namespace CTS_BE.BAL.Services.billing
             );
             return bIllInfos.Where(info => info.Target != "null").ToList();
         }
+        public async Task<ByTransferDetislDTO> ByTransferDetislByBillId(long billId)
+        {
+           return await _TpBillRepository.GetSingleSelectedColumnByConditionAsync(entity => entity.BillId == billId,
+                entity => new ByTransferDetislDTO
+                {
+                    BillBtAmount = entity.BtAmount,
+                    BillNetAmount = entity.NetAmount,
+                    AvailableBtAmount = 0,
+                    ByTransfers = entity.BillBtdetails.Select(bt => new ByTransferDTO
+                    {
+                        BtSerial = bt.BtSerial,
+                        Amount = bt.Amount,
+                        Desc = bt.BtSerialNavigation.Desc,
+                        Hoa = bt.BtSerialNavigation.Hoa,
+                        Type = bt.BtSerialNavigation.Type,
+                    }).ToList()
+                }
+            );
+        }
     }
 }

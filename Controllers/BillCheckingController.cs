@@ -154,6 +154,32 @@ namespace CTS_BE.Controllers
                 return response;
             }
         }
+        [HttpGet("get-bt-details")]
+        public async Task<APIResponse<ByTransferDetislDTO>> ByTranferDetails([FromQuery] long tokenId)
+        {
+            APIResponse<ByTransferDetislDTO> response = new();
+            try
+            {
+                TokenDetailsDto tokenDetailsDto = await _tokenService.TokenDeatisById(tokenId);
+                if (tokenDetailsDto == null)
+                {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.Message = AppConstants.DataNotFound;
+                    return response;
+                }
+                ByTransferDetislDTO btDetails = await _tpBillService.ByTransferDetislByBillId(tokenDetailsDto.BillId);
+                response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                response.result = btDetails;
+                response.Message = AppConstants.DataFound;
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = ex.Message;
+                return response;
+            }
+        }
 
         [Authorize("permissions:can-bill-check|roles:accountant,dealling-assistant,treasury-officer")]
         [HttpPost("BillCheck")]

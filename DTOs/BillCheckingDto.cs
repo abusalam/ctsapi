@@ -51,4 +51,11 @@ namespace CTS_BE.DTOs
         public decimal ActualBalanceAmount { get; set; }
         public decimal BookedAmount { get; set; }
     }
+    public class ByTransferDetislDTO
+    {
+        public decimal? BillBtAmount { get; set; }
+        public decimal? AvailableBtAmount { get; set; }
+        public decimal? BillNetAmount { get; set; }
+        public List<ByTransferDTO>? ByTransfers { get; set; }
+    }
 }

@@ -43,6 +43,7 @@ builder.Services.AddAutoMapper(typeof(Program));
 
 // Add services to the container.
 //Repositories
+builder.Services.AddTransient<IBillBtdetailRepository, BillBtdetailRepository>();
 builder.Services.AddTransient<IDdoAllotmentBookedBillRepository, DdoAllotmentBookedBillRepository>();
 builder.Services.AddTransient<IChequeCountRepository, ChequeCountRepository>();
 builder.Services.AddTransient<IEcsNeftDetailRepository, EcsNeftDetailRepository>();
@@ -82,6 +83,7 @@ builder.Services.AddTransient<IStampWalletRepository, StampWalletRepository>();
 
 
 //Services
+builder.Services.AddTransient<IBillBtdetailService, BillBtdetailService>();
 builder.Services.AddTransient<IDdoAllotmentBookedBillService, DdoAllotmentBookedBillService>();
 builder.Services.AddTransient<IChequeCountService, ChequeCountService>();
 builder.Services.AddTransient<IEcsNeftDetailService, EcsNeftDetailService>();
