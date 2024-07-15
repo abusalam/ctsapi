@@ -12,17 +12,20 @@ namespace CTS_BE.BAL.Services.stampRequisition
     {
         private readonly IStampRequisitionRepository _stampRequisitionRepo;
         private readonly IStampRequisitionApproveRepository _stampRequisitionApproveRepo;
+        private readonly IStampRequisitionChallanGenerateRepository _stampRequisitionChallanGenerateRepo;
         private readonly IMapper _mapper;
         private readonly IClaimService _auth;
 
         public StampRequisitionService(
             IStampRequisitionRepository stampRequisitionRepo,
             IStampRequisitionApproveRepository stampRequisitionApproveRepo,
+            IStampRequisitionChallanGenerateRepository stampRequisitionChallanGenerateRepo,
             IMapper mapper,
             IClaimService claim)
         {
             _stampRequisitionRepo = stampRequisitionRepo;
             _stampRequisitionApproveRepo = stampRequisitionApproveRepo;
+            _stampRequisitionChallanGenerateRepo = stampRequisitionChallanGenerateRepo;
             _mapper = mapper;
             _auth = claim;
         }
@@ -240,6 +243,26 @@ namespace CTS_BE.BAL.Services.stampRequisition
                 Label = entity.Label,
             }, pageIndex, pageSize, filters, (sortParameters != null) ? sortParameters.Field : null, (sortParameters != null) ? sortParameters.Order : null);
             return stampRequisitionList;
+        }
+
+        public async Task<TRFormDataDTO> TrFromGenerationData(long stampRequisitionId)
+        {
+            var data = await _stampRequisitionChallanGenerateRepo.GetSingleAysnc(e => e.VendorRequisitionStaging.VendorRequisitionId == stampRequisitionId);
+            //Console.WriteLine("=====================" + data.VendorRequisitionStaging.VendorRequisitionStagingId.ToString() + "==========================");
+           if (data == null)
+           {
+                return new TRFormDataDTO() ;
+           }
+            var res = new TRFormDataDTO();
+            res.Amount = data.TotalAmount;
+            res.AmountInWord = "";
+            res.DetailHead = "";
+            res.Hoa = data.Hoa;
+            res.VendorName = "data.VendorRequisitionStaging.VendorRequisitionStagingId.ToString()";
+            //res.VendorName = data.VendorRequisitionStaging.VendorRequisition.Vendor.VendorName;
+            //res.VendorAddress = data.VendorRequisitionStaging.VendorRequisition.Vendor.Address;
+            res.RaisedToTreasury = _auth.GetScope();
+            return res;
         }
     }
 }
