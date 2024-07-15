@@ -11,7 +11,8 @@ namespace CTS_BE.BAL.Interfaces.stampRequisition
         Task<bool> RequisitionApprovedByTO(StampRequisitionApprovedByTODTO stampRequisition);
         Task<bool> RequisitionRejectedByTO(long stampRequisitionStagingId);
         Task<bool> DeliveredByDEO(long stampRequisitionId);
-        Task<IEnumerable<StampRequisitionDTO>> ListAllStampRequisitionsForTO(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null);
+        Task<IEnumerable<StampRequisitionDTO>> ListAllStampRequisitionsWaitingForApprovalByTO(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null);
+        Task<IEnumerable<StampRequisitionDTO>> ListAllStampRequisitionsWaitingForPayment(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null);
         Task<IEnumerable<StampRequisitionDTO>> ListAllStampRequisitionsForClerk(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null);
         Task<bool> PaymentRegisterByDEO(StampRequisitionPaymentDTO stampRequisition);
         Task<IEnumerable<StampRequisitionDTO>> ListAllStampRequisitionsWaitingForPaymentVerification(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null);

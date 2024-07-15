@@ -131,10 +131,10 @@ namespace CTS_BE.BAL.Services.stampRequisition
             return stampRequisitionList;
         }
 
-        public async Task<IEnumerable<StampRequisitionDTO>> ListAllStampRequisitionsForTO(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null)
+        public async Task<IEnumerable<StampRequisitionDTO>> ListAllStampRequisitionsWaitingForApprovalByTO(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null)
         {
             IEnumerable<StampRequisitionDTO> stampRequisitionList = await _stampRequisitionRepo.GetSelectedColumnByConditionAsync(
-                entity => entity.StatusId == (int)Enum.StampRequisitionStatusEnum.ForwardedToTreasuryOfficer || entity.StatusId == (int)Enum.StampRequisitionStatusEnum.WaitingForPaymentVerification,
+                entity => entity.StatusId == (int)Enum.StampRequisitionStatusEnum.ForwardedToTreasuryOfficer,
             entity => new StampRequisitionDTO
             {
                 VendorStampRequisitionId = entity.VendorStampRequisitionId,
@@ -223,6 +223,29 @@ namespace CTS_BE.BAL.Services.stampRequisition
         {
             IEnumerable<StampRequisitionDTO> stampRequisitionList = await _stampRequisitionRepo.GetSelectedColumnByConditionAsync(
                 entity => entity.StatusId == (int)Enum.StampRequisitionStatusEnum.WaitingForDelivery,
+            entity => new StampRequisitionDTO
+            {
+                VendorStampRequisitionId = entity.VendorStampRequisitionId,
+                VendorId = entity.VendorId,
+                VendorType = entity.Vendor.VendorTypeNavigation.VendorType,
+                LicenseNo = entity.Vendor.LicenseNo,
+                Quantity = ((short)(entity.Sheet * entity.Combination.StampLabel.NoLabelPerSheet + entity.Label)),
+                Amount = (entity.Sheet * entity.Combination.StampLabel.NoLabelPerSheet + entity.Label) * entity.Combination.StampType.Denomination,
+                Status = entity.Status.Name,
+                RequisitionDate = entity.RequisitionDate,
+                VendorName = entity.Vendor.VendorName,
+                RaisedToTreasury = entity.RaisedToTreasury,
+                RequisitionNo = entity.RequisitionNo,
+                Sheet = entity.Sheet,
+                Label = entity.Label,
+            }, pageIndex, pageSize, filters, (sortParameters != null) ? sortParameters.Field : null, (sortParameters != null) ? sortParameters.Order : null);
+            return stampRequisitionList;
+        }
+
+        public async Task<IEnumerable<StampRequisitionDTO>> ListAllStampRequisitionsWaitingForPayment(List<FilterParameter> filters, int pageIndex, int pageSize, SortParameter sortParameters)
+        {
+            IEnumerable<StampRequisitionDTO> stampRequisitionList = await _stampRequisitionRepo.GetSelectedColumnByConditionAsync(
+                entity => entity.StatusId == (int)Enum.StampRequisitionStatusEnum.WaitingForPayment,
             entity => new StampRequisitionDTO
             {
                 VendorStampRequisitionId = entity.VendorStampRequisitionId,

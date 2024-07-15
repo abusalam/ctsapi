@@ -618,14 +618,14 @@ namespace CTS_BE.Controllers
             }
         }
 
-        [HttpPatch("GetAllStampRequisitionListForTO")]
-        public async Task<APIResponse<DynamicListResult<IEnumerable<StampRequisitionDTO>>>> GetAllStampRequisitionListForTO(DynamicListQueryParameters dynamicListQueryParameters)
+        [HttpPatch("GetAllStampRequisitionListWaitingForApprovalByTO")]
+        public async Task<APIResponse<DynamicListResult<IEnumerable<StampRequisitionDTO>>>> GetAllStampRequisitionListWaitingForApprovalByTO(DynamicListQueryParameters dynamicListQueryParameters)
         {
             //Get all stamp Requisitions Requisitions with sort & filter parameters
             APIResponse<DynamicListResult<IEnumerable<StampRequisitionDTO>>> response = new();
             try
             {
-                IEnumerable<StampRequisitionDTO> stampRequisitionList = await _stampRequisitionService.ListAllStampRequisitionsForTO(dynamicListQueryParameters.filterParameters, dynamicListQueryParameters.PageIndex, dynamicListQueryParameters.PageSize, dynamicListQueryParameters.sortParameters);
+                IEnumerable<StampRequisitionDTO> stampRequisitionList = await _stampRequisitionService.ListAllStampRequisitionsWaitingForApprovalByTO(dynamicListQueryParameters.filterParameters, dynamicListQueryParameters.PageIndex, dynamicListQueryParameters.PageSize, dynamicListQueryParameters.sortParameters);
                 DynamicListResult<IEnumerable<StampRequisitionDTO>> result = new DynamicListResult<IEnumerable<StampRequisitionDTO>>
                 {
                     Headers = new List<ListHeader>
@@ -1030,6 +1030,209 @@ namespace CTS_BE.Controllers
             try
             {
                 IEnumerable<StampRequisitionDTO> stampRequisitionList = await _stampRequisitionService.ListAllStampRequisitionsWaitingForDelivery(dynamicListQueryParameters.filterParameters, dynamicListQueryParameters.PageIndex, dynamicListQueryParameters.PageSize, dynamicListQueryParameters.sortParameters);
+                DynamicListResult<IEnumerable<StampRequisitionDTO>> result = new DynamicListResult<IEnumerable<StampRequisitionDTO>>
+                {
+                    Headers = new List<ListHeader>
+                    {
+                        new ListHeader
+                        {
+                            Name = "Vendor Stamp Requisition Id",
+                            DataType = "numeric",
+                            FieldName = "vendorStampRequisitionId",
+                            FilterField = "VendorStampRequisitionId",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name = "Vendor Id",
+                            DataType = "numeric",
+                            FieldName = "vendorId",
+                            FilterField = "VendorId",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name = "Vendor Name",
+                            DataType = "string",
+                            FieldName = "vendorName",
+                            FilterField = "VendorName",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name = "Vendor Type",
+                            DataType = "string",
+                            FieldName = "vendorType",
+                            FilterField = "VendorType",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name = "License No",
+                            DataType = "string",
+                            FieldName = "licenseNo",
+                            FilterField = "LicenseNo",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name = "Amount",
+                            DataType = "numeric",
+                            FieldName = "amount",
+                            FilterField = "Amount",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name = "Requisition Date",
+                            DataType = "date",
+                            FieldName = "requisitionDate",
+                            FilterField = "RequisitionDate",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name = "Treasury",
+                            DataType = "string",
+                            FieldName = "raisedToTreasury",
+                            FilterField = "RaisedToTreasury",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name = "Sheet",
+                            DataType = "numeric",
+                            FieldName = "sheet",
+                            FilterField = "Sheet",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name = "Label",
+                            DataType = "numeric",
+                            FieldName = "label",
+                            FilterField = "Label",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name = "Requisition No",
+                            DataType = "string",
+                            FieldName = "requisitionNo",
+                            FilterField = "RequisitionNo",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                         new ListHeader
+                         {
+                             Name ="Status",
+                            DataType = "object",
+                            ObjectTypeValueField="statusId",
+                            FieldName = "status",
+                            FilterField = "Status",
+                            FilterEnums = new List<FilterEnum>
+                            {
+                                /*
+                                DeliveredToVendor = 37*/
+
+                                new FilterEnum
+                                {
+                                    Value = (int) Enum.StampRequisitionStatusEnum.ForwardedToStampCleck,
+                                    Label = "Forwarded to Stamp Clerk",
+                                    StyleClass = "primary"
+                                },
+                                new FilterEnum
+                                {
+                                    Value = (int) Enum.StampRequisitionStatusEnum.ForwardedToTreasuryOfficer,
+                                    Label = "Forwarded to Treasury Officer",
+                                    StyleClass = "primary"
+                                },
+                                new FilterEnum
+                                {
+                                    Value = (int) Enum.StampRequisitionStatusEnum.RejectedByStampClerk,
+                                    Label = "Rejected By Stamp Clerk",
+                                    StyleClass = "warning"
+                                },
+                                new FilterEnum
+                                {
+                                    Value = (int) Enum.StampRequisitionStatusEnum.WaitingForPayment,
+                                    Label = "Waiting For Payment",
+                                    StyleClass = "primary"
+                                },
+                                new FilterEnum
+                                {
+                                    Value = (int) Enum.StampRequisitionStatusEnum.RejectedByTreasuryOfficer,
+                                    Label = "Rejected by Treasury Officer",
+                                    StyleClass = "warning"
+                                },
+                                new FilterEnum
+                                {
+                                    Value = (int) Enum.StampRequisitionStatusEnum.WaitingForPaymentVerification,
+                                    Label = "Waiting For Payment Verification",
+                                    StyleClass = "primary"
+                                },
+                                new FilterEnum
+                                {
+                                    Value = (int) Enum.StampRequisitionStatusEnum.WaitingForDelivery,
+                                    Label = "Waiting For Delivery",
+                                    StyleClass = "primary"
+                                },
+                                new FilterEnum
+                                {
+                                    Value = (int) Enum.StampRequisitionStatusEnum.DeliveredToVendor,
+                                    Label = "Delivered To Vendor",
+                                    StyleClass = "success"
+                                },
+
+                            },
+                            IsFilterable = true,
+                            IsSortable = true,
+                        }
+                    },
+
+                    Data = stampRequisitionList,
+                    DataCount = 1
+                };
+                if (stampRequisitionList.Count() > 0)
+                {
+                    response.Message = AppConstants.DataFound;
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                }
+                else
+                {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                    response.Message = AppConstants.DataNotFound;
+                }
+                response.result = result;
+                return response;
+            }
+            catch (Exception Ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = Ex.Message;
+                return response;
+            }
+
+        }
+
+        [HttpPatch("GetAllStampRequisitionWaitingForPayment")]
+        public async Task<APIResponse<DynamicListResult<IEnumerable<StampRequisitionDTO>>>> GetAllStampRequisitionWaitingForPayment(DynamicListQueryParameters dynamicListQueryParameters)
+        {
+            //Get all stamp Requisitions Requisitions with sort & filter parameters
+            APIResponse<DynamicListResult<IEnumerable<StampRequisitionDTO>>> response = new();
+            try
+            {
+                IEnumerable<StampRequisitionDTO> stampRequisitionList = await _stampRequisitionService.ListAllStampRequisitionsWaitingForPayment(dynamicListQueryParameters.filterParameters, dynamicListQueryParameters.PageIndex, dynamicListQueryParameters.PageSize, dynamicListQueryParameters.sortParameters);
                 DynamicListResult<IEnumerable<StampRequisitionDTO>> result = new DynamicListResult<IEnumerable<StampRequisitionDTO>>
                 {
                     Headers = new List<ListHeader>
