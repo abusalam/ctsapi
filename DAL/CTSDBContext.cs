@@ -56,6 +56,8 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<ChequeDamage> ChequeDamages { get; set; }
 
+    public virtual DbSet<ChequeDetail> ChequeDetails { get; set; }
+
     public virtual DbSet<ChequeDistribute> ChequeDistributes { get; set; }
 
     public virtual DbSet<ChequeEntry> ChequeEntries { get; set; }
@@ -114,6 +116,22 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<MajorHead> MajorHeads { get; set; }
 
+    public virtual DbSet<MdStampCategoryHoa> MdStampCategoryHoas { get; set; }
+
+    public virtual DbSet<MdStampSubcategory> MdStampSubcategories { get; set; }
+
+    public virtual DbSet<MmGenStamp> MmGenStamps { get; set; }
+
+    public virtual DbSet<MmStampCategory> MmStampCategories { get; set; }
+
+    public virtual DbSet<MmStampDenomination> MmStampDenominations { get; set; }
+
+    public virtual DbSet<MmStampDiscount> MmStampDiscounts { get; set; }
+
+    public virtual DbSet<MmStampLabel> MmStampLabels { get; set; }
+
+    public virtual DbSet<MmStampVendorType> MmStampVendorTypes { get; set; }
+
     public virtual DbSet<OperatorMaster> OperatorMasters { get; set; }
 
     public virtual DbSet<PaymentAdvice> PaymentAdvices { get; set; }
@@ -138,6 +156,8 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<StampInventory> StampInventories { get; set; }
 
+    public virtual DbSet<StampInventory1> StampInventories1 { get; set; }
+
     public virtual DbSet<StampInvoice> StampInvoices { get; set; }
 
     public virtual DbSet<StampLabelMaster> StampLabelMasters { get; set; }
@@ -156,6 +176,12 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<SubDetailHead> SubDetailHeads { get; set; }
 
+    public virtual DbSet<TMmGenVendor> TMmGenVendors { get; set; }
+
+    public virtual DbSet<TTmStampBill> TTmStampBills { get; set; }
+
+    public virtual DbSet<TTmStampStockSummary> TTmStampStockSummaries { get; set; }
+
     public virtual DbSet<Test> Tests { get; set; }
 
     public virtual DbSet<Token> Tokens { get; set; }
@@ -165,6 +191,8 @@ public partial class CTSDBContext : DbContext
     public virtual DbSet<TokenFlow> TokenFlows { get; set; }
 
     public virtual DbSet<TokenHasObjection> TokenHasObjections { get; set; }
+
+    public virtual DbSet<Tr7Form> Tr7Forms { get; set; }
 
     public virtual DbSet<TrMaster> TrMasters { get; set; }
 
@@ -485,6 +513,17 @@ public partial class CTSDBContext : DbContext
         modelBuilder.Entity<ChequeDamage>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("cheque_damage_pkey");
+        });
+
+        modelBuilder.Entity<ChequeDetail>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("cheque_details_pkey");
+
+            entity.Property(e => e.IsActive).HasDefaultValueSql("0");
+
+            entity.HasOne(d => d.Bill).WithMany(p => p.ChequeDetails)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("cheque_details_bill_id_fkey");
         });
 
         modelBuilder.Entity<ChequeDistribute>(entity =>
@@ -999,6 +1038,14 @@ public partial class CTSDBContext : DbContext
             entity.HasKey(e => e.StampInventoryId).HasName("stamp_inventory_pkey");
         });
 
+        modelBuilder.Entity<StampInventory1>(entity =>
+        {
+            entity.HasKey(e => e.StampInventoryId).HasName("stamp_inventory_pkey");
+
+            entity.Property(e => e.StampCategory).IsFixedLength();
+            entity.Property(e => e.TreasuryCode).IsFixedLength();
+        });
+
         modelBuilder.Entity<StampInvoice>(entity =>
         {
             entity.HasKey(e => e.StampInvoiceId).HasName("stamp_invoice_pkey");
@@ -1243,6 +1290,7 @@ public partial class CTSDBContext : DbContext
             entity.HasKey(e => e.VendorRequisitionChallanGenerateId).HasName("vendor_requisition_challan_generate_pkey");
 
             entity.Property(e => e.VendorRequisitionChallanGenerateId).HasDefaultValueSql("nextval('cts.vendor_requisition_challan_ge_vendor_requisition_challan_ge_seq'::regclass)");
+            entity.Property(e => e.IsBilled).HasDefaultValueSql("false");
 
             entity.HasOne(d => d.VendorRequisitionStaging).WithMany(p => p.VendorRequisitionChallanGenerates)
                 .OnDelete(DeleteBehavior.ClientSetNull)
