@@ -59,4 +59,14 @@ namespace CTS_BE.DTOs
         public long GRNNo { get; set; }
 
     }
+    public class TRFormDataDTO
+    {
+        public string RaisedToTreasury { get; set; } = "";
+        public string Hoa { get; set; } = "";
+        public string DetailHead { get; set; } = "";
+        public decimal Amount { get; set; } = 0;
+        public string AmountInWord { get; set; } = "";
+        public string VendorName { get; set; } = "";
+        public string VendorAddress { get; set; } = "";
+    }
 }

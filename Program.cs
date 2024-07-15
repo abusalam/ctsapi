@@ -75,6 +75,8 @@ builder.Services.AddTransient<IStampInvoiceRepository, StampInvoiceRepository>()
 builder.Services.AddTransient<IStampWalletRepository, StampWalletRepository>();
 builder.Services.AddTransient<IStampRequisitionRepository, StampRequisitionRepository>();
 builder.Services.AddTransient<IStampRequisitionApproveRepository, StampRequisitionApproveRepository>();
+builder.Services.AddTransient<IStampRequisitionChallanGenerateRepository, StampRequisitionChallanGenerateRepository>();
+builder.Services.AddTransient<IStampRequisitionStagingRepository, StampRequisitionStagingRepository>();
 
 
 //Services

@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.DAL.Entities;
 
 [Table("ddo_allotment_booked_bill", Schema = "billing")]
+[Index("ActiveHoaId", Name = "fki_active_hoa_id_bantan_master_hoa_id")]
 [Index("AllotmentId", Name = "fki_c")]
 public partial class DdoAllotmentBookedBill
 {
@@ -51,6 +52,10 @@ public partial class DdoAllotmentBookedBill
 
     [Column("active_hoa_id")]
     public long ActiveHoaId { get; set; }
+
+    [ForeignKey("ActiveHoaId")]
+    [InverseProperty("DdoAllotmentBookedBills")]
+    public virtual ActiveHoaMst ActiveHoa { get; set; } = null!;
 
     [ForeignKey("AllotmentId")]
     [InverseProperty("DdoAllotmentBookedBills")]

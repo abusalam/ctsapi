@@ -30,15 +30,39 @@ public partial class VendorRequisitionChallanGenerate
     [Precision(10, 2)]
     public decimal TaxAmount { get; set; }
 
-    [Column("challan_amount")]
+    [Column("total_amount")]
     [Precision(10, 2)]
-    public decimal ChallanAmount { get; set; }
+    public decimal TotalAmount { get; set; }
 
-    [Column("head", TypeName = "character varying")]
-    public string? Head { get; set; }
+    [Column("hoa", TypeName = "character varying")]
+    public string? Hoa { get; set; }
 
     [Column("requisition_no", TypeName = "character varying")]
     public string? RequisitionNo { get; set; }
+
+    [Column("hoa_id")]
+    public long? HoaId { get; set; }
+
+    [Column("grn_no", TypeName = "character varying")]
+    public string? GrnNo { get; set; }
+
+    [Column("bank_recipt_no", TypeName = "character varying")]
+    public string? BankReciptNo { get; set; }
+
+    [Column("challan_no", TypeName = "character varying")]
+    public string? ChallanNo { get; set; }
+
+    [Column("challan_date", TypeName = "timestamp without time zone")]
+    public DateTime? ChallanDate { get; set; }
+
+    [Column("voucher_no", TypeName = "character varying")]
+    public string? VoucherNo { get; set; }
+
+    [Column("bill_id")]
+    public long? BillId { get; set; }
+
+    [Column("is_billed")]
+    public bool? IsBilled { get; set; }
 
     [ForeignKey("VendorRequisitionStagingId")]
     [InverseProperty("VendorRequisitionChallanGenerates")]

@@ -1225,6 +1225,7 @@ namespace CTS_BE.Controllers
 
         }
 
+<<<<<<< HEAD
         [HttpPatch("GetAllStampRequisitionWaitingForPayment")]
         public async Task<APIResponse<DynamicListResult<IEnumerable<StampRequisitionDTO>>>> GetAllStampRequisitionWaitingForPayment(DynamicListQueryParameters dynamicListQueryParameters)
         {
@@ -1429,5 +1430,35 @@ namespace CTS_BE.Controllers
         }
             
      } 
+=======
+
+        [HttpGet("TrFromGenerationDataByRequisitionId")]
+        public async Task<APIResponse<TRFormDataDTO>> TrFromGenerationDataByRequisitionId(long stampRequisitionId)
+        {
+            APIResponse<TRFormDataDTO> response = new();
+            try
+            {
+                var data = await _stampRequisitionService.TrFromGenerationData(stampRequisitionId);
+                if (data.Amount != 0)
+                {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                    response.Message = AppConstants.DataFound; 
+                    response.result = data;
+                    return response;
+                }
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.result = null;
+                response.Message = AppConstants.MissingField;
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = ex.Message;
+                return response;
+            }
+        }
+    } 
+>>>>>>> e4a8b79ba7fabdd95e23ca0c7856966b03acf52e
 }
 
