@@ -245,7 +245,6 @@ namespace CTS_BE.BAL.Services.stampRequisition
             return stampRequisitionList;
         }
 
-<<<<<<< HEAD
         public async Task<IEnumerable<StampRequisitionDTO>> ListAllStampRequisitionsWaitingForPayment(List<FilterParameter> filters, int pageIndex, int pageSize, SortParameter sortParameters)
         {
             IEnumerable<StampRequisitionDTO> stampRequisitionList = await _stampRequisitionRepo.GetSelectedColumnByConditionAsync(
@@ -267,7 +266,7 @@ namespace CTS_BE.BAL.Services.stampRequisition
                 Label = entity.Label,
             }, pageIndex, pageSize, filters, (sortParameters != null) ? sortParameters.Field : null, (sortParameters != null) ? sortParameters.Order : null);
             return stampRequisitionList;
-=======
+        }
         public async Task<TRFormDataDTO> TrFromGenerationData(long stampRequisitionId)
         {
             var data = await _stampRequisitionChallanGenerateRepo.GetSingleAysnc(e => e.VendorRequisitionStaging.VendorRequisitionId == stampRequisitionId);
@@ -286,7 +285,6 @@ namespace CTS_BE.BAL.Services.stampRequisition
             //res.VendorAddress = data.VendorRequisitionStaging.VendorRequisition.Vendor.Address;
             res.RaisedToTreasury = _auth.GetScope();
             return res;
->>>>>>> e4a8b79ba7fabdd95e23ca0c7856966b03acf52e
         }
     }
 }
