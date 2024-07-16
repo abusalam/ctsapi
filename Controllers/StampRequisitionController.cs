@@ -1225,7 +1225,6 @@ namespace CTS_BE.Controllers
 
         }
 
-<<<<<<< HEAD
         [HttpPatch("GetAllStampRequisitionWaitingForPayment")]
         public async Task<APIResponse<DynamicListResult<IEnumerable<StampRequisitionDTO>>>> GetAllStampRequisitionWaitingForPayment(DynamicListQueryParameters dynamicListQueryParameters)
         {
@@ -1429,9 +1428,6 @@ namespace CTS_BE.Controllers
 
         }
             
-     } 
-=======
-
         [HttpGet("TrFromGenerationDataByRequisitionId")]
         public async Task<APIResponse<TRFormDataDTO>> TrFromGenerationDataByRequisitionId(long stampRequisitionId)
         {
@@ -1459,6 +1455,5 @@ namespace CTS_BE.Controllers
             }
         }
     } 
->>>>>>> e4a8b79ba7fabdd95e23ca0c7856966b03acf52e
 }
 
