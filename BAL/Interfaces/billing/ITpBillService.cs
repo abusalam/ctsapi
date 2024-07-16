@@ -11,5 +11,6 @@ namespace CTS_BE.BAL.Interfaces.billing
         public Task<int> BillCountByStatus(int statusCode);
         Task<IEnumerable<BIllInfoDTO>> billInfo(long billId);
         Task<ByTransferDetislDTO> ByTransferDetislByBillId(long billId);
+        Task<chequeDetailsDTO> ChequeDetislByBillId(long billId);
     }
 }

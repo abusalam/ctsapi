@@ -56,6 +56,18 @@ namespace CTS_BE.DTOs
         public decimal? BillBtAmount { get; set; }
         public decimal? AvailableBtAmount { get; set; }
         public decimal? BillNetAmount { get; set; }
+        public decimal? TotalByTransfersAmount { get; set; }
         public List<ByTransferDTO>? ByTransfers { get; set; }
+    }
+    public class chequeDetailsDTO
+    {
+         public string? BillNo { get; set; }
+        public string? BillDate { get; set; }
+        public decimal? GrossAmount { get; set; }
+        public decimal? NetAmount { get; set; }
+        public decimal? ChequeAmount { get; set; }
+        public string? PayMode { get; set; }
+        // public decimal? TotalBeneficiaryAmount  { get; set; }
+        public List<ChequeListDTOs> ChequeDetails { get; set; }
     }
 }

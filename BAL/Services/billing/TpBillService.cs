@@ -172,22 +172,43 @@ namespace CTS_BE.BAL.Services.billing
         }
         public async Task<ByTransferDetislDTO> ByTransferDetislByBillId(long billId)
         {
-           return await _TpBillRepository.GetSingleSelectedColumnByConditionAsync(entity => entity.BillId == billId,
-                entity => new ByTransferDetislDTO
-                {
-                    BillBtAmount = entity.BtAmount,
-                    BillNetAmount = entity.NetAmount,
-                    AvailableBtAmount = 0,
-                    ByTransfers = entity.BillBtdetails.Select(bt => new ByTransferDTO
-                    {
-                        BtSerial = bt.BtSerial,
-                        Amount = bt.Amount,
-                        Desc = bt.BtSerialNavigation.Desc,
-                        Hoa = bt.BtSerialNavigation.Hoa,
-                        Type = bt.BtSerialNavigation.Type,
-                    }).ToList()
-                }
-            );
+            return await _TpBillRepository.GetSingleSelectedColumnByConditionAsync(entity => entity.BillId == billId,
+                 entity => new ByTransferDetislDTO
+                 {
+                     BillBtAmount = entity.BtAmount,
+                     BillNetAmount = entity.NetAmount,
+                     AvailableBtAmount = 0,
+                     TotalByTransfersAmount = entity.BillBtdetails.Sum(bt => bt.Amount),
+                     ByTransfers = entity.BillBtdetails.Select(bt => new ByTransferDTO
+                     {
+                         BtSerial = bt.BtSerial,
+                         Amount = bt.Amount,
+                         Desc = bt.BtSerialNavigation.Desc,
+                         Hoa = bt.BtSerialNavigation.Hoa,
+                         Type = bt.BtSerialNavigation.Type,
+                     }).ToList()
+                 }
+             );
+        }
+        public async Task<chequeDetailsDTO> ChequeDetislByBillId(long billId)
+        {
+            return await _TpBillRepository.GetSingleSelectedColumnByConditionAsync(entity => entity.BillId == billId,
+                 entity => new chequeDetailsDTO
+                 {
+                     BillNo = entity.BillNo,
+                     BillDate = entity.BillDate.ToString("dd/MM/yyyy"),
+                     ChequeAmount = (decimal)  entity.ChequeDetails.Sum(cheque => cheque.Amount),
+                     PayMode = entity.PaymentMode == 1 ? "ECS" : "BOTH",
+                     GrossAmount = entity.GrossAmount,
+                     NetAmount = entity.NetAmount,
+                     ChequeDetails = entity.ChequeDetails.Select(cheque => new ChequeListDTOs
+                     {
+                        PayeeName = cheque.PayeeName,
+                        Amount = (decimal) cheque.Amount,
+                        ChequeType = cheque.PayMode == 1 ? "AC" : "Order",
+                     }).ToList()
+                 }
+             );
         }
     }
 }
