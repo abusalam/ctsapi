@@ -1,32 +1,72 @@
-using CTS_BE.BAL.Interfaces.Pension;
-using CTS_BE.DAL.Repositories.Pension;
-using CTS_BE.DAL.Interfaces.Pension;
-using CTS_BE.Model.Pension;
-using CTS_BE.DTOs.PensionDTO;
 using AutoMapper;
-using CTS_BE.DAL.Entities;
+using CTS_BE.BAL.Interfaces.Pension;
+using CTS_BE.DAL.Interfaces.Pension;
+using CTS_BE.DTOs.PensionDTO;
+using CTS_BE.DAL.Entities.Pension;
+
 
 namespace CTS_BE.BAL.Services.Pension
 {
-  public class PensionService : IPensionService
-  {
-    private readonly IPensionerDetailsRepository _pensionerDetailsRepository;
-    private readonly IMapper _mapper;
-    public PensionService(IPensionerDetailsRepository pensionerDetailsRepository, IMapper mapper)
+    public class PensionService : IPensionService
     {
-        _pensionerDetailsRepository = pensionerDetailsRepository;
-        _mapper = mapper;
-    }
+        private readonly IManualPpoReceiptRepository _manualPpoReceiptRepository;
+        private readonly IReceiptSequenceRepository _receiptSequenceRepository;
+        private readonly IMapper _mapper;
 
-    public async Task<int> CreatePensionerDetails(PensionerDetailsDTO details)
-    {
-        if(details == null)
+        public PensionService (
+            IManualPpoReceiptRepository manualPpoReceiptRepository,
+            IReceiptSequenceRepository receiptSequenceRepository,
+            IMapper mapper
+            )
         {
-            throw new ArgumentNullException(nameof(details));
+            _manualPpoReceiptRepository = manualPpoReceiptRepository;
+            _receiptSequenceRepository = receiptSequenceRepository;
+            _mapper = mapper;
+            
         }
-        PMmPenPrepPensionerDetl pensionerDetailsEntity = _mapper.Map<PMmPenPrepPensionerDetl>(details);
-        _pensionerDetailsRepository.Add(pensionerDetailsEntity);
-        return await _pensionerDetailsRepository.SaveChangesManagedAsync();
+
+        public async Task<ManualPpoReceiptDTO> GetManualPpoReceipt(string treasuryReceiptNo)
+        {
+            ManualPpoReceiptDTO manualPpoReceiptDTO;
+            try
+            {
+                manualPpoReceiptDTO = _mapper.Map<ManualPpoReceiptDTO>(
+                    await _manualPpoReceiptRepository.GetSingleAysnc(
+                        entity => entity.TreasuryReceiptNo == treasuryReceiptNo
+                        )
+                    );
+            }
+            finally {
+
+            }
+            return manualPpoReceiptDTO;
+        }
+
+        public async Task<string> CreateManualPpoReceipt(ManualPpoReceiptDTO manualPpoReceiptDTO)
+        {
+
+            PpoReceipt manualPpoReceiptEntity;
+            try
+            {
+                manualPpoReceiptEntity = _mapper.Map<PpoReceipt>(manualPpoReceiptDTO);
+
+                manualPpoReceiptEntity.TreasuryCode = await _receiptSequenceRepository.GetUserTreasuryCode();
+                manualPpoReceiptEntity.TreasuryReceiptNo = await _receiptSequenceRepository.GenerateTreasuryReceiptNo(
+                    await _receiptSequenceRepository.GetUserFinYear(),
+                    await _receiptSequenceRepository.GetUserTreasuryCode()
+                );
+                manualPpoReceiptEntity.PpoStatus = $"PPO Received";
+                
+                _manualPpoReceiptRepository.Add(manualPpoReceiptEntity);
+
+                await _manualPpoReceiptRepository.SaveChangesManagedAsync();
+            }
+            finally {
+
+
+            }
+            return manualPpoReceiptEntity.TreasuryReceiptNo;
+        }
+
     }
-  }
 }

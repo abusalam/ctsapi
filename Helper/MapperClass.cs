@@ -6,6 +6,7 @@ using CTS_BE.Model;
 using CTS_BE.DAL.Entities;
 using CTS_BE.DTOs.PensionDTO;
 using CTS_BE.Model.Pension;
+using CTS_BE.DAL.Entities.Pension;
 namespace CTS_BE.Helper
 {
     public class MapperClass : Profile
@@ -44,8 +45,24 @@ namespace CTS_BE.Helper
             CreateMap<StampWalletInsertDTO, StampWallet>();
 
             // Pension Module Mappings
-            CreateMap<PensionerDetailsDTO, PMmPenPrepPensionerDetl>().ReverseMap();
-            CreateMap<PensionerDetailsDTO, PensionerDetailsModel>().ReverseMap();
+            CreateMap<ManualPpoReceiptDTO, PpoReceipt>()
+                // .ForMember(
+                //     dest => dest.DateOfCommencement, 
+                //     opt => opt
+                //     .MapFrom(
+                //         src => src.DateOfCommencement.Length>0 ? 
+                //         DateOnly.Parse(src.DateOfCommencement) : default
+                //     )
+                // )
+                // .ForMember(
+                //     dest => dest.ReceiptDate, 
+                //     opt => opt
+                //     .MapFrom(
+                //         src => src.ReceiptDate.Length>0 ? 
+                //         DateOnly.Parse(src.ReceiptDate) : default
+                //     )
+                // )
+                .ReverseMap();
 
         }
     }

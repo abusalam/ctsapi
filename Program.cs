@@ -43,7 +43,7 @@ builder.Services.AddDbContext<CTSDBContext>(options =>
 ), ServiceLifetime.Transient);
 
 //Pension Database Connection
-builder.Services.AddDbContext<NewCtsContext>(options =>
+builder.Services.AddDbContext<PensionDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DBConnection"),
     //options => options.CommandTimeout(999)                   
     options => options.EnableRetryOnFailure(10, TimeSpan.FromSeconds(5), null)
@@ -90,7 +90,8 @@ builder.Services.AddTransient<IStampInvoiceRepository, StampInvoiceRepository>()
 builder.Services.AddTransient<IStampWalletRepository, StampWalletRepository>();
 
 //Pension Repositories
-builder.Services.AddTransient<IPensionerDetailsRepository, PensionerDetailsRepository>();
+builder.Services.AddTransient<IManualPpoReceiptRepository, ManualPpoReceiptRepository>();
+builder.Services.AddTransient<IReceiptSequenceRepository, ReceiptSequenceRepository>();
 
 
 //Services
@@ -127,6 +128,7 @@ builder.Services.AddTransient<IChequeDistributionService, ChequeDistributionServ
 
 // Pension Services
 builder.Services.AddTransient<IPensionService, PensionService>();
+builder.Services.AddTransient<IReceiptSequenceService, ReceiptSequenceService>();
 
 //builder.Services.AddTransient<ITokenHelper, TokenHelper>();
 //builder.Services.AddSingleton<ITokencache, Tokencache>();

@@ -5,8 +5,7 @@ namespace CTS_BE.DAL.Repositories.master
 {
     public class LocalObjectionRepository : Repository<LocalObjection, CTSDBContext>, ILocalObjectionRepository
     {
-        public LocalObjectionRepository(CTSDBContext context) : base(context)
-        {
+        public LocalObjectionRepository(CTSDBContext context) : base(context) {
         }
     }
 }
