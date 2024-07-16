@@ -302,10 +302,12 @@ namespace CTS_BE.DTOs   // TODO: Update API will be required in future.
 
     }
 
-    public class VenodrNameAddressDTO
+    public class TRDataDTO
     {
         public string? VendorName { get; set; }
         public string VendorAddress { get; set; } = null!;
+        public string TreasuryName { get; set; } = "";
+
 
     }
 

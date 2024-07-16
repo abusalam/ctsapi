@@ -270,12 +270,13 @@ namespace CTS_BE.BAL.Services.stampRequisition
         public async Task<TRFormDataDTO> TrFromGenerationData(long stampRequisitionId)
         {
             var data = await _stampRequisitionChallanGenerateRepo.GetSingleAysnc(e => e.VendorRequisitionStaging.VendorRequisitionId == stampRequisitionId);
-            VenodrNameAddressDTO vendorData = await _stampRequisitionRepo.GetSingleSelectedColumnByConditionAsync(
+            TRDataDTO TrDataGather = await _stampRequisitionRepo.GetSingleSelectedColumnByConditionAsync(
                 e => e.VendorStampRequisitionId == stampRequisitionId,
-                e => new VenodrNameAddressDTO
+                e => new TRDataDTO
                 {
                     VendorName = e.Vendor.VendorName,
-                    VendorAddress = e.Vendor.Address
+                    VendorAddress = e.Vendor.Address,
+                    TreasuryName = e.RaisedToTreasuryNavigation.Name
                 });
             //Console.WriteLine("=====================" + data.VendorRequisitionStaging.VendorRequisitionStagingId.ToString() + "==========================");
             if (data == null)
@@ -284,12 +285,12 @@ namespace CTS_BE.BAL.Services.stampRequisition
            }
             var res = new TRFormDataDTO();
             res.Amount = data.TotalAmount;
-            res.AmountInWord = "";
             res.DetailHead = "";
             res.Hoa = data.Hoa;
-            res.VendorName = vendorData.VendorName;
-            res.VendorAddress = vendorData.VendorAddress;
+            res.VendorName = TrDataGather.VendorName;
+            res.VendorAddress = TrDataGather.VendorAddress;
             res.RaisedToTreasury = _auth.GetScope();
+            res.TreasuryName = TrDataGather.TreasuryName;
             return res;
         }
     }

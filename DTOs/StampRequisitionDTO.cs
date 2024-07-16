@@ -65,8 +65,8 @@ namespace CTS_BE.DTOs
         public string Hoa { get; set; } = "";
         public string DetailHead { get; set; } = "";
         public decimal Amount { get; set; } = 0;
-        public string AmountInWord { get; set; } = "";
         public string VendorName { get; set; } = "";
         public string VendorAddress { get; set; } = "";
+        public string TreasuryName { get; set; } = "";
     }
 }
