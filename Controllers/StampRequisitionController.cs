@@ -224,7 +224,7 @@ namespace CTS_BE.Controllers
                 return response;
             }
         }
-        
+
         [HttpPatch("GetAllStampRequisitionWaitingForPaymentVerificatonByTO")]
         public async Task<APIResponse<DynamicListResult<IEnumerable<StampRequisitionDTO>>>> GetAllStampRequisitionWaitingForPaymentVerificatonByTO(DynamicListQueryParameters dynamicListQueryParameters)
         {
@@ -491,17 +491,17 @@ namespace CTS_BE.Controllers
             APIResponse<bool> response = new();
             try
             {
-                    if (await _stampRequisitionService.RequisitionRejectedByStampClerk(stampRequisitionId))
-                    {
-                        response.apiResponseStatus = Enum.APIResponseStatus.Success;
-                        response.Message = AppConstants.ForwardedToTreasuryOfficer;
-                        response.result = true;
-                        return response;
-                    }
-                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
-                    response.result = false;
-                    response.Message = AppConstants.MissingField;
+                if (await _stampRequisitionService.RequisitionRejectedByStampClerk(stampRequisitionId))
+                {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                    response.Message = AppConstants.ForwardedToTreasuryOfficer;
+                    response.result = true;
                     return response;
+                }
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.result = false;
+                response.Message = AppConstants.MissingField;
+                return response;
             }
             catch (Exception ex)
             {
@@ -510,7 +510,7 @@ namespace CTS_BE.Controllers
                 return response;
             }
         }
-        
+
         [HttpPost("StampRequisitionApprovedByTreasuryOfficer")]
         public async Task<APIResponse<bool>> StampRequisitionApprovedByTreasuryOfficer(StampRequisitionApprovedByTODTO stampRequisition)
         {
@@ -546,17 +546,17 @@ namespace CTS_BE.Controllers
             APIResponse<bool> response = new();
             try
             {
-                    if (await _stampRequisitionService.RequisitionRejectedByTO(stampRequisitionId))
-                    {
-                        response.apiResponseStatus = Enum.APIResponseStatus.Success;
-                        response.Message = AppConstants.ForwardedToTreasuryOfficer;
-                        response.result = true;
-                        return response;
-                    }
-                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
-                    response.result = false;
-                    response.Message = AppConstants.MissingField;
+                if (await _stampRequisitionService.RequisitionRejectedByTO(stampRequisitionId))
+                {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                    response.Message = AppConstants.ForwardedToTreasuryOfficer;
+                    response.result = true;
                     return response;
+                }
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.result = false;
+                response.Message = AppConstants.MissingField;
+                return response;
             }
             catch (Exception ex)
             {
@@ -591,7 +591,7 @@ namespace CTS_BE.Controllers
                 return response;
             }
         }
-        
+
         [HttpGet("PaymentProcessByDEO")]
         public async Task<APIResponse<bool>> PaymentProcessByDEO(StampRequisitionPaymentDTO stampRequisition)
         {
@@ -1021,7 +1021,7 @@ namespace CTS_BE.Controllers
                 return response;
             }
         }
-        
+
         [HttpPatch("GetAllStampRequisitionListForDelivery")]
         public async Task<APIResponse<DynamicListResult<IEnumerable<StampRequisitionDTO>>>> GetAllStampRequisitionListForDelivery(DynamicListQueryParameters dynamicListQueryParameters)
         {

@@ -14,9 +14,7 @@ namespace CTS_BE.DAL.Repositories.stampRequisition
         {
             _context = context;
             _context.Set<VendorRequisitionChallanGenerate>()
-            //    .Include(t => t.Vendor)
-            //    .Include(t => t.VendorRequisitionApprove)
-                .Include(t => t.VendorRequisitionStaging.VendorRequisition.Vendor.VendorName);
+                .Include(t => t.VendorRequisitionStaging);
         }
 
         

@@ -22,6 +22,8 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<Advice> Advices { get; set; }
 
+    public virtual DbSet<Advice1> Advices1 { get; set; }
+
     public virtual DbSet<Available> Availables { get; set; }
 
     public virtual DbSet<Bank> Banks { get; set; }
@@ -55,6 +57,8 @@ public partial class CTSDBContext : DbContext
     public virtual DbSet<ChequeCountRecord> ChequeCountRecords { get; set; }
 
     public virtual DbSet<ChequeDamage> ChequeDamages { get; set; }
+
+    public virtual DbSet<ChequeDetail> ChequeDetails { get; set; }
 
     public virtual DbSet<ChequeDistribute> ChequeDistributes { get; set; }
 
@@ -109,6 +113,8 @@ public partial class CTSDBContext : DbContext
     public virtual DbSet<GroupType> GroupTypes { get; set; }
 
     public virtual DbSet<LfplEc> LfplEcs { get; set; }
+
+    public virtual DbSet<LfplSchemesWallet> LfplSchemesWallets { get; set; }
 
     public virtual DbSet<LocalObjection> LocalObjections { get; set; }
 
@@ -263,6 +269,12 @@ public partial class CTSDBContext : DbContext
                 .HasPrincipalKey(p => p.OpId)
                 .HasForeignKey(d => d.OpId)
                 .HasConstraintName("op_id_fkey");
+        });
+
+        modelBuilder.Entity<Advice1>(entity =>
+        {
+            entity.Property(e => e.TreasuryAdviceId).ValueGeneratedOnAdd();
+            entity.Property(e => e.TreasuryCode).IsFixedLength();
         });
 
         modelBuilder.Entity<Bank>(entity =>
@@ -511,6 +523,17 @@ public partial class CTSDBContext : DbContext
         modelBuilder.Entity<ChequeDamage>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("cheque_damage_pkey");
+        });
+
+        modelBuilder.Entity<ChequeDetail>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("cheque_details_pkey");
+
+            entity.Property(e => e.IsActive).HasDefaultValueSql("0");
+
+            entity.HasOne(d => d.Bill).WithMany(p => p.ChequeDetails)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("cheque_details_bill_id_fkey");
         });
 
         modelBuilder.Entity<ChequeDistribute>(entity =>
@@ -895,6 +918,11 @@ public partial class CTSDBContext : DbContext
                 .HasPrincipalKey(p => p.RefNo)
                 .HasForeignKey(d => d.RefNo)
                 .HasConstraintName("ref_no_fkey");
+        });
+
+        modelBuilder.Entity<LfplSchemesWallet>(entity =>
+        {
+            entity.Property(e => e.TreasuryCode).IsFixedLength();
         });
 
         modelBuilder.Entity<LocalObjection>(entity =>
