@@ -163,6 +163,9 @@ public partial class BillDetail
     [InverseProperty("Bill")]
     public virtual ICollection<BillSubdetailInfo> BillSubdetailInfos { get; set; } = new List<BillSubdetailInfo>();
 
+    [InverseProperty("Bill")]
+    public virtual ICollection<ChequeDetail> ChequeDetails { get; set; } = new List<ChequeDetail>();
+
     public virtual Ddo? DdoCodeNavigation { get; set; }
 
     public virtual Department? DemandNavigation { get; set; }
