@@ -278,14 +278,15 @@ namespace CTS_BE.BAL.Services.stampRequisition
                     VendorAddress = e.Vendor.Address,
                     TreasuryName = e.RaisedToTreasuryNavigation.Name
                 });
-            //Console.WriteLine("=====================" + data.VendorRequisitionStaging.VendorRequisitionStagingId.ToString() + "==========================");
-            if (data == null)
-           {
-                return new TRFormDataDTO() ;
-           }
+                if (data == null)
+               {
+                    return new TRFormDataDTO() ;
+               }
+            string hoa_code = data.Hoa;
+            string[] parts = hoa_code.Split('-');
             var res = new TRFormDataDTO();
             res.Amount = data.TotalAmount;
-            res.DetailHead = "";
+            res.DetailHead = parts[6];
             res.Hoa = data.Hoa;
             res.VendorName = TrDataGather.VendorName;
             res.VendorAddress = TrDataGather.VendorAddress;
