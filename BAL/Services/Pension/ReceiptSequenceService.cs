@@ -24,7 +24,7 @@ namespace CTS_BE.BAL.Services.Pension
 
         public async Task<string> GenerateTreasuryReceiptNo(short finYear=FIN_YEAR, string treasuryCode=USER_TREASURY_CODE)
         {
-            PpoReceiptSquence ppoReceiptSquence = new();
+            PpoReceiptSequence ppoReceiptSquence = new();
             string treasuryReceiptNo = "";
             int seqValue = 0;
             
@@ -39,7 +39,7 @@ namespace CTS_BE.BAL.Services.Pension
 
                 } else {
                     _receiptSequenceRepository.Add(
-                        new PpoReceiptSquence() {
+                        new PpoReceiptSequence() {
                             FinancialYear = finYear,
                             TreasuryCode = treasuryCode,
                             NextSequenceValue = 1

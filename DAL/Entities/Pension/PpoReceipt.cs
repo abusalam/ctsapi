@@ -31,7 +31,7 @@ public partial class PpoReceipt
 
     [Column("pensioner_name")]
     [StringLength(100)]
-    public string? PensionerName { get; set; }
+    public string PensionerName { get; set; } = null!;
 
     [Column("date_of_commencement")]
     public DateOnly DateOfCommencement { get; set; }
@@ -59,7 +59,7 @@ public partial class PpoReceipt
     public DateTime? CreatedAt { get; set; }
 
     [Column("created_by")]
-    public int? CreatedBy { get; set; }
+    public int CreatedBy { get; set; }
 
     [Column("updated_at", TypeName = "timestamp without time zone")]
     public DateTime? UpdatedAt { get; set; }
@@ -68,5 +68,5 @@ public partial class PpoReceipt
     public int? UpdatedBy { get; set; }
 
     [Column("active_flag")]
-    public bool? ActiveFlag { get; set; }
+    public bool ActiveFlag { get; set; }
 }

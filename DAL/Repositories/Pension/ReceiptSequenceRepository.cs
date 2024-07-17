@@ -8,7 +8,7 @@ using CTS_BE.DAL.Interfaces.Pension;
 namespace CTS_BE.DAL.Repositories.Pension
 {
     public class ReceiptSequenceRepository : 
-        Repository<PpoReceiptSquence, PensionDbContext>, 
+        Repository<PpoReceiptSequence, PensionDbContext>, 
         IReceiptSequenceRepository
     {
         private const string USER_TREASURY_CODE = "MDA";
@@ -22,33 +22,33 @@ namespace CTS_BE.DAL.Repositories.Pension
 
 
         public async Task<string> GenerateTreasuryReceiptNo(short finYear=FIN_YEAR, string treasuryCode=USER_TREASURY_CODE) {
-            PpoReceiptSquence ppoReceiptSquence = new();
+            PpoReceiptSequence ppoReceiptSequence = new();
             string treasuryReceiptNo = "";
             int seqValue = 0;
             
             try {
-                ppoReceiptSquence = await GetSingleAysnc(entity => entity.FinancialYear == finYear && entity.TreasuryCode == treasuryCode);
-                if(ppoReceiptSquence?.NextSequenceValue > 0) {
-                    ppoReceiptSquence.NextSequenceValue++;
-                    if(Update(ppoReceiptSquence)) {
-                        seqValue = ppoReceiptSquence.NextSequenceValue;
+                ppoReceiptSequence = await GetSingleAysnc(entity => entity.FinancialYear == finYear && entity.TreasuryCode == treasuryCode);
+                if(ppoReceiptSequence?.NextSequenceValue > 0) {
+                    ppoReceiptSequence.NextSequenceValue++;
+                    if(Update(ppoReceiptSequence)) {
+                        seqValue = ppoReceiptSequence.NextSequenceValue;
                     }
 
                 } else {
-                    ppoReceiptSquence = new PpoReceiptSquence() {
+                    ppoReceiptSequence = new PpoReceiptSequence() {
                             FinancialYear = finYear,
                             TreasuryCode = treasuryCode,
                             NextSequenceValue = 1
                         };
-                    Add(ppoReceiptSquence);
+                    Add(ppoReceiptSequence);
                 }
                 if(await SaveChangesManagedAsync()>0) {
-                    seqValue = ppoReceiptSquence.NextSequenceValue;
+                    seqValue = ppoReceiptSequence.NextSequenceValue;
                 }
             }
             finally {
                 
-                string paddedNextSequenceValue = $"{seqValue}".PadLeft(8,'0');
+                string paddedNextSequenceValue = $"{seqValue}".PadLeft(6,'0');
                 treasuryReceiptNo = $"{USER_TREASURY_CODE}{finYear}{paddedNextSequenceValue}";
             }
             return treasuryReceiptNo;

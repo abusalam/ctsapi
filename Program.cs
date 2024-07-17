@@ -181,7 +181,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.Configure<ApiBehaviorOptions>(config =>
 {
 
-    config.InvalidModelStateResponseFactory = ctx => new OkObjectResult(new APIResponse<IEnumerable>()
+    config.InvalidModelStateResponseFactory = ctx => new BadRequestObjectResult(
+        new APIResponse<IEnumerable>()
     {
         apiResponseStatus = APIResponseStatus.Error,
         result = ctx.ModelState.Values,
@@ -202,7 +203,7 @@ builder.Services.Configure<ApiBehaviorOptions>(config =>
   //     .ToList()
   // )
 
-            );
+    );
 });
 var app = builder.Build();
 

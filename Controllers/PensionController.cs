@@ -11,109 +11,169 @@ using NPOI.SS.Formula.Functions;
 
 namespace CTS_BE.Controllers
 {
-  [ApiController]
-  [Tags("Pension")]
-  [Route("api/v1/[controller]")]
-  public class PensionController : ControllerBase
-  {
-    private readonly IPensionService _pensionService;
-    private readonly IReceiptSequenceService _receiptSequenceService;
-    public PensionController(IPensionService pensionService)
+    [ApiController]
+    [Tags("Pension")]
+    [Route("api/v1")]
+    public class PensionController : ControllerBase
     {
-      _pensionService = pensionService;
+        private readonly IPensionService _pensionService;
+
+        public PensionController(IPensionService pensionService)
+        {
+            _pensionService = pensionService;
+        }
+
+        [HttpPost("echo")]
+        [Produces("application/json")]
+        [Tags("Pension", "Echo Request in Response")]
+        public async Task<APIResponse<Object>> ControlEchoRequestInResponse(Object req)
+        {
+            APIResponse<Object> response = new()
+            {
+                apiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = "Echoing Request",
+                result = req
+            };
+            return await Task.FromResult(response);
+        }
+
+        [HttpPost("date-only")]
+        [Produces("application/json")]
+        [Tags("Pension", "DateOnly Echo")]
+        public async Task<APIResponse<DateOnlyDTO>> ControlSetDateOnly(DateOnlyDTO dateOnly)
+        {
+            APIResponse<DateOnlyDTO> response = new()
+            {
+                apiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = "Writing DateOnly",
+                result = dateOnly
+            };
+            return await Task.FromResult(response);
+        }
+
+        [HttpGet("date-only")]
+        [Produces("application/json")]
+        [Tags("Pension", "DateOnly Echo")]
+        public async Task<APIResponse<DateOnly>> ControlGetDateOnly()
+        {
+            DateOnly dateOnly = DateOnly.FromDateTime(DateTime.Now);
+            APIResponse<DateOnly> response = new()
+            {
+                apiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = "Reading DateOnly",
+                result = dateOnly
+            };
+            return await Task.FromResult(response);
+        }
+    
+
+        [HttpPost("manual-ppo/receipts")]
+        [Produces("application/json")]
+        [Tags("Pension", "Manual PPO Receipt")]
+        public async Task<APIResponse<ManualPpoReceiptResponseDTO>> ControlCreateManualPpoReceipt(ManualPpoReceiptEntryDTO manualPpoReceiptEntryDTO)
+        {
+            APIResponse<ManualPpoReceiptResponseDTO> response;
+
+            try {
+                response = new() {
+                apiResponseStatus = Enum.APIResponseStatus.Success,
+                result = await _pensionService
+                        .CreatePpoReceipt(manualPpoReceiptEntryDTO),
+                Message = $"PPO Received Successfully!"
+                };
+            } catch(DbUpdateException e) {
+                StackFrame CallStack = new StackFrame(1, true);
+                response = new () {
+                apiResponseStatus = Enum.APIResponseStatus.Error,
+                result = null,
+                Message = e.ToString()
+                //   $"{e.GetType()}=>File:{CallStack.GetFileName()}({CallStack.GetFileLineNumber()}): {e.Message}"
+                };
+            }
+            return response;
+        }
+
+        [HttpGet("manual-ppo/receipts/{treasuryReceiptNo}")]
+        [Produces("application/json")]
+        [Tags("Pension", "Manual PPO Receipt")]
+        public async Task<APIResponse<ManualPpoReceiptResponseDTO>> ControlGetPpoReceipt(string treasuryReceiptNo)
+        {
+            APIResponse<ManualPpoReceiptResponseDTO> response;
+
+            try {
+                response = new() {
+                apiResponseStatus = Enum.APIResponseStatus.Success,
+                result = await _pensionService
+                        .GetPpoReceipt(treasuryReceiptNo),
+                Message = $"PPO Received Successfully!"
+
+                };
+            } catch(DbException e) {
+                // StackFrame CallStack = new(1, true);
+                response = new () {
+                    apiResponseStatus = Enum.APIResponseStatus.Error,
+                    result = null,
+                    Message = e.ToString()
+                    //   $"{e.GetType()}=>File:{CallStack.GetFileName()}({CallStack.GetFileLineNumber()}): {e.Message}"
+                };
+            }
+            return response;
+        }
+
+
+        [HttpGet("manual-ppo/receipts")]
+        [Produces("application/json")]
+        [Tags("Pension", "Manual PPO Receipt")]
+        public async Task<APIResponse<ICollection<ListAllPpoReceiptsResponseDTO>>> ControlGetAllManualPpoReceipts()
+        {
+
+            APIResponse<ICollection<ListAllPpoReceiptsResponseDTO>> response;
+            try {
+                response = new() {
+                    apiResponseStatus = Enum.APIResponseStatus.Success,
+                    result = await _pensionService
+                            .GetPpoReceipts(),
+                    Message = $"All PPO Receipts Received Successfully!"
+
+                };
+            } catch(DbException e) {
+                // StackFrame CallStack = new(1, true);
+                response = new () {
+                apiResponseStatus = Enum.APIResponseStatus.Error,
+                result = null,
+                Message = e.ToString()
+                //   $"{e.GetType()}=>File:{CallStack.GetFileName()}({CallStack.GetFileLineNumber()}): {e.Message}"
+                };
+            }
+            return response;
+        }
+
+
+        [HttpPatch("manual-ppo/receipts/{treasuryReceiptNo}")]
+        [Produces("application/json")]
+        [Tags("Pension", "Manual PPO Receipt")]
+        public async Task<APIResponse<ManualPpoReceiptResponseDTO>> ControlUpdateManualPpoReceipt(string treasuryReceiptNo, ManualPpoReceiptEntryDTO manualPpoReceiptEntryDTO)
+        {
+            APIResponse<ManualPpoReceiptResponseDTO> response;
+
+            try {
+                response = new() {
+                apiResponseStatus = Enum.APIResponseStatus.Success,
+                result = await _pensionService
+                        .UpdatePpoReceipt(treasuryReceiptNo, manualPpoReceiptEntryDTO),
+                Message = $"PPO Receipt Updated Successfully!"
+                };
+            } catch(DbUpdateException e) {
+                StackFrame CallStack = new StackFrame(1, true);
+                response = new () {
+                apiResponseStatus = Enum.APIResponseStatus.Error,
+                result = null,
+                Message = e.ToString()
+                //   $"{e.GetType()}=>File:{CallStack.GetFileName()}({CallStack.GetFileLineNumber()}): {e.Message}"
+                };
+            }
+            return response;
+        }
+
     }
-
-    [HttpPost("manual-ppo-receipt")]
-    [Produces("application/json")]
-    [Tags("Pension", "Manual PPO Receipt")]
-    public async Task<APIResponse<string>> CreateManualPpoReceipt(ManualPpoReceiptDTO manualPpoReceiptDTO)
-    {
-      APIResponse<string> response;
-
-      try {
-        response = new() {
-          apiResponseStatus = Enum.APIResponseStatus.Success,
-          result = await _pensionService
-                .CreateManualPpoReceipt(manualPpoReceiptDTO),
-          Message = $"PPO Received Successfully!"
-
-        };
-      } catch(DbUpdateException e) {
-        StackFrame CallStack = new StackFrame(1, true);
-        response = new APIResponse<string>() {
-          apiResponseStatus = Enum.APIResponseStatus.Error,
-          result = null,
-          Message = e.ToString()
-        //   $"{e.GetType()}=>File:{CallStack.GetFileName()}({CallStack.GetFileLineNumber()}): {e.Message}"
-        };
-      }
-      return response;
-    }
-
-    [HttpGet("manual-ppo-receipt")]
-    [Produces("application/json")]
-    [Tags("Pension", "Manual PPO Receipt")]
-    public async Task<APIResponse<ManualPpoReceiptDTO>> GetManualPpoReceipt(string treasuryReceiptNo)
-    {
-      APIResponse<ManualPpoReceiptDTO> response;
-
-      try {
-        response = new() {
-          apiResponseStatus = Enum.APIResponseStatus.Success,
-          result = await _pensionService
-                .GetManualPpoReceipt(treasuryReceiptNo),
-          Message = $"PPO Received Successfully!"
-
-        };
-      } catch(DbException e) {
-        StackFrame CallStack = new StackFrame(1, true);
-        response = new APIResponse<ManualPpoReceiptDTO>() {
-          apiResponseStatus = Enum.APIResponseStatus.Error,
-          result = null,
-          Message = e.ToString()
-        //   $"{e.GetType()}=>File:{CallStack.GetFileName()}({CallStack.GetFileLineNumber()}): {e.Message}"
-        };
-      }
-      return response;
-    }
-
-    [HttpPost("echo")]
-    [Produces("application/json")]
-    [Tags("Pension", "Response Echo Request")]
-    public async Task<APIResponse<Object>> EchoRequestInResponse(Object req)
-    {
-      APIResponse<Object> response = new()
-      {
-          apiResponseStatus = Enum.APIResponseStatus.Success,
-          Message = "Echoing Request",
-          result = req
-      };
-      return await Task.FromResult(response);
-    }
-
-    [HttpPost("testDateOnly")]
-    public async Task<APIResponse<JsonResult>> TestSetDateOnly(DateOnly dateOnly)
-    {
-      APIResponse<JsonResult> response = new()
-      {
-          apiResponseStatus = Enum.APIResponseStatus.Success,
-          Message = "Writing DateOnly",
-          result = new JsonResult(dateOnly)
-      };
-      return await Task.FromResult(response);
-    }
-
-    [HttpGet("testDateOnly")]
-    public async Task<APIResponse<DateOnly>> TestGetDateOnly()
-    {
-      DateOnly dateOnly = DateOnly.FromDateTime(DateTime.Now);
-      APIResponse<DateOnly> response = new()
-      {
-          apiResponseStatus = Enum.APIResponseStatus.Success,
-          Message = "Reading DateOnly",
-          result = dateOnly
-      };
-      return await Task.FromResult(response);
-    }
-  }
 }

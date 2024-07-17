@@ -6,7 +6,7 @@ using CTS_BE.DAL.Entities.Pension;
 
 namespace CTS_BE.DAL.Interfaces.Pension
 {
-    public interface IReceiptSequenceRepository : IRepository<PpoReceiptSquence>
+    public interface IReceiptSequenceRepository : IRepository<PpoReceiptSequence>
     {
         Task<string> GenerateTreasuryReceiptNo(short finYear, string treasuryCode);
         Task<short> GetUserFinYear();

@@ -1,22 +1,29 @@
 # Reference: https://learn.microsoft.com/en-us/aspnet/core/test/http-files?view=aspnetcore-8.0
 
-@MessagingAPI_HostAddress = http://api.{{$dotenv PROJECT_BASE_URL}}
+@PensionAPI_HostAddress = http://api.{{$dotenv PROJECT_BASE_URL}}
 @accessToken = eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhcHBsaWNhdGlvbiI6IntcIklkXCI6MyxcIk5hbWVcIjpcIkNUU1wiLFwiTGV2ZWxzXCI6W3tcIklkXCI6OCxcIk5hbWVcIjpcIlRyZWFzdXJ5XCIsXCJTY29wZVwiOltcIkJBQVwiXX1dLFwiUm9sZXNcIjpbe1wiSWRcIjoxNyxcIk5hbWVcIjpcIkRUQVwiLFwiUGVybWlzc2lvbnNcIjpbXCJjYW4tY2hlcXVlLWVudHJ5XCIsXCJjYW4tYXBwcm92ZS1yZWplY3QtY2hlcXVlLWluZGVudFwiLFwiY2FuLWNyZWF0ZS1pbmRlbnQtaW52b2ljZVwiXX1dfSIsIm5hbWVpZCI6IjQ4IiwibmFtZSI6IkNUUyBCQUEgIERUQSIsIm5iZiI6MTcwNzMwNTU0MiwiZXhwIjoxNzA3MzkxOTQyLCJpYXQiOjE3MDczMDU1NDJ9.EHTX3KpHuOiuCaM7Cz0UOrTyfTegdOi8p64Dos0oa1Im-kz1mNSCqCyAhvOyPMTY1zFzOAGJj8svsq88hdrHdQ
 # {{Login.response.body.$.accessToken}}
 
 @refreshToken = {{Login.response.body.$.refreshToken}}
 
 
-### Manual PPO Receipt Create Request
-# @name CreateManualPPOReceipt
-GET {{MessagingAPI_HostAddress}}/api/v1/Pension/manual-ppo-receipt?treasuryReceiptNo=MDA202400000008
+@treasuryReceiptNo = {{CreatePPOReceipt.response.body.$.result.treasuryReceiptNo}}
+
+### Read PPO Receipt Request
+# @name GetPPOReceipt
+GET {{PensionAPI_HostAddress}}/api/v1/manual-ppo/receipts/{{treasuryReceiptNo}}
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
+### List All PPO Receipts Request
+# @name GetAllManualPPOReceipts
+GET {{PensionAPI_HostAddress}}/api/v1/manual-ppo/receipts
+Accept: application/json
+Authorization: Bearer {{accessToken}}
 
-### Manual PPO Receipt Create Request
-# @name CreateManualPPOReceipt
-POST {{MessagingAPI_HostAddress}}/api/v1/Pension/manual-ppo-receipt
+### Create PPO Receipt Request
+# @name CreatePPOReceipt
+POST {{PensionAPI_HostAddress}}/api/v1/manual-ppo/receipts
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
@@ -26,14 +33,14 @@ Content-Type: application/json
   "pensionerName": "Jack Dowsel",
   "dateOfCommencement": "2024-07-15",
   "mobileNumber": "{{$randomInt 6000000000 9999999999}}",
-  "receiptDate": "2024-07-15",
+  "receiptDate": "{{$datetime "YYYY-MM-DD"}}",
   "psaCode": "A",
   "ppoType": "N"
 }
 
-### Echo Request
-# @name CreateManualPPOReceipt
-POST {{MessagingAPI_HostAddress}}/api/v1/Pension/echo
+### Update PPO Receipt Request
+# @name UpdatePPOReceipt
+PATCH {{PensionAPI_HostAddress}}/api/v1/manual-ppo/receipts/{{treasuryReceiptNo}}
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
@@ -43,27 +50,64 @@ Content-Type: application/json
   "pensionerName": "Jack Dowsel",
   "dateOfCommencement": "2024-07-15",
   "mobileNumber": "{{$randomInt 6000000000 9999999999}}",
-  "receiptDate": "2024-07-15",
+  "receiptDate": "{{$datetime "YYYY-MM-DD"}}",
+  "psaCode": "A",
+  "ppoType": "N"
+}
+
+
+
+
+
+
+
+
+### Echo Request
+# @name CreateManualPPOReceipt
+POST {{PensionAPI_HostAddress}}/api/v1/echo
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "treasuryReceiptNo": "{{@treasuryReceiptNo}}",
+  "ppoNo": "PPO-{{$randomInt 100000 999999}}",
+  "pensionerName": "Jack Dowsel",
+  "dateOfCommencement": "2024-07-15",
+  "mobileNumber": "{{$randomInt 6000000000 9999999999}}",
+  "receiptDate": "{{$datetime "YYYY-MM-DD"}}",
   "psaCode": "P",
   "ppoType": "N"
 }
 
 ### Get DateOnly Request
 # @name GetDateOnly
-GET {{MessagingAPI_HostAddress}}/api/v1/Pension/testDateOnly
+GET {{PensionAPI_HostAddress}}/api/v1/date-only
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
 
+### Set DateOnly Request
+# @name SetDateOnly
+POST {{PensionAPI_HostAddress}}/api/v1/date-only
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "dateOnly": "{{$datetime "YYYY-MM-DD" -5 d}}"
+}
+
+
 ### WeatherForecast Request
 # @name GetWeatherForecast
-GET {{MessagingAPI_HostAddress}}/weatherforecast/
+GET {{PensionAPI_HostAddress}}/weatherforecast/
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
 ### Register User
 # @name Register
-POST {{MessagingAPI_HostAddress}}/auth/register/
+POST {{PensionAPI_HostAddress}}/auth/register/
 Content-Type: application/json
 
 {
@@ -73,7 +117,7 @@ Content-Type: application/json
 
 ### Login Request
 # @name Login
-POST {{MessagingAPI_HostAddress}}/auth/login/
+POST {{PensionAPI_HostAddress}}/auth/login/
 Content-Type: application/json
 
 {
@@ -83,7 +127,7 @@ Content-Type: application/json
 
 ### RefreshToken Request
 # @name RefreshToken
-POST {{MessagingAPI_HostAddress}}/auth/refresh/
+POST {{PensionAPI_HostAddress}}/auth/refresh/
 Content-Type: application/json
 
 {

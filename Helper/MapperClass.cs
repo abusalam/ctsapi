@@ -45,24 +45,9 @@ namespace CTS_BE.Helper
             CreateMap<StampWalletInsertDTO, StampWallet>();
 
             // Pension Module Mappings
-            CreateMap<ManualPpoReceiptDTO, PpoReceipt>()
-                // .ForMember(
-                //     dest => dest.DateOfCommencement, 
-                //     opt => opt
-                //     .MapFrom(
-                //         src => src.DateOfCommencement.Length>0 ? 
-                //         DateOnly.Parse(src.DateOfCommencement) : default
-                //     )
-                // )
-                // .ForMember(
-                //     dest => dest.ReceiptDate, 
-                //     opt => opt
-                //     .MapFrom(
-                //         src => src.ReceiptDate.Length>0 ? 
-                //         DateOnly.Parse(src.ReceiptDate) : default
-                //     )
-                // )
-                .ReverseMap();
+            CreateMap<ManualPpoReceiptEntryDTO, PpoReceipt>().ReverseMap();
+            CreateMap<ManualPpoReceiptResponseDTO, PpoReceipt>().ReverseMap();
+            CreateMap<ListAllPpoReceiptsResponseDTO, PpoReceipt>().ReverseMap();
 
         }
     }

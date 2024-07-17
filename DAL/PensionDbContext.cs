@@ -34,13 +34,13 @@ public partial class PensionDbContext : DbContext
 
     public virtual DbSet<PpoComponent> PpoComponents { get; set; }
 
-    public virtual DbSet<PpoIdSquence> PpoIdSquences { get; set; }
+    public virtual DbSet<PpoIdSequence> PpoIdSequences { get; set; }
 
     public virtual DbSet<PpoPayment> PpoPayments { get; set; }
 
     public virtual DbSet<PpoReceipt> PpoReceipts { get; set; }
 
-    public virtual DbSet<PpoReceiptSquence> PpoReceiptSquences { get; set; }
+    public virtual DbSet<PpoReceiptSequence> PpoReceiptSequences { get; set; }
 
     public virtual DbSet<PpoStatusFlag> PpoStatusFlags { get; set; }
 
@@ -143,9 +143,9 @@ public partial class PensionDbContext : DbContext
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
         });
 
-        modelBuilder.Entity<PpoIdSquence>(entity =>
+        modelBuilder.Entity<PpoIdSequence>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("ppo_id_squences_pkey");
+            entity.HasKey(e => e.Id).HasName("ppo_id_sequences_pkey");
 
             entity.Property(e => e.ActiveFlag).HasDefaultValueSql("true");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
@@ -163,13 +163,12 @@ public partial class PensionDbContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("ppo_receipts_pkey");
 
-            entity.Property(e => e.ActiveFlag).HasDefaultValueSql("true");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
         });
 
-        modelBuilder.Entity<PpoReceiptSquence>(entity =>
+        modelBuilder.Entity<PpoReceiptSequence>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("ppo_receipt_squences_pkey");
+            entity.HasKey(e => e.Id).HasName("ppo_receipt_sequences_pkey");
 
             entity.Property(e => e.ActiveFlag).HasDefaultValueSql("true");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
