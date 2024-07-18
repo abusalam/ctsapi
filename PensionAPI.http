@@ -47,8 +47,8 @@ Content-Type: application/json
 
 {
   "ppoNo": "PPO-{{$randomInt 100000 999999}}",
-  "pensionerName": "Jack Dowsel",
-  "dateOfCommencement": "2024-07-15",
+  "pensionerName": "Jack Smith",
+  "dateOfCommencement": "2024-07-19",
   "mobileNumber": "{{$randomInt 6000000000 9999999999}}",
   "receiptDate": "{{$datetime "YYYY-MM-DD"}}",
   "psaCode": "A",

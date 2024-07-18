@@ -88,14 +88,21 @@ namespace CTS_BE.BAL.Services.Pension
         public async Task<ManualPpoReceiptResponseDTO> UpdatePpoReceipt(string treasuryReceiptNo, ManualPpoReceiptEntryDTO manualPpoReceiptDTO)
         {
 
-            PpoReceipt? manualPpoReceiptEntity;
+            PpoReceipt? manualPpoReceiptEntity = new ();
             try
             {
-                ManualPpoReceiptResponseDTO? ppoReceiptDTO = await GetPpoReceipt(treasuryReceiptNo);
-                if(ppoReceiptDTO is not null) {
+                manualPpoReceiptEntity = await _manualPpoReceiptRepository.GetSingleAysnc(
+                        entity => entity.TreasuryReceiptNo == treasuryReceiptNo
+                        );
+                if(manualPpoReceiptEntity is not null) {                    
+                    manualPpoReceiptEntity.PpoNo = manualPpoReceiptDTO.PpoNo;
+                    manualPpoReceiptEntity.PpoType = manualPpoReceiptDTO.PpoType;
+                    manualPpoReceiptEntity.PsaCode = manualPpoReceiptDTO.PsaCode;
+                    manualPpoReceiptEntity.PensionerName = manualPpoReceiptDTO.PensionerName;
+                    manualPpoReceiptEntity.MobileNumber = manualPpoReceiptDTO.MobileNumber;
+                    manualPpoReceiptEntity.ReceiptDate = manualPpoReceiptDTO.ReceiptDate;
+                    manualPpoReceiptEntity.DateOfCommencement = manualPpoReceiptDTO.DateOfCommencement;
 
-                    manualPpoReceiptEntity = _mapper.Map<PpoReceipt>(ppoReceiptDTO);
-                    
                     if(_manualPpoReceiptRepository.Update(manualPpoReceiptEntity)) {
                         await _manualPpoReceiptRepository.SaveChangesManagedAsync();
                     }
