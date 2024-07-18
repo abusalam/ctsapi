@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
+using CTS_BE.BAL.Interfaces.stamp;
 using CTS_BE.BAL.Interfaces.stampRequisition;
 using CTS_BE.DAL.Entities;
 using CTS_BE.DAL.Interfaces.stampRequisition;
 using CTS_BE.DTOs;
 using CTS_BE.Helper.Authentication;
-using System.Numerics;
 
 namespace CTS_BE.BAL.Services.stampRequisition
 {
@@ -13,18 +13,22 @@ namespace CTS_BE.BAL.Services.stampRequisition
         private readonly IStampRequisitionRepository _stampRequisitionRepo;
         private readonly IStampRequisitionApproveRepository _stampRequisitionApproveRepo;
         private readonly IStampRequisitionChallanGenerateRepository _stampRequisitionChallanGenerateRepo;
+        private readonly IStampMasterService _stampMasterService;
         private readonly IMapper _mapper;
         private readonly IClaimService _auth;
 
         public StampRequisitionService(
             IStampRequisitionRepository stampRequisitionRepo,
             IStampRequisitionApproveRepository stampRequisitionApproveRepo,
+            IStampMasterService stampMasterService,
             IStampRequisitionChallanGenerateRepository stampRequisitionChallanGenerateRepo,
+
             IMapper mapper,
             IClaimService claim)
         {
             _stampRequisitionRepo = stampRequisitionRepo;
             _stampRequisitionApproveRepo = stampRequisitionApproveRepo;
+            _stampMasterService = stampMasterService;
             _stampRequisitionChallanGenerateRepo = stampRequisitionChallanGenerateRepo;
             _mapper = mapper;
             _auth = claim;
@@ -78,7 +82,7 @@ namespace CTS_BE.BAL.Services.stampRequisition
                 var data = await _stampRequisitionRepo.GetSingleAysnc(e => e.VendorStampRequisitionId == stampRequisitionId);
                 if(data != null)
                 {
-                    data.StatusId = 32;
+                    data.StatusId = (int) Enum.StampRequisitionStatusEnum.RejectedByStampClerk;
                     data.UpdatedBy = _auth.GetUserId();
                     data.UpdatedAt = DateTime.Now;
                     _stampRequisitionRepo.Update(data);
@@ -187,12 +191,16 @@ namespace CTS_BE.BAL.Services.stampRequisition
                 data = _mapper.Map<VendorRequisitionApprove>(data);
                 _stampRequisitionApproveRepo.Add(data);
                 _stampRequisitionApproveRepo.SaveChangesManaged();
+
                 long approveId = data.VendorRequisitionApproveId;
                 var stampRequisitionData = await _stampRequisitionRepo.GetSingleAysnc(e => e.VendorStampRequisitionId == stampRequisition.VendorStampRequisitionId);
                 stampRequisitionData.VendorRequisitionApproveId = approveId;
-                stampRequisitionData.StatusId = (int) Enum.StampRequisitionStatusEnum.WaitingForPaymentVerification;
+                stampRequisitionData.StatusId = (int) Enum.StampRequisitionStatusEnum.WaitingForDelivery;
                 _stampRequisitionRepo.Update(stampRequisitionData);
                 _stampRequisitionRepo.SaveChangesManaged();
+
+                var sr = await _stampRequisitionChallanGenerateRepo.GetSingleAysnc(e => e.VendorRequisitionStagingId == stampRequisitionData.VendorRequisitionStagingId);
+                sr.GrnNo = stampRequisition.GRNNo.ToString();
                 return true;
             }
             return false;
@@ -293,6 +301,33 @@ namespace CTS_BE.BAL.Services.stampRequisition
             res.RaisedToTreasury = _auth.GetScope();
             res.TreasuryName = TrDataGather.TreasuryName;
             return res;
+        }
+
+        public async Task<CalculationDTO> CalculateAllDetails(DataForCalculationDTO srd)
+        {
+            if (srd != null)
+            {
+                var data = await _stampRequisitionRepo.GetSingleSelectedColumnByConditionAsync(
+                       e => e.VendorStampRequisitionId == srd.VendorStampRequisitionId,
+                       e => new
+                       {
+                           SheetCount = e.Combination.StampLabel.NoLabelPerSheet,
+                           Denomination = e.Combination.StampType.Denomination,
+                           VendorType = e.Vendor.VendorType,
+                           CategoryId = e.Combination.StampCategoryId
+                       }
+                    );
+                var quantity = (decimal)(srd.SheetByTO * data.SheetCount) + srd.LabelByTO;
+                var discountCheck = await _stampMasterService.GetDiscount(data.VendorType, data.CategoryId, quantity);
+                return new CalculationDTO
+                {
+                    Amount = quantity * data.Denomination,
+                    DiscountAmount = discountCheck,
+                    TaxAmount = discountCheck * (decimal) 0.1,
+                    ChallanAmount = (quantity * data.Denomination) - discountCheck + (discountCheck * (decimal)0.1),
+                };
+            }
+            return new CalculationDTO();
         }
     }
 }

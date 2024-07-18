@@ -58,6 +58,10 @@ namespace CTS_BE.Common
         public const string RequisitionRaised = "Stamp Requisition Raised.";
         public const string ForwardedToTreasuryOfficer = "Forwarded To Treasury Officer.";
         public const string PaymentRequired = "Waiting For Payment.";
+        public const string DeliveredToVendor = "Delivered To Vendor";
+        public const string OopsError = "Could Not Process At This Moment";
+        public const string NoRequisitionFoundToBeDelivered = "No Requisition Found To Be Delivered";
+        public const string RejectedByStampClerk = "Rejected By Stamp Clerk";
     }
 }
 

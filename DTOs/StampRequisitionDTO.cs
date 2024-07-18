@@ -69,4 +69,21 @@ namespace CTS_BE.DTOs
         public string VendorAddress { get; set; } = "";
         public string TreasuryName { get; set; } = "";
     }
+
+    public class CalculationDTO
+    {
+        public decimal Amount { get; set; } = 0;
+        public decimal DiscountAmount { get; set; } = 0;
+        public decimal TaxAmount { get; set; } = 0;
+        public decimal ChallanAmount { get; set; } = 0;
+    }
+    
+    public class DataForCalculationDTO
+    {
+        public long VendorStampRequisitionId { get; set; }
+        public short SheetByTO { get; set; }
+        public short LabelByTO { get; set; }
+    }
+
+
 }

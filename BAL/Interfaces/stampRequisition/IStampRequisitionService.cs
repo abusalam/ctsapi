@@ -18,5 +18,6 @@ namespace CTS_BE.BAL.Interfaces.stampRequisition
         Task<IEnumerable<StampRequisitionDTO>> ListAllStampRequisitionsWaitingForPaymentVerification(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null);
         Task<IEnumerable<StampRequisitionDTO>> ListAllStampRequisitionsWaitingForDelivery(List<FilterParameter> filters = null, int pageIndex = 0, int pageSize = 10, SortParameter sortParameters = null);
         Task<TRFormDataDTO> TrFromGenerationData(long stampRequisitionId);
+        Task<CalculationDTO> CalculateAllDetails(DataForCalculationDTO srd);
     }
 }

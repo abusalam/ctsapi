@@ -37,22 +37,40 @@ namespace CTS_BE.Controllers
                     {
                         new ListHeader
                         {
-                            Name = "Vendor Stamp Requisition Id",
-                            DataType = "numeric",
-                            FieldName = "vendorStampRequisitionId",
-                            FilterField = "VendorStampRequisitionId",
+                            Name = "Requisition No",
+                            DataType = "string",
+                            FieldName = "requisitionNo",
+                            FilterField = "RequisitionNo",
                             IsFilterable = true,
                             IsSortable = true,
                         },
                         new ListHeader
                         {
-                            Name = "Vendor Id",
-                            DataType = "numeric",
-                            FieldName = "vendorId",
-                            FilterField = "VendorId",
+                            Name = "Requisition Date",
+                            DataType = "date",
+                            FieldName = "requisitionDate",
+                            FilterField = "RequisitionDate",
                             IsFilterable = true,
                             IsSortable = true,
                         },
+                        //new ListHeader
+                        //{
+                        //    Name = "Vendor Stamp Requisition Id",
+                        //    DataType = "numeric",
+                        //    FieldName = "vendorStampRequisitionId",
+                        //    FilterField = "VendorStampRequisitionId",
+                        //    IsFilterable = true,
+                        //    IsSortable = true,
+                        //},
+                        //new ListHeader
+                        //{
+                        //    Name = "Vendor Id",
+                        //    DataType = "numeric",
+                        //    FieldName = "vendorId",
+                        //    FilterField = "VendorId",
+                        //    IsFilterable = true,
+                        //    IsSortable = true,
+                        //},
                         new ListHeader
                         {
                             Name = "Vendor Name",
@@ -80,30 +98,39 @@ namespace CTS_BE.Controllers
                             IsFilterable = true,
                             IsSortable = true,
                         },
-                        new ListHeader
-                        {
-                            Name = "Amount",
-                            DataType = "numeric",
-                            FieldName = "amount",
-                            FilterField = "Amount",
-                            IsFilterable = true,
-                            IsSortable = true,
-                        },
-                        new ListHeader
-                        {
-                            Name = "Requisition Date",
-                            DataType = "date",
-                            FieldName = "requisitionDate",
-                            FilterField = "RequisitionDate",
-                            IsFilterable = true,
-                            IsSortable = true,
-                        },
+                        //new ListHeader
+                        //{
+                        //    Name = "Amount",
+                        //    DataType = "numeric",
+                        //    FieldName = "amount",
+                        //    FilterField = "Amount",
+                        //    IsFilterable = true,
+                        //    IsSortable = true,
+                        //},
+                        //new ListHeader
+                        //{
+                        //    Name = "Requisition Date",
+                        //    DataType = "date",
+                        //    FieldName = "requisitionDate",
+                        //    FilterField = "RequisitionDate",
+                        //    IsFilterable = true,
+                        //    IsSortable = true,
+                        //},
                         new ListHeader
                         {
                             Name = "Treasury",
                             DataType = "string",
                             FieldName = "raisedToTreasury",
                             FilterField = "RaisedToTreasury",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name = "Amount",
+                            DataType = "numeric",
+                            FieldName = "amount",
+                            FilterField = "Amount",
                             IsFilterable = true,
                             IsSortable = true,
                         },
@@ -125,15 +152,15 @@ namespace CTS_BE.Controllers
                             IsFilterable = true,
                             IsSortable = true,
                         },
-                        new ListHeader
-                        {
-                            Name = "Requisition No",
-                            DataType = "string",
-                            FieldName = "requisitionNo",
-                            FilterField = "RequisitionNo",
-                            IsFilterable = true,
-                            IsSortable = true,
-                        },
+                        //new ListHeader
+                        //{
+                        //    Name = "Requisition No",
+                        //    DataType = "string",
+                        //    FieldName = "requisitionNo",
+                        //    FilterField = "RequisitionNo",
+                        //    IsFilterable = true,
+                        //    IsSortable = true,
+                        //},
                          new ListHeader
                          {
                              Name ="Status",
@@ -239,22 +266,40 @@ namespace CTS_BE.Controllers
                     {
                         new ListHeader
                         {
-                            Name = "Vendor Stamp Requisition Id",
-                            DataType = "numeric",
-                            FieldName = "vendorStampRequisitionId",
-                            FilterField = "VendorStampRequisitionId",
+                            Name = "Requisition No",
+                            DataType = "string",
+                            FieldName = "requisitionNo",
+                            FilterField = "RequisitionNo",
                             IsFilterable = true,
                             IsSortable = true,
                         },
                         new ListHeader
                         {
-                            Name = "Vendor Id",
-                            DataType = "numeric",
-                            FieldName = "vendorId",
-                            FilterField = "VendorId",
+                            Name = "Requisition Date",
+                            DataType = "date",
+                            FieldName = "requisitionDate",
+                            FilterField = "RequisitionDate",
                             IsFilterable = true,
                             IsSortable = true,
                         },
+                        //new ListHeader
+                        //{
+                        //    Name = "Vendor Stamp Requisition Id",
+                        //    DataType = "numeric",
+                        //    FieldName = "vendorStampRequisitionId",
+                        //    FilterField = "VendorStampRequisitionId",
+                        //    IsFilterable = true,
+                        //    IsSortable = true,
+                        //},
+                        //new ListHeader
+                        //{
+                        //    Name = "Vendor Id",
+                        //    DataType = "numeric",
+                        //    FieldName = "vendorId",
+                        //    FilterField = "VendorId",
+                        //    IsFilterable = true,
+                        //    IsSortable = true,
+                        //},
                         new ListHeader
                         {
                             Name = "Vendor Name",
@@ -282,30 +327,39 @@ namespace CTS_BE.Controllers
                             IsFilterable = true,
                             IsSortable = true,
                         },
-                        new ListHeader
-                        {
-                            Name = "Amount",
-                            DataType = "numeric",
-                            FieldName = "amount",
-                            FilterField = "Amount",
-                            IsFilterable = true,
-                            IsSortable = true,
-                        },
-                        new ListHeader
-                        {
-                            Name = "Requisition Date",
-                            DataType = "date",
-                            FieldName = "requisitionDate",
-                            FilterField = "RequisitionDate",
-                            IsFilterable = true,
-                            IsSortable = true,
-                        },
+                        //new ListHeader
+                        //{
+                        //    Name = "Amount",
+                        //    DataType = "numeric",
+                        //    FieldName = "amount",
+                        //    FilterField = "Amount",
+                        //    IsFilterable = true,
+                        //    IsSortable = true,
+                        //},
+                        //new ListHeader
+                        //{
+                        //    Name = "Requisition Date",
+                        //    DataType = "date",
+                        //    FieldName = "requisitionDate",
+                        //    FilterField = "RequisitionDate",
+                        //    IsFilterable = true,
+                        //    IsSortable = true,
+                        //},
                         new ListHeader
                         {
                             Name = "Treasury",
                             DataType = "string",
                             FieldName = "raisedToTreasury",
                             FilterField = "RaisedToTreasury",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name = "Amount",
+                            DataType = "numeric",
+                            FieldName = "amount",
+                            FilterField = "Amount",
                             IsFilterable = true,
                             IsSortable = true,
                         },
@@ -327,15 +381,15 @@ namespace CTS_BE.Controllers
                             IsFilterable = true,
                             IsSortable = true,
                         },
-                        new ListHeader
-                        {
-                            Name = "Requisition No",
-                            DataType = "string",
-                            FieldName = "requisitionNo",
-                            FilterField = "RequisitionNo",
-                            IsFilterable = true,
-                            IsSortable = true,
-                        },
+                        //new ListHeader
+                        //{
+                        //    Name = "Requisition No",
+                        //    DataType = "string",
+                        //    FieldName = "requisitionNo",
+                        //    FilterField = "RequisitionNo",
+                        //    IsFilterable = true,
+                        //    IsSortable = true,
+                        //},
                          new ListHeader
                          {
                              Name ="Status",
@@ -494,7 +548,7 @@ namespace CTS_BE.Controllers
                 if (await _stampRequisitionService.RequisitionRejectedByStampClerk(stampRequisitionId))
                 {
                     response.apiResponseStatus = Enum.APIResponseStatus.Success;
-                    response.Message = AppConstants.ForwardedToTreasuryOfficer;
+                    response.Message = AppConstants.RejectedByStampClerk;
                     response.result = true;
                     return response;
                 }
@@ -575,13 +629,13 @@ namespace CTS_BE.Controllers
                 if (await _stampRequisitionService.DeliveredByDEO(stampRequisitionId))
                 {
                     response.apiResponseStatus = Enum.APIResponseStatus.Success;
-                    response.Message = AppConstants.ForwardedToTreasuryOfficer; // todo
+                    response.Message = AppConstants.DeliveredToVendor; // todo
                     response.result = true;
                     return response;
                 }
                 response.apiResponseStatus = Enum.APIResponseStatus.Error;
                 response.result = false;
-                response.Message = AppConstants.MissingField;
+                response.Message = AppConstants.NoRequisitionFoundToBeDelivered;
                 return response;
             }
             catch (Exception ex)
@@ -592,7 +646,7 @@ namespace CTS_BE.Controllers
             }
         }
 
-        [HttpGet("PaymentProcessByDEO")]
+        [HttpPost("PaymentProcessByDEO")]
         public async Task<APIResponse<bool>> PaymentProcessByDEO(StampRequisitionPaymentDTO stampRequisition)
         {
             APIResponse<bool> response = new();
@@ -632,22 +686,40 @@ namespace CTS_BE.Controllers
                     {
                         new ListHeader
                         {
-                            Name = "Vendor Stamp Requisition Id",
-                            DataType = "numeric",
-                            FieldName = "vendorStampRequisitionId",
-                            FilterField = "VendorStampRequisitionId",
+                            Name = "Requisition No",
+                            DataType = "string",
+                            FieldName = "requisitionNo",
+                            FilterField = "RequisitionNo",
                             IsFilterable = true,
                             IsSortable = true,
                         },
                         new ListHeader
                         {
-                            Name = "Vendor Id",
-                            DataType = "numeric",
-                            FieldName = "vendorId",
-                            FilterField = "VendorId",
+                            Name = "Requisition Date",
+                            DataType = "date",
+                            FieldName = "requisitionDate",
+                            FilterField = "RequisitionDate",
                             IsFilterable = true,
                             IsSortable = true,
                         },
+                        //new ListHeader
+                        //{
+                        //    Name = "Vendor Stamp Requisition Id",
+                        //    DataType = "numeric",
+                        //    FieldName = "vendorStampRequisitionId",
+                        //    FilterField = "VendorStampRequisitionId",
+                        //    IsFilterable = true,
+                        //    IsSortable = true,
+                        //},
+                        //new ListHeader
+                        //{
+                        //    Name = "Vendor Id",
+                        //    DataType = "numeric",
+                        //    FieldName = "vendorId",
+                        //    FilterField = "VendorId",
+                        //    IsFilterable = true,
+                        //    IsSortable = true,
+                        //},
                         new ListHeader
                         {
                             Name = "Vendor Name",
@@ -675,30 +747,39 @@ namespace CTS_BE.Controllers
                             IsFilterable = true,
                             IsSortable = true,
                         },
-                        new ListHeader
-                        {
-                            Name = "Amount",
-                            DataType = "numeric",
-                            FieldName = "amount",
-                            FilterField = "Amount",
-                            IsFilterable = true,
-                            IsSortable = true,
-                        },
-                        new ListHeader
-                        {
-                            Name = "Requisition Date",
-                            DataType = "date",
-                            FieldName = "requisitionDate",
-                            FilterField = "RequisitionDate",
-                            IsFilterable = true,
-                            IsSortable = true,
-                        },
+                        //new ListHeader
+                        //{
+                        //    Name = "Amount",
+                        //    DataType = "numeric",
+                        //    FieldName = "amount",
+                        //    FilterField = "Amount",
+                        //    IsFilterable = true,
+                        //    IsSortable = true,
+                        //},
+                        //new ListHeader
+                        //{
+                        //    Name = "Requisition Date",
+                        //    DataType = "date",
+                        //    FieldName = "requisitionDate",
+                        //    FilterField = "RequisitionDate",
+                        //    IsFilterable = true,
+                        //    IsSortable = true,
+                        //},
                         new ListHeader
                         {
                             Name = "Treasury",
                             DataType = "string",
                             FieldName = "raisedToTreasury",
                             FilterField = "RaisedToTreasury",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name = "Amount",
+                            DataType = "numeric",
+                            FieldName = "amount",
+                            FilterField = "Amount",
                             IsFilterable = true,
                             IsSortable = true,
                         },
@@ -720,15 +801,15 @@ namespace CTS_BE.Controllers
                             IsFilterable = true,
                             IsSortable = true,
                         },
-                        new ListHeader
-                        {
-                            Name = "Requisition No",
-                            DataType = "string",
-                            FieldName = "requisitionNo",
-                            FilterField = "RequisitionNo",
-                            IsFilterable = true,
-                            IsSortable = true,
-                        },
+                        //new ListHeader
+                        //{
+                        //    Name = "Requisition No",
+                        //    DataType = "string",
+                        //    FieldName = "requisitionNo",
+                        //    FilterField = "RequisitionNo",
+                        //    IsFilterable = true,
+                        //    IsSortable = true,
+                        //},
                          new ListHeader
                          {
                              Name ="Status",
@@ -834,22 +915,40 @@ namespace CTS_BE.Controllers
                     {
                         new ListHeader
                         {
-                            Name = "Vendor Stamp Requisition Id",
-                            DataType = "numeric",
-                            FieldName = "vendorStampRequisitionId",
-                            FilterField = "VendorStampRequisitionId",
+                            Name = "Requisition No",
+                            DataType = "string",
+                            FieldName = "requisitionNo",
+                            FilterField = "RequisitionNo",
                             IsFilterable = true,
                             IsSortable = true,
                         },
                         new ListHeader
                         {
-                            Name = "Vendor Id",
-                            DataType = "numeric",
-                            FieldName = "vendorId",
-                            FilterField = "VendorId",
+                            Name = "Requisition Date",
+                            DataType = "date",
+                            FieldName = "requisitionDate",
+                            FilterField = "RequisitionDate",
                             IsFilterable = true,
                             IsSortable = true,
                         },
+                        //new ListHeader
+                        //{
+                        //    Name = "Vendor Stamp Requisition Id",
+                        //    DataType = "numeric",
+                        //    FieldName = "vendorStampRequisitionId",
+                        //    FilterField = "VendorStampRequisitionId",
+                        //    IsFilterable = true,
+                        //    IsSortable = true,
+                        //},
+                        //new ListHeader
+                        //{
+                        //    Name = "Vendor Id",
+                        //    DataType = "numeric",
+                        //    FieldName = "vendorId",
+                        //    FilterField = "VendorId",
+                        //    IsFilterable = true,
+                        //    IsSortable = true,
+                        //},
                         new ListHeader
                         {
                             Name = "Vendor Name",
@@ -877,30 +976,39 @@ namespace CTS_BE.Controllers
                             IsFilterable = true,
                             IsSortable = true,
                         },
-                        new ListHeader
-                        {
-                            Name = "Amount",
-                            DataType = "numeric",
-                            FieldName = "amount",
-                            FilterField = "Amount",
-                            IsFilterable = true,
-                            IsSortable = true,
-                        },
-                        new ListHeader
-                        {
-                            Name = "Requisition Date",
-                            DataType = "date",
-                            FieldName = "requisitionDate",
-                            FilterField = "RequisitionDate",
-                            IsFilterable = true,
-                            IsSortable = true,
-                        },
+                        //new ListHeader
+                        //{
+                        //    Name = "Amount",
+                        //    DataType = "numeric",
+                        //    FieldName = "amount",
+                        //    FilterField = "Amount",
+                        //    IsFilterable = true,
+                        //    IsSortable = true,
+                        //},
+                        //new ListHeader
+                        //{
+                        //    Name = "Requisition Date",
+                        //    DataType = "date",
+                        //    FieldName = "requisitionDate",
+                        //    FilterField = "RequisitionDate",
+                        //    IsFilterable = true,
+                        //    IsSortable = true,
+                        //},
                         new ListHeader
                         {
                             Name = "Treasury",
                             DataType = "string",
                             FieldName = "raisedToTreasury",
                             FilterField = "RaisedToTreasury",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name = "Amount",
+                            DataType = "numeric",
+                            FieldName = "amount",
+                            FilterField = "Amount",
                             IsFilterable = true,
                             IsSortable = true,
                         },
@@ -922,15 +1030,15 @@ namespace CTS_BE.Controllers
                             IsFilterable = true,
                             IsSortable = true,
                         },
-                        new ListHeader
-                        {
-                            Name = "Requisition No",
-                            DataType = "string",
-                            FieldName = "requisitionNo",
-                            FilterField = "RequisitionNo",
-                            IsFilterable = true,
-                            IsSortable = true,
-                        },
+                        //new ListHeader
+                        //{
+                        //    Name = "Requisition No",
+                        //    DataType = "string",
+                        //    FieldName = "requisitionNo",
+                        //    FilterField = "RequisitionNo",
+                        //    IsFilterable = true,
+                        //    IsSortable = true,
+                        //},
                          new ListHeader
                          {
                              Name ="Status",
@@ -1036,22 +1144,40 @@ namespace CTS_BE.Controllers
                     {
                         new ListHeader
                         {
-                            Name = "Vendor Stamp Requisition Id",
-                            DataType = "numeric",
-                            FieldName = "vendorStampRequisitionId",
-                            FilterField = "VendorStampRequisitionId",
+                            Name = "Requisition No",
+                            DataType = "string",
+                            FieldName = "requisitionNo",
+                            FilterField = "RequisitionNo",
                             IsFilterable = true,
                             IsSortable = true,
                         },
                         new ListHeader
                         {
-                            Name = "Vendor Id",
-                            DataType = "numeric",
-                            FieldName = "vendorId",
-                            FilterField = "VendorId",
+                            Name = "Requisition Date",
+                            DataType = "date",
+                            FieldName = "requisitionDate",
+                            FilterField = "RequisitionDate",
                             IsFilterable = true,
                             IsSortable = true,
                         },
+                        //new ListHeader
+                        //{
+                        //    Name = "Vendor Stamp Requisition Id",
+                        //    DataType = "numeric",
+                        //    FieldName = "vendorStampRequisitionId",
+                        //    FilterField = "VendorStampRequisitionId",
+                        //    IsFilterable = true,
+                        //    IsSortable = true,
+                        //},
+                        //new ListHeader
+                        //{
+                        //    Name = "Vendor Id",
+                        //    DataType = "numeric",
+                        //    FieldName = "vendorId",
+                        //    FilterField = "VendorId",
+                        //    IsFilterable = true,
+                        //    IsSortable = true,
+                        //},
                         new ListHeader
                         {
                             Name = "Vendor Name",
@@ -1079,30 +1205,30 @@ namespace CTS_BE.Controllers
                             IsFilterable = true,
                             IsSortable = true,
                         },
-                        new ListHeader
-                        {
-                            Name = "Amount",
-                            DataType = "numeric",
-                            FieldName = "amount",
-                            FilterField = "Amount",
-                            IsFilterable = true,
-                            IsSortable = true,
-                        },
-                        new ListHeader
-                        {
-                            Name = "Requisition Date",
-                            DataType = "date",
-                            FieldName = "requisitionDate",
-                            FilterField = "RequisitionDate",
-                            IsFilterable = true,
-                            IsSortable = true,
-                        },
+                        //new ListHeader
+                        //{
+                        //    Name = "Amount",
+                        //    DataType = "numeric",
+                        //    FieldName = "amount",
+                        //    FilterField = "Amount",
+                        //    IsFilterable = true,
+                        //    IsSortable = true,
+                        //},
                         new ListHeader
                         {
                             Name = "Treasury",
                             DataType = "string",
                             FieldName = "raisedToTreasury",
                             FilterField = "RaisedToTreasury",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name = "Amount",
+                            DataType = "numeric",
+                            FieldName = "amount",
+                            FilterField = "Amount",
                             IsFilterable = true,
                             IsSortable = true,
                         },
@@ -1121,15 +1247,6 @@ namespace CTS_BE.Controllers
                             DataType = "numeric",
                             FieldName = "label",
                             FilterField = "Label",
-                            IsFilterable = true,
-                            IsSortable = true,
-                        },
-                        new ListHeader
-                        {
-                            Name = "Requisition No",
-                            DataType = "string",
-                            FieldName = "requisitionNo",
-                            FilterField = "RequisitionNo",
                             IsFilterable = true,
                             IsSortable = true,
                         },
@@ -1239,22 +1356,40 @@ namespace CTS_BE.Controllers
                     {
                         new ListHeader
                         {
-                            Name = "Vendor Stamp Requisition Id",
-                            DataType = "numeric",
-                            FieldName = "vendorStampRequisitionId",
-                            FilterField = "VendorStampRequisitionId",
+                            Name = "Requisition No",
+                            DataType = "string",
+                            FieldName = "requisitionNo",
+                            FilterField = "RequisitionNo",
                             IsFilterable = true,
                             IsSortable = true,
                         },
                         new ListHeader
                         {
-                            Name = "Vendor Id",
-                            DataType = "numeric",
-                            FieldName = "vendorId",
-                            FilterField = "VendorId",
+                            Name = "Requisition Date",
+                            DataType = "date",
+                            FieldName = "requisitionDate",
+                            FilterField = "RequisitionDate",
                             IsFilterable = true,
                             IsSortable = true,
                         },
+                        //new ListHeader
+                        //{
+                        //    Name = "Vendor Stamp Requisition Id",
+                        //    DataType = "numeric",
+                        //    FieldName = "vendorStampRequisitionId",
+                        //    FilterField = "VendorStampRequisitionId",
+                        //    IsFilterable = true,
+                        //    IsSortable = true,
+                        //},
+                        //new ListHeader
+                        //{
+                        //    Name = "Vendor Id",
+                        //    DataType = "numeric",
+                        //    FieldName = "vendorId",
+                        //    FilterField = "VendorId",
+                        //    IsFilterable = true,
+                        //    IsSortable = true,
+                        //},
                         new ListHeader
                         {
                             Name = "Vendor Name",
@@ -1282,30 +1417,22 @@ namespace CTS_BE.Controllers
                             IsFilterable = true,
                             IsSortable = true,
                         },
-                        new ListHeader
-                        {
-                            Name = "Amount",
-                            DataType = "numeric",
-                            FieldName = "amount",
-                            FilterField = "Amount",
-                            IsFilterable = true,
-                            IsSortable = true,
-                        },
-                        new ListHeader
-                        {
-                            Name = "Requisition Date",
-                            DataType = "date",
-                            FieldName = "requisitionDate",
-                            FilterField = "RequisitionDate",
-                            IsFilterable = true,
-                            IsSortable = true,
-                        },
+                        
                         new ListHeader
                         {
                             Name = "Treasury",
                             DataType = "string",
                             FieldName = "raisedToTreasury",
                             FilterField = "RaisedToTreasury",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name = "Amount",
+                            DataType = "numeric",
+                            FieldName = "amount",
+                            FilterField = "Amount",
                             IsFilterable = true,
                             IsSortable = true,
                         },
@@ -1324,15 +1451,6 @@ namespace CTS_BE.Controllers
                             DataType = "numeric",
                             FieldName = "label",
                             FilterField = "Label",
-                            IsFilterable = true,
-                            IsSortable = true,
-                        },
-                        new ListHeader
-                        {
-                            Name = "Requisition No",
-                            DataType = "string",
-                            FieldName = "requisitionNo",
-                            FilterField = "RequisitionNo",
                             IsFilterable = true,
                             IsSortable = true,
                         },
@@ -1435,6 +1553,33 @@ namespace CTS_BE.Controllers
             try
             {
                 var data = await _stampRequisitionService.TrFromGenerationData(stampRequisitionId);
+                if (data.Amount != 0)
+                {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                    response.Message = AppConstants.DataFound; 
+                    response.result = data;
+                    return response;
+                }
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.result = null;
+                response.Message = AppConstants.MissingField;
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = ex.Message;
+                return response;
+            }
+        }
+        
+        [HttpPost("GetAllCalculationDetails")]
+        public async Task<APIResponse<CalculationDTO>> GetAllCalculationDetails(DataForCalculationDTO srd)
+        {
+            APIResponse<CalculationDTO> response = new();
+            try
+            {
+                var data = await _stampRequisitionService.CalculateAllDetails(srd);
                 if (data.Amount != 0)
                 {
                     response.apiResponseStatus = Enum.APIResponseStatus.Success;
