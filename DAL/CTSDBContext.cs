@@ -262,6 +262,9 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<VoucherEntry> VoucherEntries { get; set; }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        => optionsBuilder.UseNpgsql("Name=ConnectionStrings:DBConnection");
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<ActiveHoaMst>(entity =>
@@ -673,6 +676,7 @@ public partial class CTSDBContext : DbContext
         {
             entity.HasKey(e => e.AllotmentId).HasName("ddo_transactions_pkey");
 
+            entity.Property(e => e.ActualReleasedAmount).HasDefaultValueSql("0");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
             entity.Property(e => e.SaoDdoCode).IsFixedLength();
             entity.Property(e => e.TreasuryCode).IsFixedLength();
@@ -802,6 +806,7 @@ public partial class CTSDBContext : DbContext
             entity.HasKey(e => e.WalletId).HasName("ddo_wallet_actual_pkey");
 
             entity.Property(e => e.WalletId).ValueGeneratedNever();
+            entity.Property(e => e.ActualReleasedAmount).HasDefaultValueSql("0");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
             entity.Property(e => e.SaoDdoCode).IsFixedLength();
             entity.Property(e => e.TreasuryCode).IsFixedLength();
