@@ -566,7 +566,7 @@ namespace CTS_BE.Controllers
         }
 
         [HttpPost("StampRequisitionApprovedByTreasuryOfficer")]
-        public async Task<APIResponse<bool>> StampRequisitionApprovedByTreasuryOfficer(StampRequisitionApprovedByTODTO stampRequisition)
+        public async Task<APIResponse<bool>> StampRequisitionApprovedByTreasuryOfficer(StampRequisitionApprovedByTODataDTO stampRequisition)
         {
             APIResponse<bool> response = new();
             try
@@ -595,12 +595,12 @@ namespace CTS_BE.Controllers
         }
 
         [HttpGet("StampRequisitionRejectedByTreasuryOfficer")]
-        public async Task<APIResponse<bool>> StampRequisitionRejectedByTreasuryOfficer(long stampRequisitionId)
+        public async Task<APIResponse<bool>> StampRequisitionRejectedByTreasuryOfficer(long requisitionId)
         {
             APIResponse<bool> response = new();
             try
             {
-                if (await _stampRequisitionService.RequisitionRejectedByTO(stampRequisitionId))
+                if (await _stampRequisitionService.RequisitionRejectedByTO(requisitionId))
                 {
                     response.apiResponseStatus = Enum.APIResponseStatus.Success;
                     response.Message = AppConstants.ForwardedToTreasuryOfficer;

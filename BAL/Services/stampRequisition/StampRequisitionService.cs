@@ -92,17 +92,43 @@ namespace CTS_BE.BAL.Services.stampRequisition
                 return false;
         }
 
-        public async Task<bool> RequisitionApprovedByTO(StampRequisitionApprovedByTODTO stampRequisition)
+        public async Task<bool> RequisitionApprovedByTO(StampRequisitionApprovedByTODataDTO stampRequisition)
         {
-            if (stampRequisition != null && await _stampRequisitionRepo.ApproveByTO(stampRequisition))
+            //StampRequisitionApprovedByTODataDTO
+            var srd = await _stampRequisitionRepo.GetSingleSelectedColumnByConditionAsync(
+                    e => e.VendorStampRequisitionId == stampRequisition.vendorStampRequisitionId,
+                    e => new HoaDataDTO
+                    {
+                        Head = e.Combination.StampCategory.Hoa,
+                        HoaId = e.Combination.StampCategory.HoaId,
+                        RequisitionNo = e.RequisitionNo,
+                        VendorRequisitionStagingId = e.VendorRequisitionStagingId
+                    }
+                );
+            if (srd != null)
             {
-                return true;
+                var data = new StampRequisitionApprovedByTODTO
+                {
+                    VendorRequisitionStagingId = srd.VendorRequisitionStagingId,
+                    ChallanAmount = stampRequisition.ChallanAmount,
+                    DiscountedAmount = stampRequisition.DiscountedAmount,
+                    Head = srd.Head,
+                    HoaId = srd.HoaId,
+                    LabelByTo = stampRequisition.LabelByTo,
+                    RequisitionNo = srd.RequisitionNo,
+                    SheetByTo = stampRequisition.SheetByTo,
+                    TaxAmount = stampRequisition.TaxAmount,
+                };
+                if (stampRequisition != null && await _stampRequisitionRepo.ApproveByTO(data))
+                {
+                    return true;
+                }
             }
             return false;
         }
-        public async Task<bool> RequisitionRejectedByTO(long stampRequisitionStagingId)
+        public async Task<bool> RequisitionRejectedByTO(long requisitionId)
         {
-            var data = await _stampRequisitionRepo.GetSingleAysnc(e => e.VendorRequisitionStagingId == stampRequisitionStagingId);
+            var data = await _stampRequisitionRepo.GetSingleAysnc(e => e.VendorStampRequisitionId == requisitionId);
             if (data != null)
             {
                 data.StatusId = (int)Enum.StampRequisitionStatusEnum.RejectedByTreasuryOfficer;
@@ -155,8 +181,8 @@ namespace CTS_BE.BAL.Services.stampRequisition
                 VendorName = entity.Vendor.VendorName,
                 RaisedToTreasury = entity.RaisedToTreasury,
                 RequisitionNo = entity.RequisitionNo,
-                Sheet = entity.Sheet,
-                Label = entity.Label,
+                Sheet = entity.VendorRequisitionStaging.SheetByClerk,
+                Label = entity.VendorRequisitionStaging.LabelByClerk,
             }, pageIndex, pageSize, filters, (sortParameters != null) ? sortParameters.Field : null, (sortParameters != null) ? sortParameters.Order : null);
             return stampRequisitionList;
         }
@@ -317,7 +343,7 @@ namespace CTS_BE.BAL.Services.stampRequisition
                            CategoryId = e.Combination.StampCategoryId
                        }
                     );
-                var quantity = (decimal)(srd.SheetByTO * data.SheetCount) + srd.LabelByTO;
+                var quantity = (decimal)(srd.Sheet * data.SheetCount) + srd.Label;
                 var discountCheck = await _stampMasterService.GetDiscount(data.VendorType, data.CategoryId, quantity);
                 return new CalculationDTO
                 {

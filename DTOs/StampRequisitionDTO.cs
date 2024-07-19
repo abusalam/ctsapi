@@ -42,7 +42,7 @@ namespace CTS_BE.DTOs
     }
     public class StampRequisitionApprovedByTODTO
     {
-        public long VendorRequisitionStagingId { get; set; }
+        public long? VendorRequisitionStagingId { get; set; }
         public short SheetByTo { get; set; }
         public short LabelByTo { get; set; }
         public decimal DiscountedAmount { get; set; }
@@ -50,7 +50,26 @@ namespace CTS_BE.DTOs
         public decimal ChallanAmount { get; set; }
         public string RequisitionNo { get; set; }
         public string Head { get; set; }
+        public long? HoaId { get; set; }
 
+    }
+
+    public class StampRequisitionApprovedByTODataDTO
+    {
+        public long vendorStampRequisitionId { get; set; }
+        public short SheetByTo { get; set; }
+        public short LabelByTo { get; set; }
+        public decimal DiscountedAmount { get; set; }
+        public decimal TaxAmount { get; set; }
+        public decimal ChallanAmount { get; set; }
+
+    }
+    public class HoaDataDTO
+    {
+        public string Head { get; set; } = "";
+        public long? HoaId { get; set; } 
+        public string RequisitionNo { get; set; } = "";
+        public long? VendorRequisitionStagingId { get; set; }
     }
 
     public class StampRequisitionPaymentDTO
@@ -81,8 +100,8 @@ namespace CTS_BE.DTOs
     public class DataForCalculationDTO
     {
         public long VendorStampRequisitionId { get; set; }
-        public short SheetByTO { get; set; }
-        public short LabelByTO { get; set; }
+        public short Sheet { get; set; }
+        public short Label { get; set; }
     }
 
 
