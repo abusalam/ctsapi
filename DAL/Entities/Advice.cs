@@ -23,16 +23,17 @@ public partial class Advice
     public short? NoOfReference { get; set; }
 
     [Column("gross_amount")]
-    public double? GrossAmount { get; set; }
+    [Precision(10, 2)]
+    public decimal? GrossAmount { get; set; }
 
     [Column("net_amount")]
-    public double? NetAmount { get; set; }
+    [Precision(10, 2)]
+    public decimal? NetAmount { get; set; }
 
     [Column("status")]
     public short? Status { get; set; }
 
-    [Column("memo_no")]
-    [StringLength(10485760)]
+    [Column("memo_no", TypeName = "character varying")]
     public string? MemoNo { get; set; }
 
     [Column("memo_date")]
@@ -40,4 +41,19 @@ public partial class Advice
 
     [Column("ref_type")]
     public short? RefType { get; set; }
+
+    [Column("treasury_code")]
+    [StringLength(3)]
+    public string? TreasuryCode { get; set; }
+
+    [Column("op_code")]
+    public short? OpCode { get; set; }
+
+    [Column("op_id")]
+    public int? OpId { get; set; }
+
+    public virtual OperatorMaster? Op { get; set; }
+
+    [InverseProperty("Advice")]
+    public virtual ICollection<Reference> References { get; set; } = new List<Reference>();
 }

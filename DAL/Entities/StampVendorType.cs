@@ -22,4 +22,10 @@ public partial class StampVendorType
     [Required]
     [Column("is_active")]
     public bool? IsActive { get; set; }
+
+    [InverseProperty("VendorTypeNavigation")]
+    public virtual ICollection<DiscountDetail> DiscountDetails { get; set; } = new List<DiscountDetail>();
+
+    [InverseProperty("VendorTypeNavigation")]
+    public virtual ICollection<StampVendor> StampVendors { get; set; } = new List<StampVendor>();
 }

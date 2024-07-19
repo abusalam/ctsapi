@@ -40,9 +40,21 @@ public partial class Ddo
     [StringLength(20)]
     public string? Phone { get; set; }
 
+    public virtual ICollection<BeneficiaryMaster> BeneficiaryMasters { get; set; } = new List<BeneficiaryMaster>();
+
     public virtual ICollection<BillBtdetail> BillBtdetails { get; set; } = new List<BillBtdetail>();
 
     public virtual ICollection<BillDetail> BillDetails { get; set; } = new List<BillDetail>();
 
     public virtual ICollection<BillSubdetailInfo> BillSubdetailInfos { get; set; } = new List<BillSubdetailInfo>();
+
+    public virtual ICollection<DdoAllotmentActual> DdoAllotmentActuals { get; set; } = new List<DdoAllotmentActual>();
+
+    public virtual ICollection<DdoAllotmentBookedBill> DdoAllotmentBookedBills { get; set; } = new List<DdoAllotmentBookedBill>();
+
+    public virtual ICollection<DdoAllotmentProvisional> DdoAllotmentProvisionals { get; set; } = new List<DdoAllotmentProvisional>();
+
+    public virtual ICollection<DdoWalletActual> DdoWalletActuals { get; set; } = new List<DdoWalletActual>();
+
+    public virtual ICollection<DdoWalletProvisional> DdoWalletProvisionals { get; set; } = new List<DdoWalletProvisional>();
 }

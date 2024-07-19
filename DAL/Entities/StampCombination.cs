@@ -19,9 +19,6 @@ public partial class StampCombination
     [Column("stamp_category_id")]
     public long StampCategoryId { get; set; }
 
-    [Column("stamp_denomination_id")]
-    public long StampDenominationId { get; set; }
-
     [Column("is_active")]
     public bool? IsActive { get; set; }
 
@@ -48,4 +45,10 @@ public partial class StampCombination
     [ForeignKey("StampTypeId")]
     [InverseProperty("StampCombinations")]
     public virtual StampType StampType { get; set; } = null!;
+
+    [InverseProperty("Combination")]
+    public virtual ICollection<StampWallet> StampWallets { get; set; } = new List<StampWallet>();
+
+    [InverseProperty("Combination")]
+    public virtual ICollection<VendorStampRequisition> VendorStampRequisitions { get; set; } = new List<VendorStampRequisition>();
 }
