@@ -23,7 +23,7 @@ public partial class StampVendor
     public string Address { get; set; } = null!;
 
     [Column("phone_number")]
-    public long? PhoneNumber { get; set; }
+    public long PhoneNumber { get; set; }
 
     [Column("effective_from")]
     public DateOnly EffectiveFrom { get; set; }
@@ -54,15 +54,29 @@ public partial class StampVendor
     [Column("updated_by")]
     public long? UpdatedBy { get; set; }
 
-    [Column("vendor_type", TypeName = "character varying")]
-    public string VendorType { get; set; } = null!;
+    [Column("vendor_type")]
+    public long VendorType { get; set; }
 
     [Column("vendorPhoto")]
-    public string? VendorPhoto { get; set; }
+    public string VendorPhoto { get; set; } = null!;
 
     [Column("vendorPanPhoto")]
-    public string? VendorPanPhoto { get; set; }
+    public string VendorPanPhoto { get; set; } = null!;
 
     [Column("vendorLicencePhoto")]
-    public string? VendorLicencePhoto { get; set; }
+    public string VendorLicencePhoto { get; set; } = null!;
+
+    [Column("vendor_name", TypeName = "character varying")]
+    public string? VendorName { get; set; }
+
+    [Column("treasury")]
+    [StringLength(3)]
+    public string? Treasury { get; set; }
+
+    [InverseProperty("Vendor")]
+    public virtual ICollection<VendorStampRequisition> VendorStampRequisitions { get; set; } = new List<VendorStampRequisition>();
+
+    [ForeignKey("VendorType")]
+    [InverseProperty("StampVendors")]
+    public virtual StampVendorType VendorTypeNavigation { get; set; } = null!;
 }

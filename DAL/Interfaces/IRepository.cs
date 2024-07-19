@@ -34,6 +34,8 @@ namespace CTS_BE.DAL.Interfaces
 
         Task<T> GetSingleAysnc(Expression<Func<T, bool>> condition);
         int CountWithCondition(Expression<Func<T, bool>> condition, List<FilterParameter> dynamicFilters = null);
+        int CountWithCondition(Expression<Func<T, bool>> condition);
+        Task<int> CountWithConditionAsync(Expression<Func<T, bool>> condition);
         int Count();
         bool Add(T entity);
         bool Update(T entity);
