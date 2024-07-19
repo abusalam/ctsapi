@@ -28,6 +28,8 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<Bank> Banks { get; set; }
 
+    public virtual DbSet<BankAccount> BankAccounts { get; set; }
+
     public virtual DbSet<BankMaster> BankMasters { get; set; }
 
     public virtual DbSet<BeneficiariesMaster> BeneficiariesMasters { get; set; }
@@ -98,6 +100,8 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<DiscountDetail> DiscountDetails { get; set; }
 
+    public virtual DbSet<DmlHistory> DmlHistories { get; set; }
+
     public virtual DbSet<EcsNeftDetail> EcsNeftDetails { get; set; }
 
     public virtual DbSet<EcsNeftPaymentStatusDetail> EcsNeftPaymentStatusDetails { get; set; }
@@ -115,6 +119,8 @@ public partial class CTSDBContext : DbContext
     public virtual DbSet<LfplEc> LfplEcs { get; set; }
 
     public virtual DbSet<LfplSchemesWallet> LfplSchemesWallets { get; set; }
+
+    public virtual DbSet<LifeCertificate> LifeCertificates { get; set; }
 
     public virtual DbSet<LocalObjection> LocalObjections { get; set; }
 
@@ -136,11 +142,33 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<MmStampVendorType> MmStampVendorTypes { get; set; }
 
+    public virtual DbSet<Nominee> Nominees { get; set; }
+
     public virtual DbSet<OperatorMaster> OperatorMasters { get; set; }
 
     public virtual DbSet<PaymentAdvice> PaymentAdvices { get; set; }
 
     public virtual DbSet<PaymentAdviceHasBeneficiary> PaymentAdviceHasBeneficiarys { get; set; }
+
+    public virtual DbSet<Pensioner> Pensioners { get; set; }
+
+    public virtual DbSet<PpoBill> PpoBills { get; set; }
+
+    public virtual DbSet<PpoBillBytransfer> PpoBillBytransfers { get; set; }
+
+    public virtual DbSet<PpoBillComponent> PpoBillComponents { get; set; }
+
+    public virtual DbSet<PpoComponent> PpoComponents { get; set; }
+
+    public virtual DbSet<PpoIdSequence> PpoIdSequences { get; set; }
+
+    public virtual DbSet<PpoPayment> PpoPayments { get; set; }
+
+    public virtual DbSet<PpoReceipt> PpoReceipts { get; set; }
+
+    public virtual DbSet<PpoReceiptSequence> PpoReceiptSequences { get; set; }
+
+    public virtual DbSet<PpoStatusFlag> PpoStatusFlags { get; set; }
 
     public virtual DbSet<RbiIfscStock> RbiIfscStocks { get; set; }
 
@@ -210,6 +238,8 @@ public partial class CTSDBContext : DbContext
 
     public virtual DbSet<TreasuryHasBranch> TreasuryHasBranches { get; set; }
 
+    public virtual DbSet<UploadedFile> UploadedFiles { get; set; }
+
     public virtual DbSet<UserList> UserLists { get; set; }
 
     public virtual DbSet<VAvailable> VAvailables { get; set; }
@@ -273,8 +303,16 @@ public partial class CTSDBContext : DbContext
 
         modelBuilder.Entity<Advice1>(entity =>
         {
-            entity.Property(e => e.TreasuryAdviceId).ValueGeneratedOnAdd();
+            entity.HasKey(e => e.TreasuryAdviceId).HasName("advice_pkey");
+
             entity.Property(e => e.TreasuryCode).IsFixedLength();
+
+            entity.HasOne(d => d.Op).WithMany(p => p.Advice1s)
+                .HasPrincipalKey(p => p.OpId)
+                .HasForeignKey(d => d.OpId)
+                .HasConstraintName("op_id_fkey");
+
+            entity.HasOne(d => d.StatusNavigation).WithMany(p => p.Advice1s).HasConstraintName("status_fkey");
         });
 
         modelBuilder.Entity<Bank>(entity =>
@@ -282,6 +320,14 @@ public partial class CTSDBContext : DbContext
             entity.HasKey(e => new { e.Id, e.BankCode }).HasName("banks_pkey");
 
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
+        });
+
+        modelBuilder.Entity<BankAccount>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("bank_accounts_pkey");
+
+            entity.Property(e => e.ActiveFlag).HasDefaultValueSql("true");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
         });
 
         modelBuilder.Entity<BankMaster>(entity =>
@@ -630,6 +676,7 @@ public partial class CTSDBContext : DbContext
         {
             entity.HasKey(e => e.AllotmentId).HasName("ddo_transactions_pkey");
 
+            entity.Property(e => e.ActualReleasedAmount).HasDefaultValueSql("0");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
             entity.Property(e => e.SaoDdoCode).IsFixedLength();
             entity.Property(e => e.TreasuryCode).IsFixedLength();
@@ -759,6 +806,7 @@ public partial class CTSDBContext : DbContext
             entity.HasKey(e => e.WalletId).HasName("ddo_wallet_actual_pkey");
 
             entity.Property(e => e.WalletId).ValueGeneratedNever();
+            entity.Property(e => e.ActualReleasedAmount).HasDefaultValueSql("0");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
             entity.Property(e => e.SaoDdoCode).IsFixedLength();
             entity.Property(e => e.TreasuryCode).IsFixedLength();
@@ -846,6 +894,13 @@ public partial class CTSDBContext : DbContext
                 .HasConstraintName("discount_details_vendor_type_fkey");
         });
 
+        modelBuilder.Entity<DmlHistory>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("dml_history_pkey");
+
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+        });
+
         modelBuilder.Entity<EcsNeftDetail>(entity =>
         {
             entity.Property(e => e.BankAccountNumber).IsFixedLength();
@@ -925,6 +980,15 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.TreasuryCode).IsFixedLength();
         });
 
+        modelBuilder.Entity<LifeCertificate>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("life_certificates_pkey");
+
+            entity.Property(e => e.ActiveFlag).HasDefaultValueSql("true");
+            entity.Property(e => e.CertificateFlag).HasDefaultValueSql("false");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+        });
+
         modelBuilder.Entity<LocalObjection>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("local_objection_pkey");
@@ -938,6 +1002,18 @@ public partial class CTSDBContext : DbContext
             entity.HasKey(e => e.Id).HasName("major_head_pkey");
 
             entity.Property(e => e.Code).IsFixedLength();
+        });
+
+        modelBuilder.Entity<Nominee>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("nominees_pkey");
+
+            entity.Property(e => e.ActiveFlag).HasDefaultValueSql("true");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            entity.HasOne(d => d.PhotoFile).WithMany(p => p.NomineePhotoFiles).HasConstraintName("nominees_photo_file_id_fkey");
+
+            entity.HasOne(d => d.SignatureFile).WithMany(p => p.NomineeSignatureFiles).HasConstraintName("nominees_signature_file_id_fkey");
         });
 
         modelBuilder.Entity<OperatorMaster>(entity =>
@@ -967,6 +1043,111 @@ public partial class CTSDBContext : DbContext
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.IfscCode).IsFixedLength();
             entity.Property(e => e.PanNo).IsFixedLength();
+        });
+
+        modelBuilder.Entity<Pensioner>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("pensioners_pkey");
+
+            entity.Property(e => e.ActiveFlag).HasDefaultValueSql("true");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            entity.HasOne(d => d.PhotoFile).WithMany(p => p.PensionerPhotoFiles).HasConstraintName("pensioners_photo_file_id_fkey");
+
+            entity.HasOne(d => d.SignatureFile).WithMany(p => p.PensionerSignatureFiles).HasConstraintName("pensioners_signature_file_id_fkey");
+        });
+
+        modelBuilder.Entity<PpoBill>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("ppo_bills_pkey");
+
+            entity.Property(e => e.ActiveFlag).HasDefaultValueSql("true");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+        });
+
+        modelBuilder.Entity<PpoBillBytransfer>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("ppo_bill_bytransfers_pkey");
+
+            entity.Property(e => e.ActiveFlag).HasDefaultValueSql("true");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            entity.HasOne(d => d.Bill).WithMany(p => p.PpoBillBytransfers)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("ppo_bill_bytransfers_bill_id_fkey");
+        });
+
+        modelBuilder.Entity<PpoBillComponent>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("ppo_bill_components_pkey");
+
+            entity.Property(e => e.ActiveFlag).HasDefaultValueSql("true");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            entity.HasOne(d => d.Bill).WithMany(p => p.PpoBillComponents)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("ppo_bill_components_bill_id_fkey");
+
+            entity.HasOne(d => d.Component).WithMany(p => p.PpoBillComponents)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("ppo_bill_components_component_id_fkey");
+        });
+
+        modelBuilder.Entity<PpoComponent>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("ppo_components_pkey");
+
+            entity.Property(e => e.ActiveFlag).HasDefaultValueSql("true");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+        });
+
+        modelBuilder.Entity<PpoIdSequence>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("ppo_id_sequences_pkey");
+
+            entity.Property(e => e.ActiveFlag).HasDefaultValueSql("true");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+        });
+
+        modelBuilder.Entity<PpoPayment>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("ppo_payments_pkey");
+
+            entity.Property(e => e.ActiveFlag).HasDefaultValueSql("true");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+        });
+
+        modelBuilder.Entity<PpoReceipt>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("ppo_receipts_pkey");
+
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+        });
+
+        modelBuilder.Entity<PpoReceiptSequence>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("ppo_receipt_sequences_pkey");
+
+            entity.Property(e => e.ActiveFlag).HasDefaultValueSql("true");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+        });
+
+        modelBuilder.Entity<PpoStatusFlag>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("ppo_status_flags_pkey");
+
+            entity.Property(e => e.ActiveFlag).HasDefaultValueSql("true");
+            entity.Property(e => e.AdhocPensionFlag).HasDefaultValueSql("false");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.DoublePensionFlag).HasDefaultValueSql("false");
+            entity.Property(e => e.EmployeedFlag).HasDefaultValueSql("false");
+            entity.Property(e => e.FirstPensionFlag).HasDefaultValueSql("false");
+            entity.Property(e => e.HealthSchemeFlag).HasDefaultValueSql("false");
+            entity.Property(e => e.InterimPensionFlag).HasDefaultValueSql("false");
+            entity.Property(e => e.PpoApprovedFlag).HasDefaultValueSql("false");
+            entity.Property(e => e.ReemployedFlag).HasDefaultValueSql("false");
+            entity.Property(e => e.SharedPensionFlag).HasDefaultValueSql("false");
+            entity.Property(e => e.StatusActiveFlag).HasDefaultValueSql("false");
         });
 
         modelBuilder.Entity<Reference>(entity =>
@@ -1134,7 +1315,7 @@ public partial class CTSDBContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("status_pkey");
 
-            entity.Property(e => e.Type).HasComment("1 = token flow ,2 = Cheque indent,3 Cheque invoice, 4 = Cheque Received");
+            entity.Property(e => e.Type).HasComment("1 = token flow ,2 = Cheque indent,3 Cheque invoice, 4 = Cheque Received, 7 = Online PL");
         });
 
         modelBuilder.Entity<SubDetailHead>(entity =>
@@ -1258,6 +1439,14 @@ public partial class CTSDBContext : DbContext
             entity.HasOne(d => d.Branchs).WithMany(p => p.TreasuryHasBranches).HasConstraintName("branch_id_fkey");
 
             entity.HasOne(d => d.Treasury).WithMany(p => p.TreasuryHasBranches).HasConstraintName("treasury_id_fkey");
+        });
+
+        modelBuilder.Entity<UploadedFile>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("uploaded_files_pkey");
+
+            entity.Property(e => e.ActiveFlag).HasDefaultValueSql("true");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
         });
 
         modelBuilder.Entity<UserList>(entity =>

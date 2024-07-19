@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Entities;
 
-[Keyless]
 [Table("advice", Schema = "cts")]
 public partial class Advice1
 {
@@ -26,6 +25,28 @@ public partial class Advice1
     [Column("op_id")]
     public int? OpId { get; set; }
 
+    [Key]
     [Column("treasury_advice_id")]
     public long TreasuryAdviceId { get; set; }
+
+    [Column("treasury_advice_date")]
+    public DateOnly? TreasuryAdviceDate { get; set; }
+
+    [Column("status")]
+    public int? Status { get; set; }
+
+    [Column("remarks", TypeName = "character varying")]
+    public string? Remarks { get; set; }
+
+    [Column("memo_no", TypeName = "character varying")]
+    public string? MemoNo { get; set; }
+
+    [Column("memo_date")]
+    public DateOnly? MemoDate { get; set; }
+
+    public virtual OperatorMaster? Op { get; set; }
+
+    [ForeignKey("Status")]
+    [InverseProperty("Advice1s")]
+    public virtual Status? StatusNavigation { get; set; }
 }
