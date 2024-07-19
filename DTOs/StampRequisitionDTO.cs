@@ -21,6 +21,7 @@ namespace CTS_BE.DTOs
         public string RaisedToTreasury { get; set; } = null!;
         public short Sheet { get; set; }
         public short Label { get; set; }
+        public long CombinationId { get; set; }
         public string RequisitionNo { get; set; } = null!;
     }
     public class StampRequisitionInsertDTO
