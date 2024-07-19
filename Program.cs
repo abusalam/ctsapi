@@ -28,6 +28,10 @@ using Microsoft.AspNetCore.Mvc;
 using CTS_BE.Enum;
 using CTS_BE.Helper;
 using System.Collections;
+using CTS_BE.DAL.Interfaces.stampRequisition;
+using CTS_BE.DAL.Repositories.stampRequisition;
+using CTS_BE.BAL.Interfaces.stampRequisition;
+using CTS_BE.BAL.Services.stampRequisition;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -80,6 +84,10 @@ builder.Services.AddTransient<IStampCombinationRepository, StampCombinationRepos
 builder.Services.AddTransient<IStampIndentRepository, StampIndentRepository>();
 builder.Services.AddTransient<IStampInvoiceRepository, StampInvoiceRepository>();
 builder.Services.AddTransient<IStampWalletRepository, StampWalletRepository>();
+builder.Services.AddTransient<IStampRequisitionRepository, StampRequisitionRepository>();
+builder.Services.AddTransient<IStampRequisitionApproveRepository, StampRequisitionApproveRepository>();
+builder.Services.AddTransient<IStampRequisitionChallanGenerateRepository, StampRequisitionChallanGenerateRepository>();
+builder.Services.AddTransient<IStampRequisitionStagingRepository, StampRequisitionStagingRepository>();
 
 
 //Services
@@ -104,6 +112,7 @@ builder.Services.AddTransient<ITokenService, TokenService>();
 builder.Services.AddTransient<IStampMasterService, StampMasterService>();
 builder.Services.AddTransient<IStampService, StampService>();
 builder.Services.AddTransient<IStampWalletService, StampWalletService>();
+builder.Services.AddTransient<IStampRequisitionService, StampRequisitionService>();
 
 
 builder.Services.AddTransient<IPaymandateService, PaymandateService>();
