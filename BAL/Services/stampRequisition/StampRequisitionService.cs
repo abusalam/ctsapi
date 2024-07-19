@@ -252,7 +252,7 @@ namespace CTS_BE.BAL.Services.stampRequisition
                 RequisitionNo = entity.RequisitionNo,
                 Sheet = entity.Sheet,
                 Label = entity.Label,
-                CombinationId = entity.Combination.StampCombinationId
+                CombinationId = entity.CombinationId,
             }, pageIndex, pageSize, filters, (sortParameters != null) ? sortParameters.Field : null, (sortParameters != null) ? sortParameters.Order : null);
             return stampRequisitionList;
         } 
