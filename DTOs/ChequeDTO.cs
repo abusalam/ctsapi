@@ -125,6 +125,8 @@ namespace CTS_BE.DTOs
         public string MicrCode { get; set; }
         public short Quantity { get; set; }
         public string Series { get; set; }
+        public short Start { get; set; }
+        public short End { get; set; }
         // public short AvailableQuantity { get; set; }
     }
 
