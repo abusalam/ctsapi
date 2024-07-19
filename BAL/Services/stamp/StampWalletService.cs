@@ -40,7 +40,9 @@ namespace CTS_BE.BAL.Services.stamp
                     e => new StampWalletBalanceDTO
                         {
                             SheetLedgerBalance = e.SheetLedgerBalance,
-                            LabelLedgerBalance = e.LabelLedgerBalance
+                            LabelLedgerBalance = e.LabelLedgerBalance,
+                            Category = e.Combination.StampCategory.StampCategory1,
+                            Denomination = e.Combination.StampType.Denomination
                         }
                 );
             if (data != null)
