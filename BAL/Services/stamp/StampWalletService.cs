@@ -42,7 +42,8 @@ namespace CTS_BE.BAL.Services.stamp
                             SheetLedgerBalance = e.SheetLedgerBalance,
                             LabelLedgerBalance = e.LabelLedgerBalance,
                             Category = e.Combination.StampCategory.StampCategory1,
-                            Denomination = e.Combination.StampType.Denomination
+                            Denomination = e.Combination.StampType.Denomination,
+                            LabelPerSheet = e.Combination.StampLabel.NoLabelPerSheet
                         }
                 );
             if (data != null)

@@ -35,5 +35,6 @@ namespace CTS_BE.DTOs
         public short LabelLedgerBalance { get; set; }
         public string Category { get; set; }
         public decimal Denomination { get; set; }
+        public short LabelPerSheet { get; set; }
     }
 }
