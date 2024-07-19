@@ -21,15 +21,19 @@ public partial class StampInventory1
     [StringLength(3)]
     public string? TreasuryCode { get; set; }
 
-    [Column("day")]
-    public short? Day { get; set; }
+    [Column("denomination")]
+    [Precision(10, 2)]
+    public decimal? Denomination { get; set; }
 
-    [Column("month")]
-    public short? Month { get; set; }
+    [Column("sheet")]
+    public short? Sheet { get; set; }
 
-    [Column("year")]
-    public int? Year { get; set; }
+    [Column("label")]
+    public short? Label { get; set; }
 
-    [Column("closing_stock")]
-    public decimal? ClosingStock { get; set; }
+    [Column("timestamp", TypeName = "timestamp without time zone")]
+    public DateTime? Timestamp { get; set; }
+
+    [Column("is_debit")]
+    public bool IsDebit { get; set; }
 }

@@ -42,5 +42,7 @@ public partial class OperatorMaster
     [Column("op_id")]
     public int OpId { get; set; }
 
+    public virtual ICollection<Advice1> Advice1s { get; set; } = new List<Advice1>();
+
     public virtual ICollection<Advice> Advices { get; set; } = new List<Advice>();
 }
