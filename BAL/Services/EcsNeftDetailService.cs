@@ -18,7 +18,7 @@ namespace CTS_BE.BAL
         public async Task<ECSNEFT> ECSByBillId(long billId)
         {
             return await _EcsNeftDetailRepository.GetSingleSelectedColumnByConditionAsync(
-                 entity => entity.BillId == 22, entity => new ECSNEFT
+                 entity => entity.BillId == billId, entity => new ECSNEFT
                  {
                      BillNo = entity.Bill.BillNo,
                      BillDate = entity.Bill.BillDate.ToString("dd/MM/yyyy"),
