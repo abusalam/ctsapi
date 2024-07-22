@@ -25,6 +25,8 @@ namespace CTS_BE.BAL.Services.Pension
             
         }
 
+        
+
         public async Task<ManualPpoReceiptResponseDTO> GetPpoReceipt(string treasuryReceiptNo)
         {
             ManualPpoReceiptResponseDTO manualPpoReceiptResponseDTO;
@@ -42,19 +44,22 @@ namespace CTS_BE.BAL.Services.Pension
             return manualPpoReceiptResponseDTO;
         }
 
-        public async Task<ManualPpoReceiptResponseDTO> CreatePpoReceipt(ManualPpoReceiptEntryDTO manualPpoReceiptDTO)
+        public async Task<ManualPpoReceiptResponseDTO> CreatePpoReceipt(
+            ManualPpoReceiptEntryDTO manualPpoReceiptDTO,
+            short financialYear,
+            string treasuryCode
+            )
         {
 
-            short financialYear;
+            ;
             PpoReceipt manualPpoReceiptEntity;
             try
             {
                 manualPpoReceiptEntity = _mapper.Map<PpoReceipt>(manualPpoReceiptDTO);
-                financialYear = await _receiptSequenceRepository.GetUserFinYear();
-                manualPpoReceiptEntity.TreasuryCode = await _receiptSequenceRepository.GetUserTreasuryCode();
+                manualPpoReceiptEntity.TreasuryCode = treasuryCode;
                 manualPpoReceiptEntity.TreasuryReceiptNo = await _receiptSequenceRepository.GenerateTreasuryReceiptNo(
                     financialYear,
-                    await _receiptSequenceRepository.GetUserTreasuryCode()
+                    treasuryCode
                 );
                 manualPpoReceiptEntity.FinancialYear = financialYear;
                 manualPpoReceiptEntity.PpoStatus = $"PPO Received";
@@ -116,5 +121,6 @@ namespace CTS_BE.BAL.Services.Pension
             }
             return _mapper.Map<ManualPpoReceiptResponseDTO>(manualPpoReceiptEntity);
         }
+
     }
 }

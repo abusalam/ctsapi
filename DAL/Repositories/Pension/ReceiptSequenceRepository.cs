@@ -11,8 +11,6 @@ namespace CTS_BE.DAL.Repositories.Pension
         Repository<PpoReceiptSequence, PensionDbContext>, 
         IReceiptSequenceRepository
     {
-        private const string USER_TREASURY_CODE = "MDA";
-        private const short FIN_YEAR = 2024;
         protected readonly PensionDbContext _context;
         public ReceiptSequenceRepository(PensionDbContext context) : 
             base(context)
@@ -21,7 +19,7 @@ namespace CTS_BE.DAL.Repositories.Pension
         }
 
 
-        public async Task<string> GenerateTreasuryReceiptNo(short finYear=FIN_YEAR, string treasuryCode=USER_TREASURY_CODE) {
+        public async Task<string> GenerateTreasuryReceiptNo(short finYear, string treasuryCode) {
             PpoReceiptSequence ppoReceiptSequence = new();
             string treasuryReceiptNo = "";
             int seqValue = 0;
@@ -49,17 +47,9 @@ namespace CTS_BE.DAL.Repositories.Pension
             finally {
                 
                 string paddedNextSequenceValue = $"{seqValue}".PadLeft(6,'0');
-                treasuryReceiptNo = $"{USER_TREASURY_CODE}{finYear}{paddedNextSequenceValue}";
+                treasuryReceiptNo = $"{treasuryCode}{finYear}{paddedNextSequenceValue}";
             }
             return treasuryReceiptNo;
-        }
-
-        public async Task<string> GetUserTreasuryCode() {
-            return await Task.FromResult(USER_TREASURY_CODE);
-        }
-
-        public async Task<short> GetUserFinYear() {
-            return await Task.FromResult(FIN_YEAR);
         }
 
     }

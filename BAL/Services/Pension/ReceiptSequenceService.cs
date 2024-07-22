@@ -12,8 +12,6 @@ namespace CTS_BE.BAL.Services.Pension
     public class ReceiptSequenceService : IReceiptSequenceService
     {
         private readonly IReceiptSequenceRepository _receiptSequenceRepository;
-        private const string USER_TREASURY_CODE = "MDA";
-        private const int FIN_YEAR = 2024;
 
         public ReceiptSequenceService(
             IReceiptSequenceRepository receiptSequenceRepository
@@ -22,7 +20,7 @@ namespace CTS_BE.BAL.Services.Pension
             _receiptSequenceRepository = receiptSequenceRepository;
         }
 
-        public async Task<string> GenerateTreasuryReceiptNo(short finYear=FIN_YEAR, string treasuryCode=USER_TREASURY_CODE)
+        public async Task<string> GenerateTreasuryReceiptNo(short finYear, string treasuryCode)
         {
             PpoReceiptSequence ppoReceiptSquence = new();
             string treasuryReceiptNo = "";
@@ -53,7 +51,7 @@ namespace CTS_BE.BAL.Services.Pension
             finally {
                 
                 string paddedNextSequenceValue = $"{seqValue}".PadLeft(8,'0');
-                treasuryReceiptNo = $"{USER_TREASURY_CODE}{finYear}{paddedNextSequenceValue}";
+                treasuryReceiptNo = $"{treasuryCode}{finYear}{paddedNextSequenceValue}";
             }
             return treasuryReceiptNo;
         }

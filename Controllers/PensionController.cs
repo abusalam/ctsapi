@@ -4,6 +4,7 @@ using System.Text.Json.Nodes;
 using CTS_BE.BAL.Interfaces.Pension;
 using CTS_BE.DTOs.PensionDTO;
 using CTS_BE.Helper;
+using CTS_BE.Helper.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,11 +15,12 @@ namespace CTS_BE.Controllers
     [ApiController]
     [Tags("Pension")]
     [Route("api/v1")]
-    public class PensionController : ControllerBase
+    public class PensionController : ApiBaseController
     {
         private readonly IPensionService _pensionService;
 
-        public PensionController(IPensionService pensionService)
+        public PensionController(IClaimService claimService, IPensionService pensionService) : 
+        base(claimService)
         {
             _pensionService = pensionService;
         }
@@ -78,11 +80,15 @@ namespace CTS_BE.Controllers
                 response = new() {
                 apiResponseStatus = Enum.APIResponseStatus.Success,
                 result = await _pensionService
-                        .CreatePpoReceipt(manualPpoReceiptEntryDTO),
+                        .CreatePpoReceipt(
+                            manualPpoReceiptEntryDTO,
+                            GetCurrentFyYear(),
+                            GetTreasuryCode()
+                            ),
                 Message = $"PPO Received Successfully!"
                 };
             } catch(DbUpdateException e) {
-                StackFrame CallStack = new StackFrame(1, true);
+                // StackFrame CallStack = new StackFrame(1, true);
                 response = new () {
                 apiResponseStatus = Enum.APIResponseStatus.Error,
                 result = null,
@@ -164,7 +170,7 @@ namespace CTS_BE.Controllers
                 Message = $"PPO Receipt Updated Successfully!"
                 };
             } catch(DbUpdateException e) {
-                StackFrame CallStack = new StackFrame(1, true);
+                // StackFrame CallStack = new StackFrame(1, true);
                 response = new () {
                 apiResponseStatus = Enum.APIResponseStatus.Error,
                 result = null,

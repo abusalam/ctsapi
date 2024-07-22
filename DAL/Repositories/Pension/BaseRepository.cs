@@ -12,5 +12,9 @@ namespace CTS_BE.DAL.Repositories.Pension
             this.DbContext = context;
         }
 
+        IBaseRepository<T> IBaseRepository<T>.WithUserScope()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
