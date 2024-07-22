@@ -3,6 +3,7 @@ using CTS_BE.BAL.Interfaces.Pension;
 using CTS_BE.DAL.Interfaces.Pension;
 using CTS_BE.DTOs.PensionDTO;
 using CTS_BE.DAL.Entities.Pension;
+using CTS_BE.DTOs;
 
 
 namespace CTS_BE.BAL.Services.Pension
@@ -76,7 +77,7 @@ namespace CTS_BE.BAL.Services.Pension
             return _mapper.Map<ManualPpoReceiptResponseDTO>(manualPpoReceiptEntity);
         }
 
-        public async Task<ICollection<ListAllPpoReceiptsResponseDTO>> GetPpoReceipts() {
+        public async Task<IEnumerable<ListAllPpoReceiptsResponseDTO>> GetPpoReceipts(DynamicListQueryParameters dynamicListQueryParameters) {
             return await _manualPpoReceiptRepository
                 .GetSelectedColumnByConditionAsync(
                 entity => entity.ActiveFlag,
@@ -85,7 +86,8 @@ namespace CTS_BE.BAL.Services.Pension
                     PpoNo = entity.PpoNo,
                     PensionerName = entity.PensionerName,
                     ReceiptDate = entity.ReceiptDate
-                    }
+                    },
+                    dynamicListQueryParameters
                 );
         }
 
@@ -121,6 +123,5 @@ namespace CTS_BE.BAL.Services.Pension
             }
             return _mapper.Map<ManualPpoReceiptResponseDTO>(manualPpoReceiptEntity);
         }
-
     }
 }

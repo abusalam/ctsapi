@@ -2,6 +2,7 @@ using System.Data.Common;
 using System.Diagnostics;
 using System.Text.Json.Nodes;
 using CTS_BE.BAL.Interfaces.Pension;
+using CTS_BE.DTOs;
 using CTS_BE.DTOs.PensionDTO;
 using CTS_BE.Helper;
 using CTS_BE.Helper.Authentication;
@@ -127,18 +128,61 @@ namespace CTS_BE.Controllers
         }
 
 
-        [HttpGet("manual-ppo/receipts")]
+        [HttpPatch("manual-ppo/receipts")]
         [Produces("application/json")]
         [Tags("Pension", "Manual PPO Receipt")]
-        public async Task<APIResponse<ICollection<ListAllPpoReceiptsResponseDTO>>> ControlGetAllManualPpoReceipts()
+        public async Task<APIResponse<DynamicListResult<IEnumerable<ListAllPpoReceiptsResponseDTO>>>> ControlGetAllManualPpoReceipts(DynamicListQueryParameters dynamicListQueryParameters)
         {
 
-            APIResponse<ICollection<ListAllPpoReceiptsResponseDTO>> response;
+            APIResponse<DynamicListResult<IEnumerable<ListAllPpoReceiptsResponseDTO>>> response;
             try {
+
                 response = new() {
+
                     apiResponseStatus = Enum.APIResponseStatus.Success,
-                    result = await _pensionService
-                            .GetPpoReceipts(),
+                    result = new()
+                        {
+                            Headers = new () {
+                            
+                                new() {
+                                    Name = "Treasury Receipt No",
+                                    DataType = "text",
+                                    FieldName = "TreasuryReceiptNo",
+                                    FilterField = "treasury_receipt_no",
+                                    IsFilterable = true,
+                                    IsSortable = true,
+
+                                },
+                                new() {
+                                    Name = "PPO No",
+                                    DataType = "text",
+                                    FieldName = "PpoNo",
+                                    FilterField = "ppo_no",
+                                    IsFilterable = true,
+                                    IsSortable = true,
+                                },
+                                new() {
+                                    Name = "Date of Receipt",
+                                    DataType = "text",
+                                    FieldName = "ReceiptDate",
+                                    FilterField = "receipt_date",
+                                    IsFilterable = true,
+                                    IsSortable = true,
+                                },
+                                new() {
+                                    Name = "Name of Pensioner",
+                                    DataType = "text",
+                                    FieldName = "PensionerName",
+                                    FilterField = "pensioner_name",
+                                    IsFilterable = true,
+                                    IsSortable = true,
+                                }
+
+                            },
+                            Data = await _pensionService
+                                    .GetPpoReceipts(dynamicListQueryParameters),
+                            DataCount = 1
+                        },
                     Message = $"All PPO Receipts Received Successfully!"
 
                 };
@@ -155,7 +199,7 @@ namespace CTS_BE.Controllers
         }
 
 
-        [HttpPatch("manual-ppo/receipts/{treasuryReceiptNo}")]
+        [HttpPut("manual-ppo/receipts/{treasuryReceiptNo}")]
         [Produces("application/json")]
         [Tags("Pension", "Manual PPO Receipt")]
         public async Task<APIResponse<ManualPpoReceiptResponseDTO>> ControlUpdateManualPpoReceipt(string treasuryReceiptNo, ManualPpoReceiptEntryDTO manualPpoReceiptEntryDTO)
@@ -181,5 +225,5 @@ namespace CTS_BE.Controllers
             return response;
         }
 
-    }
+    } 
 }

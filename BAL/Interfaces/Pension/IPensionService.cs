@@ -1,3 +1,4 @@
+using CTS_BE.DTOs;
 using CTS_BE.DTOs.PensionDTO;
 
 namespace CTS_BE.BAL.Interfaces.Pension
@@ -10,7 +11,7 @@ namespace CTS_BE.BAL.Interfaces.Pension
             string treasuryCode
             );
         public Task<ManualPpoReceiptResponseDTO> GetPpoReceipt(string treasuryReceiptNo);
-        public Task<ICollection<ListAllPpoReceiptsResponseDTO>> GetPpoReceipts();
+        public Task<IEnumerable<ListAllPpoReceiptsResponseDTO>> GetPpoReceipts(DynamicListQueryParameters dynamicListQueryParameters);
         public Task<ManualPpoReceiptResponseDTO> UpdatePpoReceipt(string treasuryReceiptNo, ManualPpoReceiptEntryDTO manualPpoReceiptDTO);
     }
 }

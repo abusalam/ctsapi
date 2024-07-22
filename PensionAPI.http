@@ -17,9 +17,27 @@ Authorization: Bearer {{accessToken}}
 
 ### List All PPO Receipts Request
 # @name GetAllManualPPOReceipts
-GET {{PensionAPI_HostAddress}}/api/v1/manual-ppo/receipts
+PATCH {{PensionAPI_HostAddress}}/api/v1/manual-ppo/receipts
 Accept: application/json
 Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "listType": "",
+  "pageSize": 5,
+  "pageIndex": 0,
+  "filterParameters": [
+    {
+      "field": "PpoNo",
+      "value": "PPO-647974",
+      "operator": "equals"
+    }
+  ],
+  "sortParameters": {
+    "field": "PpoNo",
+    "order": "asc"
+  }
+}
 
 ### Create PPO Receipt Request
 # @name CreatePPOReceipt
