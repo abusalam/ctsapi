@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.DAL.Entities.Pension;
 
 [Table("ppo_receipts", Schema = "cts_pension")]
+[Index("PpoNo", Name = "ppo_receipts_ppo_no_key", IsUnique = true)]
 [Index("TreasuryReceiptNo", Name = "ppo_receipts_treasury_receipt_no_key", IsUnique = true)]
 public partial class PpoReceipt
 {

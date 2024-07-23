@@ -77,10 +77,14 @@ namespace CTS_BE.BAL.Services.Pension
             return _mapper.Map<ManualPpoReceiptResponseDTO>(manualPpoReceiptEntity);
         }
 
-        public async Task<IEnumerable<ListAllPpoReceiptsResponseDTO>> GetPpoReceipts(DynamicListQueryParameters dynamicListQueryParameters) {
+        public async Task<IEnumerable<ListAllPpoReceiptsResponseDTO>> GetPpoReceipts(
+            short financialYear,
+            string treasuryCode,
+            DynamicListQueryParameters dynamicListQueryParameters
+        ) {
             return await _manualPpoReceiptRepository
                 .GetSelectedColumnByConditionAsync(
-                entity => entity.ActiveFlag,
+                entity => entity.ActiveFlag && entity.FinancialYear == financialYear && entity.TreasuryCode == treasuryCode,
                 entity => new ListAllPpoReceiptsResponseDTO() {
                     TreasuryReceiptNo = entity.TreasuryReceiptNo,
                     PpoNo = entity.PpoNo,

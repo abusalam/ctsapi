@@ -179,17 +179,7 @@ public partial class PensionDbContext : DbContext
             entity.HasKey(e => e.Id).HasName("ppo_status_flags_pkey");
 
             entity.Property(e => e.ActiveFlag).HasDefaultValueSql("true");
-            entity.Property(e => e.AdhocPensionFlag).HasDefaultValueSql("false");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
-            entity.Property(e => e.DoublePensionFlag).HasDefaultValueSql("false");
-            entity.Property(e => e.EmployeedFlag).HasDefaultValueSql("false");
-            entity.Property(e => e.FirstPensionFlag).HasDefaultValueSql("false");
-            entity.Property(e => e.HealthSchemeFlag).HasDefaultValueSql("false");
-            entity.Property(e => e.InterimPensionFlag).HasDefaultValueSql("false");
-            entity.Property(e => e.PpoApprovedFlag).HasDefaultValueSql("false");
-            entity.Property(e => e.ReemployedFlag).HasDefaultValueSql("false");
-            entity.Property(e => e.SharedPensionFlag).HasDefaultValueSql("false");
-            entity.Property(e => e.StatusActiveFlag).HasDefaultValueSql("false");
         });
 
         modelBuilder.Entity<UploadedFile>(entity =>

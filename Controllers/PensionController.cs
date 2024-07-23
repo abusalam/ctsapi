@@ -179,8 +179,10 @@ namespace CTS_BE.Controllers
                                 }
 
                             },
-                            Data = await _pensionService
-                                    .GetPpoReceipts(dynamicListQueryParameters),
+                            Data = await _pensionService.GetPpoReceipts(
+                                GetCurrentFyYear(),
+                                GetTreasuryCode(),
+                                dynamicListQueryParameters),
                             DataCount = 1
                         },
                     Message = $"All PPO Receipts Received Successfully!"

@@ -24,65 +24,11 @@ public partial class PpoStatusFlag
     [Column("ppo_id")]
     public int PpoId { get; set; }
 
-    [Column("ppo_approved_flag")]
-    public bool? PpoApprovedFlag { get; set; }
+    [Column("status_flag")]
+    public bool StatusFlag { get; set; }
 
-    [Column("ppo_approved_wef")]
-    public DateOnly? PpoApprovedWef { get; set; }
-
-    [Column("health_scheme_flag")]
-    public bool? HealthSchemeFlag { get; set; }
-
-    [Column("health_scheme_wef")]
-    public DateOnly? HealthSchemeWef { get; set; }
-
-    [Column("first_pension_flag")]
-    public bool? FirstPensionFlag { get; set; }
-
-    [Column("first_pension_wef")]
-    public DateOnly? FirstPensionWef { get; set; }
-
-    [Column("double_pension_flag")]
-    public bool? DoublePensionFlag { get; set; }
-
-    [Column("double_pension_wef")]
-    public DateOnly? DoublePensionWef { get; set; }
-
-    [Column("employeed_flag")]
-    public bool? EmployeedFlag { get; set; }
-
-    [Column("employeed_wef")]
-    public DateOnly? EmployeedWef { get; set; }
-
-    [Column("reemployed_flag")]
-    public bool? ReemployedFlag { get; set; }
-
-    [Column("reemployed_wef")]
-    public DateOnly? ReemployedWef { get; set; }
-
-    [Column("adhoc_pension_flag")]
-    public bool? AdhocPensionFlag { get; set; }
-
-    [Column("adhoc_pension_wef")]
-    public DateOnly? AdhocPensionWef { get; set; }
-
-    [Column("interim_pension_flag")]
-    public bool? InterimPensionFlag { get; set; }
-
-    [Column("interim_pension_wef")]
-    public DateOnly? InterimPensionWef { get; set; }
-
-    [Column("shared_pension_flag")]
-    public bool? SharedPensionFlag { get; set; }
-
-    [Column("shared_pension_wef")]
-    public DateOnly? SharedPensionWef { get; set; }
-
-    [Column("status_active_flag")]
-    public bool? StatusActiveFlag { get; set; }
-
-    [Column("status_active_wef")]
-    public DateOnly? StatusActiveWef { get; set; }
+    [Column("status_wef")]
+    public DateOnly StatusWef { get; set; }
 
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime? CreatedAt { get; set; }
