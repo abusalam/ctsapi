@@ -1,7 +1,6 @@
 using AutoMapper;
 using CTS_BE.BAL.Interfaces.Pension;
 using CTS_BE.DAL.Interfaces.Pension;
-using CTS_BE.DTOs.PensionDTO;
 using CTS_BE.DAL.Entities.Pension;
 using CTS_BE.DTOs;
 
@@ -26,18 +25,16 @@ namespace CTS_BE.BAL.Services.Pension
             
         }
 
-        
-
         public async Task<ManualPpoReceiptResponseDTO> GetPpoReceipt(string treasuryReceiptNo)
         {
             ManualPpoReceiptResponseDTO manualPpoReceiptResponseDTO;
             try
             {
                 manualPpoReceiptResponseDTO = _mapper.Map<ManualPpoReceiptResponseDTO>(
-                    await _manualPpoReceiptRepository.GetSingleAysnc(
+                        await _manualPpoReceiptRepository.GetSingleAysnc(
                         entity => entity.TreasuryReceiptNo == treasuryReceiptNo
-                        )
-                    );
+                    )
+                );
             }
             finally {
 
@@ -49,10 +46,7 @@ namespace CTS_BE.BAL.Services.Pension
             ManualPpoReceiptEntryDTO manualPpoReceiptDTO,
             short financialYear,
             string treasuryCode
-            )
-        {
-
-            ;
+        ) {
             PpoReceipt manualPpoReceiptEntity;
             try
             {
@@ -77,7 +71,7 @@ namespace CTS_BE.BAL.Services.Pension
             return _mapper.Map<ManualPpoReceiptResponseDTO>(manualPpoReceiptEntity);
         }
 
-        public async Task<IEnumerable<ListAllPpoReceiptsResponseDTO>> GetPpoReceipts(
+        public async Task<IEnumerable<ListAllPpoReceiptsResponseDTO>> GetAllPpoReceipts(
             short financialYear,
             string treasuryCode,
             DynamicListQueryParameters dynamicListQueryParameters

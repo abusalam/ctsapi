@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.DAL.Entities.Pension;
 
 [Table("ppo_status_flags", Schema = "cts_pension")]
-[Index("PpoId", "TreasuryCode", Name = "ppo_status_flags_ppo_id_treasury_code_key", IsUnique = true)]
+[Index("PpoId", "TreasuryCode", "StatusFlag", Name = "ppo_status_flags_ppo_id_treasury_code_status_flag_key", IsUnique = true)]
 public partial class PpoStatusFlag
 {
     [Key]
@@ -25,7 +25,7 @@ public partial class PpoStatusFlag
     public int PpoId { get; set; }
 
     [Column("status_flag")]
-    public bool StatusFlag { get; set; }
+    public int StatusFlag { get; set; }
 
     [Column("status_wef")]
     public DateOnly StatusWef { get; set; }

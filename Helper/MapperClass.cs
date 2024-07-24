@@ -4,7 +4,6 @@ using CTS_BE.DTOs;
 using System.Data.Common;
 using CTS_BE.Model;
 using CTS_BE.DAL.Entities;
-using CTS_BE.DTOs.PensionDTO;
 using CTS_BE.Model.Pension;
 using CTS_BE.DAL.Entities.Pension;
 namespace CTS_BE.Helper
@@ -48,6 +47,8 @@ namespace CTS_BE.Helper
             CreateMap<ManualPpoReceiptEntryDTO, PpoReceipt>().ReverseMap();
             CreateMap<ManualPpoReceiptResponseDTO, PpoReceipt>().ReverseMap();
             CreateMap<ListAllPpoReceiptsResponseDTO, PpoReceipt>().ReverseMap();
+            CreateMap<PensionStatusEntryDTO, PpoStatusFlag>().ReverseMap();
+            CreateMap<PensionStatusDTO, PpoStatusFlag>().ReverseMap();
 
         }
     }

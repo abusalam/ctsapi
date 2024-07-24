@@ -32,6 +32,8 @@ using CTS_BE.BAL.Interfaces.Pension;
 using CTS_BE.BAL.Services.Pension;
 using CTS_BE.DAL.Interfaces.Pension;
 using CTS_BE.DAL.Repositories.Pension;
+using Npgsql;
+using CTS_BE.PensionEnum;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,11 +45,24 @@ builder.Services.AddDbContext<CTSDBContext>(options =>
 ), ServiceLifetime.Transient);
 
 //Pension Database Connection
-builder.Services.AddDbContext<PensionDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DBConnection"),
-    //options => options.CommandTimeout(999)                   
-    options => options.EnableRetryOnFailure(10, TimeSpan.FromSeconds(5), null)
-), ServiceLifetime.Transient);
+// https://www.npgsql.org/efcore/mapping/enum.html?tabs=with-datasource
+var dataSourceBuilder = new NpgsqlDataSourceBuilder(
+        builder.Configuration.GetConnectionString("DBConnection")
+    );
+dataSourceBuilder.MapEnum<PensionStatusFlag>();
+var dataSource = dataSourceBuilder.Build();
+
+builder.Services.AddDbContext<PensionDbContext>(
+    options => {
+        options.UseNpgsql(
+            builder.Configuration.GetConnectionString("DBConnection"),
+            //options => options.CommandTimeout(999)                   
+            options => options.EnableRetryOnFailure(10, TimeSpan.FromSeconds(5), null)
+        );
+        options.UseNpgsql(dataSource);
+    },
+    ServiceLifetime.Transient
+);
 
 //Automapper
 builder.Services.AddAutoMapper(typeof(Program));
@@ -92,6 +107,8 @@ builder.Services.AddTransient<IStampWalletRepository, StampWalletRepository>();
 //Pension Repositories
 builder.Services.AddTransient<IManualPpoReceiptRepository, ManualPpoReceiptRepository>();
 builder.Services.AddTransient<IReceiptSequenceRepository, ReceiptSequenceRepository>();
+builder.Services.AddTransient<IPensionStatusRepository, PensionStatusRepository>();
+
 
 
 //Services
@@ -129,6 +146,7 @@ builder.Services.AddTransient<IChequeDistributionService, ChequeDistributionServ
 // Pension Services
 builder.Services.AddTransient<IPensionService, PensionService>();
 builder.Services.AddTransient<IReceiptSequenceService, ReceiptSequenceService>();
+builder.Services.AddTransient<IPensionStatusService, PensionStatusService>();
 
 //builder.Services.AddTransient<ITokenHelper, TokenHelper>();
 //builder.Services.AddSingleton<ITokencache, Tokencache>();

@@ -9,6 +9,37 @@
 
 @treasuryReceiptNo = {{CreatePPOReceipt.response.body.$.result.treasuryReceiptNo}}
 
+@ApprovedPpoId = {{SetApprovePPOFlag.response.body.$.result.ppoId}}
+@ApprovedPpoIdStatusFlag = {{SetApprovePPOFlag.response.body.$.result.statusFlag}}
+
+### Approve PPO
+# @name SetApprovePPOFlag
+POST {{PensionAPI_HostAddress}}/api/v1/ppo/status
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "PpoId": "{{$randomInt 10000 99999}}",
+  "StatusFlag": 1,
+  "StatusWef": "{{$datetime "YYYY-MM-DD"}}"
+}
+
+### Reject Approved PPO
+# @name ClearApprovePPOFlag
+DELETE {{PensionAPI_HostAddress}}/api/v1/ppo/{{ApprovedPpoId}}/status/{{ApprovedPpoIdStatusFlag}}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+
+### Check PPO Status Flag
+# @name CheckPPOFlag
+Get {{PensionAPI_HostAddress}}/api/v1/ppo/{{ApprovedPpoId}}/status
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+
+
 ### Read PPO Receipt Request
 # @name GetPPOReceipt
 GET {{PensionAPI_HostAddress}}/api/v1/manual-ppo/receipts/{{treasuryReceiptNo}}
@@ -22,22 +53,7 @@ Accept: application/json
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
-{
-  "listType": "",
-  "pageSize": 5,
-  "pageIndex": 0,
-  "filterParameters": [
-    {
-      "field": "PpoNo",
-      "value": "PPO-647974",
-      "operator": "equals"
-    }
-  ],
-  "sortParameters": {
-    "field": "PpoNo",
-    "order": "asc"
-  }
-}
+{"pageSize":10,"pageIndex":0,"filterParameters":[],"sortParameters":{"field":"","order":""}}
 
 ### Create PPO Receipt Request
 # @name CreatePPOReceipt
@@ -58,7 +74,7 @@ Content-Type: application/json
 
 ### Update PPO Receipt Request
 # @name UpdatePPOReceipt
-PATCH {{PensionAPI_HostAddress}}/api/v1/manual-ppo/receipts/{{treasuryReceiptNo}}
+PUT {{PensionAPI_HostAddress}}/api/v1/manual-ppo/receipts/{{treasuryReceiptNo}}
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json

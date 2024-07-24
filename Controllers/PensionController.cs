@@ -1,13 +1,15 @@
+using System.Runtime;
 using System.Data.Common;
 using System.Diagnostics;
 using System.Text.Json.Nodes;
 using CTS_BE.BAL.Interfaces.Pension;
 using CTS_BE.DTOs;
-using CTS_BE.DTOs.PensionDTO;
+using CTS_BE.PensionEnum;
 using CTS_BE.Helper;
 using CTS_BE.Helper.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
 using NPOI.SS.Formula.Functions;
 
@@ -19,11 +21,16 @@ namespace CTS_BE.Controllers
     public class PensionController : ApiBaseController
     {
         private readonly IPensionService _pensionService;
+        private readonly IPensionStatusService _pensionStatusService;
 
-        public PensionController(IClaimService claimService, IPensionService pensionService) : 
+        public PensionController(
+                IClaimService claimService,
+                IPensionService pensionService,
+                IPensionStatusService pensionStatusService) : 
         base(claimService)
         {
             _pensionService = pensionService;
+            _pensionStatusService = pensionStatusService;
         }
 
         [HttpPost("echo")]
@@ -148,7 +155,7 @@ namespace CTS_BE.Controllers
                                     Name = "Treasury Receipt No",
                                     DataType = "text",
                                     FieldName = "TreasuryReceiptNo",
-                                    FilterField = "treasury_receipt_no",
+                                    FilterField = "TreasuryReceiptNo",
                                     IsFilterable = true,
                                     IsSortable = true,
 
@@ -157,7 +164,7 @@ namespace CTS_BE.Controllers
                                     Name = "PPO No",
                                     DataType = "text",
                                     FieldName = "PpoNo",
-                                    FilterField = "ppo_no",
+                                    FilterField = "PpoNo",
                                     IsFilterable = true,
                                     IsSortable = true,
                                 },
@@ -165,7 +172,7 @@ namespace CTS_BE.Controllers
                                     Name = "Date of Receipt",
                                     DataType = "text",
                                     FieldName = "ReceiptDate",
-                                    FilterField = "receipt_date",
+                                    FilterField = "ReceiptDate",
                                     IsFilterable = true,
                                     IsSortable = true,
                                 },
@@ -173,17 +180,17 @@ namespace CTS_BE.Controllers
                                     Name = "Name of Pensioner",
                                     DataType = "text",
                                     FieldName = "PensionerName",
-                                    FilterField = "pensioner_name",
+                                    FilterField = "PensionerName",
                                     IsFilterable = true,
                                     IsSortable = true,
                                 }
 
                             },
-                            Data = await _pensionService.GetPpoReceipts(
+                            Data = await _pensionService.GetAllPpoReceipts(
                                 GetCurrentFyYear(),
                                 GetTreasuryCode(),
                                 dynamicListQueryParameters),
-                            DataCount = 1
+                            DataCount = 10
                         },
                     Message = $"All PPO Receipts Received Successfully!"
 
@@ -227,5 +234,148 @@ namespace CTS_BE.Controllers
             return response;
         }
 
+
+        [HttpPost("ppo/status")]
+        [Produces("application/json")]
+        [Tags("Pension", "PPO Status")]
+        public async Task<APIResponse<PensionStatusEntryDTO>> ControlPensionStatus(PensionStatusEntryDTO pensionStatusEntryDTO) {
+
+            APIResponse<PensionStatusEntryDTO> result = new(){
+                apiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = "|",
+                result = await _pensionStatusService.SetPensionStatusFlag(
+                    pensionStatusEntryDTO,
+                    GetCurrentFyYear(),
+                    GetTreasuryCode()
+                )
+            };
+
+            if(System.Enum.TryParse<PensionStatusFlag>(
+                    $"{pensionStatusEntryDTO.StatusFlag}",
+                    out PensionStatusFlag pensionStatus
+                )
+            ) {
+                if(pensionStatus.HasFlag(PensionStatusFlag.FirstPensionGenerated))
+                {
+                    result.Message += " First Pension Generated |";
+                }
+                if(pensionStatus.HasFlag(PensionStatusFlag.PpoApproved))
+                {
+                    result.Message += " PPO Approved |";
+                }
+                if(pensionStatus.HasFlag(PensionStatusFlag.PpoRunning))
+                {
+                    result.Message += " PPO Running |";
+                }
+                if(pensionStatus.HasFlag(PensionStatusFlag.PpoSuspended))
+                {
+                    result.Message += " PPO Suspended |";
+                }
+            }
+
+            return await Task.FromResult(result);
+        }
+
+        [HttpDelete("ppo/{ppoId}/status/{statusFlag}")]
+        [Produces("application/json")]
+        [Tags("Pension", "PPO Status")]
+        public async Task<APIResponse<PensionStatusDTO>> ControlPensionStatus(int ppoId, int statusFlag) {
+
+            APIResponse<PensionStatusDTO> response = new(){
+                apiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = "Reset: |",
+                result = new(){
+                    StatusFlag = 0
+                }
+            };
+            try {
+                response.result = await _pensionStatusService.ClearPensionStatusFlag(
+                    ppoId,
+                    statusFlag,
+                    GetCurrentFyYear(),
+                    GetTreasuryCode()
+                );
+                if(System.Enum.TryParse<PensionStatusFlag>(
+                        $"{response.result.StatusFlag}",
+                        out PensionStatusFlag pensionStatus
+                    )
+                ) {
+                    if(pensionStatus.HasFlag(PensionStatusFlag.FirstPensionGenerated))
+                    {
+                        response.Message += " First Pension Generated Flag |";
+                    }
+                    if(pensionStatus.HasFlag(PensionStatusFlag.PpoApproved))
+                    {
+                        response.Message += " PPO Approved Flag |";
+                    }
+                    if(pensionStatus.HasFlag(PensionStatusFlag.PpoRunning))
+                    {
+                        response.Message += " PPO Running Flag |";
+                    }
+                    if(pensionStatus.HasFlag(PensionStatusFlag.PpoSuspended))
+                    {
+                        response.Message += " PPO Suspended Flag |";
+                    }
+                }
+            }
+            finally {
+                if(response.result.StatusFlag==0){
+                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.Message = $"PPO status flag not found!";
+                }
+            }
+
+            return response;
+        }
+
+        [HttpGet("ppo/{ppoId}/status")]
+        [Produces("application/json")]
+        [Tags("Pension", "PPO Status")]
+        public async Task<APIResponse<PensionStatusDTO>> ControlPensionStatus(int ppoId) {
+            APIResponse<PensionStatusDTO> response = new(){
+                apiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = "|",
+                result = new(){
+                    StatusFlag = 0
+                }
+            };
+            try {
+                response.result = await _pensionStatusService.CheckPensionStatusFlag(
+                        ppoId,
+                        GetCurrentFyYear(),
+                        GetTreasuryCode()
+                    );
+
+                if(System.Enum.TryParse<PensionStatusFlag>(
+                        $"{response.result.StatusFlag}",
+                        out PensionStatusFlag pensionStatus
+                    )
+                ) {
+                    if(pensionStatus.HasFlag(PensionStatusFlag.FirstPensionGenerated))
+                    {
+                        response.Message += " First Pension Generated |";
+                    }
+                    if(pensionStatus.HasFlag(PensionStatusFlag.PpoApproved))
+                    {
+                        response.Message += " PPO Approved |";
+                    }
+                    if(pensionStatus.HasFlag(PensionStatusFlag.PpoRunning))
+                    {
+                        response.Message += " PPO Running |";
+                    }
+                    if(pensionStatus.HasFlag(PensionStatusFlag.PpoSuspended))
+                    {
+                        response.Message += " PPO Suspended |";
+                    }
+                }
+            }
+            finally {
+                if(response.result.StatusFlag==0){
+                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.Message = $"PPO status flag not found!";
+                }
+            }
+            return response;
+        }
     } 
 }
