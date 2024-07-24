@@ -25,6 +25,19 @@ Content-Type: application/json
   "StatusWef": "{{$datetime "YYYY-MM-DD"}}"
 }
 
+### Set PPO Flag
+# @name SetPPOFlag
+POST {{PensionAPI_HostAddress}}/api/v1/ppo/status
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "PpoId": "{{ApprovedPpoId}}",
+  "StatusFlag": 8,
+  "StatusWef": "{{$datetime "YYYY-MM-DD"}}"
+}
+
 ### Reject Approved PPO
 # @name ClearApprovePPOFlag
 DELETE {{PensionAPI_HostAddress}}/api/v1/ppo/{{ApprovedPpoId}}/status/{{ApprovedPpoIdStatusFlag}}
@@ -34,7 +47,7 @@ Authorization: Bearer {{accessToken}}
 
 ### Check PPO Status Flag
 # @name CheckPPOFlag
-Get {{PensionAPI_HostAddress}}/api/v1/ppo/{{ApprovedPpoId}}/status
+Get {{PensionAPI_HostAddress}}/api/v1/ppo/{{ApprovedPpoId}}/status/{{ApprovedPpoIdStatusFlag}}
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 

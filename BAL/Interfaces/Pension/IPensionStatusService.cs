@@ -22,6 +22,7 @@ namespace CTS_BE.BAL.Interfaces.Pension
         );
         public Task<PensionStatusDTO> CheckPensionStatusFlag(
             int ppoId,
+            int pensionStatusFlag,
             short financialYear,
             string treasuryCode
         );

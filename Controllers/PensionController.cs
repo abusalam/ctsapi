@@ -328,10 +328,10 @@ namespace CTS_BE.Controllers
             return response;
         }
 
-        [HttpGet("ppo/{ppoId}/status")]
+        [HttpGet("ppo/{ppoId}/status/{statusFlag}")]
         [Produces("application/json")]
         [Tags("Pension", "PPO Status")]
-        public async Task<APIResponse<PensionStatusDTO>> ControlPensionStatus(int ppoId) {
+        public async Task<APIResponse<PensionStatusDTO>> ControlGetPensionStatus(int ppoId, int statusFlag) {
             APIResponse<PensionStatusDTO> response = new(){
                 apiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = "|",
@@ -342,6 +342,7 @@ namespace CTS_BE.Controllers
             try {
                 response.result = await _pensionStatusService.CheckPensionStatusFlag(
                         ppoId,
+                        statusFlag,
                         GetCurrentFyYear(),
                         GetTreasuryCode()
                     );

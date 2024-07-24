@@ -27,6 +27,7 @@ namespace CTS_BE.BAL.Services.Pension
 
         public async Task<PensionStatusDTO> CheckPensionStatusFlag(
                 int ppoId,
+                int pensionStatusFlag,
                 short financialYear,
                 string treasuryCode
             )
@@ -35,8 +36,8 @@ namespace CTS_BE.BAL.Services.Pension
             try
             {
                 pensionStatusDTO = _mapper.Map<PensionStatusDTO>(
-                    await _pensionStatusRepository.GetSingleAysnc(
-                        entity => entity.ActiveFlag == true && entity.FinancialYear == financialYear && entity.TreasuryCode == treasuryCode && entity.PpoId == ppoId
+                        await _pensionStatusRepository.GetSingleAysnc(
+                            entity => entity.ActiveFlag == true && entity.FinancialYear == financialYear && entity.TreasuryCode == treasuryCode && entity.PpoId == ppoId && entity.StatusFlag == pensionStatusFlag
                         )
                     );
                 if(pensionStatusDTO is null) {
