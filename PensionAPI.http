@@ -9,8 +9,83 @@
 
 @treasuryReceiptNo = {{CreatePPOReceipt.response.body.$.result.treasuryReceiptNo}}
 
+@GeneratedPpoId = {{CreatePPODetails.response.body.$.result.ppoId}}
+
 @ApprovedPpoId = {{SetApprovePPOFlag.response.body.$.result.ppoId}}
 @ApprovedPpoIdStatusFlag = {{SetApprovePPOFlag.response.body.$.result.statusFlag}}
+
+### Create PPO Details
+# @name CreatePPODetails
+POST {{PensionAPI_HostAddress}}/api/v1/ppo/details
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "ppoNo": "PPO-{{$randomInt 100000 999999}}",
+  "ppoType": "P",
+  "psaType": "A",
+  "ppoSubType": "N",
+  "ppoCategory": "C",
+  "ppoSubCategory": "D",
+  "pensionerName": "Jack Dowsel",
+  "dateOfBirth": "{{$datetime "YYYY-MM-DD"}}",
+  "gender": "M",
+  "mobileNumber": "{{$randomInt 6000000000 9999999999}}",
+  "emailId": "string",
+  "pensionerAddress": "string",
+  "identificationMark": "S",
+  "panNo": "PANNO{{$randomInt 1000 9999}}F",
+  "aadhaarNo": "{{$randomInt 600000000000 999999999999}}",
+  "dateOfRetirement": "{{$datetime "YYYY-MM-DD"}}",
+  "dateOfCommencement": "{{$datetime "YYYY-MM-DD"}}",
+  "basicPensionAmount": 10000,
+  "commutedPensionAmount": 2000,
+  "enhancePensionAmount": 10000,
+  "reducedPensionAmount": 8000,
+  "religion": "H"
+}
+
+### Update PPO Details
+# @name UpdatePPODetails
+# PUT {{PensionAPI_HostAddress}}/api/v1/ppo/{{GeneratedPpoId}}/details
+POST {{PensionAPI_HostAddress}}/api/v1/echo
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "ppoNo": "PPO-{{$randomInt 100000 999999}}",
+  "ppoType": "P",
+  "psaType": "A",
+  "ppoSubType": "N",
+  "ppoCategory": "C",
+  "ppoSubCategory": "D",
+  "pensionerName": "Jack Smith",
+  "dateOfBirth": "{{$datetime "YYYY-MM-DD"}}",
+  "gender": "M",
+  "mobileNumber": "{{$randomInt 6000000000 9999999999}}",
+  "emailId": "string",
+  "pensionerAddress": "string",
+  "identificationMark": "S",
+  "panNo": "PANNO{{$randomInt 1000 9999}}F",
+  "aadhaarNo": "{{$randomInt 600000000000 999999999999}}",
+  "dateOfRetirement": "{{$datetime "YYYY-MM-DD"}}",
+  "dateOfCommencement": "{{$datetime "YYYY-MM-DD"}}",
+  "basicPensionAmount": 10000,
+  "commutedPensionAmount": 2000,
+  "enhancePensionAmount": 10000,
+  "reducedPensionAmount": 8000,
+  "religion": "H"
+}
+
+### Check PPO Details
+# @name CheckPpoDetails
+Get {{PensionAPI_HostAddress}}/api/v1/ppo/{{GeneratedPpoId}}/details
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
 
 ### Approve PPO
 # @name SetApprovePPOFlag
@@ -20,7 +95,7 @@ Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
-  "PpoId": "{{$randomInt 10000 99999}}",
+  "PpoId": "{{GeneratedPpoId}}",
   "StatusFlag": 1,
   "StatusWef": "{{$datetime "YYYY-MM-DD"}}"
 }
@@ -180,3 +255,4 @@ Content-Type: application/json
 {
   "refreshToken": "{{refreshToken}}"
 }
+

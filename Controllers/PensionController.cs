@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
 using NPOI.SS.Formula.Functions;
+using NPOI.DDF;
 
 namespace CTS_BE.Controllers
 {
@@ -23,14 +24,18 @@ namespace CTS_BE.Controllers
         private readonly IPensionService _pensionService;
         private readonly IPensionStatusService _pensionStatusService;
 
+        private IPensionerDetailsService _pensionerDetailsService;
+
         public PensionController(
                 IClaimService claimService,
                 IPensionService pensionService,
-                IPensionStatusService pensionStatusService) : 
+                IPensionStatusService pensionStatusService,
+                IPensionerDetailsService pensionerDetailsService) : 
         base(claimService)
         {
             _pensionService = pensionService;
             _pensionStatusService = pensionStatusService;
+            _pensionerDetailsService = pensionerDetailsService;
         }
 
         [HttpPost("echo")]
@@ -77,9 +82,10 @@ namespace CTS_BE.Controllers
         }
     
 
+
         [HttpPost("manual-ppo/receipts")]
         [Produces("application/json")]
-        [Tags("Pension", "Manual PPO Receipt")]
+        [Tags("Pension", "Pension: Manual PPO Receipt")]
         public async Task<APIResponse<ManualPpoReceiptResponseDTO>> ControlCreateManualPpoReceipt(ManualPpoReceiptEntryDTO manualPpoReceiptEntryDTO)
         {
             APIResponse<ManualPpoReceiptResponseDTO> response;
@@ -109,7 +115,7 @@ namespace CTS_BE.Controllers
 
         [HttpGet("manual-ppo/receipts/{treasuryReceiptNo}")]
         [Produces("application/json")]
-        [Tags("Pension", "Manual PPO Receipt")]
+        [Tags("Pension", "Pension: Manual PPO Receipt")]
         public async Task<APIResponse<ManualPpoReceiptResponseDTO>> ControlGetPpoReceipt(string treasuryReceiptNo)
         {
             APIResponse<ManualPpoReceiptResponseDTO> response;
@@ -134,13 +140,10 @@ namespace CTS_BE.Controllers
             return response;
         }
 
-
         [HttpPatch("manual-ppo/receipts")]
         [Produces("application/json")]
-        [Tags("Pension", "Manual PPO Receipt")]
-        public async Task<APIResponse<DynamicListResult<IEnumerable<ListAllPpoReceiptsResponseDTO>>>> ControlGetAllManualPpoReceipts(DynamicListQueryParameters dynamicListQueryParameters)
-        {
-
+        [Tags("Pension", "Pension: Manual PPO Receipt")]
+        public async Task<APIResponse<DynamicListResult<IEnumerable<ListAllPpoReceiptsResponseDTO>>>> ControlGetAllManualPpoReceipts(DynamicListQueryParameters dynamicListQueryParameters) {
             APIResponse<DynamicListResult<IEnumerable<ListAllPpoReceiptsResponseDTO>>> response;
             try {
 
@@ -207,10 +210,9 @@ namespace CTS_BE.Controllers
             return response;
         }
 
-
         [HttpPut("manual-ppo/receipts/{treasuryReceiptNo}")]
         [Produces("application/json")]
-        [Tags("Pension", "Manual PPO Receipt")]
+        [Tags("Pension", "Pension: Manual PPO Receipt")]
         public async Task<APIResponse<ManualPpoReceiptResponseDTO>> ControlUpdateManualPpoReceipt(string treasuryReceiptNo, ManualPpoReceiptEntryDTO manualPpoReceiptEntryDTO)
         {
             APIResponse<ManualPpoReceiptResponseDTO> response;
@@ -235,12 +237,13 @@ namespace CTS_BE.Controllers
         }
 
 
+
         [HttpPost("ppo/status")]
         [Produces("application/json")]
-        [Tags("Pension", "PPO Status")]
+        [Tags("Pension", "Pension: PPO Status")]
         public async Task<APIResponse<PensionStatusEntryDTO>> ControlPensionStatus(PensionStatusEntryDTO pensionStatusEntryDTO) {
 
-            APIResponse<PensionStatusEntryDTO> result = new(){
+            APIResponse<PensionStatusEntryDTO> response = new(){
                 apiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = "|",
                 result = await _pensionStatusService.SetPensionStatusFlag(
@@ -257,28 +260,28 @@ namespace CTS_BE.Controllers
             ) {
                 if(pensionStatus.HasFlag(PensionStatusFlag.FirstPensionGenerated))
                 {
-                    result.Message += " First Pension Generated |";
+                    response.Message += " First Pension Generated |";
                 }
                 if(pensionStatus.HasFlag(PensionStatusFlag.PpoApproved))
                 {
-                    result.Message += " PPO Approved |";
+                    response.Message += " PPO Approved |";
                 }
                 if(pensionStatus.HasFlag(PensionStatusFlag.PpoRunning))
                 {
-                    result.Message += " PPO Running |";
+                    response.Message += " PPO Running |";
                 }
                 if(pensionStatus.HasFlag(PensionStatusFlag.PpoSuspended))
                 {
-                    result.Message += " PPO Suspended |";
+                    response.Message += " PPO Suspended |";
                 }
             }
 
-            return await Task.FromResult(result);
+            return response;
         }
 
         [HttpDelete("ppo/{ppoId}/status/{statusFlag}")]
         [Produces("application/json")]
-        [Tags("Pension", "PPO Status")]
+        [Tags("Pension", "Pension: PPO Status")]
         public async Task<APIResponse<PensionStatusDTO>> ControlPensionStatus(int ppoId, int statusFlag) {
 
             APIResponse<PensionStatusDTO> response = new(){
@@ -330,7 +333,7 @@ namespace CTS_BE.Controllers
 
         [HttpGet("ppo/{ppoId}/status/{statusFlag}")]
         [Produces("application/json")]
-        [Tags("Pension", "PPO Status")]
+        [Tags("Pension", "Pension: PPO Status")]
         public async Task<APIResponse<PensionStatusDTO>> ControlGetPensionStatus(int ppoId, int statusFlag) {
             APIResponse<PensionStatusDTO> response = new(){
                 apiResponseStatus = Enum.APIResponseStatus.Success,
@@ -378,5 +381,118 @@ namespace CTS_BE.Controllers
             }
             return response;
         }
+    
+
+    
+        [HttpPost("ppo/details")]
+        [Produces("application/json")]
+        [Tags("Pension", "Pension: PPO Details")]
+        public async Task<APIResponse<PensionerResponseDTO>> ControlPensionerDetails(
+                PensionerEntryDTO pensionerEntryDTO
+            )
+        {
+
+            APIResponse<PensionerResponseDTO> response = new(){
+                apiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = $"PPO Details saved sucessfully!",
+                result = new(){
+                    PpoId = 0
+                }
+            };
+            try {
+                response.result = await _pensionerDetailsService.CreatePensioner(
+                    pensionerEntryDTO,
+                    GetCurrentFyYear(),
+                    GetTreasuryCode()
+                );
+            }
+            catch (DbUpdateException ex) {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = $"PPO Details not saved! Error: {ex.Message}";
+            }
+            finally {
+                if(response.result.PpoId == 0) {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.Message = $"Error: PPO Details not saved!";
+                }
+            }
+
+            return response;
+        }
+
+        [HttpPut("ppo/{ppoId}/details")]
+        [Produces("application/json")]
+        [Tags("Pension", "Pension: PPO Details")]
+        public async Task<APIResponse<PensionerResponseDTO>> ControlPensionerDetails(
+                int ppoId,
+                PensionerEntryDTO pensionerEntryDTO
+            )
+        {
+
+            APIResponse<PensionerResponseDTO> response = new(){
+                apiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = $"PPO Details saved sucessfully!",
+                result = new(){
+                    PpoId = 0
+                }
+            };
+            try {
+                response.result = await _pensionerDetailsService.UpdatePensioner(
+                    ppoId,
+                    pensionerEntryDTO,
+                    GetCurrentFyYear(),
+                    GetTreasuryCode()
+                );
+            }
+            catch (DbUpdateException ex) {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = $"PPO Details not saved! Error: {ex.Message}";
+            }
+            finally {
+                if(response.result.PpoId == 0) {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.Message = $"Error: PPO Details not saved!";
+                }
+            }
+
+            return response;
+        }
+
+        [HttpGet("ppo/{ppoId}/details")]
+        [Produces("application/json")]
+        [Tags("Pension", "Pension: PPO Details")]
+        public async Task<APIResponse<PensionerResponseDTO>> ControlPensionerDetails(
+                int ppoId
+            )
+        {
+
+            APIResponse<PensionerResponseDTO> response = new(){
+                apiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = $"PPO Details received sucessfully!",
+                result = new(){
+                    PpoId = 0
+                }
+            };
+            try {
+                response.result = await _pensionerDetailsService.GetPensioner(
+                    ppoId,
+                    GetCurrentFyYear(),
+                    GetTreasuryCode()
+                );
+            }
+            catch (DbUpdateException ex) {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = $"PPO Details not received! Error: {ex.Message}";
+            }
+            finally {
+                if(response.result.PpoId == 0) {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.Message = $"PPO Details not received!";
+                }
+            }
+
+            return response;
+        }
+
     } 
 }

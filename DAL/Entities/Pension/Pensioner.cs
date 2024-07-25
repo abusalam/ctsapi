@@ -129,7 +129,7 @@ public partial class Pensioner
     public int? UpdatedBy { get; set; }
 
     [Column("active_flag")]
-    public bool? ActiveFlag { get; set; }
+    public bool ActiveFlag { get; set; }
 
     [ForeignKey("PhotoFileId")]
     [InverseProperty("PensionerPhotoFiles")]

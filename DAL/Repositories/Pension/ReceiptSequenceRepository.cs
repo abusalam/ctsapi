@@ -33,7 +33,7 @@ namespace CTS_BE.DAL.Repositories.Pension
                     }
 
                 } else {
-                    ppoReceiptSequence = new PpoReceiptSequence() {
+                    ppoReceiptSequence = new () {
                             FinancialYear = finYear,
                             TreasuryCode = treasuryCode,
                             NextSequenceValue = 1

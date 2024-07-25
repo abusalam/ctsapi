@@ -77,6 +77,9 @@ namespace CTS_BE.DTOs
 
         [RegularExpression(@"[PFC]", ErrorMessage = "{0} must be one of the following (P, F & C)")]
         public char PpoType { get; set; }
+        
+        [RegularExpression(@"[ADO]", ErrorMessage = "{0} must be one of the following (A, D & O)")]
+        public char PsaType { get; set; }
 
         [RegularExpression(@"[ELUVNRPGJKHW]", ErrorMessage = "{0} must be one of the following (E, L, U, V, N, R, P, G, J, K, H & W)")]
         public char PpoSubType { get; set; }
@@ -88,6 +91,9 @@ namespace CTS_BE.DTOs
 
         [DataType(DataType.Date)]
         public DateOnly DateOfBirth { get; set; }
+
+        [RegularExpression(@"[MFO]", ErrorMessage = "{0} must be one of the following (M, F & O)")]
+        public char? Gender { get; set; }
 
         [StringLength(10)]
         [RegularExpression(@"^[6-9]\d{9}$")]
@@ -110,5 +116,9 @@ namespace CTS_BE.DTOs
 
         [RegularExpression(@"[HMO]", ErrorMessage = "{0} must be one of the following (H, M & O)")]
         public char Religion { get; set; }
+    }
+
+    public class PensionerResponseDTO : PensionerEntryDTO {
+        public int PpoId { get; set; }
     }
 }

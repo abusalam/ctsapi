@@ -108,6 +108,8 @@ builder.Services.AddTransient<IStampWalletRepository, StampWalletRepository>();
 builder.Services.AddTransient<IManualPpoReceiptRepository, ManualPpoReceiptRepository>();
 builder.Services.AddTransient<IReceiptSequenceRepository, ReceiptSequenceRepository>();
 builder.Services.AddTransient<IPensionStatusRepository, PensionStatusRepository>();
+builder.Services.AddTransient<IPensionerDetailsRepository, PensionerDetailsRepository>();
+builder.Services.AddTransient<IPpoIdSequenceRepository, PpoIdSequenceRepository>();
 
 
 
@@ -147,6 +149,8 @@ builder.Services.AddTransient<IChequeDistributionService, ChequeDistributionServ
 builder.Services.AddTransient<IPensionService, PensionService>();
 builder.Services.AddTransient<IReceiptSequenceService, ReceiptSequenceService>();
 builder.Services.AddTransient<IPensionStatusService, PensionStatusService>();
+builder.Services.AddTransient<IPensionerDetailsService, PensionerDetailsService>();
+
 
 //builder.Services.AddTransient<ITokenHelper, TokenHelper>();
 //builder.Services.AddSingleton<ITokencache, Tokencache>();

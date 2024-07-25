@@ -49,6 +49,14 @@ namespace CTS_BE.Helper
             CreateMap<ListAllPpoReceiptsResponseDTO, PpoReceipt>().ReverseMap();
             CreateMap<PensionStatusEntryDTO, PpoStatusFlag>().ReverseMap();
             CreateMap<PensionStatusDTO, PpoStatusFlag>().ReverseMap();
+            CreateMap<PensionerEntryDTO, Pensioner>()
+                .ForAllMembers(
+                        options => options.Condition(
+                            (src, dest, srcMember) => srcMember != null
+                        )
+                    );
+            CreateMap<PensionerResponseDTO, Pensioner>().ReverseMap();
+            CreateMap<PensionerResponseDTO, PensionerEntryDTO>().ReverseMap();
 
         }
     }
