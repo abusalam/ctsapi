@@ -157,8 +157,8 @@ namespace CTS_BE.Controllers
                                 new() {
                                     Name = "Treasury Receipt No",
                                     DataType = "text",
-                                    FieldName = "TreasuryReceiptNo",
-                                    FilterField = "TreasuryReceiptNo",
+                                    FieldName = "treasuryReceiptNo",
+                                    FilterField = "treasuryReceiptNo",
                                     IsFilterable = true,
                                     IsSortable = true,
 
@@ -166,24 +166,24 @@ namespace CTS_BE.Controllers
                                 new() {
                                     Name = "PPO No",
                                     DataType = "text",
-                                    FieldName = "PpoNo",
-                                    FilterField = "PpoNo",
-                                    IsFilterable = true,
-                                    IsSortable = true,
-                                },
-                                new() {
-                                    Name = "Date of Receipt",
-                                    DataType = "text",
-                                    FieldName = "ReceiptDate",
-                                    FilterField = "ReceiptDate",
+                                    FieldName = "ppoNo",
+                                    FilterField = "ppoNo",
                                     IsFilterable = true,
                                     IsSortable = true,
                                 },
                                 new() {
                                     Name = "Name of Pensioner",
                                     DataType = "text",
-                                    FieldName = "PensionerName",
-                                    FilterField = "PensionerName",
+                                    FieldName = "pensionerName",
+                                    FilterField = "pensionerName",
+                                    IsFilterable = true,
+                                    IsSortable = true,
+                                },
+                                new() {
+                                    Name = "Date of Receipt",
+                                    DataType = "text",
+                                    FieldName = "receiptDate",
+                                    FilterField = "receiptDate",
                                     IsFilterable = true,
                                     IsSortable = true,
                                 }
