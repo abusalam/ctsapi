@@ -494,5 +494,93 @@ namespace CTS_BE.Controllers
             return response;
         }
 
+        [HttpPatch("ppo/details")]
+        [Produces("application/json")]
+        [Tags("Pension", "Pension: PPO Details")]
+        public async Task<APIResponse<DynamicListResult<IEnumerable<PensionerListDTO>>>> ControlPensionerDetails(
+                DynamicListQueryParameters dynamicListQueryParameters
+            )
+        {
+            APIResponse<DynamicListResult<IEnumerable<PensionerListDTO>>> response;
+            try {
+
+                response = new() {
+
+                    apiResponseStatus = Enum.APIResponseStatus.Success,
+                    result = new()
+                        {
+                            Headers = new () {
+                            
+                                new() {
+                                    Name = "PPO ID",
+                                    DataType = "text",
+                                    FieldName = "ppoId",
+                                    FilterField = "ppoId",
+                                    IsFilterable = true,
+                                    IsSortable = true,
+
+                                },
+                                new() {
+                                    Name = "Name of Pensioner",
+                                    DataType = "text",
+                                    FieldName = "pensionerName",
+                                    FilterField = "pensionerName",
+                                    IsFilterable = true,
+                                    IsSortable = true,
+                                },
+                                new() {
+                                    Name = "Mobile",
+                                    DataType = "text",
+                                    FieldName = "mobileNumber",
+                                    FilterField = "mobileNumber",
+                                    IsFilterable = true,
+                                    IsSortable = true,
+                                },
+                                new() {
+                                    Name = "Date of Birth",
+                                    DataType = "text",
+                                    FieldName = "dateOfBirth",
+                                    FilterField = "dateOfBirth",
+                                    IsFilterable = true,
+                                    IsSortable = true,
+                                },
+                                new() {
+                                    Name = "Date of Retirement",
+                                    DataType = "text",
+                                    FieldName = "dateOfRetirement",
+                                    FilterField = "dateOfRetirement",
+                                    IsFilterable = true,
+                                    IsSortable = true,
+                                },
+                                new() {
+                                    Name = "PPO No",
+                                    DataType = "text",
+                                    FieldName = "ppoNo",
+                                    FilterField = "ppoNo",
+                                    IsFilterable = true,
+                                    IsSortable = true,
+                                }
+
+                            },
+                            Data = await _pensionerDetailsService.GetAllPensioners(
+                                GetCurrentFyYear(),
+                                GetTreasuryCode(),
+                                dynamicListQueryParameters),
+                            DataCount = 10
+                        },
+                    Message = $"All PPO Details Received Successfully!"
+
+                };
+            } catch(DbException e) {
+                // StackFrame CallStack = new(1, true);
+                response = new () {
+                apiResponseStatus = Enum.APIResponseStatus.Error,
+                result = null,
+                Message = e.ToString()
+                //   $"{e.GetType()}=>File:{CallStack.GetFileName()}({CallStack.GetFileLineNumber()}): {e.Message}"
+                };
+            }
+            return response;
+        }
     } 
 }

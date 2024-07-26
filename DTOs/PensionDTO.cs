@@ -127,4 +127,25 @@ namespace CTS_BE.DTOs
     public class PensionerResponseDTO : PensionerEntryDTO {
         public int PpoId { get; set; }
     }
+
+    public class PensionerListDTO : BaseDTO {
+
+        public int PpoId { get; set; }
+
+        [StringLength(100)]
+        public string PensionerName { get; set; } = null!;
+
+        [StringLength(10)]
+        [RegularExpression(@"^[6-9]\d{9}$")]
+        public string? MobileNumber { get; set; }
+
+        [DataType(DataType.Date)]
+        public DateOnly DateOfBirth { get; set; }
+
+        [DataType(DataType.Date)]
+        public DateOnly DateOfRetirement { get; set; }
+
+        [StringLength(100)]
+        public string PpoNo { get; set; } = null!;
+    }
 }

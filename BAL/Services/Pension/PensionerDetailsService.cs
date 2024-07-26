@@ -118,5 +118,21 @@ namespace CTS_BE.BAL.Services.Pension
             }
             return pensionerResponseDTO; 
         }
+
+        public async Task<IEnumerable<PensionerListDTO>> GetAllPensioners(
+                short financialYear, 
+                string treasuryCode,
+                DynamicListQueryParameters dynamicListQueryParameters
+            )
+        {
+            return await _pensionerDetailsRepository
+                .GetSelectedColumnByConditionAsync(
+                    entity => entity.ActiveFlag 
+                        && entity.FinancialYear == financialYear 
+                        && entity.TreasuryCode == treasuryCode,
+                    entity => _mapper.Map<PensionerListDTO>(entity),
+                    dynamicListQueryParameters
+                );
+        }
     }
 }

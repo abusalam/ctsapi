@@ -78,13 +78,8 @@ namespace CTS_BE.BAL.Services.Pension
         ) {
             return await _manualPpoReceiptRepository
                 .GetSelectedColumnByConditionAsync(
-                entity => entity.ActiveFlag && entity.FinancialYear == financialYear && entity.TreasuryCode == treasuryCode,
-                entity => new ListAllPpoReceiptsResponseDTO() {
-                    TreasuryReceiptNo = entity.TreasuryReceiptNo,
-                    PpoNo = entity.PpoNo,
-                    PensionerName = entity.PensionerName,
-                    ReceiptDate = entity.ReceiptDate
-                    },
+                    entity => entity.ActiveFlag && entity.FinancialYear == financialYear && entity.TreasuryCode == treasuryCode,
+                    entity => _mapper.Map<ListAllPpoReceiptsResponseDTO>(entity),
                     dynamicListQueryParameters
                 );
         }

@@ -2,7 +2,7 @@
 # VSCode Extension: https://marketplace.visualstudio.com/items?itemName=humao.rest-client
 # @PensionAPI_HostAddress = https://localhost:7249 
 @PensionAPI_HostAddress = http://api.{{$dotenv PROJECT_BASE_URL}}
-@accessToken = eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhcHBsaWNhdGlvbiI6IntcIklkXCI6MyxcIk5hbWVcIjpcIkNUU1wiLFwiTGV2ZWxzXCI6W3tcIklkXCI6OCxcIk5hbWVcIjpcIlRyZWFzdXJ5XCIsXCJTY29wZVwiOltcIkJBQVwiXX1dLFwiUm9sZXNcIjpbe1wiSWRcIjoxNyxcIk5hbWVcIjpcIkRUQVwiLFwiUGVybWlzc2lvbnNcIjpbXCJjYW4tY2hlcXVlLWVudHJ5XCIsXCJjYW4tYXBwcm92ZS1yZWplY3QtY2hlcXVlLWluZGVudFwiLFwiY2FuLWNyZWF0ZS1pbmRlbnQtaW52b2ljZVwiXX1dfSIsIm5hbWVpZCI6IjQ4IiwibmFtZSI6IkNUUyBCQUEgIERUQSIsIm5iZiI6MTcwNzMwNTU0MiwiZXhwIjoxNzA3MzkxOTQyLCJpYXQiOjE3MDczMDU1NDJ9.EHTX3KpHuOiuCaM7Cz0UOrTyfTegdOi8p64Dos0oa1Im-kz1mNSCqCyAhvOyPMTY1zFzOAGJj8svsq88hdrHdQ
+@accessToken = eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhcHBsaWNhdGlvbiI6IntcIklkXCI6MyxcIk5hbWVcIjpcIkNUU1wiLFwiTGV2ZWxzXCI6W3tcIklkXCI6OCxcIk5hbWVcIjpcIlRyZWFzdXJ5XCIsXCJTY29wZVwiOltcIkRBQVwiXX1dLFwiUm9sZXNcIjpbe1wiSWRcIjoyNyxcIk5hbWVcIjpcImNsZXJrXCIsXCJQZXJtaXNzaW9uc1wiOltcImNhbi1yZWNlaXZlLWJpbGxcIl19XX0iLCJuYW1laWQiOiIzOSIsIm5hbWUiOiJDVFMgQ2xlcmsiLCJuYmYiOjE3MTc5OTY2OTksImV4cCI6MTcxODA4MzA5OSwiaWF0IjoxNzE3OTk2Njk5fQ.tLMRXKlXb2eyiE2ApSRgFgbX9EjvPbGNi1dgp_UpGadv-UitDdS4su2ZV6B4kp4Rf0TXjDQHTW7YvNkwciQVQg
 # {{Login.response.body.$.accessToken}}
 
 @refreshToken = {{Login.response.body.$.refreshToken}}
@@ -78,7 +78,7 @@ Content-Type: application/json
   "commutedPensionAmount": 2000,
   "enhancePensionAmount": 10000,
   "reducedPensionAmount": 8000,
-  "religion": "M"
+  "religion": "H"
 }
 
 ### Check PPO Details
@@ -86,6 +86,15 @@ Content-Type: application/json
 Get {{PensionAPI_HostAddress}}/api/v1/ppo/{{GeneratedPpoId}}/details
 Accept: application/json
 Authorization: Bearer {{accessToken}}
+
+### List All PPO Details
+# @name GetAllPPODetails
+PATCH {{PensionAPI_HostAddress}}/api/v1/ppo/details
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{"pageSize":10,"pageIndex":0,"filterParameters":[],"sortParameters":{"field":"","order":""}}
 
 
 ### Approve PPO
