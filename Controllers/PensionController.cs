@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
 using NPOI.SS.Formula.Functions;
 using NPOI.DDF;
+using System.Dynamic;
+using CTS_BE.DAL.Entities.Pension;
 
 namespace CTS_BE.Controllers
 {
@@ -23,19 +25,22 @@ namespace CTS_BE.Controllers
     {
         private readonly IPensionService _pensionService;
         private readonly IPensionStatusService _pensionStatusService;
+        private readonly IPensionerDetailsService _pensionerDetailsService;
+        private readonly IPensionerBankAccountService _pensionerBankAccountService;
 
-        private IPensionerDetailsService _pensionerDetailsService;
 
         public PensionController(
                 IClaimService claimService,
                 IPensionService pensionService,
                 IPensionStatusService pensionStatusService,
-                IPensionerDetailsService pensionerDetailsService) : 
-        base(claimService)
+                IPensionerDetailsService pensionerDetailsService,
+                IPensionerBankAccountService pensionerBankAccountService
+            ) : base(claimService)
         {
             _pensionService = pensionService;
             _pensionStatusService = pensionStatusService;
             _pensionerDetailsService = pensionerDetailsService;
+            _pensionerBankAccountService = pensionerBankAccountService;
         }
 
         [HttpPost("echo")]
@@ -258,7 +263,7 @@ namespace CTS_BE.Controllers
                     out PensionStatusFlag pensionStatus
                 )
             ) {
-                if(pensionStatus.HasFlag(PensionStatusFlag.FirstPensionGenerated))
+                if(pensionStatus.HasFlag(PensionStatusFlag.FirstPensionBillGenerated))
                 {
                     response.Message += " First Pension Generated |";
                 }
@@ -303,7 +308,7 @@ namespace CTS_BE.Controllers
                         out PensionStatusFlag pensionStatus
                     )
                 ) {
-                    if(pensionStatus.HasFlag(PensionStatusFlag.FirstPensionGenerated))
+                    if(pensionStatus.HasFlag(PensionStatusFlag.FirstPensionBillGenerated))
                     {
                         response.Message += " First Pension Generated Flag |";
                     }
@@ -355,7 +360,7 @@ namespace CTS_BE.Controllers
                         out PensionStatusFlag pensionStatus
                     )
                 ) {
-                    if(pensionStatus.HasFlag(PensionStatusFlag.FirstPensionGenerated))
+                    if(pensionStatus.HasFlag(PensionStatusFlag.FirstPensionBillGenerated))
                     {
                         response.Message += " First Pension Generated |";
                     }
@@ -580,6 +585,110 @@ namespace CTS_BE.Controllers
                 //   $"{e.GetType()}=>File:{CallStack.GetFileName()}({CallStack.GetFileLineNumber()}): {e.Message}"
                 };
             }
+            return response;
+        }
+    
+
+
+
+        [HttpPost("ppo/{ppoId}/bank-accounts")]
+        [Produces("application/json")]
+        [Tags("Pension", "Pension: Bank Accounts")]
+        public async Task<APIResponse<PensionerBankAcDTO>> ControlPensionerBankAccounts(
+                int ppoId,
+                PensionerBankAcDTO pensionerBankAcDTO
+            )
+        {
+            APIResponse<PensionerBankAcDTO> response = new(){
+                apiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = $"Bank account details saved sucessfully!",
+            };
+            try {
+                response.result = await _pensionerBankAccountService.CreatePensionerBankAccount(
+                    ppoId,
+                    pensionerBankAcDTO,
+                    GetCurrentFyYear(),
+                    GetTreasuryCode()
+                );
+            }
+            catch (DbUpdateException ex) {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = $"Bank account details not saved! Error: {ex.Message}";
+            }
+            finally {
+                if(response.result?.DataSource != null) {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.Message = $"Error: Bank account details not saved!";
+                }
+            }
+
+            return response;
+        }
+
+        [HttpPut("ppo/{ppoId}/bank-accounts")]
+        [Produces("application/json")]
+        [Tags("Pension", "Pension: Bank Accounts")]
+        public async Task<APIResponse<PensionerBankAcDTO>> ControlPensionerBankAccountUpdates(
+                int ppoId,
+                PensionerBankAcDTO pensionerBankAcDTO
+            )
+        {
+            APIResponse<PensionerBankAcDTO> response = new(){
+                apiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = $"Bank account details saved sucessfully!",
+            };
+            try {
+                response.result = await _pensionerBankAccountService.UpdatePensionerBankAccount(
+                    ppoId,
+                    pensionerBankAcDTO,
+                    GetCurrentFyYear(),
+                    GetTreasuryCode()
+                );
+            }
+            catch (DbUpdateException ex) {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = $"Bank account details not saved! Error: {ex.Message}";
+            }
+            finally {
+                if(response.result?.DataSource != null) {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.Message = $"Error: Bank account details not saved!";
+                }
+            }
+
+            return response;
+        }
+
+        [HttpGet("ppo/{ppoId}/bank-accounts")]
+        [Produces("application/json")]
+        [Tags("Pension", "Pension: Bank Accounts")]
+        public async Task<APIResponse<PensionerBankAcDTO>> ControlPensionerBankAccounts(
+                int ppoId
+            )
+        {
+
+            APIResponse<PensionerBankAcDTO> response = new(){
+                apiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = $"Bank Accounts Details received sucessfully!",
+            };
+            try {
+                response.result = await _pensionerBankAccountService.GetPensionerBankAccount(
+                    ppoId,
+                    GetCurrentFyYear(),
+                    GetTreasuryCode()
+                );
+            }
+            catch (DbUpdateException ex) {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = $"Bank Accounts Details not received! Error: {ex.Message}";
+            }
+            finally {
+                if(response.result?.DataSource != null) {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.Message = $"Bank Accounts Details not received!";
+                }
+            }
+
             return response;
         }
     } 

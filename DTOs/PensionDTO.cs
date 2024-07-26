@@ -148,4 +148,22 @@ namespace CTS_BE.DTOs
         [StringLength(100)]
         public string PpoNo { get; set; } = null!;
     }
+
+    public class PensionerBankAcDTO : BaseDTO {
+
+        [StringLength(100)]
+        public string AccountHolderName { get; set; } = null!;
+
+        [StringLength(30)]
+        public string? BankAcNo { get; set; }
+
+        [StringLength(11)]
+        public string? IfscCode { get; set; }
+
+        [StringLength(100)]
+        public string? BankName { get; set; }
+
+        [StringLength(100)]
+        public string? BranchName { get; set; }
+    }
 }

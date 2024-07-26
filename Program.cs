@@ -110,6 +110,7 @@ builder.Services.AddTransient<IReceiptSequenceRepository, ReceiptSequenceReposit
 builder.Services.AddTransient<IPensionStatusRepository, PensionStatusRepository>();
 builder.Services.AddTransient<IPensionerDetailsRepository, PensionerDetailsRepository>();
 builder.Services.AddTransient<IPpoIdSequenceRepository, PpoIdSequenceRepository>();
+builder.Services.AddTransient<IPensionerBankAccountRepository, PensionerBankAccountRepository>();
 
 
 
@@ -150,6 +151,7 @@ builder.Services.AddTransient<IPensionService, PensionService>();
 builder.Services.AddTransient<IReceiptSequenceService, ReceiptSequenceService>();
 builder.Services.AddTransient<IPensionStatusService, PensionStatusService>();
 builder.Services.AddTransient<IPensionerDetailsService, PensionerDetailsService>();
+builder.Services.AddTransient<IPensionerBankAccountService, PensionerBankAccountService>();
 
 
 //builder.Services.AddTransient<ITokenHelper, TokenHelper>();

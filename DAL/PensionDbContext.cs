@@ -55,7 +55,6 @@ public partial class PensionDbContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("bank_accounts_pkey");
 
-            entity.Property(e => e.ActiveFlag).HasDefaultValueSql("true");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
         });
 
