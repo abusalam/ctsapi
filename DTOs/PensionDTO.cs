@@ -1,14 +1,20 @@
 using System.ComponentModel.DataAnnotations;
+using System.Dynamic;
+using System.Reflection;
 using CTS_BE.PensionEnum;
 
 namespace CTS_BE.DTOs
 {
+    public class BaseDTO {
+        public ExpandoObject? DataSource { get; set; }
+    }
+
     public class DateOnlyDTO {
         [DataType(DataType.Date)]
         public DateOnly DateOnly { get; set; }
     }
     
-    public class PensionStatusDTO {
+    public class PensionStatusDTO : BaseDTO {
         [Required]
         // [EnumDataType(typeof(PensionStatusFlag))]
         // public PensionStatusFlag StatusFlag {get; set; }

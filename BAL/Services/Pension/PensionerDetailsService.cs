@@ -47,7 +47,6 @@ namespace CTS_BE.BAL.Services.Pension
                 pensionerEntity.TreasuryCode = treasuryCode;
                 pensionerEntity.ActiveFlag = true;
                 pensionerEntity.CreatedAt = DateTime.Now;
-                pensionerEntity.Subdivision = '-';
                 if(pensionerEntity.PpoId > 0) {
                     _pensionerDetailsRepository.Add(pensionerEntity);
                     if(await _pensionerDetailsRepository.SaveChangesManagedAsync() == 0) {
@@ -94,14 +93,14 @@ namespace CTS_BE.BAL.Services.Pension
             PensionerResponseDTO pensionerResponseDTO;
             try {
 
-
                 pensionerEntity = await _pensionerDetailsRepository.GetSingleAysnc(
                         entity => entity.ActiveFlag 
                         && entity.PpoId == ppoId 
                         && entity.TreasuryCode == treasuryCode
                     );
 
-                pensionerEntity = _mapper.Map<Pensioner>(pensionerEntryDTO);
+                pensionerEntity.FillFrom(pensionerEntryDTO);
+
                 if(pensionerEntity.PpoId > 0) {
                     pensionerEntity.UpdatedAt = DateTime.Now;
                     _pensionerDetailsRepository.Update(pensionerEntity);

@@ -106,10 +106,6 @@ public partial class Pensioner
     [MaxLength(1)]
     public char Religion { get; set; }
 
-    [Column("subdivision")]
-    [MaxLength(1)]
-    public char Subdivision { get; set; }
-
     [Column("photo_file_id")]
     public long? PhotoFileId { get; set; }
 

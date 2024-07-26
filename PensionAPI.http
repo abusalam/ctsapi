@@ -1,5 +1,6 @@
 # Reference: https://learn.microsoft.com/en-us/aspnet/core/test/http-files?view=aspnetcore-8.0
-
+# VSCode Extension: https://marketplace.visualstudio.com/items?itemName=humao.rest-client
+# @PensionAPI_HostAddress = https://localhost:7249 
 @PensionAPI_HostAddress = http://api.{{$dotenv PROJECT_BASE_URL}}
 @accessToken = eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhcHBsaWNhdGlvbiI6IntcIklkXCI6MyxcIk5hbWVcIjpcIkNUU1wiLFwiTGV2ZWxzXCI6W3tcIklkXCI6OCxcIk5hbWVcIjpcIlRyZWFzdXJ5XCIsXCJTY29wZVwiOltcIkJBQVwiXX1dLFwiUm9sZXNcIjpbe1wiSWRcIjoxNyxcIk5hbWVcIjpcIkRUQVwiLFwiUGVybWlzc2lvbnNcIjpbXCJjYW4tY2hlcXVlLWVudHJ5XCIsXCJjYW4tYXBwcm92ZS1yZWplY3QtY2hlcXVlLWluZGVudFwiLFwiY2FuLWNyZWF0ZS1pbmRlbnQtaW52b2ljZVwiXX1dfSIsIm5hbWVpZCI6IjQ4IiwibmFtZSI6IkNUUyBCQUEgIERUQSIsIm5iZiI6MTcwNzMwNTU0MiwiZXhwIjoxNzA3MzkxOTQyLCJpYXQiOjE3MDczMDU1NDJ9.EHTX3KpHuOiuCaM7Cz0UOrTyfTegdOi8p64Dos0oa1Im-kz1mNSCqCyAhvOyPMTY1zFzOAGJj8svsq88hdrHdQ
 # {{Login.response.body.$.accessToken}}
@@ -49,8 +50,8 @@ Content-Type: application/json
 
 ### Update PPO Details
 # @name UpdatePPODetails
-# PUT {{PensionAPI_HostAddress}}/api/v1/ppo/{{GeneratedPpoId}}/details
-POST {{PensionAPI_HostAddress}}/api/v1/echo
+PUT {{PensionAPI_HostAddress}}/api/v1/ppo/{{GeneratedPpoId}}/details
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
@@ -77,7 +78,7 @@ Content-Type: application/json
   "commutedPensionAmount": 2000,
   "enhancePensionAmount": 10000,
   "reducedPensionAmount": 8000,
-  "religion": "H"
+  "religion": "M"
 }
 
 ### Check PPO Details
@@ -96,21 +97,22 @@ Content-Type: application/json
 
 {
   "PpoId": "{{GeneratedPpoId}}",
-  "StatusFlag": 1,
-  "StatusWef": "{{$datetime "YYYY-MM-DD"}}"
+  "StatusFlag": 12,
+  "StatusWef": "{{$datetime "YYYY-MM-DD" -5 d}}"
 }
 
 ### Set PPO Flag
 # @name SetPPOFlag
 POST {{PensionAPI_HostAddress}}/api/v1/ppo/status
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
   "PpoId": "{{ApprovedPpoId}}",
-  "StatusFlag": 8,
-  "StatusWef": "{{$datetime "YYYY-MM-DD"}}"
+  "StatusFlag": 4,
+  "StatusWef": "{{$datetime "YYYY-MM-DD" -2 d}}"
 }
 
 ### Reject Approved PPO
