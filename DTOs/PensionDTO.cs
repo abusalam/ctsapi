@@ -166,4 +166,20 @@ namespace CTS_BE.DTOs
         [StringLength(100)]
         public string? BranchName { get; set; }
     }
+
+    public partial class PensionerFirstBillDTO : BaseDTO {
+
+        [Required]
+        public required PensionerListDTO Pensioner { get; set; }
+
+        [Required]
+        public required PensionerBankAcDTO BankAccount { get; set; }
+    }
+
+    public partial class PensionerFirstBillGenerationDTO : PensionerFirstBillDTO {
+
+        [Required]
+        [DataType(DataType.Date)]
+        public DateOnly BillGeneratedUptoDate { get; set; }
+    }
 }

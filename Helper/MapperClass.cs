@@ -1,11 +1,9 @@
-﻿using AutoMapper;
+﻿﻿using AutoMapper;
 using CTS_BE.DAL.Entities;
 using CTS_BE.DTOs;
 using System.Data.Common;
 using CTS_BE.Model;
 using CTS_BE.DAL.Entities;
-using CTS_BE.Model.Pension;
-using CTS_BE.DAL.Entities.Pension;
 namespace CTS_BE.Helper
 {
     public class MapperClass : Profile
@@ -30,10 +28,7 @@ namespace CTS_BE.Helper
                 .ForMember(d => d.ValidUpto, opt => opt.MapFrom(src => src.ValidUpto.ToString()));
             CreateMap<StampVendorInsertDTO, StampVendor>();
             CreateMap<StampVendorInsertDTO, StampVendor>()
-            .ForMember(d => d.EffectiveFrom,
-             opt 
-             => opt.MapFrom(src => src.EffectiveFrom.HasValue ? 
-             DateOnly.FromDateTime(src.EffectiveFrom.Value) : default))
+            .ForMember(d => d.EffectiveFrom, opt => opt.MapFrom(src => src.EffectiveFrom.HasValue ? DateOnly.FromDateTime(src.EffectiveFrom.Value) : default))
             .ForMember(d => d.ValidUpto, opt => opt.MapFrom(src => src.ValidUpto.HasValue ? DateOnly.FromDateTime(src.ValidUpto.Value) : default));
             CreateMap<StampTypeInsertDTO, StampType>();
             CreateMap<StampType, StampTypeDTO>();
@@ -43,22 +38,6 @@ namespace CTS_BE.Helper
             CreateMap<StampInvoiceInsertDTO, StampInvoice>();
             CreateMap<StampWalletInsertDTO, StampWallet>();
 
-            // Pension Module Mappings
-            CreateMap<ManualPpoReceiptEntryDTO, PpoReceipt>().ReverseMap();
-            CreateMap<ManualPpoReceiptResponseDTO, PpoReceipt>().ReverseMap();
-            CreateMap<ListAllPpoReceiptsResponseDTO, PpoReceipt>().ReverseMap();
-            CreateMap<PensionStatusEntryDTO, PpoStatusFlag>().ReverseMap();
-            CreateMap<PensionStatusDTO, PpoStatusFlag>().ReverseMap();
-            CreateMap<PensionerEntryDTO, Pensioner>()
-                .ForAllMembers(
-                        options => options.Condition(
-                            (src, dest, srcMember) => srcMember != null
-                        )
-                    );
-            CreateMap<PensionerResponseDTO, Pensioner>().ReverseMap();
-            CreateMap<PensionerListDTO, Pensioner>().ReverseMap();
-            CreateMap<PensionerResponseDTO, PensionerEntryDTO>().ReverseMap();
-            CreateMap<PensionerBankAcDTO, BankAccount>().ReverseMap();
         }
     }
 }

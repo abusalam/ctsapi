@@ -20,7 +20,7 @@ namespace CTS_BE.BAL.Interfaces.Pension
             short financialYear,
             string treasuryCode
         );
-        public Task<PensionerResponseDTO> GetPensioner(
+        public Task<T> GetPensioner<T>(
             int ppoId,
             short financialYear,
             string treasuryCode

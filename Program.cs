@@ -1,4 +1,10 @@
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
+using CTS_BE.PensionEnum;
+using CTS_BE.BAL.Interfaces.Pension;
+using CTS_BE.BAL.Services.Pension;
+using CTS_BE.DAL.Interfaces.Pension;
+using CTS_BE.DAL.Repositories.Pension;
 using CTS_BE.DAL;
 using CTS_BE.BAL.Interfaces.billing;
 using CTS_BE.BAL.Services.billing;
@@ -28,12 +34,6 @@ using Microsoft.AspNetCore.Mvc;
 using CTS_BE.Enum;
 using CTS_BE.Helper;
 using System.Collections;
-using CTS_BE.BAL.Interfaces.Pension;
-using CTS_BE.BAL.Services.Pension;
-using CTS_BE.DAL.Interfaces.Pension;
-using CTS_BE.DAL.Repositories.Pension;
-using Npgsql;
-using CTS_BE.PensionEnum;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -63,6 +63,24 @@ builder.Services.AddDbContext<PensionDbContext>(
     },
     ServiceLifetime.Transient
 );
+
+//Pension Repositories
+builder.Services.AddTransient<IManualPpoReceiptRepository, ManualPpoReceiptRepository>();
+builder.Services.AddTransient<IReceiptSequenceRepository, ReceiptSequenceRepository>();
+builder.Services.AddTransient<IPensionStatusRepository, PensionStatusRepository>();
+builder.Services.AddTransient<IPensionerDetailsRepository, PensionerDetailsRepository>();
+builder.Services.AddTransient<IPpoIdSequenceRepository, PpoIdSequenceRepository>();
+builder.Services.AddTransient<IPensionerBankAccountRepository, PensionerBankAccountRepository>();
+
+
+// Pension Services
+builder.Services.AddTransient<IPensionService, PensionService>();
+builder.Services.AddTransient<IReceiptSequenceService, ReceiptSequenceService>();
+builder.Services.AddTransient<IPensionStatusService, PensionStatusService>();
+builder.Services.AddTransient<IPensionerDetailsService, PensionerDetailsService>();
+builder.Services.AddTransient<IPensionerBankAccountService, PensionerBankAccountService>();
+
+
 
 //Automapper
 builder.Services.AddAutoMapper(typeof(Program));
@@ -104,13 +122,6 @@ builder.Services.AddTransient<IStampIndentRepository, StampIndentRepository>();
 builder.Services.AddTransient<IStampInvoiceRepository, StampInvoiceRepository>();
 builder.Services.AddTransient<IStampWalletRepository, StampWalletRepository>();
 
-//Pension Repositories
-builder.Services.AddTransient<IManualPpoReceiptRepository, ManualPpoReceiptRepository>();
-builder.Services.AddTransient<IReceiptSequenceRepository, ReceiptSequenceRepository>();
-builder.Services.AddTransient<IPensionStatusRepository, PensionStatusRepository>();
-builder.Services.AddTransient<IPensionerDetailsRepository, PensionerDetailsRepository>();
-builder.Services.AddTransient<IPpoIdSequenceRepository, PpoIdSequenceRepository>();
-builder.Services.AddTransient<IPensionerBankAccountRepository, PensionerBankAccountRepository>();
 
 
 
@@ -146,13 +157,6 @@ builder.Services.AddTransient<IClaimService, ClaimService>();
 builder.Services.AddTransient<IChequeReceivedService, ChequeReceivedService>();
 builder.Services.AddTransient<IChequeDistributionService, ChequeDistributionService>();
 
-// Pension Services
-builder.Services.AddTransient<IPensionService, PensionService>();
-builder.Services.AddTransient<IReceiptSequenceService, ReceiptSequenceService>();
-builder.Services.AddTransient<IPensionStatusService, PensionStatusService>();
-builder.Services.AddTransient<IPensionerDetailsService, PensionerDetailsService>();
-builder.Services.AddTransient<IPensionerBankAccountService, PensionerBankAccountService>();
-
 
 //builder.Services.AddTransient<ITokenHelper, TokenHelper>();
 //builder.Services.AddSingleton<ITokencache, Tokencache>();
@@ -173,7 +177,7 @@ builder.Services.AddEndpointsApiExplorer();
 // builder.Services.AddSwaggerGen();
 builder.Services.AddSwaggerGen(c =>
 {
-   c.SwaggerDoc("v1", new OpenApiInfo { Title = "Test01", Version = "v1" });
+   c.SwaggerDoc("v1", new OpenApiInfo { Title = "CTS-BE", Version = "v1" });
 
    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
    {

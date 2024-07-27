@@ -27,8 +27,7 @@ namespace CTS_BE.Middlewares
                 if (token != null)
                 {
                     //token = AESEncrytDecry.DecryptStringAES(token, _Configuration.GetSection("Auth:AesKey").Value, _Configuration.GetSection("Auth:AesIV").Value);
-                    var RefreshedAccessTokenRecieved = false;
-                    var authClaimModel = _tokenHelper.ValidateAndGetTokenClaims(token , out RefreshedAccessTokenRecieved);
+                    var authClaimModel = _tokenHelper.ValidateAndGetTokenClaims(token, out bool RefreshedAccessTokenRecieved);
                     if (authClaimModel != null)
                     {
                         context.Items["userclaimmodel"] = authClaimModel;
@@ -38,29 +37,17 @@ namespace CTS_BE.Middlewares
                     }
                     else
                     {
-                        throw new Exception("ErrorMessages.Invalid_token");
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        _logger.LogError("ErrorMessages.UnAuthenticated");
+                        await context.Response.WriteAsync("ErrorMessages.UnAuthenticated");
                     }
-                }
-                else
-                {
-                    //not required to authenticate
-                    //await _next(context);
-                    throw new Exception("ErrorMessages.Invalid_token");
                 }
             }
             catch(Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
-                if (ex.Message == "ErrorMessages.Invalid_token")
-                {
-                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                    await context.Response.WriteAsync("ErrorMessages.UnAuthenticated");
-                }
-                else
-                {
-                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                    await context.Response.WriteAsync("{ \"msg\":\"Error: Incorrect_creden or "+ex.ToString()+"\"}");
-                }
+                context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                await context.Response.WriteAsync("{ \"msg\":\"Error: "+ex.ToString()+"\"}");
 
             }
         }

@@ -15,6 +15,15 @@
 @ApprovedPpoId = {{SetApprovePPOFlag.response.body.$.result.ppoId}}
 @ApprovedPpoIdStatusFlag = {{SetApprovePPOFlag.response.body.$.result.statusFlag}}
 
+
+### Read Pensioner Deatils for First Bill Generation
+# @name ReadPensionerDetailsForFirstBill
+GET {{PensionAPI_HostAddress}}/api/v1/ppo/{{GeneratedPpoId}}/first-bill-general
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+
 ### Create Pensioner Bank Account
 # @name CreatePensionerBankAccount
 POST {{PensionAPI_HostAddress}}/api/v1/ppo/{{GeneratedPpoId}}/bank-accounts

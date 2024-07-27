@@ -64,14 +64,14 @@ namespace CTS_BE.BAL.Services.Pension
             return pensionerResponseDTO;
         }
 
-        public async Task<PensionerResponseDTO> GetPensioner(int ppoId, short financialYear, string treasuryCode)
+        public async Task<T> GetPensioner<T>(int ppoId, short financialYear, string treasuryCode)
         {
             Pensioner pensionerEntity = new() {
                 PpoId = 0
             };
-            PensionerResponseDTO pensionerResponseDTO = _mapper.Map<PensionerResponseDTO>(pensionerEntity);
+            T pensionerResponseDTO = _mapper.Map<T>(pensionerEntity);
             try {
-                pensionerResponseDTO = _mapper.Map<PensionerResponseDTO>(
+                pensionerResponseDTO = _mapper.Map<T>(
                     await _pensionerDetailsRepository.GetSingleAysnc(
                         entity => entity.ActiveFlag 
                         && entity.PpoId == ppoId 

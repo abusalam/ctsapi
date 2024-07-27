@@ -479,7 +479,7 @@ namespace CTS_BE.Controllers
                 }
             };
             try {
-                response.result = await _pensionerDetailsService.GetPensioner(
+                response.result = await _pensionerDetailsService.GetPensioner<PensionerResponseDTO>(
                     ppoId,
                     GetCurrentFyYear(),
                     GetTreasuryCode()
@@ -691,5 +691,48 @@ namespace CTS_BE.Controllers
 
             return response;
         }
+    
+        [HttpGet("ppo/{ppoId}/first-bill-general")]
+        [Produces("application/json")]
+        [Tags("Pension", "Pension: Bank Accounts")]
+        public async Task<APIResponse<PensionerFirstBillDTO>> ControlPensionerFirstBills(
+                int ppoId
+            )
+        {
+
+            APIResponse<PensionerFirstBillDTO> response = new(){
+                apiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = $"Pensioner Details received sucessfully!",
+                result = new (){
+                    Pensioner = new(){},
+                    BankAccount = new(){}
+                }
+            };
+            try {
+                response.result.BankAccount = await _pensionerBankAccountService.GetPensionerBankAccount(
+                    ppoId,
+                    GetCurrentFyYear(),
+                    GetTreasuryCode()
+                );
+                response.result.Pensioner = await _pensionerDetailsService.GetPensioner<PensionerListDTO>(
+                    ppoId,
+                    GetCurrentFyYear(),
+                    GetTreasuryCode()
+                );
+            }
+            catch (DbUpdateException ex) {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = $"Bank Accounts Details not received! Error: {ex.Message}";
+            }
+            finally {
+                if(response.result?.DataSource != null) {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.Message = $"Bank Accounts Details not received!";
+                }
+            }
+
+            return response;
+        }
+    
     } 
 }
