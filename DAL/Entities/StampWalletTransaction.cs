@@ -21,8 +21,20 @@ public partial class StampWalletTransaction
     [StringLength(3)]
     public string ToTreasuryCode { get; set; } = null!;
 
-    [Column("stamp_number")]
-    public short StampNumber { get; set; }
+    [Column("combination_id")]
+    public long CombinationId { get; set; }
+
+    [Column("sheet")]
+    public short Sheet { get; set; }
+
+    [Column("label")]
+    public short Label { get; set; }
+
+    [Column("invoice_id")]
+    public long InvoiceId { get; set; }
+
+    [Column("created_at", TypeName = "timestamp without time zone")]
+    public DateTime CreatedAt { get; set; }
 
     public virtual Treasury ToTreasuryCodeNavigation { get; set; } = null!;
 }

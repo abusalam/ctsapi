@@ -36,6 +36,19 @@ public partial class StampCategory
     [Column("stamp_category_id")]
     public long StampCategoryId { get; set; }
 
+    [Column("hoa_id")]
+    public long? HoaId { get; set; }
+
+    [Column("hoa", TypeName = "character varying")]
+    public string? Hoa { get; set; }
+
+    [Column("subDtlHead")]
+    [StringLength(2)]
+    public string? SubDtlHead { get; set; }
+
+    [InverseProperty("StampCategory")]
+    public virtual ICollection<DiscountDetail> DiscountDetails { get; set; } = new List<DiscountDetail>();
+
     [InverseProperty("StampCategory")]
     public virtual ICollection<StampCombination> StampCombinations { get; set; } = new List<StampCombination>();
 }

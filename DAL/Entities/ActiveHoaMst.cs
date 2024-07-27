@@ -68,4 +68,7 @@ public partial class ActiveHoaMst
 
     [InverseProperty("ActiveHoa")]
     public virtual ICollection<BillSubdetailInfo> BillSubdetailInfos { get; set; } = new List<BillSubdetailInfo>();
+
+    [InverseProperty("ActiveHoa")]
+    public virtual ICollection<DdoAllotmentBookedBill> DdoAllotmentBookedBills { get; set; } = new List<DdoAllotmentBookedBill>();
 }

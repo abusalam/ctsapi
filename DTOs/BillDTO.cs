@@ -26,6 +26,8 @@
         public string? PayeeDepartment { get; set; }
         public HOAChain HOAChain { get; set; }
         public List<SubDeatilsHeadDto>? SubDeatilsHead { get; set; }
+
+        public decimal SubDeatilsTotalAmount { get; set; }
         public decimal? TransferAmount { get; set; }
         public decimal? GrossAmount { get; set; }
         public decimal? NetAmount { get; set; }

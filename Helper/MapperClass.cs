@@ -33,10 +33,14 @@ namespace CTS_BE.Helper
             CreateMap<StampTypeInsertDTO, StampType>();
             CreateMap<StampType, StampTypeDTO>();
             CreateMap<DiscountDetailsInsertDTO, DiscountDetail>();
+            CreateMap<StampCombinationInsertDTO, StampCombination>();
             CreateMap<StampIndentInsertDTO, StampIndent>();
             CreateMap<StampIndent, StampIndentDTO>();
             CreateMap<StampInvoiceInsertDTO, StampInvoice>();
             CreateMap<StampWalletInsertDTO, StampWallet>();
+            CreateMap<VendorStampRequisition, StampRequisitionDTO>();
+            CreateMap<StampRequisitionInsertDTO, VendorStampRequisition>()
+                .ForMember(d => d.RequisitionDate, opt => opt.MapFrom(src => src.RequisitionDate.HasValue? DateOnly.FromDateTime(src.RequisitionDate.Value) : default));
 
         }
     }

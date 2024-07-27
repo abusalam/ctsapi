@@ -104,12 +104,12 @@ namespace CTS_BE.Controllers
         }
 
         [HttpGet("GetALLStampLabels")]
-        public async Task<APIResponse<IEnumerable<StampLabelMasterDTO>>> GetALLStampLabels()
+        public async Task<APIResponse<IEnumerable<StampLabelDTO>>> GetALLStampLabels()
         {
-            APIResponse<IEnumerable<StampLabelMasterDTO>> response = new();
+            APIResponse<IEnumerable<StampLabelDTO>> response = new();
             try
             {
-                IEnumerable<StampLabelMasterDTO> allStampLabels = await _stampMasterService.GetAllStampLabels();
+                IEnumerable<StampLabelDTO> allStampLabels = await _stampMasterService.GetAllStampLabels();
                 if (allStampLabels.Count() > 0)
                 {
                     response.Message = AppConstants.DataFound;
@@ -211,7 +211,6 @@ namespace CTS_BE.Controllers
         }
 
         // Stamp Category
-
         [HttpPatch("StampCategoryList")]
         public async Task<APIResponse<DynamicListResult<IEnumerable<StampCategoryDTO>>>> StampCategoryList(DynamicListQueryParameters dynamicListQueryParameters)
         {
@@ -302,7 +301,6 @@ namespace CTS_BE.Controllers
             }
         }
 
-
         [HttpGet("GetALLStampCategories")]
         public async Task<APIResponse<IEnumerable<StampCategoryDTO>>> GetALLStampCategories()
         {
@@ -330,12 +328,12 @@ namespace CTS_BE.Controllers
         }
 
         [HttpGet("GetALLStampCategoryTypes")]
-        public async Task<APIResponse<IEnumerable<StampCategoryDTO>>> GetALLStampCategoryTypes()
+        public async Task<APIResponse<IEnumerable<CategoryTypeDTO>>> GetALLStampCategoryTypes()
         {
-            APIResponse<IEnumerable<StampCategoryDTO>> response = new();
+            APIResponse<IEnumerable<CategoryTypeDTO>> response = new();
             try
             {
-                IEnumerable<StampCategoryDTO> allStampCategorys = await _stampMasterService.GetAllCategoryType();
+                IEnumerable<CategoryTypeDTO> allStampCategorys = await _stampMasterService.GetAllCategoryType();
                 if (allStampCategorys.Count() > 0)
                 {
                     response.apiResponseStatus = Enum.APIResponseStatus.Success;
@@ -380,6 +378,7 @@ namespace CTS_BE.Controllers
                 return response;
             }
         }
+        
         [HttpPost("CreateStampCategory")]
         public async Task<APIResponse<bool>> CreateStampCategory(StampCategoryInsertDTO stampCategory)
         {
@@ -437,7 +436,6 @@ namespace CTS_BE.Controllers
         }
         
         // Stamp Vendor
-
         [HttpPatch("StampVendorList")]
         public async Task<APIResponse<DynamicListResult<IEnumerable<StampVendorDTO>>>> StampVendorList(DynamicListQueryParameters dynamicListQueryParameters)
         {
@@ -461,10 +459,28 @@ namespace CTS_BE.Controllers
                         },
                         new ListHeader
                         {
+                            Name ="Vendor Name",
+                            DataType = "text",
+                            FieldName = "vendorName",
+                            FilterField = "VendorName",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
                             Name ="Vendor Type",
                             DataType = "numeric",
                             FieldName = "vendorType",
                             FilterField = "VendorType",
+                            IsFilterable = true,
+                            IsSortable = true,
+                        },
+                        new ListHeader
+                        {
+                            Name ="Treasury",
+                            DataType = "text",
+                            FieldName = "vendorTreasury",
+                            FilterField = "VendorTreasury",
                             IsFilterable = true,
                             IsSortable = true,
                         },
@@ -498,7 +514,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Effective From",
-                            DataType = "text",
+                            DataType = "date",
                             FieldName = "effectiveFrom",
                             FilterField = "EffectiveFrom",
                             IsFilterable = true,
@@ -507,7 +523,7 @@ namespace CTS_BE.Controllers
                         new ListHeader
                         {
                             Name ="Valid Upto",
-                            DataType = "text",
+                            DataType = "data",
                             FieldName = "validUpto",
                             FilterField = "ValidUpto",
                             IsFilterable = true,
@@ -609,12 +625,12 @@ namespace CTS_BE.Controllers
         }
 
         [HttpGet("GetALLStampVendors")]
-        public async Task<APIResponse<IEnumerable<StampVendorDTO>>> GetALLStampVendors()
+        public async Task<APIResponse<IEnumerable<StampVendorDetailsDropdownDTO>>> GetALLStampVendors()
         {
-            APIResponse<IEnumerable<StampVendorDTO>> response = new();
+            APIResponse<IEnumerable<StampVendorDetailsDropdownDTO>> response = new();
             try
             {
-                IEnumerable<StampVendorDTO> allStampVendors = await _stampMasterService.GetAllStampVendors();
+                IEnumerable<StampVendorDetailsDropdownDTO> allStampVendors = await _stampMasterService.GetAllStampVendors();
                 if (allStampVendors.Count() > 0)
                 {
                     response.apiResponseStatus = Enum.APIResponseStatus.Success;
@@ -753,7 +769,6 @@ namespace CTS_BE.Controllers
             }
         }
 
-
         [HttpDelete("DeleteStampVendorsById")]
         public async Task<APIResponse<bool>> DeleteStampVendorsById(long id)
         {
@@ -865,12 +880,12 @@ namespace CTS_BE.Controllers
         }
 
         [HttpGet("GetALLStampTypes")]
-        public async Task<APIResponse<IEnumerable<StampTypeDTO>>> GetALLStampTypes()
+        public async Task<APIResponse<IEnumerable<StampTypeDataDTO>>> GetALLStampTypes()
         {
-            APIResponse<IEnumerable<StampTypeDTO>> response = new();
+            APIResponse<IEnumerable<StampTypeDataDTO>> response = new();
             try
             {
-                IEnumerable<StampTypeDTO> allStampTypes = await _stampMasterService.GetAllStampTypes();
+                IEnumerable<StampTypeDataDTO> allStampTypes = await _stampMasterService.GetAllStampTypes();
                 if (allStampTypes.Count() > 0)
                 {
                     response.apiResponseStatus = Enum.APIResponseStatus.Success;
@@ -1092,7 +1107,6 @@ namespace CTS_BE.Controllers
         }
 
         [HttpPost("CreateStampDiscountDetails")]
-
         public async Task<APIResponse<bool>> CreateStampDiscountDetails(DiscountDetailsInsertDTO stampDiscountDetails)
         {
             APIResponse<bool> response = new();
@@ -1120,6 +1134,63 @@ namespace CTS_BE.Controllers
                 return response;
             }
         }
+
+        [HttpDelete("DeleteStampDiscountDetailsById")]
+        public async Task<APIResponse<bool>> DeleteStampDiscountDetailsById(long id)
+        {
+            APIResponse<bool> response = new();
+            try
+            {
+                
+                if (await _stampMasterService.DeleteStampDiscountDetailsById(id))
+                {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                    response.result = true;
+                    response.Message = AppConstants.Deleted;
+                    return response;
+                }
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.result = false;
+                response.Message = AppConstants.DataNotFound;
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = ex.Message;
+                return response;
+            }
+        }
+        
+        [HttpGet("GetDiscount")]
+        public async Task<APIResponse<decimal>> GetDiscount(long vendorTypeId, long stampCategoryId, decimal amount)
+        {
+            APIResponse<decimal> response = new();
+            try
+            {
+                var discount = await _stampMasterService.GetDiscount(vendorTypeId, stampCategoryId, amount);
+                if (discount != null)
+                {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                    response.result = discount;
+                    response.Message = AppConstants.DataFound;
+                }
+                else
+                {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.result = 0;
+                    response.Message = AppConstants.DataNotFound;
+                }
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = ex.Message;
+                return response;
+            }
+        }
+       
         // Stamp combination details
         [HttpPatch("StampCombinationList")]
         public async Task<APIResponse<DynamicListResult<IEnumerable<StampCombinationDTO>>>> StampCombinationList(DynamicListQueryParameters dynamicListQueryParameters)
@@ -1248,7 +1319,7 @@ namespace CTS_BE.Controllers
             }
         }
 
-        [HttpGet("GetALLStampCombinations")]
+        [HttpGet("GetALLStampCombinations")]        
         public async Task<APIResponse<IEnumerable<GetAllStampCombinationDTO>>> GetALLStampCombinations()
         {
             APIResponse<IEnumerable<GetAllStampCombinationDTO>> response = new();
@@ -1273,6 +1344,62 @@ namespace CTS_BE.Controllers
                 return response;
             }
         }
+        [HttpPost("CreateStampCombination")]
+        public async Task<APIResponse<bool>> CreateStampCombination(StampCombinationInsertDTO newStampCombination)
+        {
+            APIResponse<bool> response = new();
+            try
+            {
+                if (newStampCombination != null)
+                {
+                    if (await _stampMasterService.CreateNewStampCombination(newStampCombination))
+                    {
+                        response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                        response.Message = AppConstants.DataAdded;
+                        response.result = true;
+                        return response;
+                    }
+                }
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.result = false;
+                response.Message = AppConstants.MissingField;
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = ex.Message;
+                return response;
+            }
+        }
+
+        [HttpDelete("DeleteStampCombinationById")]
+        public async Task<APIResponse<bool>> DeleteStampCombinationById(long id)
+        {
+            APIResponse<bool> response = new();
+            try
+            {
+                ;
+                if (await _stampMasterService.DeleteStampCombinationById(id))
+                {
+                    response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                    response.result = true;
+                    response.Message = AppConstants.Deleted;
+                    return response;
+                }
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.result = false;
+                response.Message = AppConstants.DataNotFound;
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = ex.Message;
+                return response;
+            }
+        }
     }
+
 }
 

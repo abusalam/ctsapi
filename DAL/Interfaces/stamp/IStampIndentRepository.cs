@@ -4,8 +4,8 @@ namespace CTS_BE.DAL.Interfaces.stamp
 {
     public interface IStampIndentRepository : IRepository<StampIndent>
     {
-        public Task<bool> IndentApprove(string RaisedToTreasuryCode, int Quantity);
-        public Task<bool> IndentRecieve(string RaisedToTreasuryCode, string RaisedByTreasuryCode, int Quantity, long IndentId);
+        public Task<bool> IndentApprove(string RaisedToTreasuryCode, short sheet, short label, long combinationId);
+        public Task<bool> IndentRecieve(short sheet, short label, long IndentId);
 
     }
 }

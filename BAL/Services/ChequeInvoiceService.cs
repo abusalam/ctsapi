@@ -58,7 +58,9 @@ namespace CTS_BE.BAL
                     MicrCode = indentDetails.ChequeEntry.MicrCode,
                     TreasuryCode = indentDetails.ChequeEntry.TreasurieCode,
                     Series = indentDetails.ChequeEntry.SeriesNo,
-                    InvoiceDeatilsId = indentDetails.Id
+                    InvoiceDeatilsId = indentDetails.Id,
+                    Start = indentDetails.Start,
+                    End = indentDetails.End,
                 }).ToList(),
                 Quantity = entity.ChequeIndent.TotalApprovedQuantity,
             });

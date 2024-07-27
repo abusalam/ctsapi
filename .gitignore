@@ -457,3 +457,5 @@ obj/*
 
 
 wwwroot/uploads/*
+
+.gitlab-ci.yml

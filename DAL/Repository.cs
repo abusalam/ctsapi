@@ -124,8 +124,8 @@ namespace CTS_BE.DAL
             return result;
         }
         public async Task<ICollection<TResult>> GetSelectedColumnByConditionAsync<TResult>(
-            Expression<Func<T, bool>> filterExpression, 
-            Expression<Func<T, TResult>> selectExpression, 
+            Expression<Func<T, bool>> filterExpression,
+            Expression<Func<T, TResult>> selectExpression,
             int pageIndex = 0,
             int pageSize = 10,
             List<FilterParameter> dynamicFilters = null,
@@ -150,7 +150,7 @@ namespace CTS_BE.DAL
                 var property = Expression.Property(parameter, orderByField);
                 var lambda = Expression.Lambda<Func<T, object>>(Expression.Convert(property, typeof(object)), parameter);
 
-                if (orderByOrder=="ASC")
+                if (orderByOrder == "ASC")
                 {
                     query = query.OrderBy(lambda);
                 }
@@ -213,6 +213,16 @@ namespace CTS_BE.DAL
             }
             //var result = query.Select(selectExpression).ToListAsync();
             return query.Count(condition);
+        }
+        public int CountWithCondition(Expression<Func<T, bool>> condition)
+        {
+            IQueryable<T> query = this.CTSDbContext.Set<T>();
+            return query.Count(condition);
+        }
+        public async Task<int> CountWithConditionAsync(Expression<Func<T, bool>> condition)
+        {
+            IQueryable<T> query = this.CTSDbContext.Set<T>();
+            return await query.CountAsync(condition);
         }
         public int Count()
         {
