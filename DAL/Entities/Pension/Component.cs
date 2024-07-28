@@ -9,22 +9,32 @@ namespace CTS_BE.DAL.Entities.Pension;
 /// <summary>
 /// PensionModuleSchema
 /// </summary>
-[Table("ppo_receipt_sequences", Schema = "cts_pension")]
-public partial class PpoReceiptSequence
+[Table("components", Schema = "cts_pension")]
+public partial class Component
 {
+    /// <summary>
+    /// BreakupId
+    /// </summary>
     [Key]
     [Column("id")]
     public long Id { get; set; }
 
-    [Column("financial_year")]
-    public int FinancialYear { get; set; }
+    [Column("component_name")]
+    [StringLength(100)]
+    public string ComponentName { get; set; } = null!;
 
-    [Column("treasury_code")]
-    [StringLength(3)]
-    public string TreasuryCode { get; set; } = null!;
+    /// <summary>
+    /// P - Payment; D - Deduction;
+    /// </summary>
+    [Column("component_type")]
+    [MaxLength(1)]
+    public char ComponentType { get; set; }
 
-    [Column("next_sequence_value")]
-    public int NextSequenceValue { get; set; }
+    /// <summary>
+    /// Relief Allowed (Yes/No)
+    /// </summary>
+    [Column("relief_flag")]
+    public bool ReliefFlag { get; set; }
 
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime? CreatedAt { get; set; }
@@ -39,5 +49,8 @@ public partial class PpoReceiptSequence
     public int? UpdatedBy { get; set; }
 
     [Column("active_flag")]
-    public bool? ActiveFlag { get; set; }
+    public bool ActiveFlag { get; set; }
+
+    [InverseProperty("Breakup")]
+    public virtual ICollection<ComponentRate> ComponentRates { get; set; } = new List<ComponentRate>();
 }

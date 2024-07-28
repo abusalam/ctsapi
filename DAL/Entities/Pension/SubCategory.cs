@@ -9,22 +9,16 @@ namespace CTS_BE.DAL.Entities.Pension;
 /// <summary>
 /// PensionModuleSchema
 /// </summary>
-[Table("ppo_receipt_sequences", Schema = "cts_pension")]
-public partial class PpoReceiptSequence
+[Table("sub_categories", Schema = "cts_pension")]
+public partial class SubCategory
 {
     [Key]
     [Column("id")]
     public long Id { get; set; }
 
-    [Column("financial_year")]
-    public int FinancialYear { get; set; }
-
-    [Column("treasury_code")]
-    [StringLength(3)]
-    public string TreasuryCode { get; set; } = null!;
-
-    [Column("next_sequence_value")]
-    public int NextSequenceValue { get; set; }
+    [Column("sub_category_name")]
+    [StringLength(100)]
+    public string SubCategoryName { get; set; } = null!;
 
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime? CreatedAt { get; set; }
@@ -39,5 +33,8 @@ public partial class PpoReceiptSequence
     public int? UpdatedBy { get; set; }
 
     [Column("active_flag")]
-    public bool? ActiveFlag { get; set; }
+    public bool ActiveFlag { get; set; }
+
+    [InverseProperty("SubCategory")]
+    public virtual ICollection<Category> Categories { get; set; } = new List<Category>();
 }

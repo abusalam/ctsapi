@@ -9,22 +9,24 @@ namespace CTS_BE.DAL.Entities.Pension;
 /// <summary>
 /// PensionModuleSchema
 /// </summary>
-[Table("ppo_receipt_sequences", Schema = "cts_pension")]
-public partial class PpoReceiptSequence
+[Table("primary_categories", Schema = "cts_pension")]
+[Index("HoaId", Name = "primary_categories_hoa_id_key", IsUnique = true)]
+public partial class PrimaryCategory
 {
     [Key]
     [Column("id")]
     public long Id { get; set; }
 
-    [Column("financial_year")]
-    public int FinancialYear { get; set; }
+    /// <summary>
+    /// Head of Account: 2071 - 01 - 109 - 00 - 001 - V - 04 - 00
+    /// </summary>
+    [Column("hoa_id")]
+    [StringLength(30)]
+    public string HoaId { get; set; } = null!;
 
-    [Column("treasury_code")]
-    [StringLength(3)]
-    public string TreasuryCode { get; set; } = null!;
-
-    [Column("next_sequence_value")]
-    public int NextSequenceValue { get; set; }
+    [Column("primary_category_name")]
+    [StringLength(100)]
+    public string PrimaryCategoryName { get; set; } = null!;
 
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime? CreatedAt { get; set; }
@@ -39,5 +41,8 @@ public partial class PpoReceiptSequence
     public int? UpdatedBy { get; set; }
 
     [Column("active_flag")]
-    public bool? ActiveFlag { get; set; }
+    public bool ActiveFlag { get; set; }
+
+    [InverseProperty("PrimaryCategory")]
+    public virtual ICollection<Category> Categories { get; set; } = new List<Category>();
 }

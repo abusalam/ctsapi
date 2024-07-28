@@ -144,6 +144,9 @@ namespace CTS_BE.DTOs
 
         [DataType(DataType.Date)]
         public DateOnly DateOfRetirement { get; set; }
+        
+        [DataType(DataType.Date)]
+        public DateOnly DateOfCommencement { get; set; }
 
         [StringLength(100)]
         public string PpoNo { get; set; } = null!;

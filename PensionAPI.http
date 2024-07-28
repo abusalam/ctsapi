@@ -18,8 +18,8 @@
 
 ### Read Pensioner Deatils for First Bill Generation
 # @name ReadPensionerDetailsForFirstBill
-GET {{PensionAPI_HostAddress}}/api/v1/ppo/{{GeneratedPpoId}}/first-bill-general
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
+GET {{PensionAPI_HostAddress}}/api/v1/ppo/{{GeneratedPpoId}}/first-bill-general
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -233,11 +233,23 @@ Content-Type: application/json
 
 ### Update PPO Receipt Request
 # @name UpdatePPOReceipt
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
 PUT {{PensionAPI_HostAddress}}/api/v1/manual-ppo/receipts/{{treasuryReceiptNo}}
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
+{
+  "ppoNo": "PPO-291111",
+  "pensionerName": "Jack Smith",
+  "dateOfCommencement": "2024-07-19",
+  "mobileNumber": "8923481395",
+  "receiptDate": "2024-07-27",
+  "psaCode": "A",
+  "ppoType": "N"
+}
+
+###
 {
   "ppoNo": "PPO-{{$randomInt 100000 999999}}",
   "pensionerName": "Jack Smith",

@@ -6,6 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Entities.Pension;
 
+/// <summary>
+/// PensionModuleSchema
+/// </summary>
 [Table("nominees", Schema = "cts_pension")]
 [Index("PpoId", "TreasuryCode", Name = "nominees_ppo_id_treasury_code_key", IsUnique = true)]
 public partial class Nominee

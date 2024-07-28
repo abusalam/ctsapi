@@ -6,8 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Entities.Pension;
 
+/// <summary>
+/// PensionModuleSchema
+/// </summary>
 [Table("ppo_bill_components", Schema = "cts_pension")]
-[Index("PpoId", "TreasuryCode", Name = "ppo_bill_components_ppo_id_treasury_code_key", IsUnique = true)]
+[Index("TreasuryCode", "PpoId", "BillId", "RateId", Name = "ppo_bill_components_treasury_code_ppo_id_bill_id_rate_id_key", IsUnique = true)]
 public partial class PpoBillComponent
 {
     [Key]
@@ -27,14 +30,17 @@ public partial class PpoBillComponent
     [Column("bill_id")]
     public long BillId { get; set; }
 
-    [Column("component_id")]
-    public long ComponentId { get; set; }
+    [Column("rate_id")]
+    public long RateId { get; set; }
 
-    [Column("component_wef")]
-    public DateOnly ComponentWef { get; set; }
+    [Column("from_date")]
+    public DateOnly FromDate { get; set; }
 
-    [Column("component_amount")]
-    public int ComponentAmount { get; set; }
+    [Column("to_date")]
+    public DateOnly ToDate { get; set; }
+
+    [Column("breakup_amount")]
+    public int BreakupAmount { get; set; }
 
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime? CreatedAt { get; set; }
@@ -49,13 +55,13 @@ public partial class PpoBillComponent
     public int? UpdatedBy { get; set; }
 
     [Column("active_flag")]
-    public bool? ActiveFlag { get; set; }
+    public bool ActiveFlag { get; set; }
 
     [ForeignKey("BillId")]
     [InverseProperty("PpoBillComponents")]
     public virtual PpoBill Bill { get; set; } = null!;
 
-    [ForeignKey("ComponentId")]
+    [ForeignKey("RateId")]
     [InverseProperty("PpoBillComponents")]
-    public virtual PpoComponent Component { get; set; } = null!;
+    public virtual ComponentRate Rate { get; set; } = null!;
 }

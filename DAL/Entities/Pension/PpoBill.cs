@@ -6,8 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Entities.Pension;
 
+/// <summary>
+/// PensionModuleSchema
+/// </summary>
 [Table("ppo_bills", Schema = "cts_pension")]
-[Index("PpoId", "TreasuryCode", Name = "ppo_bills_ppo_id_treasury_code_key", IsUnique = true)]
+[Index("TreasuryCode", "PpoId", "BillNo", Name = "ppo_bills_treasury_code_ppo_id_bill_no_key", IsUnique = true)]
 public partial class PpoBill
 {
     [Key]
@@ -24,12 +27,15 @@ public partial class PpoBill
     [Column("ppo_id")]
     public int PpoId { get; set; }
 
-    [Column("paid_from")]
-    public DateOnly PaidFrom { get; set; }
+    [Column("from_date")]
+    public DateOnly FromDate { get; set; }
 
-    [Column("paid_upto")]
-    public DateOnly PaidUpto { get; set; }
+    [Column("to_date")]
+    public DateOnly ToDate { get; set; }
 
+    /// <summary>
+    /// F - First Bill; R - Regular Bill;
+    /// </summary>
     [Column("bill_type")]
     [MaxLength(1)]
     public char BillType { get; set; }
@@ -41,8 +47,11 @@ public partial class PpoBill
     [Column("bill_date")]
     public DateOnly BillDate { get; set; }
 
-    [Column("bill_amount")]
-    public int BillAmount { get; set; }
+    [Column("bill_gross_amount")]
+    public int BillGrossAmount { get; set; }
+
+    [Column("bill_net_amount")]
+    public int BillNetAmount { get; set; }
 
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime? CreatedAt { get; set; }
@@ -57,7 +66,7 @@ public partial class PpoBill
     public int? UpdatedBy { get; set; }
 
     [Column("active_flag")]
-    public bool? ActiveFlag { get; set; }
+    public bool ActiveFlag { get; set; }
 
     [InverseProperty("Bill")]
     public virtual ICollection<PpoBillBytransfer> PpoBillBytransfers { get; set; } = new List<PpoBillBytransfer>();

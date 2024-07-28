@@ -694,7 +694,7 @@ namespace CTS_BE.Controllers
     
         [HttpGet("ppo/{ppoId}/first-bill-general")]
         [Produces("application/json")]
-        [Tags("Pension", "Pension: Bank Accounts")]
+        [Tags("Pension", "Pension: First Bill")]
         public async Task<APIResponse<PensionerFirstBillDTO>> ControlPensionerFirstBills(
                 int ppoId
             )

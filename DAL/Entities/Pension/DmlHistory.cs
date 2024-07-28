@@ -6,6 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Entities.Pension;
 
+/// <summary>
+/// PensionModuleSchema
+/// </summary>
 [Table("dml_history", Schema = "cts_pension")]
 public partial class DmlHistory
 {

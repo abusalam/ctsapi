@@ -6,6 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Entities.Pension;
 
+/// <summary>
+/// PensionModuleSchema
+/// </summary>
 [Table("life_certificates", Schema = "cts_pension")]
 [Index("PpoId", "TreasuryCode", Name = "life_certificates_ppo_id_treasury_code_key", IsUnique = true)]
 public partial class LifeCertificate
