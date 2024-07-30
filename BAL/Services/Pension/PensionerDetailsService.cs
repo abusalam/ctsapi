@@ -85,7 +85,12 @@ namespace CTS_BE.BAL.Services.Pension
             return pensionerResponseDTO;       
         }
 
-        public async Task<PensionerResponseDTO> UpdatePensioner(int ppoId, PensionerEntryDTO pensionerEntryDTO, short financialYear, string treasuryCode)
+        public async Task<PensionerResponseDTO> UpdatePensioner(
+                int ppoId,
+                PensionerEntryDTO pensionerEntryDTO,
+                short financialYear,
+                string treasuryCode
+            )
         {
             Pensioner pensionerEntity  = new() {
                     PpoId = 0
@@ -133,6 +138,10 @@ namespace CTS_BE.BAL.Services.Pension
                     entity => _mapper.Map<PensionerListDTO>(entity),
                     dynamicListQueryParameters
                 );
+        }
+
+        public int Add(int a, int b) {
+            return a+b;
         }
     }
 }

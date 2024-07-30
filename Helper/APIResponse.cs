@@ -8,4 +8,11 @@ namespace CTS_BE.Helper
         public APIResponseStatus apiResponseStatus { get; set; }
         public string Message { get; set; }
     }
+
+    public class JsonAPIResponse<T>
+    {
+        public T? result { get; set; }
+        public APIResponseStatus apiResponseStatus { get; set; }
+        public string? message { get; set; }
+    }
 }

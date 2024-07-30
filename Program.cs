@@ -270,15 +270,17 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 app.UseStaticFiles();
-app.UseDirectoryBrowser(new DirectoryBrowserOptions
-{
-    FileProvider = new PhysicalFileProvider(
-        Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads")),
-    RequestPath = "/uploads"
-});
+// app.UseDirectoryBrowser(new DirectoryBrowserOptions
+// {
+//     FileProvider = new PhysicalFileProvider(
+//         Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads")),
+//     RequestPath = "/uploads"
+// });
 
 app.UseAuthTokenMiddleware();
 
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }

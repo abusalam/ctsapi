@@ -105,7 +105,7 @@ namespace CTS_BE.DTOs
         [RegularExpression(@"^[6-9]\d{9}$")]
         public string? MobileNumber { get; set; }
         public string? EmailId { get; set; }
-        public string? PensionerAddress { get; set; }
+        public int? PensionerAddress { get; set; }
         public string? IdentificationMark { get; set; }
         public string? PanNo { get; set; }
         public string? AadhaarNo { get; set; }

@@ -4,9 +4,12 @@ namespace CTS_BE.Helper
 {
     public static class ExtMapper
     {
-        public static void FillFrom<TSrc, TDst>(this TSrc target, TDst source)
+        public static void FillFrom<TDst, TSrc>(this TDst target, TSrc source)
         {
             if(source is null) {
+                return;
+            }
+            if(target is null) {
                 return;
             }
             PropertyInfo? targetPropInfoByName;
@@ -15,17 +18,20 @@ namespace CTS_BE.Helper
             foreach (PropertyInfo sourcePropertyInfo in source.GetType().GetProperties().Where(p => p.CanRead))
             {
                 sourcePropertyName = sourcePropertyInfo.Name;
-                if(target is not null) {
-                    targetPropInfoByName = target.GetType().GetProperty(sourcePropertyName);
-                    if (targetPropInfoByName != null)
-                    {
-                        sourcePropValue = sourcePropertyInfo.GetValue(source, null);
-                        if(sourcePropValue != null && targetPropInfoByName.CanWrite) {
-                            targetPropInfoByName.SetValue(target, sourcePropValue, null);
-                        }
-                    }
+                targetPropInfoByName = target.GetType().GetProperty(sourcePropertyName);
+                if (targetPropInfoByName is null)
+                {
+                    continue;
                 }
-
+                sourcePropValue = sourcePropertyInfo.GetValue(source, null);
+                if( targetPropInfoByName.CanWrite) {
+                    // try {
+                        targetPropInfoByName.SetValue(target, sourcePropValue, null);
+                    // }
+                    // catch(ArgumentException) {
+                    //     continue;
+                    // }
+                }
             }
         }
     }

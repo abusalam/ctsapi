@@ -10,7 +10,6 @@ namespace CTS_BE.DAL.Entities.Pension;
 /// PensionModuleSchema
 /// </summary>
 [Table("primary_categories", Schema = "cts_pension")]
-[Index("HoaId", Name = "primary_categories_hoa_id_key", IsUnique = true)]
 public partial class PrimaryCategory
 {
     [Key]
@@ -21,7 +20,7 @@ public partial class PrimaryCategory
     /// Head of Account: 2071 - 01 - 109 - 00 - 001 - V - 04 - 00
     /// </summary>
     [Column("hoa_id")]
-    [StringLength(30)]
+    [StringLength(50)]
     public string HoaId { get; set; } = null!;
 
     [Column("primary_category_name")]
