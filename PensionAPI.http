@@ -15,6 +15,45 @@
 @ApprovedPpoId = {{SetApprovePPOFlag.response.body.$.result.ppoId}}
 @ApprovedPpoIdStatusFlag = {{SetApprovePPOFlag.response.body.$.result.statusFlag}}
 
+### Create Pension Category
+# @name CreatePensionCategory
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+POST {{PensionAPI_HostAddress}}/api/v1/pension/category
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "PrimaryCategoryId": 2,
+  "SubCategoryId": 3
+}
+
+
+### Create Pension SubCategory
+# @name CreatePensionSubCategory
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+POST {{PensionAPI_HostAddress}}/api/v1/pension/sub-category
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "SubCategoryName": "ROPA 2026"
+}
+
+### Create Pension PrimaryCategory
+# @name CreatePensionPrimaryCategory
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+POST {{PensionAPI_HostAddress}}/api/v1/pension/primary-category
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "HoaId": "2071 - 01 - 109 - 00 - 001 - V - 04 - 00",
+  "PrimaryCategoryName": "Defence Pension"
+}
+
 ### Generate Components for First Pension Bill
 # @name GenerateFirstPensionBill
 POST {{PensionAPI_HostAddress}}/api/v1/echo

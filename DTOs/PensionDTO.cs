@@ -105,7 +105,7 @@ namespace CTS_BE.DTOs
         [RegularExpression(@"^[6-9]\d{9}$")]
         public string? MobileNumber { get; set; }
         public string? EmailId { get; set; }
-        public int? PensionerAddress { get; set; }
+        public string? PensionerAddress { get; set; }
         public string? IdentificationMark { get; set; }
         public string? PanNo { get; set; }
         public string? AadhaarNo { get; set; }
@@ -184,5 +184,84 @@ namespace CTS_BE.DTOs
         [Required]
         [DataType(DataType.Date)]
         public DateOnly BillGeneratedUptoDate { get; set; }
+    }
+
+    public partial class PensionPrimaryCategoryEntryDTO : BaseDTO {
+        /// <summary>
+        /// Head of Account: 2071 - 01 - 109 - 00 - 001 - V - 04 - 00
+        /// </summary>
+        [Required]
+        [StringLength(50)]
+        public string HoaId { get; set; } = null!;
+
+        [Required]
+        [StringLength(100)]
+        public string PrimaryCategoryName { get; set; } = null!;
+    }
+
+    public partial class PensionPrimaryCategoryResponseDTO : PensionPrimaryCategoryEntryDTO {
+        public long Id { get; set; }
+    }
+
+    public partial class PensionSubCategoryEntryDTO : BaseDTO {
+        [Required]
+        [StringLength(100)]
+        public string SubCategoryName { get; set; } = null!;
+    }
+
+    public partial class PensionSubCategoryResponseDTO : PensionSubCategoryEntryDTO {
+        public long Id { get; set; }
+    }
+
+    public partial class PensionCategoryEntryDTO : BaseDTO {
+        public long PrimaryCategoryId { get; set; }
+        public long SubCategoryId { get; set; }
+    }
+
+    public partial class PensionCategoryResponseDTO : PensionCategoryEntryDTO {
+        public long Id { get; set; }
+
+        [StringLength(100)]
+        public string CategoryName { get; set; } = null!;
+    }
+
+    public partial class PensionBreakupEntryDTO : BaseDTO {
+        [StringLength(100)]
+        public string ComponentName { get; set; } = null!;
+
+        /// <summary>
+        /// P - Payment; D - Deduction;
+        /// </summary>
+        [MaxLength(1)]
+        public char ComponentType { get; set; }
+
+        /// <summary>
+        /// Relief Allowed (true/false)
+        /// </summary>
+        public bool ReliefFlag { get; set; }
+    }
+
+    public partial class PensionBreakupResponseDTO : PensionBreakupEntryDTO {
+        public long Id { get; set; }
+    }
+
+    public partial class PensionRatesEntryDTO : BaseDTO {
+        public long CategoryId { get; set; }
+        public long BreakupId { get; set; }
+
+        [Required]
+        [DataType(DataType.Date)]
+        public DateOnly EffectiveFromDate { get; set; }
+        public int RateAmount { get; set; }
+
+        /// <summary>
+        /// P - Percentage; A - Amount;
+        /// </summary>
+        [MaxLength(1)]
+        public char RateType { get; set; }
+    }
+
+    public partial class PensionRatesResponseDTO : PensionRatesEntryDTO {
+        public long Id { get; set; }
     }
 }

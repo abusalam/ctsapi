@@ -23,6 +23,16 @@ namespace CTS_BE.Helper
             CreateMap<PensionerListDTO, Pensioner>().ReverseMap();
             CreateMap<PensionerResponseDTO, PensionerEntryDTO>().ReverseMap();
             CreateMap<PensionerBankAcDTO, BankAccount>().ReverseMap();
+            CreateMap<PensionPrimaryCategoryResponseDTO, PrimaryCategory>().ReverseMap();
+            CreateMap<PensionPrimaryCategoryResponseDTO, PensionPrimaryCategoryEntryDTO>().ReverseMap();
+            CreateMap<PensionSubCategoryResponseDTO, SubCategory>().ReverseMap();
+            CreateMap<PensionSubCategoryResponseDTO, PensionSubCategoryEntryDTO>().ReverseMap();
+            CreateMap<PensionCategoryResponseDTO, Category>().ReverseMap();
+            CreateMap<PensionCategoryResponseDTO, PensionCategoryEntryDTO>().ReverseMap();
+            CreateMap<PensionBreakupResponseDTO, Component>().ReverseMap();
+            CreateMap<PensionBreakupResponseDTO, PensionBreakupEntryDTO>().ReverseMap();
+            CreateMap<PensionRatesResponseDTO, ComponentRate>().ReverseMap();
+            CreateMap<PensionRatesResponseDTO, PensionRatesEntryDTO>().ReverseMap();
         }
     }
 }

@@ -11,8 +11,8 @@ namespace CTS_BE.Helper
 
     public class JsonAPIResponse<T>
     {
-        public T? result { get; set; }
-        public APIResponseStatus apiResponseStatus { get; set; }
-        public string? message { get; set; }
+        public T? Result { get; set; }
+        public APIResponseStatus ApiResponseStatus { get; set; }
+        public string? Message { get; set; }
     }
 }
