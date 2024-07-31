@@ -70,6 +70,20 @@ namespace CTS_BE.BAL.Services.Pension
             return response;
         }
     
+        public async Task<IEnumerable<TResponse>> ListPrimaryCategory<TResponse>(
+                short financialYear,
+                string treasuryCode,
+                DynamicListQueryParameters dynamicListQueryParameters
+            )
+        {
+            return await _primaryCategoryRepository
+                .GetSelectedColumnByConditionAsync(
+                    entity => entity.ActiveFlag,
+                    entity => _mapper.Map<TResponse>(entity),
+                    dynamicListQueryParameters
+                );
+        }
+    
         public async Task<TResponse> CreatePensionSubCategory<TEntry, TResponse>(
                 TEntry pensionSubCategoryEntryDTO,
                 short financialYear,
@@ -108,6 +122,21 @@ namespace CTS_BE.BAL.Services.Pension
             return response;
         }
     
+       public async Task<IEnumerable<TResponse>> ListSubCategory<TResponse>(
+                short financialYear,
+                string treasuryCode,
+                DynamicListQueryParameters dynamicListQueryParameters
+            )
+        {
+            return await _subCategoryRepository
+                .GetSelectedColumnByConditionAsync(
+                    entity => entity.ActiveFlag,
+                    entity => _mapper.Map<TResponse>(entity),
+                    dynamicListQueryParameters
+                );
+        }
+    
+
         public async Task<TResponse> CreatePensionCategory<TEntry, TResponse>(
                 TEntry pensionCategoryEntryDTO,
                 short financialYear,
@@ -165,5 +194,6 @@ namespace CTS_BE.BAL.Services.Pension
                     dynamicListQueryParameters
                 );
         }
+    
     }
 }

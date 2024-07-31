@@ -30,7 +30,9 @@ Content-Type: application/json
 
 ### List All PensionCategory
 # @name ListPensionCategory
-PATCH {{PensionAPI_HostAddress}}/api/v1/pension/category
+# PATCH {{PensionAPI_HostAddress}}/api/v1/pension/category
+PATCH {{PensionAPI_HostAddress}}/api/v1/pension/primary-category
+# PATCH {{PensionAPI_HostAddress}}/api/v1/pension/sub-category
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
 Accept: application/json
 Authorization: Bearer {{accessToken}}

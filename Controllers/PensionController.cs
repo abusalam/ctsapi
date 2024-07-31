@@ -731,6 +731,69 @@ namespace CTS_BE.Controllers
             return response;
         }
 
+        [HttpPatch("pension/primary-category")]
+        [Produces("application/json")]
+        [Tags("Pension", "Pension: Category Master")]
+        public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<PensionPrimaryCategoryResponseDTO>>>> ControlPensionPrimaryCategoryList(
+                DynamicListQueryParameters dynamicListQueryParameters
+            )
+        {
+            JsonAPIResponse<DynamicListResult<IEnumerable<PensionPrimaryCategoryResponseDTO>>> response;
+            try {
+
+                response = new() {
+
+                    ApiResponseStatus = Enum.APIResponseStatus.Success,
+                    Result = new()
+                        {
+                            Headers = new () {
+                            
+                                new() {
+                                    Name = "Primary Category ID",
+                                    DataType = "text",
+                                    FieldName = "primaryCategoryId",
+                                    FilterField = "primaryCategoryId",
+                                    IsFilterable = true,
+                                    IsSortable = true,
+                                },
+                                new() {
+                                    Name = "Head of Account",
+                                    DataType = "text",
+                                    FieldName = "hoaId",
+                                    FilterField = "hoaId",
+                                    IsFilterable = true,
+                                    IsSortable = true,
+                                },
+                                new() {
+                                    Name = "Primary Category Name",
+                                    DataType = "text",
+                                    FieldName = "categoryName",
+                                    FilterField = "categoryName",
+                                    IsFilterable = true,
+                                    IsSortable = true,
+                                }
+
+                            },
+                            Data = await _pensionCategoryService.ListPrimaryCategory<PensionPrimaryCategoryResponseDTO>(
+                                GetCurrentFyYear(),
+                                GetTreasuryCode(),
+                                dynamicListQueryParameters),
+                            DataCount = 10
+                        },
+                    Message = $"All Primary Category Details Received Successfully!"
+
+                };
+            } catch(DbException e) {
+                // StackFrame CallStack = new(1, true);
+                response = new () {
+                ApiResponseStatus = Enum.APIResponseStatus.Error,
+                Result = null,
+                Message = e.ToString()
+                //   $"{e.GetType()}=>File:{CallStack.GetFileName()}({CallStack.GetFileLineNumber()}): {e.Message}"
+                };
+            }
+            return response;
+        }
 
         [HttpPost("pension/sub-category")]
         [Produces("application/json")]
@@ -762,6 +825,62 @@ namespace CTS_BE.Controllers
                 }
             }
 
+            return response;
+        }
+
+        [HttpPatch("pension/sub-category")]
+        [Produces("application/json")]
+        [Tags("Pension", "Pension: Category Master")]
+        public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<PensionSubCategoryResponseDTO>>>> ControlPensionSubCategoryList(
+                DynamicListQueryParameters dynamicListQueryParameters
+            )
+        {
+            JsonAPIResponse<DynamicListResult<IEnumerable<PensionSubCategoryResponseDTO>>> response;
+            try {
+
+                response = new() {
+
+                    ApiResponseStatus = Enum.APIResponseStatus.Success,
+                    Result = new()
+                        {
+                            Headers = new () {
+                            
+                                new() {
+                                    Name = "Sub Category ID",
+                                    DataType = "text",
+                                    FieldName = "primaryCategoryId",
+                                    FilterField = "primaryCategoryId",
+                                    IsFilterable = true,
+                                    IsSortable = true,
+                                },
+                                new() {
+                                    Name = "Sub Category Name",
+                                    DataType = "text",
+                                    FieldName = "categoryName",
+                                    FilterField = "categoryName",
+                                    IsFilterable = true,
+                                    IsSortable = true,
+                                }
+
+                            },
+                            Data = await _pensionCategoryService.ListSubCategory<PensionSubCategoryResponseDTO>(
+                                GetCurrentFyYear(),
+                                GetTreasuryCode(),
+                                dynamicListQueryParameters),
+                            DataCount = 10
+                        },
+                    Message = $"All Sub Category Details Received Successfully!"
+
+                };
+            } catch(DbException e) {
+                // StackFrame CallStack = new(1, true);
+                response = new () {
+                ApiResponseStatus = Enum.APIResponseStatus.Error,
+                Result = null,
+                Message = e.ToString()
+                //   $"{e.GetType()}=>File:{CallStack.GetFileName()}({CallStack.GetFileLineNumber()}): {e.Message}"
+                };
+            }
             return response;
         }
 
