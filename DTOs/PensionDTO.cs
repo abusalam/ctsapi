@@ -239,7 +239,7 @@ namespace CTS_BE.DTOs
         /// <summary>
         /// P - Payment; D - Deduction;
         /// </summary>
-        [MaxLength(1)]
+        [RegularExpression(@"[PD]", ErrorMessage = "{0} must be one of the following (P - Payment; D - Deduction)")]
         public char ComponentType { get; set; }
 
         /// <summary>
@@ -264,7 +264,7 @@ namespace CTS_BE.DTOs
         /// <summary>
         /// P - Percentage; A - Amount;
         /// </summary>
-        [MaxLength(1)]
+        [RegularExpression(@"[PA]", ErrorMessage = "{0} must be one of the following (P - Percentage; A - Amount;)")]
         public char RateType { get; set; }
     }
 

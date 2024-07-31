@@ -15,6 +15,20 @@
 @ApprovedPpoId = {{SetApprovePPOFlag.response.body.$.result.ppoId}}
 @ApprovedPpoIdStatusFlag = {{SetApprovePPOFlag.response.body.$.result.statusFlag}}
 
+### Create Pension Component
+# @name CreatePensionBreakup
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+POST {{PensionAPI_HostAddress}}/api/v1/pension/bill-component
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "ComponentName": "Interim Relief 2016",
+  "ComponentType": "P",
+  "ReliefFlag": false
+}
+
 ### Create Pension Category
 # @name CreatePensionCategory
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
@@ -31,8 +45,9 @@ Content-Type: application/json
 ### List All PensionCategory
 # @name ListPensionCategory
 # PATCH {{PensionAPI_HostAddress}}/api/v1/pension/category
-PATCH {{PensionAPI_HostAddress}}/api/v1/pension/primary-category
+# PATCH {{PensionAPI_HostAddress}}/api/v1/pension/primary-category
 # PATCH {{PensionAPI_HostAddress}}/api/v1/pension/sub-category
+PATCH {{PensionAPI_HostAddress}}/api/v1/pension/bill-component
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
 Accept: application/json
 Authorization: Bearer {{accessToken}}

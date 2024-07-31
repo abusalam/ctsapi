@@ -29,6 +29,7 @@ namespace CTS_BE.Controllers
         private readonly IPensionerBankAccountService _pensionerBankAccountService;
         private readonly IPensionCategoryService _pensionCategoryService;
         private readonly IPensionBillService _pensionBillService;
+        private readonly IPensionBreakupService _pensionBreakupService;
 
 
         public PensionController(
@@ -38,7 +39,8 @@ namespace CTS_BE.Controllers
                 IPensionerDetailsService pensionerDetailsService,
                 IPensionerBankAccountService pensionerBankAccountService,
                 IPensionCategoryService pensionCategoryService,
-                IPensionBillService pensionBillService
+                IPensionBillService pensionBillService,
+                IPensionBreakupService pensionBreakupService
             ) : base(claimService)
         {
             _pensionService = pensionService;
@@ -47,6 +49,7 @@ namespace CTS_BE.Controllers
             _pensionerBankAccountService = pensionerBankAccountService;
             _pensionCategoryService = pensionCategoryService;
             _pensionBillService = pensionBillService;
+            _pensionBreakupService = pensionBreakupService;
         }
 
         [HttpPost("manual-ppo/receipts")]
@@ -976,6 +979,116 @@ namespace CTS_BE.Controllers
                             DataCount = 10
                         },
                     Message = $"All PPO Details Received Successfully!"
+
+                };
+            } catch(DbException e) {
+                // StackFrame CallStack = new(1, true);
+                response = new () {
+                ApiResponseStatus = Enum.APIResponseStatus.Error,
+                Result = null,
+                Message = e.ToString()
+                //   $"{e.GetType()}=>File:{CallStack.GetFileName()}({CallStack.GetFileLineNumber()}): {e.Message}"
+                };
+            }
+            return response;
+        }
+ 
+        [HttpPost("pension/bill-component")]
+        [Produces("application/json")]
+        [Tags("Pension", "Pension: Bill Component")]
+        public async Task<JsonAPIResponse<PensionBreakupResponseDTO>> ControlPensionBillComponentCreate(
+                PensionBreakupEntryDTO pensionBreakupEntryDTO
+            )
+        {
+
+            JsonAPIResponse<PensionBreakupResponseDTO> response = new(){
+                ApiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = $"Bill Component saved sucessfully!",
+                Result = new(){
+                    Id = 0
+                }
+            };
+            try {
+                response.Result = await _pensionBreakupService
+                    .CreatePensionBreakup<PensionBreakupEntryDTO, PensionBreakupResponseDTO>(
+                        pensionBreakupEntryDTO,
+                        GetCurrentFyYear(),
+                        GetTreasuryCode()
+                    );
+            }
+            catch(InvalidCastException ex) {
+                response.ApiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = $"C-Error: {ex.Message}";
+            }
+            finally {
+                if(response.Result.Id == 0) {
+                    response.ApiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.Message = $"C-Error: Bill Component not saved!";
+                }
+            }
+
+            return response;
+        }
+
+        [HttpPatch("pension/bill-component")]
+        [Produces("application/json")]
+        [Tags("Pension", "Pension: Bill Component")]
+        public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<PensionBreakupResponseDTO>>>> ControlPensionBillComponentList(
+                DynamicListQueryParameters dynamicListQueryParameters
+            )
+        {
+            JsonAPIResponse<DynamicListResult<IEnumerable<PensionBreakupResponseDTO>>> response;
+            try {
+
+                response = new() {
+
+                    ApiResponseStatus = Enum.APIResponseStatus.Success,
+                    Result = new()
+                        {
+                            Headers = new () {
+                            
+                                new() {
+                                    Name = "Bill Component ID",
+                                    DataType = "text",
+                                    FieldName = "id",
+                                    FilterField = "id",
+                                    IsFilterable = true,
+                                    IsSortable = true,
+
+                                },
+                                new() {
+                                    Name = "Component Name",
+                                    DataType = "text",
+                                    FieldName = "componentName",
+                                    FilterField = "componentName",
+                                    IsFilterable = true,
+                                    IsSortable = true,
+                                },
+                                new() {
+                                    Name = "Component Type",
+                                    DataType = "text",
+                                    FieldName = "componentType",
+                                    FilterField = "componentType",
+                                    IsFilterable = true,
+                                    IsSortable = true,
+                                },
+                                new() {
+                                    Name = "Relief Allowed",
+                                    DataType = "text",
+                                    FieldName = "reliefFlag",
+                                    FilterField = "reliefFlag",
+                                    IsFilterable = true,
+                                    IsSortable = true,
+                                }
+
+                            },
+                            Data = await _pensionBreakupService.ListBreakup<PensionBreakupResponseDTO>(
+                                GetCurrentFyYear(),
+                                GetTreasuryCode(),
+                                dynamicListQueryParameters),
+                            DataCount = 10
+                        },
+                    Message = $"All Bill Breakups Received Successfully!"
 
                 };
             } catch(DbException e) {
