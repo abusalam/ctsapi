@@ -225,6 +225,13 @@ namespace CTS_BE.DTOs
         public string CategoryName { get; set; } = null!;
     }
 
+    public class PensionCategoryListDTO : BaseDTO {
+        public long Id { get; set; }
+        public long PrimaryCategoryId { get; set; }
+        public long SubCategoryId { get; set; }
+        public string CategoryName { get; set; } = null!;
+    }
+
     public partial class PensionBreakupEntryDTO : BaseDTO {
         [StringLength(100)]
         public string ComponentName { get; set; } = null!;

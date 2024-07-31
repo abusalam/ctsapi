@@ -124,7 +124,10 @@ namespace CTS_BE.BAL.Services.Pension
                 categoryEntity.ActiveFlag = true;
                 categoryEntity.CreatedAt = DateTime.Now;
 
-                categoryEntity.CategoryName = categoryEntity.PrimaryCategory.PrimaryCategoryName + " : " + categoryEntity.SubCategory.SubCategoryName;
+                PrimaryCategory primaryCategoryEntity = await _primaryCategoryRepository.GetSingleAysnc(entity => entity.Id == categoryEntity.PrimaryCategoryId);
+                SubCategory subCategoryEntity = await _subCategoryRepository.GetSingleAysnc(entity => entity.Id == categoryEntity.SubCategoryId);
+
+                categoryEntity.CategoryName = primaryCategoryEntity.PrimaryCategoryName + " : " + subCategoryEntity.SubCategoryName;
                 
                 _categoryRepository.Add(categoryEntity);
 
@@ -135,7 +138,7 @@ namespace CTS_BE.BAL.Services.Pension
                     );
                     return response;
                 }
-
+ 
             }
             catch (DbUpdateException ex) {
                 response.FillDataSource(
@@ -147,6 +150,20 @@ namespace CTS_BE.BAL.Services.Pension
                 response.FillFrom(categoryEntity);
             }
             return response;
+        }
+
+       public async Task<IEnumerable<TResponse>> ListPensionCategory<TResponse>(
+                short financialYear,
+                string treasuryCode,
+                DynamicListQueryParameters dynamicListQueryParameters
+            )
+        {
+            return await _categoryRepository
+                .GetSelectedColumnByConditionAsync(
+                    entity => entity.ActiveFlag,
+                    entity => _mapper.Map<TResponse>(entity),
+                    dynamicListQueryParameters
+                );
         }
     }
 }

@@ -8,6 +8,6 @@ namespace CTS_BE.DAL.Interfaces.Pension
 {
     public interface IPrimaryCategoryRepository : IRepository<PrimaryCategory>
     {
-        
+
     }
 }

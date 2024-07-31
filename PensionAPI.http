@@ -24,10 +24,19 @@ Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
-  "PrimaryCategoryId": 2,
+  "PrimaryCategoryId": 4,
   "SubCategoryId": 3
 }
 
+### List All PensionCategory
+# @name ListPensionCategory
+PATCH {{PensionAPI_HostAddress}}/api/v1/pension/category
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{"pageSize":10,"pageIndex":0,"filterParameters":[],"sortParameters":{"field":"","order":""}}
 
 ### Create Pension SubCategory
 # @name CreatePensionSubCategory
@@ -147,7 +156,7 @@ Content-Type: application/json
   "gender": "M",
   "mobileNumber": "{{$randomInt 6000000000 9999999999}}",
   "emailId": "string",
-  "pensionerAddress": 1,
+  "pensionerAddress": "Malda",
   "identificationMark": "S",
   "panNo": "PANNO{{$randomInt 1000 9999}}F",
   "aadhaarNo": "{{$randomInt 600000000000 999999999999}}",
@@ -180,7 +189,7 @@ Content-Type: application/json
   "gender": "M",
   "mobileNumber": "{{$randomInt 6000000000 9999999999}}",
   "emailId": "string",
-  "pensionerAddress": 10,
+  "pensionerAddress": "Kolkata",
   "identificationMark": "S",
   "panNo": "PANNO{{$randomInt 1000 9999}}F",
   "aadhaarNo": "{{$randomInt 600000000000 999999999999}}",

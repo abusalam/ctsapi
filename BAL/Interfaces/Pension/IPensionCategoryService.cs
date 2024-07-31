@@ -23,5 +23,10 @@ namespace CTS_BE.BAL.Interfaces.Pension
             short financialYear,
             string treasuryCode
         );
+        public Task<IEnumerable<TResponse>> ListPensionCategory<TResponse>(
+                short financialYear,
+                string treasuryCode,
+                DynamicListQueryParameters dynamicListQueryParameters
+        );
     }
 }

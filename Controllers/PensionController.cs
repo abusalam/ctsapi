@@ -797,7 +797,82 @@ namespace CTS_BE.Controllers
 
             return response;
         }
-    
+
+        [HttpPatch("pension/category")]
+        [Produces("application/json")]
+        [Tags("Pension", "Pension: Category Master")]
+        public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<PensionCategoryListDTO>>>> ControlPensionCategoryList(
+                DynamicListQueryParameters dynamicListQueryParameters
+            )
+        {
+            JsonAPIResponse<DynamicListResult<IEnumerable<PensionCategoryListDTO>>> response;
+            try {
+
+                response = new() {
+
+                    ApiResponseStatus = Enum.APIResponseStatus.Success,
+                    Result = new()
+                        {
+                            Headers = new () {
+                            
+                                new() {
+                                    Name = "Category ID",
+                                    DataType = "text",
+                                    FieldName = "id",
+                                    FilterField = "id",
+                                    IsFilterable = true,
+                                    IsSortable = true,
+
+                                },
+                                new() {
+                                    Name = "Primary Category ID",
+                                    DataType = "text",
+                                    FieldName = "primaryCategoryId",
+                                    FilterField = "primaryCategoryId",
+                                    IsFilterable = true,
+                                    IsSortable = true,
+                                },
+                                new() {
+                                    Name = "Sub Category ID",
+                                    DataType = "text",
+                                    FieldName = "subCategoryId",
+                                    FilterField = "subCategoryId",
+                                    IsFilterable = true,
+                                    IsSortable = true,
+                                },
+                                new() {
+                                    Name = "Category Name",
+                                    DataType = "text",
+                                    FieldName = "categoryName",
+                                    FilterField = "categoryName",
+                                    IsFilterable = true,
+                                    IsSortable = true,
+                                }
+
+                            },
+                            Data = await _pensionCategoryService.ListPensionCategory<PensionCategoryListDTO>(
+                                GetCurrentFyYear(),
+                                GetTreasuryCode(),
+                                dynamicListQueryParameters),
+                            DataCount = 10
+                        },
+                    Message = $"All PPO Details Received Successfully!"
+
+                };
+            } catch(DbException e) {
+                // StackFrame CallStack = new(1, true);
+                response = new () {
+                ApiResponseStatus = Enum.APIResponseStatus.Error,
+                Result = null,
+                Message = e.ToString()
+                //   $"{e.GetType()}=>File:{CallStack.GetFileName()}({CallStack.GetFileLineNumber()}): {e.Message}"
+                };
+            }
+            return response;
+        }
+ 
+
+
         [HttpGet("ppo/{ppoId}/{toDate}/pension-bill")]
         [Produces("application/json")]
         [Tags("Pension", "Pension: First Bill")]
