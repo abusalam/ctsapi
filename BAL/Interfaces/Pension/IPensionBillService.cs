@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace CTS_BE.BAL.Interfaces.Pension
 {
-    public interface IPensionBillService
+    public interface IPensionBillService : IBaseService
     {
         public Task<T> GetPensionerFirstBill<T>(
             int ppoId,

@@ -7,7 +7,7 @@ using CTS_BE.PensionEnum;
 
 namespace CTS_BE.BAL.Interfaces.Pension
 {
-    public interface IPensionStatusService
+    public interface IPensionStatusService : IBaseService
     {
         public Task<PensionStatusEntryDTO> SetPensionStatusFlag(
             PensionStatusEntryDTO pensionStatusEntryDTO,

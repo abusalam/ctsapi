@@ -7,7 +7,7 @@ using CTS_BE.Helper;
 
 namespace CTS_BE.BAL.Interfaces.Pension
 {
-    public interface IPensionerDetailsService
+    public interface IPensionerDetailsService : IBaseService
     {
         public Task<PensionerResponseDTO> CreatePensioner(
             PensionerEntryDTO pensionerEntryDTO,

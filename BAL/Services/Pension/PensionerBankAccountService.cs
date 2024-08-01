@@ -9,20 +9,25 @@ using CTS_BE.DAL.Entities.Pension;
 using CTS_BE.DAL.Interfaces.Pension;
 using CTS_BE.DTOs;
 using CTS_BE.Helper;
+using CTS_BE.Helper.Authentication;
 
 namespace CTS_BE.BAL.Services.Pension
 {
-    public class PensionerBankAccountService : IPensionerBankAccountService
+    public class PensionerBankAccountService : BaseService, IPensionerBankAccountService
     {
 
         private readonly IPensionerBankAccountRepository _pensionerBankAccountRepository;
+        private readonly IClaimService _claimService;
         private readonly IMapper _mapper;
         public PensionerBankAccountService(
             IPensionerBankAccountRepository pensionerBankAccountRepository,
+            IClaimService claimService,
             IMapper mapper)
         {
             _pensionerBankAccountRepository = pensionerBankAccountRepository;
+            _claimService                   = claimService;
             _mapper                         = mapper;
+            _userId                         = _claimService.GetUserId();
         }
 
         public async Task<PensionerBankAcDTO> CreatePensionerBankAccount(
@@ -41,8 +46,7 @@ namespace CTS_BE.BAL.Services.Pension
                 bankAccountEntity.PpoId = ppoId;
                 bankAccountEntity.FinancialYear = financialYear;
                 bankAccountEntity.TreasuryCode = treasuryCode;
-                bankAccountEntity.ActiveFlag = true;
-                bankAccountEntity.CreatedAt = DateTime.Now;
+                SetCreatedBy(bankAccountEntity);
                 
                 _pensionerBankAccountRepository.Add(bankAccountEntity);
 
@@ -102,8 +106,8 @@ namespace CTS_BE.BAL.Services.Pension
                     );
                 bankAccountEntity.FillFrom(pensionerBankAcDTO);
                 
-                if(bankAccountEntity.PpoId >0 ) {
-                    bankAccountEntity.UpdatedAt = DateTime.Now;
+                if(bankAccountEntity.PpoId > 0 ) {
+                    SetUpdatedBy(bankAccountEntity);
                     _pensionerBankAccountRepository.Update(bankAccountEntity);
                     if(await _pensionerBankAccountRepository.SaveChangesManagedAsync() == 0) {
                         dynamic dataSource = new ExpandoObject(){};

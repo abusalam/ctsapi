@@ -6,7 +6,7 @@ using CTS_BE.BAL.Interfaces.Pension;
 
 namespace CTS_BE.BAL.Services.Pension
 {
-    public class PensionBillService : IPensionBillService
+    public class PensionBillService : BaseService, IPensionBillService
     {
         public Task<T> GetPensionerFirstBill<T>(
                 int ppoId,

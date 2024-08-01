@@ -7,7 +7,7 @@ using CTS_BE.DTOs;
 
 namespace CTS_BE.BAL.Services.Pension
 {
-    public class PensionService : IPensionService
+    public class PensionService : BaseService, IPensionService
     {
         private readonly IManualPpoReceiptRepository _manualPpoReceiptRepository;
         private readonly IReceiptSequenceRepository _receiptSequenceRepository;
@@ -76,6 +76,7 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode,
             DynamicListQueryParameters dynamicListQueryParameters
         ) {
+            _dataCount = _manualPpoReceiptRepository.Count();
             return await _manualPpoReceiptRepository
                 .GetSelectedColumnByConditionAsync(
                     entity => entity.ActiveFlag && entity.FinancialYear == financialYear && entity.TreasuryCode == treasuryCode,

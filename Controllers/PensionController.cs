@@ -30,7 +30,7 @@ namespace CTS_BE.Controllers
         private readonly IPensionCategoryService _pensionCategoryService;
         private readonly IPensionBillService _pensionBillService;
         private readonly IPensionBreakupService _pensionBreakupService;
-
+        private readonly IPensionRateService _pensionRateService;
 
         public PensionController(
                 IClaimService claimService,
@@ -40,7 +40,8 @@ namespace CTS_BE.Controllers
                 IPensionerBankAccountService pensionerBankAccountService,
                 IPensionCategoryService pensionCategoryService,
                 IPensionBillService pensionBillService,
-                IPensionBreakupService pensionBreakupService
+                IPensionBreakupService pensionBreakupService,
+                IPensionRateService pensionRateService
             ) : base(claimService)
         {
             _pensionService = pensionService;
@@ -50,6 +51,7 @@ namespace CTS_BE.Controllers
             _pensionCategoryService = pensionCategoryService;
             _pensionBillService = pensionBillService;
             _pensionBreakupService = pensionBreakupService;
+            _pensionRateService = pensionRateService;
         }
 
         [HttpPost("manual-ppo/receipts")]
@@ -164,7 +166,7 @@ namespace CTS_BE.Controllers
                                 GetCurrentFyYear(),
                                 GetTreasuryCode(),
                                 dynamicListQueryParameters),
-                            DataCount = 10
+                            DataCount = _pensionService.DataCount()
                         },
                     Message = $"All PPO Receipts Received Successfully!"
 
@@ -537,7 +539,7 @@ namespace CTS_BE.Controllers
                                 GetCurrentFyYear(),
                                 GetTreasuryCode(),
                                 dynamicListQueryParameters),
-                            DataCount = 10
+                            DataCount = _pensionerDetailsService.DataCount()
                         },
                     Message = $"All PPO Details Received Successfully!"
 
@@ -781,7 +783,7 @@ namespace CTS_BE.Controllers
                                 GetCurrentFyYear(),
                                 GetTreasuryCode(),
                                 dynamicListQueryParameters),
-                            DataCount = 10
+                            DataCount = _pensionCategoryService.DataCount()
                         },
                     Message = $"All Primary Category Details Received Successfully!"
 
@@ -870,7 +872,7 @@ namespace CTS_BE.Controllers
                                 GetCurrentFyYear(),
                                 GetTreasuryCode(),
                                 dynamicListQueryParameters),
-                            DataCount = 10
+                            DataCount = _pensionCategoryService.DataCount()
                         },
                     Message = $"All Sub Category Details Received Successfully!"
 
@@ -976,7 +978,7 @@ namespace CTS_BE.Controllers
                                 GetCurrentFyYear(),
                                 GetTreasuryCode(),
                                 dynamicListQueryParameters),
-                            DataCount = 10
+                            DataCount = _pensionCategoryService.DataCount()
                         },
                     Message = $"All PPO Details Received Successfully!"
 
@@ -1086,7 +1088,7 @@ namespace CTS_BE.Controllers
                                 GetCurrentFyYear(),
                                 GetTreasuryCode(),
                                 dynamicListQueryParameters),
-                            DataCount = 10
+                            DataCount = _pensionBreakupService.DataCount()
                         },
                     Message = $"All Bill Breakups Received Successfully!"
 
@@ -1099,6 +1101,128 @@ namespace CTS_BE.Controllers
                 Message = e.ToString()
                 //   $"{e.GetType()}=>File:{CallStack.GetFileName()}({CallStack.GetFileLineNumber()}): {e.Message}"
                 };
+            }
+            return response;
+        }
+ 
+        [HttpPost("pension/component-rate")]
+        [Produces("application/json")]
+        [Tags("Pension", "Pension: Component Rate")]
+        public async Task<JsonAPIResponse<PensionRatesResponseDTO>> ControlPensionComponentRateCreate(
+                PensionRatesEntryDTO pensionRatesEntryDTO
+            )
+        {
+
+            JsonAPIResponse<PensionRatesResponseDTO> response = new(){
+                ApiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = $"Component Rate saved sucessfully!",
+                Result = new(){
+                    Id = 0
+                }
+            };
+            try {
+                response.Result = await _pensionRateService
+                    .CreatePensionRates<PensionRatesEntryDTO, PensionRatesResponseDTO>(                    
+                            pensionRatesEntryDTO,
+                            GetCurrentFyYear(),
+                            GetTreasuryCode()
+                        );
+            }
+            catch(InvalidCastException ex) {
+                response.ApiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = $"C-Error: {ex.Message}";
+            }
+            finally {
+                if(response.Result.Id == 0) {
+                    response.ApiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.Message = $"C-Error: Component Rate not saved!";
+                }
+            }
+
+            return response;
+        }
+
+        [HttpPatch("pension/component-rate")]
+        [Produces("application/json")]
+        [Tags("Pension", "Pension: Component Rate")]
+        public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<PensionRatesResponseDTO>>>> ControlPensionComponentRateList(
+                DynamicListQueryParameters dynamicListQueryParameters
+            )
+        {
+            JsonAPIResponse<DynamicListResult<IEnumerable<PensionRatesResponseDTO>>> response = new();
+            try {
+
+                response = new() {
+
+                    ApiResponseStatus = Enum.APIResponseStatus.Success,
+                    Result = new()
+                        {
+                            Headers = new () {
+                            
+                                new() {
+                                    Name = "Component Rate ID",
+                                    DataType = "text",
+                                    FieldName = "id",
+                                    FilterField = "id",
+                                    IsFilterable = true,
+                                    IsSortable = true,
+
+                                },
+                                new() {
+                                    Name = "Category ID",
+                                    DataType = "text",
+                                    FieldName = "categoryId",
+                                    FilterField = "categoryId",
+                                    IsFilterable = true,
+                                    IsSortable = true,
+                                },
+                                new() {
+                                    Name = "Bill Breakup ID",
+                                    DataType = "text",
+                                    FieldName = "breakupId",
+                                    FilterField = "breakupId",
+                                    IsFilterable = true,
+                                    IsSortable = true,
+                                },
+                                new() {
+                                    Name = "Effective From Date",
+                                    DataType = "text",
+                                    FieldName = "effectiveFromDate",
+                                    FilterField = "effectiveFromDate",
+                                    IsFilterable = true,
+                                    IsSortable = true,
+                                },
+                                new() {
+                                    Name = "Rate Amount",
+                                    DataType = "text",
+                                    FieldName = "rateAmount",
+                                    FilterField = "rateAmount",
+                                    IsFilterable = true,
+                                    IsSortable = true,
+                                },
+                                new() {
+                                    Name = "Rate Type",
+                                    DataType = "text",
+                                    FieldName = "rateType",
+                                    FilterField = "rateType",
+                                    IsFilterable = true,
+                                    IsSortable = true,
+                                }
+
+                            },
+                            Data = await _pensionRateService.ListRates<PensionRatesResponseDTO>(
+                                    GetCurrentFyYear(),
+                                    GetTreasuryCode(),
+                                    dynamicListQueryParameters
+                                ),
+                            DataCount = _pensionRateService.DataCount()
+                        },
+                    Message = $"All Bill Breakups Received Successfully!"
+
+                };
+            }
+            finally {
+
             }
             return response;
         }

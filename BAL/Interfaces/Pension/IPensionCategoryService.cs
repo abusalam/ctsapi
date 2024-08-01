@@ -6,7 +6,7 @@ using CTS_BE.DTOs;
 
 namespace CTS_BE.BAL.Interfaces.Pension
 {
-    public interface IPensionCategoryService
+    public interface IPensionCategoryService : IBaseService
     {
         public Task<TResponse> CreatePensionPrimaryCategory<TEntry, TResponse>(
             TEntry pensionPrimaryCategoryEntryDTO,

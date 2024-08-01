@@ -9,7 +9,7 @@ using CTS_BE.DAL.Repositories.Pension;
 
 namespace CTS_BE.BAL.Services.Pension
 {
-    public class ReceiptSequenceService : IReceiptSequenceService
+    public class ReceiptSequenceService : BaseService, IReceiptSequenceService
     {
         private readonly IReceiptSequenceRepository _receiptSequenceRepository;
 

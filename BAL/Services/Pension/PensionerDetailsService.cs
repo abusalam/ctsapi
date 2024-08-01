@@ -8,23 +8,28 @@ using CTS_BE.DAL.Entities.Pension;
 using CTS_BE.DAL.Interfaces.Pension;
 using CTS_BE.DTOs;
 using CTS_BE.Helper;
+using CTS_BE.Helper.Authentication;
 using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.BAL.Services.Pension
 {
-    public class PensionerDetailsService : IPensionerDetailsService
+    public class PensionerDetailsService : BaseService, IPensionerDetailsService
     {
         private readonly IPensionerDetailsRepository _pensionerDetailsRepository;
         private readonly IPpoIdSequenceRepository _ppoIdSequenceRepository;
+        private readonly IClaimService _claimService;
         private readonly IMapper _mapper;
         public PensionerDetailsService(
             IPensionerDetailsRepository pensionerDetailsRepository,
             IPpoIdSequenceRepository ppoIdSequenceRepository,
+            IClaimService claimService,
             IMapper mapper)
         {
             _pensionerDetailsRepository = pensionerDetailsRepository;
             _ppoIdSequenceRepository    = ppoIdSequenceRepository;
+            _claimService               = claimService;
             _mapper                     = mapper;
+            _userId                     = claimService.GetUserId();
         }
 
         public async Task<PensionerResponseDTO> CreatePensioner(
@@ -45,9 +50,9 @@ namespace CTS_BE.BAL.Services.Pension
                 );
                 pensionerEntity.FinancialYear = financialYear;
                 pensionerEntity.TreasuryCode = treasuryCode;
-                pensionerEntity.ActiveFlag = true;
-                pensionerEntity.CreatedAt = DateTime.Now;
+                
                 if(pensionerEntity.PpoId > 0) {
+                    SetCreatedBy(pensionerEntity);
                     _pensionerDetailsRepository.Add(pensionerEntity);
                     if(await _pensionerDetailsRepository.SaveChangesManagedAsync() == 0) {
                         pensionerEntity.PpoId = 0;
@@ -107,7 +112,7 @@ namespace CTS_BE.BAL.Services.Pension
                 pensionerEntity.FillFrom(pensionerEntryDTO);
 
                 if(pensionerEntity.PpoId > 0) {
-                    pensionerEntity.UpdatedAt = DateTime.Now;
+                    SetUpdatedBy(pensionerEntity);
                     _pensionerDetailsRepository.Update(pensionerEntity);
                     if(await _pensionerDetailsRepository.SaveChangesManagedAsync() == 0) {
                         pensionerEntity.PpoId = 0;
@@ -130,6 +135,7 @@ namespace CTS_BE.BAL.Services.Pension
                 DynamicListQueryParameters dynamicListQueryParameters
             )
         {
+            _dataCount = _pensionerDetailsRepository.Count();
             return await _pensionerDetailsRepository
                 .GetSelectedColumnByConditionAsync(
                     entity => entity.ActiveFlag 

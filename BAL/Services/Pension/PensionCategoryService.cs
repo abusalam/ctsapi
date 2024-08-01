@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.BAL.Services.Pension
 {
-    public class PensionCategoryService : IPensionCategoryService
+    public class PensionCategoryService : BaseService, IPensionCategoryService
     {
         private readonly IPrimaryCategoryRepository _primaryCategoryRepository;
         private readonly ISubCategoryRepository _subCategoryRepository;
@@ -76,6 +76,7 @@ namespace CTS_BE.BAL.Services.Pension
                 DynamicListQueryParameters dynamicListQueryParameters
             )
         {
+            _dataCount = _primaryCategoryRepository.Count();
             return await _primaryCategoryRepository
                 .GetSelectedColumnByConditionAsync(
                     entity => entity.ActiveFlag,
@@ -128,6 +129,7 @@ namespace CTS_BE.BAL.Services.Pension
                 DynamicListQueryParameters dynamicListQueryParameters
             )
         {
+            _dataCount = _subCategoryRepository.Count();
             return await _subCategoryRepository
                 .GetSelectedColumnByConditionAsync(
                     entity => entity.ActiveFlag,
@@ -187,6 +189,7 @@ namespace CTS_BE.BAL.Services.Pension
                 DynamicListQueryParameters dynamicListQueryParameters
             )
         {
+            _dataCount = _categoryRepository.Count();
             return await _categoryRepository
                 .GetSelectedColumnByConditionAsync(
                     entity => entity.ActiveFlag,

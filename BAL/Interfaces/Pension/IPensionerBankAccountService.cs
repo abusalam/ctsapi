@@ -6,7 +6,7 @@ using CTS_BE.DTOs;
 
 namespace CTS_BE.BAL.Interfaces.Pension
 {
-    public interface IPensionerBankAccountService
+    public interface IPensionerBankAccountService : IBaseService
     {
         public Task<PensionerBankAcDTO> CreatePensionerBankAccount(
             int ppoId,
