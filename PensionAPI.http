@@ -18,6 +18,22 @@
 ### Create Pension Component
 # @name CreatePensionBreakup
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
+POST {{PensionAPI_HostAddress}}/api/v1/pension/component-rate
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "CategoryId": 30,
+  "BreakupId": 3,
+  "EffectiveFromDate": "2024-04-01",
+  "RateAmount": 1000,
+  "RateType": "A"
+}
+
+### Create Pension Component
+# @name CreatePensionBreakup
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
 POST {{PensionAPI_HostAddress}}/api/v1/pension/bill-component
 Accept: application/json
 Authorization: Bearer {{accessToken}}
@@ -47,7 +63,8 @@ Content-Type: application/json
 # PATCH {{PensionAPI_HostAddress}}/api/v1/pension/category
 # PATCH {{PensionAPI_HostAddress}}/api/v1/pension/primary-category
 # PATCH {{PensionAPI_HostAddress}}/api/v1/pension/sub-category
-PATCH {{PensionAPI_HostAddress}}/api/v1/pension/bill-component
+# PATCH {{PensionAPI_HostAddress}}/api/v1/pension/bill-component
+PATCH {{PensionAPI_HostAddress}}/api/v1/pension/component-rate
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
 Accept: application/json
 Authorization: Bearer {{accessToken}}
