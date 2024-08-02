@@ -78,7 +78,7 @@ builder.Services.AddTransient<IPensionerBankAccountRepository, PensionerBankAcco
 builder.Services.AddTransient<IPrimaryCategoryRepository, PrimaryCategoryRepository>();
 builder.Services.AddTransient<ISubCategoryRepository, SubCategoryRepository>();
 builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
-builder.Services.AddTransient<IBillBreakupRepository, BillBreakupRepository>();
+builder.Services.AddTransient<IBreakupRepository, BreakupRepository>();
 builder.Services.AddTransient<IComponentRateRepository, ComponentRateRepository>();
 
 

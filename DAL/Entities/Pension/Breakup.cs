@@ -7,10 +7,11 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.DAL.Entities.Pension;
 
 /// <summary>
-/// PensionModuleSchema
+/// PensionModuleSchema v1
 /// </summary>
-[Table("components", Schema = "cts_pension")]
-public partial class Component
+[Table("breakups", Schema = "cts_pension")]
+[Index("ComponentName", Name = "breakups_component_name_key", IsUnique = true)]
+public partial class Breakup
 {
     /// <summary>
     /// BreakupId
@@ -53,4 +54,7 @@ public partial class Component
 
     [InverseProperty("Breakup")]
     public virtual ICollection<ComponentRate> ComponentRates { get; set; } = new List<ComponentRate>();
+
+    [InverseProperty("Breakup")]
+    public virtual ICollection<PpoComponentRate> PpoComponentRates { get; set; } = new List<PpoComponentRate>();
 }

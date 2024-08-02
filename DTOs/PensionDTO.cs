@@ -64,6 +64,8 @@ namespace CTS_BE.DTOs
     }
 
     public class ListAllPpoReceiptsResponseDTO {
+        public long Id { get; set; }
+
         [StringLength(13)]
         public string TreasuryReceiptNo { get; set; } = null!;
                 
@@ -78,28 +80,26 @@ namespace CTS_BE.DTOs
     }
 
     public class PensionerEntryDTO {
+        public long ReceiptId { get; set; }
+
         [StringLength(100)]
         public string PpoNo { get; set; } = null!;
 
         [RegularExpression(@"[PFC]", ErrorMessage = "{0} must be one of the following (P, F & C)")]
         public char PpoType { get; set; }
-        
-        [RegularExpression(@"[ADO]", ErrorMessage = "{0} must be one of the following (A, D & O)")]
-        public char PsaType { get; set; }
 
         [RegularExpression(@"[ELUVNRPGJKHW]", ErrorMessage = "{0} must be one of the following (E, L, U, V, N, R, P, G, J, K, H & W)")]
         public char PpoSubType { get; set; }
-        public char PpoCategory { get; set; }
-        public char PpoSubCategory { get; set; }
+        public long CategoryId { get; set; }
 
         [StringLength(100)]
         public string PensionerName { get; set; } = null!;
+        
+        [RegularExpression(@"[MF]", ErrorMessage = "{0} must be one of the following (M - Male; F - Female;)")]
+        public char? Gender { get; set; }
 
         [DataType(DataType.Date)]
         public DateOnly DateOfBirth { get; set; }
-
-        [RegularExpression(@"[MFO]", ErrorMessage = "{0} must be one of the following (M, F & O)")]
-        public char? Gender { get; set; }
 
         [StringLength(10)]
         [RegularExpression(@"^[6-9]\d{9}$")]
@@ -125,11 +125,14 @@ namespace CTS_BE.DTOs
     }
 
     public class PensionerResponseDTO : PensionerEntryDTO {
+        public long Id { get; set; }
+
         public int PpoId { get; set; }
     }
 
     public class PensionerListDTO : BaseDTO {
-
+        public long Id { get; set; }
+        
         public int PpoId { get; set; }
 
         [StringLength(100)]
@@ -270,5 +273,12 @@ namespace CTS_BE.DTOs
 
     public partial class PensionRatesResponseDTO : PensionRatesEntryDTO {
         public long Id { get; set; }
+    }
+
+    public partial class InitiateFirstPensionBillDTO : BaseDTO {
+        [Required]
+        public int PpoId { get; set; }
+        public char BillType { get; set; }
+        public DateOnly ToDate { get; set; }
     }
 }

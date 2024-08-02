@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.DAL.Entities.Pension;
 
 /// <summary>
-/// PensionModuleSchema
+/// PensionModuleSchema v1
 /// </summary>
 [Table("uploaded_files", Schema = "cts_pension")]
 public partial class UploadedFile

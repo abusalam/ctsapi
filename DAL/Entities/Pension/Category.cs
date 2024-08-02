@@ -7,9 +7,10 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.DAL.Entities.Pension;
 
 /// <summary>
-/// PensionModuleSchema
+/// PensionModuleSchema v1
 /// </summary>
 [Table("categories", Schema = "cts_pension")]
+[Index("PrimaryCategoryId", "SubCategoryId", Name = "categories_primary_category_id_sub_category_id_key", IsUnique = true)]
 public partial class Category
 {
     [Key]
@@ -46,6 +47,9 @@ public partial class Category
 
     [InverseProperty("Category")]
     public virtual ICollection<ComponentRate> ComponentRates { get; set; } = new List<ComponentRate>();
+
+    [InverseProperty("Category")]
+    public virtual ICollection<Pensioner> Pensioners { get; set; } = new List<Pensioner>();
 
     [ForeignKey("PrimaryCategoryId")]
     [InverseProperty("Categories")]

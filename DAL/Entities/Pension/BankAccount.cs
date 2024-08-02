@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.DAL.Entities.Pension;
 
 /// <summary>
-/// PensionModuleSchema
+/// PensionModuleSchema v1
 /// </summary>
 [Table("bank_accounts", Schema = "cts_pension")]
 [Index("PpoId", "TreasuryCode", Name = "bank_accounts_ppo_id_treasury_code_key", IsUnique = true)]
@@ -23,6 +23,9 @@ public partial class BankAccount
     [Column("treasury_code")]
     [StringLength(3)]
     public string TreasuryCode { get; set; } = null!;
+
+    [Column("pensioner_id")]
+    public long PensionerId { get; set; }
 
     [Column("ppo_id")]
     public int PpoId { get; set; }
@@ -61,4 +64,8 @@ public partial class BankAccount
 
     [Column("active_flag")]
     public bool ActiveFlag { get; set; }
+
+    [ForeignKey("PensionerId")]
+    [InverseProperty("BankAccounts")]
+    public virtual Pensioner Pensioner { get; set; } = null!;
 }

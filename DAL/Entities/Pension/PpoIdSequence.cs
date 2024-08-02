@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.DAL.Entities.Pension;
 
 /// <summary>
-/// PensionModuleSchema
+/// PensionModuleSchema v1
 /// </summary>
 [Table("ppo_id_sequences", Schema = "cts_pension")]
 public partial class PpoIdSequence

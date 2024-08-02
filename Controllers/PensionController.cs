@@ -360,32 +360,32 @@ namespace CTS_BE.Controllers
         [HttpPost("ppo/details")]
         [Produces("application/json")]
         [Tags("Pension", "Pension: PPO Details")]
-        public async Task<APIResponse<PensionerResponseDTO>> ControlPensionerDetailsCreate(
+        public async Task<JsonAPIResponse<PensionerResponseDTO>> ControlPensionerDetailsCreate(
                 PensionerEntryDTO pensionerEntryDTO
             )
         {
 
-            APIResponse<PensionerResponseDTO> response = new(){
-                apiResponseStatus = Enum.APIResponseStatus.Success,
+            JsonAPIResponse<PensionerResponseDTO> response = new(){
+                ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = $"PPO Details saved sucessfully!",
-                result = new(){
+                Result = new(){
                     PpoId = 0
                 }
             };
             try {
-                response.result = await _pensionerDetailsService.CreatePensioner(
+                response.Result = await _pensionerDetailsService.CreatePensioner(
                     pensionerEntryDTO,
                     GetCurrentFyYear(),
                     GetTreasuryCode()
                 );
             }
             catch (DbUpdateException ex) {
-                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.ApiResponseStatus = Enum.APIResponseStatus.Error;
                 response.Message = $"PPO Details not saved! Error: {ex.Message}";
             }
             finally {
-                if(response.result.PpoId == 0) {
-                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                if(response.Result.PpoId == 0) {
+                    response.ApiResponseStatus = Enum.APIResponseStatus.Error;
                     response.Message = $"Error: PPO Details not saved!";
                 }
             }
@@ -1229,43 +1229,41 @@ namespace CTS_BE.Controllers
  
 
 
-        [HttpGet("ppo/{ppoId}/{toDate}/pension-bill")]
+        [HttpPatch("ppo/pension-bill")]
         [Produces("application/json")]
         [Tags("Pension", "Pension: First Bill")]
-        public async Task<APIResponse<PensionerFirstBillDTO>> ControlFirstBillsRead(
-                int ppoId,
-                DateOnly toDate
+        public async Task<JsonAPIResponse<PensionerFirstBillDTO>> ControlFirstBillsGeneration(
+                InitiateFirstPensionBillDTO initiateFirstPensionBillDTO
             )
         {
 
-            APIResponse<PensionerFirstBillDTO> response = new(){
-                apiResponseStatus = Enum.APIResponseStatus.Success,
-                Message = $"Pensioner Details received sucessfully!",
-                result = new (){
+            JsonAPIResponse<PensionerFirstBillDTO> response = new(){
+                ApiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = $"First Pension Bill generated sucessfully!",
+                Result = new (){
                     Pensioner = new(){},
                     BankAccount = new(){}
                 }
             };
             try {
-                response.result.BankAccount = await _pensionerBankAccountService.GetPensionerBankAccount(
-                    ppoId,
+                response.Result = await _pensionBillService.GenerateFirstPensionBills<PensionerFirstBillDTO>(
+                    initiateFirstPensionBillDTO,
                     GetCurrentFyYear(),
                     GetTreasuryCode()
                 );
-                response.result.Pensioner = await _pensionerDetailsService.GetPensioner<PensionerListDTO>(
-                    ppoId,
-                    GetCurrentFyYear(),
-                    GetTreasuryCode()
-                );
+            }
+            catch(InvalidCastException ex) {
+                response.ApiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = $"C-Error: {ex.Message}";
             }
             catch (DbUpdateException ex) {
-                response.apiResponseStatus = Enum.APIResponseStatus.Error;
-                response.Message = $"Bank Accounts Details not received! Error: {ex.Message}";
+                response.ApiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = $"C-Error: Unable to generate first pension bill Error: {ex.Message}";
             }
             finally {
-                if(response.result?.DataSource != null) {
-                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
-                    response.Message = $"Bank Accounts Details not received!";
+                if(response.Result?.DataSource != null) {
+                    response.ApiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.Message = $"C-Error: Unable to generate first pension bill";
                 }
             }
 

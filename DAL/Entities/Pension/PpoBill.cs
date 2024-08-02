@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.DAL.Entities.Pension;
 
 /// <summary>
-/// PensionModuleSchema
+/// PensionModuleSchema v1
 /// </summary>
 [Table("ppo_bills", Schema = "cts_pension")]
 [Index("TreasuryCode", "PpoId", "BillNo", Name = "ppo_bills_treasury_code_ppo_id_bill_no_key", IsUnique = true)]
@@ -40,12 +40,35 @@ public partial class PpoBill
     [MaxLength(1)]
     public char BillType { get; set; }
 
+    /// <summary>
+    /// BillNo is to identify the treasury bill
+    /// </summary>
     [Column("bill_no")]
     [StringLength(100)]
     public string BillNo { get; set; } = null!;
 
     [Column("bill_date")]
     public DateOnly BillDate { get; set; }
+
+    [Column("treasury_voucher_no")]
+    [StringLength(100)]
+    public string? TreasuryVoucherNo { get; set; }
+
+    [Column("treasury_voucher_date")]
+    public DateOnly? TreasuryVoucherDate { get; set; }
+
+    /// <summary>
+    /// UTRNo to refer to the actual transaction of the payment
+    /// </summary>
+    [Column("utr_no")]
+    [StringLength(100)]
+    public string? UtrNo { get; set; }
+
+    /// <summary>
+    /// UTRAt timestamp when the UTR is received
+    /// </summary>
+    [Column("utr_at", TypeName = "timestamp without time zone")]
+    public DateTime? UtrAt { get; set; }
 
     [Column("bill_gross_amount")]
     public int BillGrossAmount { get; set; }
@@ -69,8 +92,8 @@ public partial class PpoBill
     public bool ActiveFlag { get; set; }
 
     [InverseProperty("Bill")]
-    public virtual ICollection<PpoBillBytransfer> PpoBillBytransfers { get; set; } = new List<PpoBillBytransfer>();
+    public virtual ICollection<PpoBillBreakup> PpoBillBreakups { get; set; } = new List<PpoBillBreakup>();
 
     [InverseProperty("Bill")]
-    public virtual ICollection<PpoBillComponent> PpoBillComponents { get; set; } = new List<PpoBillComponent>();
+    public virtual ICollection<PpoBillBytransfer> PpoBillBytransfers { get; set; } = new List<PpoBillBytransfer>();
 }

@@ -9,16 +9,15 @@ namespace CTS_BE.DAL.Entities.Pension;
 /// <summary>
 /// PensionModuleSchema v1
 /// </summary>
-[Table("ppo_bill_bytransfers", Schema = "cts_pension")]
-[Index("PpoId", "TreasuryCode", Name = "ppo_bill_bytransfers_ppo_id_treasury_code_key", IsUnique = true)]
-public partial class PpoBillBytransfer
+[Table("ppo_component_rates", Schema = "cts_pension")]
+public partial class PpoComponentRate
 {
+    /// <summary>
+    /// RevisionId
+    /// </summary>
     [Key]
     [Column("id")]
     public long Id { get; set; }
-
-    [Column("financial_year")]
-    public int FinancialYear { get; set; }
 
     [Column("treasury_code")]
     [StringLength(3)]
@@ -27,17 +26,26 @@ public partial class PpoBillBytransfer
     [Column("ppo_id")]
     public int PpoId { get; set; }
 
-    [Column("bill_id")]
-    public long BillId { get; set; }
+    [Column("breakup_id")]
+    public long BreakupId { get; set; }
 
-    [Column("bytransfers_hoa_id")]
-    public int BytransfersHoaId { get; set; }
+    /// <summary>
+    /// From date is the Date of Commencement of pension of the pensioner
+    /// </summary>
+    [Column("from_date")]
+    public DateOnly FromDate { get; set; }
 
-    [Column("bytransfers_wef")]
-    public DateOnly BytransfersWef { get; set; }
+    /// <summary>
+    /// To date (will be null for regular active bills)
+    /// </summary>
+    [Column("to_date")]
+    public DateOnly? ToDate { get; set; }
 
-    [Column("bytransfers_amount")]
-    public int BytransfersAmount { get; set; }
+    /// <summary>
+    /// Amount per month is the actual amount paid for the mentioned period
+    /// </summary>
+    [Column("amount_per_month")]
+    public int AmountPerMonth { get; set; }
 
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime? CreatedAt { get; set; }
@@ -54,7 +62,7 @@ public partial class PpoBillBytransfer
     [Column("active_flag")]
     public bool ActiveFlag { get; set; }
 
-    [ForeignKey("BillId")]
-    [InverseProperty("PpoBillBytransfers")]
-    public virtual PpoBill Bill { get; set; } = null!;
+    [ForeignKey("BreakupId")]
+    [InverseProperty("PpoComponentRates")]
+    public virtual Breakup Breakup { get; set; } = null!;
 }

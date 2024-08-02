@@ -99,14 +99,14 @@ Content-Type: application/json
 
 ### Generate Components for First Pension Bill
 # @name GenerateFirstPensionBill
-POST {{PensionAPI_HostAddress}}/api/v1/echo
-# POST {{PensionAPI_HostAddress}}/api/v1/ppo/pension-bill
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+PATCH {{PensionAPI_HostAddress}}/api/v1/ppo/pension-bill
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
-  "PpoId": "{{GeneratedPpoId}}",
+  "PpoId": {{GeneratedPpoId}},
   "billType": "F",
   "toDate": "{{$datetime "YYYY-MM-DD"}}"
 }
@@ -179,12 +179,12 @@ Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
+  "receiptId": 1, 
   "ppoNo": "PPO-{{$randomInt 100000 999999}}",
   "ppoType": "P",
   "psaType": "A",
   "ppoSubType": "N",
-  "ppoCategory": "C",
-  "ppoSubCategory": "D",
+  "categoryId": 31,
   "pensionerName": "Jack Dowsel",
   "dateOfBirth": "{{$datetime "YYYY-MM-DD"}}",
   "gender": "M",
@@ -434,3 +434,40 @@ Content-Type: application/json
   "refreshToken": "{{refreshToken}}"
 }
 
+
+
+
+aadhaar_no
+active_flag
+basic_pension_amount
+category_id
+commuted_pension_amount
+created_at
+created_by
+date_of_birth
+date_of_commencement
+date_of_retirement
+email_id
+enhance_pension_amount
+financial_year
+gender
+identification_mark
+mobile_number
+pan_no
+pensioner_address
+pensioner_name
+photo_file_id
+ppo_category
+ppo_id
+ppo_no
+ppo_sub_category
+ppo_sub_type
+ppo_type
+psa_type
+receipt_id
+reduced_pension_amount
+religion
+signature_file_id
+treasury_code
+updated_at
+updated_by

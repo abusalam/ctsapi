@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.DAL.Entities.Pension;
 
 /// <summary>
-/// PensionModuleSchema
+/// PensionModuleSchema v1
 /// </summary>
 [Table("ppo_receipts", Schema = "cts_pension")]
 [Index("PpoNo", Name = "ppo_receipts_ppo_no_key", IsUnique = true)]
@@ -73,4 +73,7 @@ public partial class PpoReceipt
 
     [Column("active_flag")]
     public bool ActiveFlag { get; set; }
+
+    [InverseProperty("Receipt")]
+    public virtual ICollection<Pensioner> Pensioners { get; set; } = new List<Pensioner>();
 }

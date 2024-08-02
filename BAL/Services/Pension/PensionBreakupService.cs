@@ -15,23 +15,23 @@ namespace CTS_BE.BAL.Services.Pension
 {
     public class PensionBreakupService : BaseService, IPensionBreakupService
     {
-        private readonly IBillBreakupRepository _billBreakupRepository;
+        private readonly IBreakupRepository _billBreakupRepository;
         private readonly IMapper _mapper;
         private readonly IClaimService _claimService;
         public PensionBreakupService(
-                IBillBreakupRepository billBreakupRepository,
+                IBreakupRepository breakupRepository,
                 IClaimService claimService,
                 IMapper mapper
             )
         {
-            _billBreakupRepository = billBreakupRepository;
+            _billBreakupRepository = breakupRepository;
             _claimService = claimService;
             _mapper = mapper;
             _userId = _claimService.GetUserId();
         }
         public async Task<TResponse> CreatePensionBreakup<TEntry, TResponse>(TEntry pensionBreakupEntryDTO, short financialYear, string treasuryCode)
         {
-            Component breakupEntity = new() {
+            Breakup breakupEntity = new() {
                 Id = 0
             };
             TResponse? response = _mapper.Map<TResponse>(breakupEntity);

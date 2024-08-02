@@ -7,13 +7,14 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.DAL.Entities.Pension;
 
 /// <summary>
-/// PensionModuleSchema
+/// PensionModuleSchema v1
 /// </summary>
 [Table("component_rates", Schema = "cts_pension")]
+[Index("CategoryId", "BreakupId", "EffectiveFromDate", Name = "component_rates_category_id_breakup_id_effective_from_date_key", IsUnique = true)]
 public partial class ComponentRate
 {
     /// <summary>
-    /// RateId
+    /// RateId will identify the component rate revised or introduced
     /// </summary>
     [Key]
     [Column("id")]
@@ -25,6 +26,9 @@ public partial class ComponentRate
     [Column("breakup_id")]
     public long BreakupId { get; set; }
 
+    /// <summary>
+    /// Effective from date the component rate is revised or introduced
+    /// </summary>
     [Column("effective_from_date")]
     public DateOnly EffectiveFromDate { get; set; }
 
@@ -55,12 +59,12 @@ public partial class ComponentRate
 
     [ForeignKey("BreakupId")]
     [InverseProperty("ComponentRates")]
-    public virtual Component Breakup { get; set; } = null!;
+    public virtual Breakup Breakup { get; set; } = null!;
 
     [ForeignKey("CategoryId")]
     [InverseProperty("ComponentRates")]
     public virtual Category Category { get; set; } = null!;
 
     [InverseProperty("Rate")]
-    public virtual ICollection<PpoBillComponent> PpoBillComponents { get; set; } = new List<PpoBillComponent>();
+    public virtual ICollection<PpoBillBreakup> PpoBillBreakups { get; set; } = new List<PpoBillBreakup>();
 }

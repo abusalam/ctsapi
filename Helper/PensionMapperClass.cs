@@ -30,7 +30,7 @@ namespace CTS_BE.Helper
             CreateMap<PensionCategoryResponseDTO, Category>().ReverseMap();
             CreateMap<PensionCategoryListDTO, Category>().ReverseMap();
             CreateMap<PensionCategoryResponseDTO, PensionCategoryEntryDTO>().ReverseMap();
-            CreateMap<PensionBreakupResponseDTO, Component>().ReverseMap();
+            CreateMap<PensionBreakupResponseDTO, Breakup>().ReverseMap();
             CreateMap<PensionBreakupResponseDTO, PensionBreakupEntryDTO>().ReverseMap();
             CreateMap<PensionRatesResponseDTO, ComponentRate>().ReverseMap();
             CreateMap<PensionRatesResponseDTO, PensionRatesEntryDTO>().ReverseMap();

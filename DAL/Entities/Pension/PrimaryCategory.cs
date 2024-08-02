@@ -7,9 +7,10 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.DAL.Entities.Pension;
 
 /// <summary>
-/// PensionModuleSchema
+/// PensionModuleSchema v1
 /// </summary>
 [Table("primary_categories", Schema = "cts_pension")]
+[Index("PrimaryCategoryName", Name = "primary_categories_primary_category_name_key", IsUnique = true)]
 public partial class PrimaryCategory
 {
     [Key]

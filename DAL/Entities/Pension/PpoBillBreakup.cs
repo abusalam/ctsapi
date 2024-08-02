@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.DAL.Entities.Pension;
 
 /// <summary>
-/// PensionModuleSchema
+/// PensionModuleSchema v1
 /// </summary>
-[Table("ppo_bill_components", Schema = "cts_pension")]
-[Index("TreasuryCode", "PpoId", "BillId", "RateId", Name = "ppo_bill_components_treasury_code_ppo_id_bill_id_rate_id_key", IsUnique = true)]
-public partial class PpoBillComponent
+[Table("ppo_bill_breakups", Schema = "cts_pension")]
+[Index("TreasuryCode", "PpoId", "BillId", "RateId", Name = "ppo_bill_breakups_treasury_code_ppo_id_bill_id_rate_id_key", IsUnique = true)]
+public partial class PpoBillBreakup
 {
     [Key]
     [Column("id")]
@@ -27,9 +27,15 @@ public partial class PpoBillComponent
     [Column("ppo_id")]
     public int PpoId { get; set; }
 
+    /// <summary>
+    /// BillId is to identify the bill on which the actual payment made
+    /// </summary>
     [Column("bill_id")]
     public long BillId { get; set; }
 
+    /// <summary>
+    /// RateId is to identify the component rate applied on the bill
+    /// </summary>
     [Column("rate_id")]
     public long RateId { get; set; }
 
@@ -58,10 +64,10 @@ public partial class PpoBillComponent
     public bool ActiveFlag { get; set; }
 
     [ForeignKey("BillId")]
-    [InverseProperty("PpoBillComponents")]
+    [InverseProperty("PpoBillBreakups")]
     public virtual PpoBill Bill { get; set; } = null!;
 
     [ForeignKey("RateId")]
-    [InverseProperty("PpoBillComponents")]
+    [InverseProperty("PpoBillBreakups")]
     public virtual ComponentRate Rate { get; set; } = null!;
 }

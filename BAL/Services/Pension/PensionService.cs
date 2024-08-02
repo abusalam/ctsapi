@@ -3,6 +3,7 @@ using CTS_BE.BAL.Interfaces.Pension;
 using CTS_BE.DAL.Interfaces.Pension;
 using CTS_BE.DAL.Entities.Pension;
 using CTS_BE.DTOs;
+using CTS_BE.Helper.Authentication;
 
 
 namespace CTS_BE.BAL.Services.Pension
@@ -11,17 +12,21 @@ namespace CTS_BE.BAL.Services.Pension
     {
         private readonly IManualPpoReceiptRepository _manualPpoReceiptRepository;
         private readonly IReceiptSequenceRepository _receiptSequenceRepository;
+        private readonly IClaimService _claimService;
         private readonly IMapper _mapper;
 
         public PensionService (
             IManualPpoReceiptRepository manualPpoReceiptRepository,
             IReceiptSequenceRepository receiptSequenceRepository,
+            IClaimService claimService,
             IMapper mapper
             )
         {
             _manualPpoReceiptRepository = manualPpoReceiptRepository;
             _receiptSequenceRepository = receiptSequenceRepository;
+            _claimService = claimService;
             _mapper = mapper;
+            _userId = _claimService.GetUserId();
             
         }
 
@@ -52,14 +57,13 @@ namespace CTS_BE.BAL.Services.Pension
             {
                 manualPpoReceiptEntity = _mapper.Map<PpoReceipt>(manualPpoReceiptDTO);
                 manualPpoReceiptEntity.TreasuryCode = treasuryCode;
+                manualPpoReceiptEntity.FinancialYear = financialYear;
                 manualPpoReceiptEntity.TreasuryReceiptNo = await _receiptSequenceRepository.GenerateTreasuryReceiptNo(
                     financialYear,
                     treasuryCode
                 );
-                manualPpoReceiptEntity.FinancialYear = financialYear;
                 manualPpoReceiptEntity.PpoStatus = $"PPO Received";
-                manualPpoReceiptEntity.ActiveFlag = true;
-                
+                SetCreatedBy(manualPpoReceiptEntity);                
                 _manualPpoReceiptRepository.Add(manualPpoReceiptEntity);
 
                 await _manualPpoReceiptRepository.SaveChangesManagedAsync();

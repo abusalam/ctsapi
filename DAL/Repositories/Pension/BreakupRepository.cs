@@ -7,9 +7,9 @@ using CTS_BE.DAL.Interfaces.Pension;
 
 namespace CTS_BE.DAL.Repositories.Pension
 {
-    public class BillBreakupRepository : Repository<Component, PensionDbContext>, IBillBreakupRepository
+    public class BreakupRepository : Repository<Breakup, PensionDbContext>, IBreakupRepository
     {
-        public BillBreakupRepository(PensionDbContext context) : base(context)
+        public BreakupRepository(PensionDbContext context) : base(context)
         {
         }
     }

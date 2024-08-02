@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.DAL.Entities.Pension;
 
 /// <summary>
-/// PensionModuleSchema
+/// PensionModuleSchema v1
 /// </summary>
 [Table("pensioners", Schema = "cts_pension")]
 [Index("PpoId", "TreasuryCode", Name = "pensioners_ppo_id_treasury_code_key", IsUnique = true)]
@@ -25,6 +25,9 @@ public partial class Pensioner
     [StringLength(3)]
     public string TreasuryCode { get; set; } = null!;
 
+    [Column("receipt_id")]
+    public long ReceiptId { get; set; }
+
     [Column("ppo_id")]
     public int PpoId { get; set; }
 
@@ -32,25 +35,22 @@ public partial class Pensioner
     [StringLength(100)]
     public string PpoNo { get; set; } = null!;
 
+    /// <summary>
+    /// P - Pension; F - Family Pension; C - CPF;
+    /// </summary>
     [Column("ppo_type")]
     [MaxLength(1)]
     public char PpoType { get; set; }
 
+    /// <summary>
+    /// E - Employed; L - Widow Daughter; U - Unmarried Daughter; V - Divorced Daughter; N - Minor Son; R - Minor Daughter; P - Handicapped Son; G - Handicapped Daughter; J - Dependent Father; K - Dependent Mother; H - Husband; W - Wife;
+    /// </summary>
     [Column("ppo_sub_type")]
     [MaxLength(1)]
     public char PpoSubType { get; set; }
 
-    [Column("psa_type")]
-    [MaxLength(1)]
-    public char PsaType { get; set; }
-
-    [Column("ppo_category")]
-    [MaxLength(1)]
-    public char PpoCategory { get; set; }
-
-    [Column("ppo_sub_category")]
-    [MaxLength(1)]
-    public char PpoSubCategory { get; set; }
+    [Column("category_id")]
+    public long CategoryId { get; set; }
 
     [Column("pensioner_name")]
     [StringLength(100)]
@@ -59,6 +59,9 @@ public partial class Pensioner
     [Column("date_of_birth")]
     public DateOnly DateOfBirth { get; set; }
 
+    /// <summary>
+    /// M - Male; F - Female;
+    /// </summary>
     [Column("gender")]
     [MaxLength(1)]
     public char? Gender { get; set; }
@@ -105,6 +108,9 @@ public partial class Pensioner
     [Column("reduced_pension_amount")]
     public int ReducedPensionAmount { get; set; }
 
+    /// <summary>
+    /// H - Hindu; M - Muslim; O - Other;
+    /// </summary>
     [Column("religion")]
     [MaxLength(1)]
     public char Religion { get; set; }
@@ -130,9 +136,29 @@ public partial class Pensioner
     [Column("active_flag")]
     public bool ActiveFlag { get; set; }
 
+    [InverseProperty("Pensioner")]
+    public virtual ICollection<BankAccount> BankAccounts { get; set; } = new List<BankAccount>();
+
+    [ForeignKey("CategoryId")]
+    [InverseProperty("Pensioners")]
+    public virtual Category Category { get; set; } = null!;
+
+    [InverseProperty("Pensioner")]
+    public virtual ICollection<LifeCertificate> LifeCertificates { get; set; } = new List<LifeCertificate>();
+
+    [InverseProperty("Pensioner")]
+    public virtual ICollection<Nominee> Nominees { get; set; } = new List<Nominee>();
+
     [ForeignKey("PhotoFileId")]
     [InverseProperty("PensionerPhotoFiles")]
     public virtual UploadedFile? PhotoFile { get; set; }
+
+    [InverseProperty("Pensioner")]
+    public virtual ICollection<PpoStatusFlag> PpoStatusFlags { get; set; } = new List<PpoStatusFlag>();
+
+    [ForeignKey("ReceiptId")]
+    [InverseProperty("Pensioners")]
+    public virtual PpoReceipt Receipt { get; set; } = null!;
 
     [ForeignKey("SignatureFileId")]
     [InverseProperty("PensionerSignatureFiles")]

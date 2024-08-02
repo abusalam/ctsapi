@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.DAL.Entities.Pension;
 
 /// <summary>
-/// PensionModuleSchema
+/// PensionModuleSchema v1
 /// </summary>
 [Table("ppo_status_flags", Schema = "cts_pension")]
 public partial class PpoStatusFlag
@@ -22,6 +22,9 @@ public partial class PpoStatusFlag
     [Column("treasury_code")]
     [StringLength(3)]
     public string TreasuryCode { get; set; } = null!;
+
+    [Column("pensioner_id")]
+    public long PensionerId { get; set; }
 
     [Column("ppo_id")]
     public int PpoId { get; set; }
@@ -46,4 +49,8 @@ public partial class PpoStatusFlag
 
     [Column("active_flag")]
     public bool ActiveFlag { get; set; }
+
+    [ForeignKey("PensionerId")]
+    [InverseProperty("PpoStatusFlags")]
+    public virtual Pensioner Pensioner { get; set; } = null!;
 }
