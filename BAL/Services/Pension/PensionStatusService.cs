@@ -22,7 +22,7 @@ namespace CTS_BE.BAL.Services.Pension
                 IPensionStatusRepository pensionStatusRepository,
                 IClaimService claimService,
                 IMapper mapper
-            )
+            ) : base(claimService)
         {
             _pensionStatusRepository = pensionStatusRepository;
             _claimService = claimService;

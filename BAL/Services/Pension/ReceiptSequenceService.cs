@@ -6,6 +6,7 @@ using CTS_BE.BAL.Interfaces.Pension;
 using CTS_BE.DAL.Entities.Pension;
 using CTS_BE.DAL.Interfaces.Pension;
 using CTS_BE.DAL.Repositories.Pension;
+using CTS_BE.Helper.Authentication;
 
 namespace CTS_BE.BAL.Services.Pension
 {
@@ -14,8 +15,9 @@ namespace CTS_BE.BAL.Services.Pension
         private readonly IReceiptSequenceRepository _receiptSequenceRepository;
 
         public ReceiptSequenceService(
+            IClaimService claimService,
             IReceiptSequenceRepository receiptSequenceRepository
-            )
+            ) : base(claimService)
         {
             _receiptSequenceRepository = receiptSequenceRepository;
         }

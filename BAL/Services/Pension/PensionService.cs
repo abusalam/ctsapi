@@ -20,7 +20,7 @@ namespace CTS_BE.BAL.Services.Pension
             IReceiptSequenceRepository receiptSequenceRepository,
             IClaimService claimService,
             IMapper mapper
-            )
+            ) : base(claimService)
         {
             _manualPpoReceiptRepository = manualPpoReceiptRepository;
             _receiptSequenceRepository = receiptSequenceRepository;

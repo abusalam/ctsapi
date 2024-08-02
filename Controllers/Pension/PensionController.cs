@@ -1,39 +1,31 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Runtime;
+using System.Data.Common;
+using System.Diagnostics;
+using System.Text.Json.Nodes;
+using CTS_BE.BAL.Interfaces.Pension;
 using CTS_BE.DTOs;
+using CTS_BE.PensionEnum;
 using CTS_BE.Helper;
 using CTS_BE.Helper.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.EntityFrameworkCore;
+using NPOI.SS.Formula.Functions;
+using NPOI.DDF;
+using System.Dynamic;
+using CTS_BE.DAL.Entities.Pension;
 
-namespace CTS_BE.Controllers
+namespace CTS_BE.Controllers.Pension
 {
-    [ApiController]
-    public class ApiBaseController : ControllerBase
+    [Route("api/v1")]
+    public class PensionController : ApiBase
     {
-        private readonly IClaimService _claimService;
-        private const short CURRENT_FINANCIAL_YEAR = 2024;
-
-        public ApiBaseController(
-            IClaimService claimService
-            )
-        {
-            _claimService = claimService;
-        }
-
-        protected string GetTreasuryCode()
-        {
-            return _claimService.GetScope();
-        }
-
-        protected short GetCurrentFyYear()
-        {
-            return CURRENT_FINANCIAL_YEAR;
-        }
+        public PensionController(
+                IClaimService claimService
+            ) : base(claimService) {}
 
         [HttpPost("echo")]
-        [Produces("application/json")]
         [Tags("Pension", "Echo Request in Response")]
         public async Task<JsonAPIResponse<object>> ControlEchoRequestInResponse(object req)
         {
@@ -47,7 +39,6 @@ namespace CTS_BE.Controllers
         }
 
         [HttpPost("date-only")]
-        [Produces("application/json")]
         [Tags("Pension", "DateOnly Echo")]
         public async Task<JsonAPIResponse<DateOnlyDTO>> ControlSetDateOnly(DateOnlyDTO dateOnly)
         {
@@ -61,7 +52,6 @@ namespace CTS_BE.Controllers
         }
 
         [HttpGet("date-only")]
-        [Produces("application/json")]
         [Tags("Pension", "DateOnly Echo")]
         public async Task<JsonAPIResponse<DateOnly>> ControlGetDateOnly()
         {
@@ -74,6 +64,6 @@ namespace CTS_BE.Controllers
             };
             return await Task.FromResult(response);
         }
-    
-    }
+
+    } 
 }

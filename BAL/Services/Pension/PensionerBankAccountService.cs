@@ -21,10 +21,11 @@ namespace CTS_BE.BAL.Services.Pension
         private readonly IClaimService _claimService;
         private readonly IMapper _mapper;
         public PensionerBankAccountService(
-            IPensionerBankAccountRepository pensionerBankAccountRepository,
-            IPensionerDetailsRepository pensionerDetailsRepository,
-            IClaimService claimService,
-            IMapper mapper)
+                IPensionerBankAccountRepository pensionerBankAccountRepository,
+                IPensionerDetailsRepository pensionerDetailsRepository,
+                IClaimService claimService,
+                IMapper mapper
+            ) : base(claimService)
         {
             _pensionerBankAccountRepository = pensionerBankAccountRepository;
             _pensionerDetailsRepository     = pensionerDetailsRepository;

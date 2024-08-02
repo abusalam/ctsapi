@@ -7,10 +7,6 @@ namespace CTS_BE.DAL;
 
 public partial class PensionDbContext : DbContext
 {
-    public PensionDbContext()
-    {
-    }
-
     public PensionDbContext(DbContextOptions<PensionDbContext> options)
         : base(options)
     {

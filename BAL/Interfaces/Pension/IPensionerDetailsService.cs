@@ -25,8 +25,8 @@ namespace CTS_BE.BAL.Interfaces.Pension
             short financialYear,
             string treasuryCode
         );
-        public Task<IEnumerable<PensionerListDTO>> GetAllPensioners(
-            short financialYear, 
+        public Task<IEnumerable<PensionerListItemDTO>> GetAllPensioners(
+            short financialYear,
             string treasuryCode,
             DynamicListQueryParameters dynamicListQueryParameters
         );

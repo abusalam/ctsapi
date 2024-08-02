@@ -9,6 +9,7 @@ using CTS_BE.DAL.Entities.Pension;
 using CTS_BE.DAL.Interfaces.Pension;
 using CTS_BE.DTOs;
 using CTS_BE.Helper;
+using CTS_BE.Helper.Authentication;
 using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.BAL.Services.Pension
@@ -23,8 +24,9 @@ namespace CTS_BE.BAL.Services.Pension
                 IPrimaryCategoryRepository primaryCategoryRepository,
                 ISubCategoryRepository subCategoryRepository,
                 ICategoryRepository categoryRepository,
+                IClaimService claimService,
                 IMapper mapper
-            )
+            ) : base(claimService)
         {
             _primaryCategoryRepository = primaryCategoryRepository;
             _subCategoryRepository = subCategoryRepository;

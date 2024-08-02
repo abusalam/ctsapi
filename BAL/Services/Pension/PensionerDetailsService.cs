@@ -23,7 +23,7 @@ namespace CTS_BE.BAL.Services.Pension
             IPensionerDetailsRepository pensionerDetailsRepository,
             IPpoIdSequenceRepository ppoIdSequenceRepository,
             IClaimService claimService,
-            IMapper mapper)
+            IMapper mapper) : base(claimService)
         {
             _pensionerDetailsRepository = pensionerDetailsRepository;
             _ppoIdSequenceRepository    = ppoIdSequenceRepository;
@@ -129,7 +129,7 @@ namespace CTS_BE.BAL.Services.Pension
             return pensionerResponseDTO; 
         }
 
-        public async Task<IEnumerable<PensionerListDTO>> GetAllPensioners(
+        public async Task<IEnumerable<PensionerListItemDTO>> GetAllPensioners(
                 short financialYear, 
                 string treasuryCode,
                 DynamicListQueryParameters dynamicListQueryParameters
@@ -141,7 +141,7 @@ namespace CTS_BE.BAL.Services.Pension
                     entity => entity.ActiveFlag 
                         && entity.FinancialYear == financialYear 
                         && entity.TreasuryCode == treasuryCode,
-                    entity => _mapper.Map<PensionerListDTO>(entity),
+                    entity => _mapper.Map<PensionerListItemDTO>(entity),
                     dynamicListQueryParameters
                 );
         }

@@ -22,7 +22,7 @@ namespace CTS_BE.BAL.Services.Pension
                 IComponentRateRepository pensionRateRepository,
                 IClaimService claimService,
                 IMapper mapper
-            )
+            ) : base(claimService)
         {
             _pensionRateRepository = pensionRateRepository;
             _claimService = claimService;

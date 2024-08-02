@@ -22,7 +22,7 @@ namespace CTS_BE.BAL.Services.Pension
                 IBreakupRepository breakupRepository,
                 IClaimService claimService,
                 IMapper mapper
-            )
+            ) : base(claimService)
         {
             _billBreakupRepository = breakupRepository;
             _claimService = claimService;

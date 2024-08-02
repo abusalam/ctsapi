@@ -1,15 +1,20 @@
 using CTS_BE.BAL.Interfaces.Pension;
+using CTS_BE.Helper.Authentication;
 
 namespace CTS_BE.BAL.Services.Pension
 {
     public abstract class BaseService : IBaseService
     {
+        private readonly IClaimService _claimService;
         protected int _userId;
         protected int _dataCount;
-        public BaseService()
+        public BaseService(
+                IClaimService claimService
+            )
         {
+            _claimService = claimService;
+            _userId = _claimService.GetUserId();
             _dataCount = 0;
-            _userId = 0;
         }
         public int DataCount()
         {

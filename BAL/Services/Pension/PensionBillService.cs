@@ -7,6 +7,7 @@ using CTS_BE.BAL.Interfaces.Pension;
 using CTS_BE.DAL.Entities.Pension;
 using CTS_BE.DAL.Interfaces.Pension;
 using CTS_BE.DTOs;
+using CTS_BE.Helper.Authentication;
 
 namespace CTS_BE.BAL.Services.Pension
 {
@@ -26,8 +27,9 @@ namespace CTS_BE.BAL.Services.Pension
                 IComponentRateRepository componentRateRepository,
                 IBreakupRepository breakupRepository,
                 // IPensionBillRepository pensionBillRepository,
+                IClaimService claimService,
                 IMapper mapper
-            )
+            ) : base(claimService)
         {
             _pensionerDetailsRepository = pensionerDetailsRepository;
             _pensionerBankAccountRepository = pensionerBankAccountRepository;
@@ -50,12 +52,11 @@ namespace CTS_BE.BAL.Services.Pension
                     && entity.TreasuryCode==treasuryCode
                     && entity.FinancialYear==financialYear
                 );
-                // Category category = await _categoryRepository.GetSingleAysnc(
-                //     entity => entity.ActiveFlag
-                //     && entity.Id==pensioner.PpoCategoryId
-                //     && entity.TreasuryCode==treasuryCode
-                //     && entity.FinancialYear==financialYear
-                // )
+            var componentRates = await _componentRateRepository.GetAllByConditionAsync(
+                entity => entity.ActiveFlag
+                && entity.EffectiveFromDate >= pensioner.DateOfCommencement
+                && entity.CategoryId == pensioner.CategoryId
+            );
             TResponse response = _mapper.Map<TResponse>(pensioner);
             return response;
         }

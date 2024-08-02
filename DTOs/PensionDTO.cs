@@ -130,7 +130,7 @@ namespace CTS_BE.DTOs
         public int PpoId { get; set; }
     }
 
-    public class PensionerListDTO : BaseDTO {
+    public class PensionerListItemDTO : BaseDTO {
         public long Id { get; set; }
         
         public int PpoId { get; set; }
@@ -171,22 +171,6 @@ namespace CTS_BE.DTOs
 
         [StringLength(100)]
         public string? BranchName { get; set; }
-    }
-
-    public partial class PensionerFirstBillDTO : BaseDTO {
-
-        [Required]
-        public required PensionerListDTO Pensioner { get; set; }
-
-        [Required]
-        public required PensionerBankAcDTO BankAccount { get; set; }
-    }
-
-    public partial class PensionerFirstBillGenerationDTO : PensionerFirstBillDTO {
-
-        [Required]
-        [DataType(DataType.Date)]
-        public DateOnly BillGeneratedUptoDate { get; set; }
     }
 
     public partial class PensionPrimaryCategoryEntryDTO : BaseDTO {
@@ -278,7 +262,23 @@ namespace CTS_BE.DTOs
     public partial class InitiateFirstPensionBillDTO : BaseDTO {
         [Required]
         public int PpoId { get; set; }
-        public char BillType { get; set; }
         public DateOnly ToDate { get; set; }
+    }
+
+    public partial class PensionerFirstBillResponseDTO : BaseDTO {
+
+        [Required]
+        public required PensionerListItemDTO Pensioner { get; set; }
+
+        [Required]
+        public required PensionerBankAcDTO BankAccount { get; set; }
+    }
+
+    public partial class InitiateFirstPensionBillResponseDTO : PensionerFirstBillResponseDTO {
+
+        [Required]
+        [DataType(DataType.Date)]
+        public DateOnly BillGeneratedUptoDate { get; set; }
+        public ICollection<PensionRatesResponseDTO>? Rates { get; set; }
     }
 }
