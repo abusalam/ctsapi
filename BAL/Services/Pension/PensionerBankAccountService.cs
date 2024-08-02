@@ -17,14 +17,17 @@ namespace CTS_BE.BAL.Services.Pension
     {
 
         private readonly IPensionerBankAccountRepository _pensionerBankAccountRepository;
+        private readonly IPensionerDetailsRepository _pensionerDetailsRepository;
         private readonly IClaimService _claimService;
         private readonly IMapper _mapper;
         public PensionerBankAccountService(
             IPensionerBankAccountRepository pensionerBankAccountRepository,
+            IPensionerDetailsRepository pensionerDetailsRepository,
             IClaimService claimService,
             IMapper mapper)
         {
             _pensionerBankAccountRepository = pensionerBankAccountRepository;
+            _pensionerDetailsRepository     = pensionerDetailsRepository;
             _claimService                   = claimService;
             _mapper                         = mapper;
             _userId                         = _claimService.GetUserId();
@@ -32,6 +35,7 @@ namespace CTS_BE.BAL.Services.Pension
 
         public async Task<PensionerBankAcDTO> CreatePensionerBankAccount(
                 int ppoId,
+                long pensionerId,
                 PensionerBankAcDTO pensionerBankAcDTO,
                 short financialYear,
                 string treasuryCode
@@ -44,11 +48,23 @@ namespace CTS_BE.BAL.Services.Pension
             try {
                 bankAccountEntity.FillFrom(pensionerBankAcDTO);
                 bankAccountEntity.PpoId = ppoId;
+                bankAccountEntity.PensionerId = pensionerId;
                 bankAccountEntity.FinancialYear = financialYear;
                 bankAccountEntity.TreasuryCode = treasuryCode;
                 SetCreatedBy(bankAccountEntity);
                 
-                _pensionerBankAccountRepository.Add(bankAccountEntity);
+                var bankAccountExists = await _pensionerBankAccountRepository.GetSingleAysnc(
+                    entity => entity.ActiveFlag 
+                    && entity.PpoId == ppoId 
+                    && entity.TreasuryCode == treasuryCode
+                );
+
+                if(bankAccountExists != null) {
+                    pensionerBankAcDTO.FillDataSource(bankAccountExists, "Bank Account already exists!");
+                    return pensionerBankAcDTO;
+                } else {
+                    _pensionerBankAccountRepository.Add(bankAccountEntity);
+                }
 
                 if(await _pensionerBankAccountRepository.SaveChangesManagedAsync() == 0) {
                     dynamic dataSource = new ExpandoObject(){};

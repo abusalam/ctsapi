@@ -10,6 +10,7 @@ namespace CTS_BE.BAL.Interfaces.Pension
     {
         public Task<PensionerBankAcDTO> CreatePensionerBankAccount(
             int ppoId,
+            long pensionerId,
             PensionerBankAcDTO pensionerBankAcDTO,
             short financialYear,
             string treasuryCode

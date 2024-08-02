@@ -562,31 +562,37 @@ namespace CTS_BE.Controllers
         [HttpPost("ppo/{ppoId}/bank-accounts")]
         [Produces("application/json")]
         [Tags("Pension", "Pension: Bank Accounts")]
-        public async Task<APIResponse<PensionerBankAcDTO>> ControlPensionerBankAccountsCreate(
+        public async Task<JsonAPIResponse<PensionerBankAcDTO>> ControlPensionerBankAccountsCreate(
                 int ppoId,
                 PensionerBankAcDTO pensionerBankAcDTO
             )
         {
-            APIResponse<PensionerBankAcDTO> response = new(){
-                apiResponseStatus = Enum.APIResponseStatus.Success,
+            JsonAPIResponse<PensionerBankAcDTO> response = new(){
+                ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = $"Bank account details saved sucessfully!",
             };
             try {
-                response.result = await _pensionerBankAccountService.CreatePensionerBankAccount(
+                PensionerResponseDTO? pensionerResponseDTO = await _pensionerDetailsService.GetPensioner<PensionerResponseDTO>(
+                        ppoId,
+                        GetCurrentFyYear(),
+                        GetTreasuryCode()
+                    );
+                response.Result = await _pensionerBankAccountService.CreatePensionerBankAccount(
                     ppoId,
+                    pensionerResponseDTO.Id,
                     pensionerBankAcDTO,
                     GetCurrentFyYear(),
                     GetTreasuryCode()
                 );
             }
             catch (DbUpdateException ex) {
-                response.apiResponseStatus = Enum.APIResponseStatus.Error;
-                response.Message = $"Bank account details not saved! Error: {ex.Message}";
+                response.ApiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = $"ServiceError: {ex.InnerException?.Message ?? ex.Message} {ex.StackTrace}";
             }
             finally {
-                if(response.result?.DataSource != null) {
-                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
-                    response.Message = $"Error: Bank account details not saved!";
+                if(response.Result?.DataSource != null) {
+                    response.ApiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.Message = $"Error: Bank account details not saved! Check DataSource for more details!";
                 }
             }
 
