@@ -75,8 +75,8 @@ namespace CTS_BE.Controllers.Pension
                                 new() {
                                     Name = "Primary Category ID",
                                     DataType = "text",
-                                    FieldName = "primaryCategoryId",
-                                    FilterField = "primaryCategoryId",
+                                    FieldName = "id",
+                                    FilterField = "id",
                                     IsFilterable = true,
                                     IsSortable = true,
                                 },
@@ -91,8 +91,8 @@ namespace CTS_BE.Controllers.Pension
                                 new() {
                                     Name = "Primary Category Name",
                                     DataType = "text",
-                                    FieldName = "categoryName",
-                                    FilterField = "categoryName",
+                                    FieldName = "primaryCategoryName",
+                                    FilterField = "primaryCategoryName",
                                     IsFilterable = true,
                                     IsSortable = true,
                                 }
@@ -170,16 +170,16 @@ namespace CTS_BE.Controllers.Pension
                                 new() {
                                     Name = "Sub Category ID",
                                     DataType = "text",
-                                    FieldName = "primaryCategoryId",
-                                    FilterField = "primaryCategoryId",
+                                    FieldName = "id",
+                                    FilterField = "id",
                                     IsFilterable = true,
                                     IsSortable = true,
                                 },
                                 new() {
                                     Name = "Sub Category Name",
                                     DataType = "text",
-                                    FieldName = "categoryName",
-                                    FilterField = "categoryName",
+                                    FieldName = "subCategoryName",
+                                    FilterField = "subCategoryName",
                                     IsFilterable = true,
                                     IsSortable = true,
                                 }
