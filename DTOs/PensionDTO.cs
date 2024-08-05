@@ -126,8 +126,10 @@ namespace CTS_BE.DTOs
 
     public class PensionerResponseDTO : PensionerEntryDTO {
         public long Id { get; set; }
-
         public int PpoId { get; set; }
+        public PensionCategoryResponseDTO? Category { get; set; }
+        public ManualPpoReceiptResponseDTO? Receipt { get; set; }
+        public List<PensionerBankAcDTO>? BankAccounts { get; set; }
     }
 
     public class PensionerListItemDTO : BaseDTO {
@@ -210,6 +212,8 @@ namespace CTS_BE.DTOs
 
         [StringLength(100)]
         public string CategoryName { get; set; } = null!;
+
+        public List<ComponentRateResponseDTO>? ComponentRates { get; set; }
     }
 
     public class PensionCategoryListDTO : BaseDTO {
@@ -239,9 +243,10 @@ namespace CTS_BE.DTOs
         public long Id { get; set; }
     }
 
-    public partial class PensionRatesEntryDTO : BaseDTO {
+    public partial class ComponentRateEntryDTO : BaseDTO {
         public long CategoryId { get; set; }
         public long BreakupId { get; set; }
+        public PensionBreakupResponseDTO? Breakup { get; set; }
 
         [Required]
         [DataType(DataType.Date)]
@@ -255,7 +260,7 @@ namespace CTS_BE.DTOs
         public char RateType { get; set; }
     }
 
-    public partial class PensionRatesResponseDTO : PensionRatesEntryDTO {
+    public partial class ComponentRateResponseDTO : ComponentRateEntryDTO {
         public long Id { get; set; }
     }
 
@@ -272,6 +277,9 @@ namespace CTS_BE.DTOs
 
         [Required]
         public required PensionerBankAcDTO BankAccount { get; set; }
+
+        [Required]
+        public ICollection<PpoPaymentListItemDTO>? PensionerPayments { get; set; }
     }
 
     public partial class InitiateFirstPensionBillResponseDTO : PensionerFirstBillResponseDTO {
@@ -279,6 +287,25 @@ namespace CTS_BE.DTOs
         [Required]
         [DataType(DataType.Date)]
         public DateOnly BillGeneratedUptoDate { get; set; }
-        public ICollection<PensionRatesResponseDTO>? Rates { get; set; }
+        public ICollection<ComponentRateResponseDTO>? ComponentRates { get; set; }
+        public ICollection<PensionBreakupResponseDTO>? PensionBreakups { get; set; }
+
+    }
+
+    public partial class PpoPaymentListItemDTO : BaseDTO {
+        // public int PpoId { get; set; }
+        // public long BillId { get; set; }
+        public DateOnly FromDate { get; set; }
+        public DateOnly ToDate { get; set; }
+        public long BasicPensionAmount { get; set; }
+        public long BreakupId { get; set; }
+        public string ComponentName { get; set; } = null!;
+        public char ComponentType { get; set; }
+        public long BreakupAmount { get; set; }
+        public long RateId { get; set; }
+        public char RateType { get; set; }
+        public int RateAmount { get; set; }
+        public int PeriodInMonths { get; set; }
+        public long DueAmount { get; set; }
     }
 }

@@ -91,7 +91,7 @@ builder.Services.AddTransient<IPensionerBankAccountService, PensionerBankAccount
 builder.Services.AddTransient<IPensionBillService, PensionBillService>();
 builder.Services.AddTransient<IPensionCategoryService, PensionCategoryService>();
 builder.Services.AddTransient<IPensionBreakupService, PensionBreakupService>();
-builder.Services.AddTransient<IPensionRateService, PensionRateService>();
+builder.Services.AddTransient<IComponentRateService, ComponentRateService>();
 // builder.Services.AddTransient<IPensionCategoryService, PensionCategoryService>();
 
 

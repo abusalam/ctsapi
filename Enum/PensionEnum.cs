@@ -9,4 +9,13 @@ namespace CTS_BE.PensionEnum
         PpoSuspended = 8,
         PpoBankAccountApproved = 16,
     }
+
+    /// <summary>
+    /// P - Percentage; A - Amount;
+    /// </summary>
+    public sealed class BreakupRateType
+    {
+        public const char Amount = 'A';
+        public const char Percentage = 'P';
+    }
 }

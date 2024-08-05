@@ -180,7 +180,7 @@ namespace CTS_BE.BAL.Services.Pension
                     );
             }
             finally {
-                response.FillFrom(categoryEntity);
+
             }
             return response;
         }

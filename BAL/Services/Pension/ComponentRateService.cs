@@ -13,12 +13,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.BAL.Services.Pension
 {
-    public class PensionRateService : BaseService, IPensionRateService
+    public class ComponentRateService : BaseService, IComponentRateService
     {
         private readonly IComponentRateRepository _pensionRateRepository;
         private readonly IClaimService _claimService;
         private readonly IMapper _mapper;
-        public PensionRateService(
+        public ComponentRateService(
                 IComponentRateRepository pensionRateRepository,
                 IClaimService claimService,
                 IMapper mapper
@@ -28,7 +28,7 @@ namespace CTS_BE.BAL.Services.Pension
             _claimService = claimService;
             _mapper = mapper;
         }
-        public async Task<TResponse> CreatePensionRates<TEntry, TResponse>(TEntry pensionRateEntryDTO, short financialYear, string treasuryCode)
+        public async Task<TResponse> CreateComponentRates<TEntry, TResponse>(TEntry pensionRateEntryDTO, short financialYear, string treasuryCode)
         {
             ComponentRate componentRateEntity = new() {
                 Id = 0
@@ -62,7 +62,7 @@ namespace CTS_BE.BAL.Services.Pension
             return response;
         }
 
-        public async Task<IEnumerable<TResponse>> ListRates<TResponse>(short financialYear, string treasuryCode, DynamicListQueryParameters dynamicListQueryParameters)
+        public async Task<IEnumerable<TResponse>> ListComponentRates<TResponse>(short financialYear, string treasuryCode, DynamicListQueryParameters dynamicListQueryParameters)
         {
             _dataCount = _pensionRateRepository.Count();
             return await _pensionRateRepository

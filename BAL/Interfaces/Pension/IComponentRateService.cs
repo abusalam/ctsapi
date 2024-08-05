@@ -6,14 +6,14 @@ using CTS_BE.DTOs;
 
 namespace CTS_BE.BAL.Interfaces.Pension
 {
-    public interface IPensionRateService : IBaseService
+    public interface IComponentRateService : IBaseService
     {
-        public Task<TResponse> CreatePensionRates<TEntry, TResponse>(
+        public Task<TResponse> CreateComponentRates<TEntry, TResponse>(
             TEntry pensionRateEntryDTO,
             short financialYear,
             string treasuryCode
         );
-        public Task<IEnumerable<TResponse>> ListRates<TResponse>(
+        public Task<IEnumerable<TResponse>> ListComponentRates<TResponse>(
             short financialYear,
             string treasuryCode,
             DynamicListQueryParameters dynamicListQueryParameters

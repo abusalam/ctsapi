@@ -19,5 +19,12 @@ namespace CTS_BE.Helper
                     null
                 );
         }
+
+        public static void PrintOut(this string textToWriteOnConsole) {
+            // Console.BackgroundColor = ConsoleColor.DarkGreen;
+            Console.ForegroundColor = ConsoleColor.DarkMagenta;
+            Console.Out.WriteLine(textToWriteOnConsole);
+            Console.ResetColor();
+        }
     }
 }

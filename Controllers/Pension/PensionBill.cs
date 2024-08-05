@@ -31,38 +31,38 @@ namespace CTS_BE.Controllers.Pension
 
         [HttpGet("{ppoId}/first-bill-general")]
         [Tags("Pension", "Pension: First Bill")]
-        public async Task<APIResponse<PensionerFirstBillResponseDTO>> ControlFirstBillsPensionerInfoRead(
+        public async Task<JsonAPIResponse<PensionerFirstBillResponseDTO>> ControlFirstBillsPensionerInfoRead(
                 int ppoId
             )
         {
 
-            APIResponse<PensionerFirstBillResponseDTO> response = new(){
-                apiResponseStatus = Enum.APIResponseStatus.Success,
+            JsonAPIResponse<PensionerFirstBillResponseDTO> response = new(){
+                ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = $"Pensioner Details received sucessfully!",
-                result = new (){
+                Result = new (){
                     Pensioner = new(){},
                     BankAccount = new(){}
                 }
             };
             try {
-                response.result.BankAccount = await _pensionerBankAccountService.GetPensionerBankAccount(
+                response.Result.BankAccount = await _pensionerBankAccountService.GetPensionerBankAccount(
                     ppoId,
                     GetCurrentFyYear(),
                     GetTreasuryCode()
                 );
-                response.result.Pensioner = await _pensionerDetailsService.GetPensioner<PensionerListItemDTO>(
+                response.Result.Pensioner = await _pensionerDetailsService.GetPensioner<PensionerListItemDTO>(
                     ppoId,
                     GetCurrentFyYear(),
                     GetTreasuryCode()
                 );
             }
             catch (DbUpdateException ex) {
-                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.ApiResponseStatus = Enum.APIResponseStatus.Error;
                 response.Message = $"Bank Accounts Details not received! Error: {ex.Message}";
             }
             finally {
-                if(response.result?.DataSource != null) {
-                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                if(response.Result?.DataSource != null) {
+                    response.ApiResponseStatus = Enum.APIResponseStatus.Error;
                     response.Message = $"Bank Accounts Details not received!";
                 }
             }
@@ -87,7 +87,7 @@ namespace CTS_BE.Controllers.Pension
                 }
             };
             try {
-                response.Result = await _pensionBillService.GenerateFirstPensionBills<InitiateFirstPensionBillResponseDTO>(
+                response.Result = await _pensionBillService.GenerateFirstPensionBills(
                     initiateFirstPensionBillDTO,
                     GetCurrentFyYear(),
                     GetTreasuryCode()

@@ -13,12 +13,7 @@ namespace CTS_BE.Helper
             CreateMap<ListAllPpoReceiptsResponseDTO, PpoReceipt>().ReverseMap();
             CreateMap<PensionStatusEntryDTO, PpoStatusFlag>().ReverseMap();
             CreateMap<PensionStatusDTO, PpoStatusFlag>().ReverseMap();
-            CreateMap<PensionerEntryDTO, Pensioner>()
-                .ForAllMembers(
-                        options => options.Condition(
-                            (src, dest, srcMember) => srcMember != null
-                        )
-                    );
+            CreateMap<PensionerEntryDTO, Pensioner>();
             CreateMap<PensionerResponseDTO, Pensioner>().ReverseMap();
             CreateMap<PensionerListItemDTO, Pensioner>().ReverseMap();
             CreateMap<PensionerResponseDTO, PensionerEntryDTO>().ReverseMap();
@@ -32,8 +27,8 @@ namespace CTS_BE.Helper
             CreateMap<PensionCategoryResponseDTO, PensionCategoryEntryDTO>().ReverseMap();
             CreateMap<PensionBreakupResponseDTO, Breakup>().ReverseMap();
             CreateMap<PensionBreakupResponseDTO, PensionBreakupEntryDTO>().ReverseMap();
-            CreateMap<PensionRatesResponseDTO, ComponentRate>().ReverseMap();
-            CreateMap<PensionRatesResponseDTO, PensionRatesEntryDTO>().ReverseMap();
+            CreateMap<ComponentRateResponseDTO, ComponentRate>().ReverseMap();
+            CreateMap<ComponentRateResponseDTO, ComponentRateEntryDTO>().ReverseMap();
         }
     }
 }

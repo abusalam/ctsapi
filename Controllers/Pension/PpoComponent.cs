@@ -16,10 +16,10 @@ namespace CTS_BE.Controllers.Pension
     {
         
         private readonly IPensionBreakupService _pensionBreakupService;
-        private readonly IPensionRateService _pensionRateService;
+        private readonly IComponentRateService _pensionRateService;
         public PpoComponent(
                 IPensionBreakupService pensionBreakupService,
-                IPensionRateService pensionRateService,
+                IComponentRateService pensionRateService,
                 IClaimService claimService
             ) : base(claimService)
         {
@@ -29,7 +29,7 @@ namespace CTS_BE.Controllers.Pension
 
         
         [HttpPost("bill-component")]
-        [Tags("Pension", "Pension: Bill Component")]
+        [Tags("Pension", "Pension: Component")]
         public async Task<JsonAPIResponse<PensionBreakupResponseDTO>> ControlPensionBillComponentCreate(
                 PensionBreakupEntryDTO pensionBreakupEntryDTO
             )
@@ -37,7 +37,7 @@ namespace CTS_BE.Controllers.Pension
 
             JsonAPIResponse<PensionBreakupResponseDTO> response = new(){
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
-                Message = $"Bill Component saved sucessfully!",
+                Message = $"Component saved sucessfully!",
                 Result = new(){
                     Id = 0
                 }
@@ -57,7 +57,7 @@ namespace CTS_BE.Controllers.Pension
             finally {
                 if(response.Result.Id == 0) {
                     response.ApiResponseStatus = Enum.APIResponseStatus.Error;
-                    response.Message = $"C-Error: Bill Component not saved!";
+                    response.Message = $"C-Error: Component not saved!";
                 }
             }
 
@@ -65,8 +65,8 @@ namespace CTS_BE.Controllers.Pension
         }
 
         [HttpPatch("bill-component")]
-        [Tags("Pension", "Pension: Bill Component")]
-        public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<PensionBreakupResponseDTO>>>> ControlPensionBillComponentList(
+        [Tags("Pension", "Pension: Component")]
+        public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<PensionBreakupResponseDTO>>>> ControlComponentList(
                 DynamicListQueryParameters dynamicListQueryParameters
             )
         {
@@ -138,12 +138,12 @@ namespace CTS_BE.Controllers.Pension
  
         [HttpPost("component-rate")]
         [Tags("Pension", "Pension: Component Rate")]
-        public async Task<JsonAPIResponse<PensionRatesResponseDTO>> ControlPensionComponentRateCreate(
-                PensionRatesEntryDTO pensionRatesEntryDTO
+        public async Task<JsonAPIResponse<ComponentRateResponseDTO>> ControlComponentRateCreate(
+                ComponentRateEntryDTO pensionRatesEntryDTO
             )
         {
 
-            JsonAPIResponse<PensionRatesResponseDTO> response = new(){
+            JsonAPIResponse<ComponentRateResponseDTO> response = new(){
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = $"Component Rate saved sucessfully!",
                 Result = new(){
@@ -152,7 +152,7 @@ namespace CTS_BE.Controllers.Pension
             };
             try {
                 response.Result = await _pensionRateService
-                    .CreatePensionRates<PensionRatesEntryDTO, PensionRatesResponseDTO>(                    
+                    .CreateComponentRates<ComponentRateEntryDTO, ComponentRateResponseDTO>(                    
                             pensionRatesEntryDTO,
                             GetCurrentFyYear(),
                             GetTreasuryCode()
@@ -174,11 +174,11 @@ namespace CTS_BE.Controllers.Pension
 
         [HttpPatch("component-rate")]
         [Tags("Pension", "Pension: Component Rate")]
-        public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<PensionRatesResponseDTO>>>> ControlPensionComponentRateList(
+        public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<ComponentRateResponseDTO>>>> ControlComponentRateList(
                 DynamicListQueryParameters dynamicListQueryParameters
             )
         {
-            JsonAPIResponse<DynamicListResult<IEnumerable<PensionRatesResponseDTO>>> response = new();
+            JsonAPIResponse<DynamicListResult<IEnumerable<ComponentRateResponseDTO>>> response = new();
             try {
 
                 response = new() {
@@ -239,7 +239,7 @@ namespace CTS_BE.Controllers.Pension
                                 }
 
                             },
-                            Data = await _pensionRateService.ListRates<PensionRatesResponseDTO>(
+                            Data = await _pensionRateService.ListComponentRates<ComponentRateResponseDTO>(
                                     GetCurrentFyYear(),
                                     GetTreasuryCode(),
                                     dynamicListQueryParameters

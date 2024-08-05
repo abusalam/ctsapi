@@ -1,4 +1,5 @@
 ﻿using CTS_BE.DTOs;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Linq.Expressions;
 
@@ -42,6 +43,7 @@ namespace CTS_BE.DAL.Interfaces
         bool Delete(T entity);
 
         void SaveChangesManaged();
+        public DbContext GetDbContext();
         Task<int> SaveChangesManagedAsync();
         public IExecutionStrategy GetExecutionStrategy();
 

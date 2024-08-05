@@ -25,9 +25,9 @@ Content-Type: application/json
 
 {
   "CategoryId": 30,
-  "BreakupId": 3,
-  "EffectiveFromDate": "2024-04-01",
-  "RateAmount": 1000,
+  "BreakupId": 1,
+  "EffectiveFromDate": "2019-01-01",
+  "RateAmount": 0,
   "RateType": "A"
 }
 
@@ -60,11 +60,11 @@ Content-Type: application/json
 
 ### List All PensionCategory
 # @name ListPensionCategory
-# PATCH {{PensionAPI_HostAddress}}/api/v1/pension/category
+PATCH {{PensionAPI_HostAddress}}/api/v1/pension/category
 # PATCH {{PensionAPI_HostAddress}}/api/v1/pension/primary-category
 # PATCH {{PensionAPI_HostAddress}}/api/v1/pension/sub-category
 # PATCH {{PensionAPI_HostAddress}}/api/v1/pension/bill-component
-PATCH {{PensionAPI_HostAddress}}/api/v1/pension/component-rate
+# PATCH {{PensionAPI_HostAddress}}/api/v1/pension/component-rate
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
 Accept: application/json
 Authorization: Bearer {{accessToken}}
@@ -99,8 +99,8 @@ Content-Type: application/json
 
 ### Generate Components for First Pension Bill
 # @name GenerateFirstPensionBill
-POST {{PensionAPI_HostAddress}}/api/v1/echo
-# PATCH {{PensionAPI_HostAddress}}/api/v1/ppo/pension-bill
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+PATCH {{PensionAPI_HostAddress}}/api/v1/ppo/pension-bill
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
@@ -184,7 +184,7 @@ Content-Type: application/json
   "ppoType": "P",
   "psaType": "A",
   "ppoSubType": "N",
-  "categoryId": 31,
+  "categoryId": 30,
   "pensionerName": "Jack Dowsel",
   "dateOfBirth": "{{$datetime "YYYY-MM-DD"}}",
   "gender": "M",
@@ -195,7 +195,7 @@ Content-Type: application/json
   "panNo": "PANNO{{$randomInt 1000 9999}}F",
   "aadhaarNo": "{{$randomInt 600000000000 999999999999}}",
   "dateOfRetirement": "{{$datetime "YYYY-MM-DD" -10000 d}}",
-  "dateOfCommencement": "{{$datetime "YYYY-MM-DD" -10001 d}}",
+  "dateOfCommencement": "{{$datetime "YYYY-MM-DD" -9999 d}}",
   "basicPensionAmount": 10000,
   "commutedPensionAmount": 2000,
   "enhancePensionAmount": 10000,

@@ -267,5 +267,10 @@ namespace CTS_BE.DAL
         {
             return await this.CTSDbContext.SaveChangesAsync();
         }
+
+        public DbContext GetDbContext()
+        {
+            return this.CTSDbContext;
+        }
     }
 }
