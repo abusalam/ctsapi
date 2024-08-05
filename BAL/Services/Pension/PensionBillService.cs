@@ -64,6 +64,12 @@ namespace CTS_BE.BAL.Services.Pension
             pensionDbContext.Entry(pensioner)
                 .Reference(entity => entity.Category)
                 .Load();
+            pensionDbContext.Entry(pensioner.Category)
+                .Reference(entity => entity.PrimaryCategory)
+                .Load();
+            pensionDbContext.Entry(pensioner.Category)
+                .Reference(entity => entity.SubCategory)
+                .Load();
             pensionDbContext.Entry(pensioner)
                 .Reference(entity => entity.Receipt)
                 .Load();
@@ -169,6 +175,7 @@ namespace CTS_BE.BAL.Services.Pension
                         initiateFirstPensionBillDTO.ToDate,
                         pensioner.BasicPensionAmount
                     ),
+                PensionCategory = _mapper.Map<PensionCategoryResponseDTO>(pensioner.Category),
                 // ComponentRates = _mapper.Map<List<ComponentRateResponseDTO>>(pensioner.Category.ComponentRates)
                 //     .OrderBy(entity => entity.EffectiveFromDate).ToList(),
                 BillGeneratedUptoDate = initiateFirstPensionBillDTO.ToDate

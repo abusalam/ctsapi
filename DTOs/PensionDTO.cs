@@ -213,6 +213,8 @@ namespace CTS_BE.DTOs
         [StringLength(100)]
         public string CategoryName { get; set; } = null!;
 
+        public PensionPrimaryCategoryResponseDTO PrimaryCategory { get; set; } = null!;
+        public PensionSubCategoryResponseDTO SubCategory { get; set; } = null!;
         public List<ComponentRateResponseDTO>? ComponentRates { get; set; }
     }
 
@@ -279,6 +281,9 @@ namespace CTS_BE.DTOs
         public required PensionerBankAcDTO BankAccount { get; set; }
 
         [Required]
+        public PensionCategoryResponseDTO PensionCategory { get; set; } = null!;
+
+        [Required]
         public ICollection<PpoPaymentListItemDTO>? PensionerPayments { get; set; }
     }
 
@@ -287,8 +292,6 @@ namespace CTS_BE.DTOs
         [Required]
         [DataType(DataType.Date)]
         public DateOnly BillGeneratedUptoDate { get; set; }
-        public ICollection<ComponentRateResponseDTO>? ComponentRates { get; set; }
-        public ICollection<PensionBreakupResponseDTO>? PensionBreakups { get; set; }
 
     }
 
