@@ -1,23 +1,19 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using CTS_BE.BAL.Interfaces.Pension;
 using CTS_BE.DTOs;
 using CTS_BE.Helper;
 using CTS_BE.Helper.Authentication;
+using CTS_BE.BAL.Interfaces.Pension;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.Controllers.Pension
 {
     [Route("api/v1/ppo")]
-    public class PensionBill : ApiBase
+    public class PensionBillController : ApiBaseController
     {
         private readonly IPensionerDetailsService _pensionerDetailsService;
         private readonly IPensionerBankAccountService _pensionerBankAccountService;
         private readonly IPensionBillService _pensionBillService;
-        public PensionBill(
+        public PensionBillController(
                 IPensionerDetailsService pensionerDetailsService,
                 IPensionerBankAccountService pensionerBankAccountService,
                 IPensionBillService pensionBillService,
@@ -29,9 +25,9 @@ namespace CTS_BE.Controllers.Pension
             _pensionerBankAccountService = pensionerBankAccountService;
         }
 
-        [HttpGet("{ppoId}/first-bill-general")]
+        [HttpPost("{ppoId}/first-bill-general")]
         [Tags("Pension", "Pension: First Bill")]
-        public async Task<JsonAPIResponse<PensionerFirstBillResponseDTO>> ControlFirstBillsPensionerInfoRead(
+        public async Task<JsonAPIResponse<PensionerFirstBillResponseDTO>> ControlFirstBillsCreate(
                 int ppoId
             )
         {

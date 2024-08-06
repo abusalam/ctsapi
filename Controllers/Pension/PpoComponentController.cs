@@ -12,12 +12,12 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.Controllers.Pension
 {
     [Route("api/v1/pension")]
-    public class PpoComponent : ApiBase
+    public class PpoComponentController : ApiBaseController
     {
         
         private readonly IPensionBreakupService _pensionBreakupService;
         private readonly IComponentRateService _pensionRateService;
-        public PpoComponent(
+        public PpoComponentController(
                 IPensionBreakupService pensionBreakupService,
                 IComponentRateService pensionRateService,
                 IClaimService claimService

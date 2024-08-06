@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Mime;
-using System.Threading.Tasks;
-using CTS_BE.DTOs;
-using CTS_BE.Helper;
 using CTS_BE.Helper.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,12 +8,12 @@ namespace CTS_BE.Controllers.Pension
     [Produces(MediaTypeNames.Application.Json)]
     [Tags("Pension")]
     [Route("api/v1")]
-    public class ApiBase : ControllerBase
+    public class ApiBaseController : ControllerBase
     {
         private readonly IClaimService _claimService;
         private const short CURRENT_FINANCIAL_YEAR = 2024;
 
-        public ApiBase(
+        public ApiBaseController(
                 IClaimService claimService
             )
         {

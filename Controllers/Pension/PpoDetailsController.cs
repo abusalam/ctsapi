@@ -12,11 +12,11 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.Controllers.Pension
 {
     [Route("api/v1/ppo")]
-    public class PpoDetails : ApiBase
+    public class PpoDetailsController : ApiBaseController
     {
         private readonly IPensionerDetailsService _pensionerDetailsService;
 
-        public PpoDetails(
+        public PpoDetailsController(
                 IPensionerDetailsService pensionerDetailsService,
                 IClaimService claimService
             ) : base(claimService)

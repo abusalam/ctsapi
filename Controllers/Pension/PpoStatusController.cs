@@ -12,10 +12,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace CTS_BE.Controllers.Pension
 {
     [Route("api/v1/ppo")]
-    public class PpoStatus : ApiBase
+    public class PpoStatusController : ApiBaseController
     {
         private readonly IPensionStatusService _pensionStatusService;
-        public PpoStatus(
+        public PpoStatusController(
                 IPensionStatusService pensionStatusService,
                 IClaimService claimService
             ) : base(claimService)

@@ -1,25 +1,12 @@
-using System.Runtime;
-using System.Data.Common;
-using System.Diagnostics;
-using System.Text.Json.Nodes;
-using CTS_BE.BAL.Interfaces.Pension;
 using CTS_BE.DTOs;
-using CTS_BE.PensionEnum;
 using CTS_BE.Helper;
 using CTS_BE.Helper.Authentication;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using Microsoft.EntityFrameworkCore;
-using NPOI.SS.Formula.Functions;
-using NPOI.DDF;
-using System.Dynamic;
-using CTS_BE.DAL.Entities.Pension;
 
 namespace CTS_BE.Controllers.Pension
 {
     [Route("api/v1")]
-    public class PensionController : ApiBase
+    public class PensionController : ApiBaseController
     {
         public PensionController(
                 IClaimService claimService

@@ -12,10 +12,10 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.Controllers.Pension
 {
     [Route("api/v1/manual-ppo")]
-    public class PpoReceipt : ApiBase
+    public class PpoReceiptController : ApiBaseController
     {
         private readonly IPensionService _pensionService;
-        public PpoReceipt(
+        public PpoReceiptController(
                 IPensionService pensionService,
                 IClaimService claimService
             ) : base(claimService)
