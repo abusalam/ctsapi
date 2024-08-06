@@ -311,4 +311,32 @@ namespace CTS_BE.DTOs
         public int PeriodInMonths { get; set; }
         public long DueAmount { get; set; }
     }
+
+    public partial class PpoComponentRateEntryDTO : BaseDTO {
+        [Required]
+        public long BreakupId { get; set; }
+
+        /// <summary>
+        /// From date is the Date of Commencement of pension of the pensioner
+        /// </summary>
+        [Required]
+        [DataType(DataType.Date)]
+        public DateOnly FromDate { get; set; }
+
+        /// <summary>
+        /// To date (will be null for regular active bills)
+        /// </summary>
+        [DataType(DataType.Date)]
+        public DateOnly? ToDate { get; set; }
+
+        /// <summary>
+        /// Amount per month is the actual amount paid for the mentioned period
+        /// </summary>
+        [Required]
+        public int AmountPerMonth { get; set; }
+    }
+
+    public partial class PpoComponentRateResponseDTO : PpoComponentRateEntryDTO {
+        public long Id { get; set; }
+    }
 }

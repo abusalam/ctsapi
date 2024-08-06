@@ -154,6 +154,9 @@ public partial class Pensioner
     public virtual UploadedFile? PhotoFile { get; set; }
 
     [InverseProperty("Pensioner")]
+    public virtual ICollection<PpoBill> PpoBills { get; set; } = new List<PpoBill>();
+
+    [InverseProperty("Pensioner")]
     public virtual ICollection<PpoStatusFlag> PpoStatusFlags { get; set; } = new List<PpoStatusFlag>();
 
     [ForeignKey("ReceiptId")]

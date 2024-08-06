@@ -75,9 +75,7 @@ namespace CTS_BE.BAL.Services.Pension
                 .Load();
             pensionDbContext.Entry(pensioner.Category)
                 .Collection(entity => entity.ComponentRates)
-                .Query()
-                .OrderBy(entity => entity.BreakupId)
-                .ThenByDescending(entity => entity.EffectiveFromDate)
+                .Query().Where(entity => entity.ActiveFlag)
                 .Load();
 
             pensionDbContext.Entry(pensioner)

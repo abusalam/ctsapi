@@ -80,6 +80,7 @@ builder.Services.AddTransient<ISubCategoryRepository, SubCategoryRepository>();
 builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
 builder.Services.AddTransient<IBreakupRepository, BreakupRepository>();
 builder.Services.AddTransient<IComponentRateRepository, ComponentRateRepository>();
+builder.Services.AddTransient<IPpoComponentRateRepository, PpoComponentRateRepository>();
 
 
 // Pension Services
@@ -92,6 +93,7 @@ builder.Services.AddTransient<IPensionBillService, PensionBillService>();
 builder.Services.AddTransient<IPensionCategoryService, PensionCategoryService>();
 builder.Services.AddTransient<IPensionBreakupService, PensionBreakupService>();
 builder.Services.AddTransient<IComponentRateService, ComponentRateService>();
+builder.Services.AddTransient<IPpoComponentRateService, PpoComponentRateService>();
 // builder.Services.AddTransient<IPensionCategoryService, PensionCategoryService>();
 
 

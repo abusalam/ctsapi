@@ -23,8 +23,14 @@ namespace CTS_BE.BAL.Services.Pension
             List<PpoPaymentListItemDTO>? ppoPayments = new();
             DateOnly calculatedPeriodStartDate = toDate;
             long prevBreakupId = 0;
-            componentRates.ToList().ForEach(componentRate => {
+                            
+            componentRates.OrderBy(entity => entity.BreakupId)
+                .ThenByDescending(entity => entity.EffectiveFromDate)
+                .ToList().ForEach(componentRate => {
                 $"{componentRate.Breakup.Id}, {componentRate.Breakup.ComponentName}".PrintOut();
+
+
+                // Reset the period start date for the next breakup
                 if(componentRate.Breakup.Id != prevBreakupId) {
                     calculatedPeriodStartDate = toDate;
                 }
@@ -59,6 +65,7 @@ namespace CTS_BE.BAL.Services.Pension
                 });
                 calculatedPeriodStartDate = componentRate.EffectiveFromDate;
             });
+
             ppoPayments.ForEach(ppoPayment => {
                ppoPayment.PeriodInMonths = PensionCalculator.CalculatePeriodInMonths(
                    ppoPayment.FromDate,
@@ -104,19 +111,27 @@ namespace CTS_BE.BAL.Services.Pension
         /// </summary>
         /// <param name="fromDate">The start date.</param>
         /// <param name="toDate">The end date.</param>
-        /// <returns>The number of months between the two dates, or 0 if the start date is after the end date.</returns>
+        /// <returns>The number of whole months between the two dates.</returns>
         public static int CalculatePeriodInMonths(
             DateOnly fromDate,
             DateOnly toDate
         )
         {
             if (fromDate > toDate) {
-                return 0;
+                return CalculatePeriodInMonths(toDate, fromDate);
             }
 
-            DateTime startDate = fromDate.ToDateTime(new TimeOnly(0, 0, 0));
-            DateTime endDate = toDate.ToDateTime(new TimeOnly(0, 0, 0));
-            return (int)(endDate - startDate).TotalDays / 30;
+            DateTime startDate = CalculatePeriodStartDate(fromDate).ToDateTime(new TimeOnly(0, 0, 0));
+            DateTime endDate = CalculatePeriodEndDate(toDate).ToDateTime(new TimeOnly(0, 0, 0));
+            var roughMonths = (int)(endDate - startDate).TotalDays / 30;
+
+            if(startDate.AddMonths(roughMonths) > endDate) {
+                $"fromDate:{fromDate}, toDate:{toDate}, roughMonths(-1):{roughMonths}".PrintOut();
+                return roughMonths - 1;
+            } else {
+                $"fromDate:{fromDate}, toDate:{toDate}, roughMonths:{roughMonths}".PrintOut();
+                return roughMonths;
+            }
         }
 
         public static List<long> CalculateBreakups(
@@ -156,6 +171,13 @@ namespace CTS_BE.BAL.Services.Pension
             return prevRate;
         }
 
+
+        /// <summary>
+        /// Calculates the period start date based on the given from date and commencement date.
+        /// </summary>
+        /// <param name="fromDate">The date from which the period starts.</param>
+        /// <param name="commencementDate">The date when the pension is commencing.</param>
+        /// <returns>The fromDate or commencementDate whichever is the later.</returns>
         public static DateOnly CalculatePeriodStartFromDate(DateOnly fromDate, DateOnly commencementDate) {
             if(fromDate < commencementDate) {
                 return commencementDate;
@@ -164,10 +186,22 @@ namespace CTS_BE.BAL.Services.Pension
             }
         }
 
+
+        /// <summary>
+        /// Calculates the period start date based on the given date.
+        /// </summary>
+        /// <param name="fromDate">The date from which the period starts.</param>
+        /// <returns>The period start date, which is the first day of the month of the given date.</returns>
         public static DateOnly CalculatePeriodStartDate(DateOnly fromDate) {
             return new DateOnly(fromDate.Year,fromDate.Month,1);
         }
 
+
+        /// <summary>
+        /// Calculates the period end date based on the given date.
+        /// </summary>
+        /// <param name="fromDate">The start date of the period.</param>
+        /// <returns>The end date of the month of the given date.</returns>
         public static DateOnly CalculatePeriodEndDate(DateOnly fromDate) {
             return new DateOnly(
                     fromDate.Year,

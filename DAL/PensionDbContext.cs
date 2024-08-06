@@ -7,8 +7,10 @@ namespace CTS_BE.DAL;
 
 public partial class PensionDbContext : DbContext
 {
-    public PensionDbContext(){}
-    
+    public PensionDbContext()
+    {
+    }
+
     public PensionDbContext(DbContextOptions<PensionDbContext> options)
         : base(options)
     {
@@ -198,6 +200,14 @@ public partial class PensionDbContext : DbContext
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.UtrAt).HasComment("UTRAt timestamp when the UTR is received");
             entity.Property(e => e.UtrNo).HasComment("UTRNo to refer to the actual transaction of the payment");
+
+            entity.HasOne(d => d.BankAccount).WithMany(p => p.PpoBills)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("ppo_bills_bank_account_id_fkey");
+
+            entity.HasOne(d => d.Pensioner).WithMany(p => p.PpoBills)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("ppo_bills_pensioner_id_fkey");
         });
 
         modelBuilder.Entity<PpoBillBreakup>(entity =>

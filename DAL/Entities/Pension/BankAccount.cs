@@ -68,4 +68,7 @@ public partial class BankAccount
     [ForeignKey("PensionerId")]
     [InverseProperty("BankAccounts")]
     public virtual Pensioner Pensioner { get; set; } = null!;
+
+    [InverseProperty("BankAccount")]
+    public virtual ICollection<PpoBill> PpoBills { get; set; } = new List<PpoBill>();
 }

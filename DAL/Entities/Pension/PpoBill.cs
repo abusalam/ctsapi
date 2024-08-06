@@ -24,6 +24,12 @@ public partial class PpoBill
     [StringLength(3)]
     public string TreasuryCode { get; set; } = null!;
 
+    [Column("pensioner_id")]
+    public long PensionerId { get; set; }
+
+    [Column("bank_account_id")]
+    public long BankAccountId { get; set; }
+
     [Column("ppo_id")]
     public int PpoId { get; set; }
 
@@ -90,6 +96,14 @@ public partial class PpoBill
 
     [Column("active_flag")]
     public bool ActiveFlag { get; set; }
+
+    [ForeignKey("BankAccountId")]
+    [InverseProperty("PpoBills")]
+    public virtual BankAccount BankAccount { get; set; } = null!;
+
+    [ForeignKey("PensionerId")]
+    [InverseProperty("PpoBills")]
+    public virtual Pensioner Pensioner { get; set; } = null!;
 
     [InverseProperty("Bill")]
     public virtual ICollection<PpoBillBreakup> PpoBillBreakups { get; set; } = new List<PpoBillBreakup>();

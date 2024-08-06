@@ -15,6 +15,41 @@
 @ApprovedPpoId = {{SetApprovePPOFlag.response.body.$.result.ppoId}}
 @ApprovedPpoIdStatusFlag = {{SetApprovePPOFlag.response.body.$.result.statusFlag}}
 
+### All List APIs
+# @name AllPatchAPIs
+# PATCH {{PensionAPI_HostAddress}}/api/v1/manual-ppo/receipts
+# PATCH {{PensionAPI_HostAddress}}/api/v1/ppo/details
+# PATCH {{PensionAPI_HostAddress}}/api/v1/ppo/bank-accounts
+# PATCH {{PensionAPI_HostAddress}}/api/v1/pension/category
+# PATCH {{PensionAPI_HostAddress}}/api/v1/pension/primary-category
+# PATCH {{PensionAPI_HostAddress}}/api/v1/pension/sub-category
+# PATCH {{PensionAPI_HostAddress}}/api/v1/pension/bill-component
+# PATCH {{PensionAPI_HostAddress}}/api/v1/pension/component-rate
+# PATCH {{PensionAPI_HostAddress}}/api/v1/ppo/component-rate
+POST {{PensionAPI_HostAddress}}/api/v1/echo
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{"pageSize":10,"pageIndex":0,"filterParameters":[],"sortParameters":{"field":"","order":""}}
+
+
+### Create Ppo Component Rate
+# @name CreatePpoComponentRate
+POST {{PensionAPI_HostAddress}}/api/v1/ppo/component-rate
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "breakupId": 3,
+  "fromDate": "2024-01-01",
+  "toDate": "2024-06-30",
+  "amountPerMonth": 5000
+}
+
+
 ### Create Pension Component
 # @name CreatePensionBreakup
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
@@ -25,9 +60,9 @@ Content-Type: application/json
 
 {
   "CategoryId": 30,
-  "BreakupId": 1,
-  "EffectiveFromDate": "2019-01-01",
-  "RateAmount": 0,
+  "BreakupId": 3,
+  "EffectiveFromDate": "2016-05-01",
+  "RateAmount": 500,
   "RateType": "A"
 }
 
@@ -57,20 +92,6 @@ Content-Type: application/json
   "PrimaryCategoryId": 4,
   "SubCategoryId": 3
 }
-
-### List All PensionCategory
-# @name ListPensionCategory
-PATCH {{PensionAPI_HostAddress}}/api/v1/pension/category
-# PATCH {{PensionAPI_HostAddress}}/api/v1/pension/primary-category
-# PATCH {{PensionAPI_HostAddress}}/api/v1/pension/sub-category
-# PATCH {{PensionAPI_HostAddress}}/api/v1/pension/bill-component
-# PATCH {{PensionAPI_HostAddress}}/api/v1/pension/component-rate
-# POST {{PensionAPI_HostAddress}}/api/v1/echo
-Accept: application/json
-Authorization: Bearer {{accessToken}}
-Content-Type: application/json
-
-{"pageSize":10,"pageIndex":0,"filterParameters":[],"sortParameters":{"field":"","order":""}}
 
 ### Create Pension SubCategory
 # @name CreatePensionSubCategory
@@ -111,13 +132,6 @@ Content-Type: application/json
   "toDate": "{{$datetime "YYYY-MM-DD"}}"
 }
 
-### Read Pensioner Details for First Bill Generation
-# @name ReadPensionerDetailsForFirstBill
-# POST {{PensionAPI_HostAddress}}/api/v1/echo
-GET {{PensionAPI_HostAddress}}/api/v1/ppo/{{GeneratedPpoId}}/first-bill-general
-Accept: application/json
-Authorization: Bearer {{accessToken}}
-
 
 ### Create Pensioner Bank Account
 # @name CreatePensionerBankAccount
@@ -157,18 +171,6 @@ GET {{PensionAPI_HostAddress}}/api/v1/ppo/{{GeneratedPpoId}}/bank-accounts
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
 Accept: application/json
 Authorization: Bearer {{accessToken}}
-
-### List All PPO Details
-# @name GetAllPPODetails
-PATCH {{PensionAPI_HostAddress}}/api/v1/ppo/bank-accounts
-# POST {{PensionAPI_HostAddress}}/api/v1/echo
-Accept: application/json
-Authorization: Bearer {{accessToken}}
-Content-Type: application/json
-
-{"pageSize":10,"pageIndex":0,"filterParameters":[],"sortParameters":{"field":"","order":""}}
-
-
 
 ### Create PPO Details
 # @name CreatePPODetails
@@ -242,16 +244,6 @@ Get {{PensionAPI_HostAddress}}/api/v1/ppo/{{GeneratedPpoId}}/details
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
-### List All PPO Details
-# @name GetAllPPODetails
-PATCH {{PensionAPI_HostAddress}}/api/v1/ppo/details
-Accept: application/json
-Authorization: Bearer {{accessToken}}
-Content-Type: application/json
-
-{"pageSize":10,"pageIndex":0,"filterParameters":[],"sortParameters":{"field":"","order":""}}
-
-
 ### Approve PPO
 # @name SetApprovePPOFlag
 POST {{PensionAPI_HostAddress}}/api/v1/ppo/status
@@ -293,21 +285,12 @@ Accept: application/json
 Authorization: Bearer {{accessToken}}
 
 
-
 ### Read PPO Receipt Request
 # @name GetPPOReceipt
 GET {{PensionAPI_HostAddress}}/api/v1/manual-ppo/receipts/{{treasuryReceiptNo}}
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
-### List All PPO Receipts Request
-# @name GetAllManualPPOReceipts
-PATCH {{PensionAPI_HostAddress}}/api/v1/manual-ppo/receipts
-Accept: application/json
-Authorization: Bearer {{accessToken}}
-Content-Type: application/json
-
-{"pageSize":10,"pageIndex":0,"filterParameters":[],"sortParameters":{"field":"","order":""}}
 
 ### Create PPO Receipt Request
 # @name CreatePPOReceipt
@@ -335,17 +318,6 @@ Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
-  "ppoNo": "PPO-291111",
-  "pensionerName": "Jack Smith",
-  "dateOfCommencement": "2024-07-19",
-  "mobileNumber": "8923481395",
-  "receiptDate": "2024-07-27",
-  "psaCode": "A",
-  "ppoType": "N"
-}
-
-###
-{
   "ppoNo": "PPO-{{$randomInt 100000 999999}}",
   "pensionerName": "Jack Smith",
   "dateOfCommencement": "2024-07-19",
@@ -354,12 +326,6 @@ Content-Type: application/json
   "psaCode": "A",
   "ppoType": "N"
 }
-
-
-
-
-
-
 
 
 ### Echo Request
