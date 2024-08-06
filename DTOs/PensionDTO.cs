@@ -313,6 +313,8 @@ namespace CTS_BE.DTOs
     }
 
     public partial class PpoComponentRateEntryDTO : BaseDTO {
+        [Required]        
+        public int PpoId { get; set; }
         [Required]
         public long BreakupId { get; set; }
 

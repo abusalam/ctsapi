@@ -43,6 +43,7 @@ Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
+  "ppoId": 1,
   "breakupId": 3,
   "fromDate": "2024-01-01",
   "toDate": "2024-06-30",
