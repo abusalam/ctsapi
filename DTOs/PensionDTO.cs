@@ -292,7 +292,13 @@ namespace CTS_BE.DTOs
         [Required]
         [DataType(DataType.Date)]
         public DateOnly BillGeneratedUptoDate { get; set; }
-
+        public long BillId { get; set; }
+        public DateOnly BillDate { get; set; }
+        public string TreasuryVoucherNo { get; set; } = null!;
+        public long TreasuryVoucherId { get; set; }
+        public DateOnly TreasuryVoucherDate { get; set; }
+        public long GrossAmount { get; set; }
+        public long NetAmount { get; set; }
     }
 
     public partial class PpoPaymentListItemDTO : BaseDTO {
@@ -310,6 +316,8 @@ namespace CTS_BE.DTOs
         public int RateAmount { get; set; }
         public int PeriodInMonths { get; set; }
         public long DueAmount { get; set; }
+        public long DrawnAmount { get; set; }
+        public long NetAmount { get; set; }
     }
 
     public partial class PpoComponentRateEntryDTO : BaseDTO {

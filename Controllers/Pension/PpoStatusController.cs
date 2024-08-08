@@ -24,8 +24,9 @@ namespace CTS_BE.Controllers.Pension
         }
 
         [HttpPost("status")]
-        [Tags("Pension", "Pension: PPO Status")]
-        public async Task<APIResponse<PensionStatusEntryDTO>> ControlStatusFlagCreate(PensionStatusEntryDTO pensionStatusEntryDTO) {
+        [Tags("Pension: PPO Status")]
+        [OpenApi]
+        public async Task<APIResponse<PensionStatusEntryDTO>> PpoStatusFlagCreate(PensionStatusEntryDTO pensionStatusEntryDTO) {
 
             APIResponse<PensionStatusEntryDTO> response = new(){
                 apiResponseStatus = Enum.APIResponseStatus.Success,
@@ -64,8 +65,9 @@ namespace CTS_BE.Controllers.Pension
         }
 
         [HttpDelete("{ppoId}/status/{statusFlag}")]
-        [Tags("Pension", "Pension: PPO Status")]
-        public async Task<APIResponse<PensionStatusDTO>> ControlStatusFlagDelete(int ppoId, int statusFlag) {
+        [Tags("Pension: PPO Status")]
+        [OpenApi]
+        public async Task<APIResponse<PensionStatusDTO>> PpoStatusFlagDelete(int ppoId, int statusFlag) {
 
             APIResponse<PensionStatusDTO> response = new(){
                 apiResponseStatus = Enum.APIResponseStatus.Success,
@@ -115,8 +117,9 @@ namespace CTS_BE.Controllers.Pension
         }
 
         [HttpGet("{ppoId}/status/{statusFlag}")]
-        [Tags("Pension", "Pension: PPO Status")]
-        public async Task<APIResponse<PensionStatusDTO>> ControlStatusFlagRead(int ppoId, int statusFlag) {
+        [Tags("Pension: PPO Status")]
+        [OpenApi]
+        public async Task<APIResponse<PensionStatusDTO>> PpoStatusFlagRead(int ppoId, int statusFlag) {
             APIResponse<PensionStatusDTO> response = new(){
                 apiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = "|",
@@ -163,7 +166,5 @@ namespace CTS_BE.Controllers.Pension
             }
             return response;
         }
-    
-
     }
 }

@@ -13,8 +13,9 @@ namespace CTS_BE.Controllers.Pension
             ) : base(claimService) {}
 
         [HttpPost("echo")]
-        [Tags("Pension", "Echo Request in Response")]
-        public async Task<JsonAPIResponse<object>> ControlEchoRequestInResponse(object req)
+        [Tags("Pension")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<object>> Echo(object req)
         {
             JsonAPIResponse<object> response = new()
             {
@@ -26,8 +27,9 @@ namespace CTS_BE.Controllers.Pension
         }
 
         [HttpPost("date-only")]
-        [Tags("Pension", "DateOnly Echo")]
-        public async Task<JsonAPIResponse<DateOnlyDTO>> ControlSetDateOnly(DateOnlyDTO dateOnly)
+        [Tags("Pension")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<DateOnlyDTO>> SetDateOnly(DateOnlyDTO dateOnly)
         {
             JsonAPIResponse<DateOnlyDTO> response = new()
             {
@@ -39,8 +41,9 @@ namespace CTS_BE.Controllers.Pension
         }
 
         [HttpGet("date-only")]
-        [Tags("Pension", "DateOnly Echo")]
-        public async Task<JsonAPIResponse<DateOnly>> ControlGetDateOnly()
+        [Tags("Pension")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<DateOnly>> GetDateOnly()
         {
             DateOnly dateOnly = DateOnly.FromDateTime(DateTime.Now);
             JsonAPIResponse<DateOnly> response = new()
@@ -52,5 +55,5 @@ namespace CTS_BE.Controllers.Pension
             return await Task.FromResult(response);
         }
 
-    } 
+    }
 }

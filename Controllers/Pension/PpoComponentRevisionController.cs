@@ -12,10 +12,10 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.Controllers.Pension
 {
     [Route("api/v1/ppo")]
-    public class PpoComponentRateController : ApiBaseController
+    public class PpoComponentRevisionController : ApiBaseController
     {
         private readonly IPpoComponentRateService _ppoComponentRateService;
-        public PpoComponentRateController(
+        public PpoComponentRevisionController(
                 IPpoComponentRateService ppoComponentRateService,
                 IClaimService claimService
             ) : base(claimService)
@@ -23,9 +23,10 @@ namespace CTS_BE.Controllers.Pension
             _ppoComponentRateService = ppoComponentRateService;
         }
 
-        [HttpPost("component-rate")]
-        [Tags("Pension", "Pension: Component Revision")]
-        public async Task<JsonAPIResponse<PpoComponentRateResponseDTO>> ControlPpoComponentRatesCreate(
+        [HttpPost("component-revision-rate")]
+        [Tags("Pension: Component Revision")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<PpoComponentRateResponseDTO>> PpoComponentRevisionRatesCreate(
                 PpoComponentRateEntryDTO ppoComponentRateEntryDTO
             )
         {
@@ -55,9 +56,10 @@ namespace CTS_BE.Controllers.Pension
             return response;
         }
 
-        [HttpPatch("component-rate")]
-        [Tags("Pension", "Pension: Component Revision")]
-        public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<PpoComponentRateResponseDTO>>>> ControlPpoComponentRatesList(
+        [HttpPatch("component-revision-rate")]
+        [Tags("Pension: Component Revision")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<PpoComponentRateResponseDTO>>>> PpoComponentRevisionRatesList(
                 DynamicListQueryParameters dynamicListQueryParameters
             )
         {

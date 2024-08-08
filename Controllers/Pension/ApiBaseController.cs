@@ -1,4 +1,5 @@
 using System.Net.Mime;
+using CTS_BE.Helper;
 using CTS_BE.Helper.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,7 +7,6 @@ namespace CTS_BE.Controllers.Pension
 {
     [ApiController]
     [Produces(MediaTypeNames.Application.Json)]
-    [Tags("Pension")]
     [Route("api/v1")]
     public class ApiBaseController : ControllerBase
     {

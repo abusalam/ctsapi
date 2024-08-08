@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
+using System.Reflection;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using CTS_BE.PensionEnum;
 using CTS_BE.BAL.Interfaces.Pension;
 using CTS_BE.BAL.Services.Pension;
@@ -67,6 +69,24 @@ builder.Services.AddDbContext<PensionDbContext>(
     },
     ServiceLifetime.Transient
 );
+
+
+// Hide non OpenAPI Conventions from Swagger.
+// builder.Services.AddMvc(c =>
+//     c.Conventions.Add(new OpenApiConvention())
+// );
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.AddServer(new (){
+        Url = "http://api.docker.test"
+    });
+    // Use method name as operationId
+    c.CustomOperationIds(apiDesc =>
+    {
+        return apiDesc.TryGetMethodInfo(out MethodInfo methodInfo) ? methodInfo.Name : null;
+    });
+});
 
 //Pension Repositories
 builder.Services.AddTransient<IManualPpoReceiptRepository, ManualPpoReceiptRepository>();

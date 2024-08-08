@@ -28,8 +28,9 @@ namespace CTS_BE.Controllers.Pension
         }
 
         [HttpPost("{ppoId}/bank-accounts")]
-        [Tags("Pension", "Pension: Bank Accounts")]
-        public async Task<JsonAPIResponse<PensionerBankAcDTO>> ControlPensionerBankAccountsCreate(
+        [Tags("Pension: Bank Accounts")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<PensionerBankAcDTO>> PensionerBankAccountsCreate(
                 int ppoId,
                 PensionerBankAcDTO pensionerBankAcDTO
             )
@@ -67,8 +68,9 @@ namespace CTS_BE.Controllers.Pension
         }
 
         [HttpPut("{ppoId}/bank-accounts")]
-        [Tags("Pension", "Pension: Bank Accounts")]
-        public async Task<APIResponse<PensionerBankAcDTO>> ControlPensionerBankAccountsUpdate(
+        [Tags("Pension: Bank Accounts")]
+        [OpenApi]
+        public async Task<APIResponse<PensionerBankAcDTO>> PensionerBankAccountsUpdate(
                 int ppoId,
                 PensionerBankAcDTO pensionerBankAcDTO
             )
@@ -100,8 +102,9 @@ namespace CTS_BE.Controllers.Pension
         }
 
         [HttpGet("{ppoId}/bank-accounts")]
-        [Tags("Pension", "Pension: Bank Accounts")]
-        public async Task<APIResponse<PensionerBankAcDTO>> ControlPensionerBankAccountsRead(
+        [Tags("Pension: Bank Accounts")]
+        [OpenApi]
+        public async Task<APIResponse<PensionerBankAcDTO>> PensionerBankAccountsRead(
                 int ppoId
             )
         {

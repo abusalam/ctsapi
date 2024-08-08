@@ -176,7 +176,11 @@ namespace CTS_BE.BAL.Services.Pension
                 PensionCategory = _mapper.Map<PensionCategoryResponseDTO>(pensioner.Category),
                 // ComponentRates = _mapper.Map<List<ComponentRateResponseDTO>>(pensioner.Category.ComponentRates)
                 //     .OrderBy(entity => entity.EffectiveFromDate).ToList(),
-                BillGeneratedUptoDate = initiateFirstPensionBillDTO.ToDate
+                BillGeneratedUptoDate = initiateFirstPensionBillDTO.ToDate,
+                TreasuryVoucherNo = "N/A",
+                BillDate = initiateFirstPensionBillDTO.ToDate,
+                BillId = 0
+
             };
 
             return response;

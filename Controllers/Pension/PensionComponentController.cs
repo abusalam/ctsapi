@@ -12,12 +12,12 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.Controllers.Pension
 {
     [Route("api/v1/pension")]
-    public class PpoComponentController : ApiBaseController
+    public class PensionComponentController : ApiBaseController
     {
         
         private readonly IPensionBreakupService _pensionBreakupService;
         private readonly IComponentRateService _pensionRateService;
-        public PpoComponentController(
+        public PensionComponentController(
                 IPensionBreakupService pensionBreakupService,
                 IComponentRateService pensionRateService,
                 IClaimService claimService
@@ -29,8 +29,9 @@ namespace CTS_BE.Controllers.Pension
 
         
         [HttpPost("bill-component")]
-        [Tags("Pension", "Pension: Component")]
-        public async Task<JsonAPIResponse<PensionBreakupResponseDTO>> ControlPensionBillComponentCreate(
+        [Tags("Pension: Component")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<PensionBreakupResponseDTO>> PensionComponentCreate(
                 PensionBreakupEntryDTO pensionBreakupEntryDTO
             )
         {
@@ -65,8 +66,9 @@ namespace CTS_BE.Controllers.Pension
         }
 
         [HttpPatch("bill-component")]
-        [Tags("Pension", "Pension: Component")]
-        public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<PensionBreakupResponseDTO>>>> ControlComponentList(
+        [Tags("Pension: Component")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<PensionBreakupResponseDTO>>>> PensionComponentList(
                 DynamicListQueryParameters dynamicListQueryParameters
             )
         {
@@ -137,8 +139,9 @@ namespace CTS_BE.Controllers.Pension
         }
  
         [HttpPost("component-rate")]
-        [Tags("Pension", "Pension: Component Rate")]
-        public async Task<JsonAPIResponse<ComponentRateResponseDTO>> ControlComponentRateCreate(
+        [Tags("Pension: Component Rate")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<ComponentRateResponseDTO>> PensionComponentRateCreate(
                 ComponentRateEntryDTO pensionRatesEntryDTO
             )
         {
@@ -173,8 +176,9 @@ namespace CTS_BE.Controllers.Pension
         }
 
         [HttpPatch("component-rate")]
-        [Tags("Pension", "Pension: Component Rate")]
-        public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<ComponentRateResponseDTO>>>> ControlComponentRateList(
+        [Tags("Pension: Component Rate")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<ComponentRateResponseDTO>>>> PensionComponentRateList(
                 DynamicListQueryParameters dynamicListQueryParameters
             )
         {

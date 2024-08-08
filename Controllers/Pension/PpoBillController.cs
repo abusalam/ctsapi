@@ -8,12 +8,12 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.Controllers.Pension
 {
     [Route("api/v1/ppo")]
-    public class PensionBillController : ApiBaseController
+    public class PpoBillController : ApiBaseController
     {
         private readonly IPensionerDetailsService _pensionerDetailsService;
         private readonly IPensionerBankAccountService _pensionerBankAccountService;
         private readonly IPensionBillService _pensionBillService;
-        public PensionBillController(
+        public PpoBillController(
                 IPensionerDetailsService pensionerDetailsService,
                 IPensionerBankAccountService pensionerBankAccountService,
                 IPensionBillService pensionBillService,
@@ -25,51 +25,10 @@ namespace CTS_BE.Controllers.Pension
             _pensionerBankAccountService = pensionerBankAccountService;
         }
 
-        [HttpPost("{ppoId}/first-bill-general")]
-        [Tags("Pension", "Pension: First Bill")]
-        public async Task<JsonAPIResponse<PensionerFirstBillResponseDTO>> ControlFirstBillsCreate(
-                int ppoId
-            )
-        {
-
-            JsonAPIResponse<PensionerFirstBillResponseDTO> response = new(){
-                ApiResponseStatus = Enum.APIResponseStatus.Success,
-                Message = $"Pensioner Details received sucessfully!",
-                Result = new (){
-                    Pensioner = new(){},
-                    BankAccount = new(){}
-                }
-            };
-            try {
-                response.Result.BankAccount = await _pensionerBankAccountService.GetPensionerBankAccount(
-                    ppoId,
-                    GetCurrentFyYear(),
-                    GetTreasuryCode()
-                );
-                response.Result.Pensioner = await _pensionerDetailsService.GetPensioner<PensionerListItemDTO>(
-                    ppoId,
-                    GetCurrentFyYear(),
-                    GetTreasuryCode()
-                );
-            }
-            catch (DbUpdateException ex) {
-                response.ApiResponseStatus = Enum.APIResponseStatus.Error;
-                response.Message = $"Bank Accounts Details not received! Error: {ex.Message}";
-            }
-            finally {
-                if(response.Result?.DataSource != null) {
-                    response.ApiResponseStatus = Enum.APIResponseStatus.Error;
-                    response.Message = $"Bank Accounts Details not received!";
-                }
-            }
-
-            return response;
-        }
-
-
-        [HttpPatch("pension-bill")]
-        [Tags("Pension", "Pension: First Bill")]
-        public async Task<JsonAPIResponse<InitiateFirstPensionBillResponseDTO>> ControlFirstBillsGeneration(
+        [HttpPost("pension-bill")]
+        [Tags("Pension: First Bill")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<InitiateFirstPensionBillResponseDTO>> PpoFirstBillGenerate(
                 InitiateFirstPensionBillDTO initiateFirstPensionBillDTO
             )
         {

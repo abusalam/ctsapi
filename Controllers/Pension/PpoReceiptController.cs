@@ -23,9 +23,10 @@ namespace CTS_BE.Controllers.Pension
             _pensionService = pensionService;
         }
 
-                [HttpPost("receipts")]
-        [Tags("Pension", "Pension: Manual PPO Receipt")]
-        public async Task<APIResponse<ManualPpoReceiptResponseDTO>> ControlManualPpoReceiptsCreate(
+        [HttpPost("receipts")]
+        [Tags("Pension: Manual PPO Receipt")]
+        [OpenApi]
+        public async Task<APIResponse<ManualPpoReceiptResponseDTO>> PpoReceiptsCreate(
                 ManualPpoReceiptEntryDTO manualPpoReceiptEntryDTO
             )
         {
@@ -55,8 +56,9 @@ namespace CTS_BE.Controllers.Pension
         }
 
         [HttpGet("receipts/{treasuryReceiptNo}")]
-        [Tags("Pension", "Pension: Manual PPO Receipt")]
-        public async Task<JsonAPIResponse<ManualPpoReceiptResponseDTO>> ControlManualPpoReceiptsRead(string treasuryReceiptNo)
+        [Tags("Pension: Manual PPO Receipt")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<ManualPpoReceiptResponseDTO>> PpoReceiptsRead(string treasuryReceiptNo)
         {
             JsonAPIResponse<ManualPpoReceiptResponseDTO> response;
 
@@ -81,8 +83,9 @@ namespace CTS_BE.Controllers.Pension
         }
 
         [HttpPatch("receipts")]
-        [Tags("Pension", "Pension: Manual PPO Receipt")]
-        public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<ListAllPpoReceiptsResponseDTO>>>> ControlManualPpoReceiptsList(
+        [Tags("Pension: Manual PPO Receipt")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<ListAllPpoReceiptsResponseDTO>>>> PpoReceiptsList(
                 DynamicListQueryParameters dynamicListQueryParameters
             ) {
             JsonAPIResponse<DynamicListResult<IEnumerable<ListAllPpoReceiptsResponseDTO>>> response;
@@ -152,8 +155,9 @@ namespace CTS_BE.Controllers.Pension
         }
 
         [HttpPut("receipts/{treasuryReceiptNo}")]
-        [Tags("Pension", "Pension: Manual PPO Receipt")]
-        public async Task<JsonAPIResponse<ManualPpoReceiptResponseDTO>> ControlManualPpoReceiptsUpdate(
+        [Tags("Pension: Manual PPO Receipt")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<ManualPpoReceiptResponseDTO>> PpoReceiptsUpdate(
                 string treasuryReceiptNo,
                 ManualPpoReceiptEntryDTO manualPpoReceiptEntryDTO
             )
