@@ -122,7 +122,7 @@ Content-Type: application/json
 ### Generate Components for First Pension Bill
 # @name GenerateFirstPensionBill
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
-PATCH {{PensionAPI_HostAddress}}/api/v1/ppo/pension-bill
+POST {{PensionAPI_HostAddress}}/api/v1/ppo/pension-bill
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
@@ -146,8 +146,8 @@ Content-Type: application/json
   "accountHolderName": "Jack Dowsel",
   "bankAcNo": "{{$randomInt 1000000000000000 9999999999999999}}",
   "ifscCode": "IFSC{{$randomInt 1000000 9999999}}",
-  "bankName": "State Bank of India",
-  "branchName": "Malda"
+  "bankCode": 2,
+  "branchCode": 531
 }
 
 ### Update Pensioner Bank Account
@@ -296,6 +296,7 @@ Authorization: Bearer {{accessToken}}
 ### Create PPO Receipt Request
 # @name CreatePPOReceipt
 POST {{PensionAPI_HostAddress}}/api/v1/manual-ppo/receipts
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
@@ -328,25 +329,6 @@ Content-Type: application/json
   "ppoType": "N"
 }
 
-
-### Echo Request
-# @name CreateManualPPOReceipt
-POST {{PensionAPI_HostAddress}}/api/v1/echo
-Accept: application/json
-Authorization: Bearer {{accessToken}}
-Content-Type: application/json
-
-{
-  "treasuryReceiptNo": "{{@treasuryReceiptNo}}",
-  "ppoNo": "PPO-{{$randomInt 100000 999999}}",
-  "pensionerName": "Jack Dowsel",
-  "dateOfCommencement": "2024-07-15",
-  "mobileNumber": "{{$randomInt 6000000000 9999999999}}",
-  "receiptDate": "{{$datetime "YYYY-MM-DD"}}",
-  "psaCode": "P",
-  "ppoType": "N"
-}
-
 ### Get DateOnly Request
 # @name GetDateOnly
 GET {{PensionAPI_HostAddress}}/api/v1/date-only
@@ -356,13 +338,14 @@ Authorization: Bearer {{accessToken}}
 
 ### Set DateOnly Request
 # @name SetDateOnly
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
 POST {{PensionAPI_HostAddress}}/api/v1/date-only
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
-  "dateOnly": "{{$datetime "YYYY-MM-DD" -5 d}}"
+  "dateOnly": "{{$datetime "YYYY-MM-DD"}}"
 }
 
 

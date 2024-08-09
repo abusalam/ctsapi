@@ -26,9 +26,9 @@ namespace CTS_BE.Controllers.Pension
         [HttpPost("receipts")]
         [Tags("Pension: Manual PPO Receipt")]
         [OpenApi]
-        public async Task<APIResponse<ManualPpoReceiptResponseDTO>> PpoReceiptsCreate(
-                ManualPpoReceiptEntryDTO manualPpoReceiptEntryDTO
-            )
+        public async Task<APIResponse<ManualPpoReceiptResponseDTO>> CreatePpoReceipt(
+            ManualPpoReceiptEntryDTO manualPpoReceiptEntryDTO
+        )
         {
             APIResponse<ManualPpoReceiptResponseDTO> response;
 
@@ -58,7 +58,9 @@ namespace CTS_BE.Controllers.Pension
         [HttpGet("receipts/{treasuryReceiptNo}")]
         [Tags("Pension: Manual PPO Receipt")]
         [OpenApi]
-        public async Task<JsonAPIResponse<ManualPpoReceiptResponseDTO>> PpoReceiptsRead(string treasuryReceiptNo)
+        public async Task<JsonAPIResponse<ManualPpoReceiptResponseDTO>> GetPpoReceiptByTreasuryReceiptNo(
+            string treasuryReceiptNo
+        )
         {
             JsonAPIResponse<ManualPpoReceiptResponseDTO> response;
 
@@ -85,9 +87,10 @@ namespace CTS_BE.Controllers.Pension
         [HttpPatch("receipts")]
         [Tags("Pension: Manual PPO Receipt")]
         [OpenApi]
-        public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<ListAllPpoReceiptsResponseDTO>>>> PpoReceiptsList(
-                DynamicListQueryParameters dynamicListQueryParameters
-            ) {
+        public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<ListAllPpoReceiptsResponseDTO>>>> GetAllPpoReceipts(
+            DynamicListQueryParameters dynamicListQueryParameters
+        ) 
+        {
             JsonAPIResponse<DynamicListResult<IEnumerable<ListAllPpoReceiptsResponseDTO>>> response;
             try {
 
@@ -157,10 +160,10 @@ namespace CTS_BE.Controllers.Pension
         [HttpPut("receipts/{treasuryReceiptNo}")]
         [Tags("Pension: Manual PPO Receipt")]
         [OpenApi]
-        public async Task<JsonAPIResponse<ManualPpoReceiptResponseDTO>> PpoReceiptsUpdate(
-                string treasuryReceiptNo,
-                ManualPpoReceiptEntryDTO manualPpoReceiptEntryDTO
-            )
+        public async Task<JsonAPIResponse<ManualPpoReceiptResponseDTO>> UpdatePpoReceiptByTreasuryReceiptNo(
+            string treasuryReceiptNo,
+            ManualPpoReceiptEntryDTO manualPpoReceiptEntryDTO
+        )
         {
             JsonAPIResponse<ManualPpoReceiptResponseDTO> response;
 

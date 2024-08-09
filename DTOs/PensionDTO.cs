@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using CTS_BE.DTOs.Validators;
 using System.Dynamic;
 using System.Reflection;
 using CTS_BE.PensionEnum;
@@ -11,6 +12,8 @@ namespace CTS_BE.DTOs
 
     public class DateOnlyDTO {
         [DataType(DataType.Date)]
+        [PastDateWithinYears(100)]
+        [FutureDateUptoYears(10)]
         public DateOnly DateOnly { get; set; }
     }
     
@@ -39,6 +42,7 @@ namespace CTS_BE.DTOs
         public required string PensionerName { get; set; }
 
         [DataType(DataType.Date)]
+        [PastDateWithinYears(100)]
         public required DateOnly DateOfCommencement { get; set; }
 
         [StringLength(10)]
@@ -46,6 +50,7 @@ namespace CTS_BE.DTOs
         public string? MobileNumber { get; set; }
 
         [DataType(DataType.Date)]
+        [PastDateWithinYears(10)]
         public required DateOnly ReceiptDate { get; set; }
 
         [RegularExpression(@"[ADO]", ErrorMessage = "{0} must be one of the following (A, D & O)")]
@@ -57,7 +62,8 @@ namespace CTS_BE.DTOs
 
 
     public class ManualPpoReceiptResponseDTO : ManualPpoReceiptEntryDTO {
-
+        public long Id { get; set; }
+        
         [StringLength(13)]
         public string TreasuryReceiptNo { get; set; } = null!;
 
@@ -99,21 +105,30 @@ namespace CTS_BE.DTOs
         public char? Gender { get; set; }
 
         [DataType(DataType.Date)]
+        [PastDateWithinYears(100)]
         public DateOnly DateOfBirth { get; set; }
 
         [StringLength(10)]
-        [RegularExpression(@"^[6-9]\d{9}$")]
+        [RegularExpression(@"^[6-9]\d{9}$", ErrorMessage = "Invalid Mobile Number")]
         public string? MobileNumber { get; set; }
+
+        [DataType(DataType.EmailAddress)]
         public string? EmailId { get; set; }
         public string? PensionerAddress { get; set; }
         public string? IdentificationMark { get; set; }
+
+        [RegularExpression(@"^[A-Z]{5}[0-9]{4}[A-Z]{1}$", ErrorMessage = "Invalid PAN Number")]
         public string? PanNo { get; set; }
+
+        [StringLength(12)]
         public string? AadhaarNo { get; set; }
 
         [DataType(DataType.Date)]
+        [PastDateWithinYears(100)]
         public DateOnly DateOfRetirement { get; set; }
 
         [DataType(DataType.Date)]
+        [PastDateWithinYears(100)]
         public DateOnly DateOfCommencement { get; set; }
         public int BasicPensionAmount { get; set; }
         public int CommutedPensionAmount { get; set; }
@@ -145,12 +160,15 @@ namespace CTS_BE.DTOs
         public string? MobileNumber { get; set; }
 
         [DataType(DataType.Date)]
+        [PastDateWithinYears(100)]
         public DateOnly DateOfBirth { get; set; }
 
         [DataType(DataType.Date)]
+        [PastDateWithinYears(100)]
         public DateOnly DateOfRetirement { get; set; }
         
         [DataType(DataType.Date)]
+        [PastDateWithinYears(100)]
         public DateOnly DateOfCommencement { get; set; }
 
         [StringLength(100)]
@@ -167,12 +185,8 @@ namespace CTS_BE.DTOs
 
         [StringLength(11)]
         public string? IfscCode { get; set; }
-
-        [StringLength(100)]
-        public string? BankName { get; set; }
-
-        [StringLength(100)]
-        public string? BranchName { get; set; }
+        public long? BankCode { get; set; }
+        public long? BranchCode { get; set; }
     }
 
     public partial class PensionPrimaryCategoryEntryDTO : BaseDTO {
