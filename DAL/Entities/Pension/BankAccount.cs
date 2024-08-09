@@ -42,13 +42,11 @@ public partial class BankAccount
     [StringLength(11)]
     public string? IfscCode { get; set; }
 
-    [Column("bank_name")]
-    [StringLength(100)]
-    public string? BankName { get; set; }
+    [Column("bank_code")]
+    public long? BankCode { get; set; }
 
-    [Column("branch_name")]
-    [StringLength(100)]
-    public string? BranchName { get; set; }
+    [Column("branch_code")]
+    public long? BranchCode { get; set; }
 
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime? CreatedAt { get; set; }

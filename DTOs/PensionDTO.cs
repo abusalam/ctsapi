@@ -185,7 +185,11 @@ namespace CTS_BE.DTOs
 
         [StringLength(11)]
         public string? IfscCode { get; set; }
+
+        [Required]
         public long? BankCode { get; set; }
+
+        [Required]
         public long? BranchCode { get; set; }
     }
 
