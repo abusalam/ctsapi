@@ -159,11 +159,11 @@ Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
-  "accountHolderName": "Jack Smith",
+  "accountHolderName": "Jack Dowsel",
   "bankAcNo": "{{$randomInt 1000000000000000 9999999999999999}}",
   "ifscCode": "IFSC{{$randomInt 1000000 9999999}}",
-  "bankName": "Bank of India",
-  "branchName": "Gour Road"
+  "bankCode": 2,
+  "branchCode": 531
 }
 
 ### Read Pensioner Bank Account

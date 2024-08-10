@@ -12,8 +12,6 @@ namespace CTS_BE.DTOs
 
     public class DateOnlyDTO {
         [DataType(DataType.Date)]
-        [PastDateWithinYears(100)]
-        [FutureDateUptoYears(10)]
         public DateOnly DateOnly { get; set; }
     }
     

@@ -45,6 +45,11 @@ namespace CTS_BE.Controllers.Pension
                         GetCurrentFyYear(),
                         GetTreasuryCode()
                     );
+                if(pensionerResponseDTO == null) {
+                    response.ApiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.Message = $"Pensioner not found!";
+                    return response;
+                }
                 response.Result = await _pensionerBankAccountService.CreatePensionerBankAccount(
                     ppoId,
                     pensionerResponseDTO.Id,
@@ -55,7 +60,7 @@ namespace CTS_BE.Controllers.Pension
             }
             catch (DbUpdateException ex) {
                 response.ApiResponseStatus = Enum.APIResponseStatus.Error;
-                response.Message = $"ServiceError: {ex.InnerException?.Message ?? ex.Message} {ex.StackTrace}";
+                response.Message = $"DbUpdateError: {ex.InnerException?.Message ?? ex.Message} {ex.StackTrace}";
             }
             finally {
                 if(response.Result?.DataSource != null) {
