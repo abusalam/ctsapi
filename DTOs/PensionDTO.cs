@@ -336,7 +336,7 @@ namespace CTS_BE.DTOs
         public long NetAmount { get; set; }
     }
 
-    public partial class PpoComponentRateEntryDTO : BaseDTO {
+    public partial class PpoComponentRevisionEntryDTO : BaseDTO {
         [Required]        
         public int PpoId { get; set; }
         [Required]
@@ -350,19 +350,35 @@ namespace CTS_BE.DTOs
         public DateOnly FromDate { get; set; }
 
         /// <summary>
-        /// To date (will be null for regular active bills)
-        /// </summary>
-        [DataType(DataType.Date)]
-        public DateOnly? ToDate { get; set; }
-
-        /// <summary>
         /// Amount per month is the actual amount paid for the mentioned period
         /// </summary>
         [Required]
         public int AmountPerMonth { get; set; }
     }
 
-    public partial class PpoComponentRateResponseDTO : PpoComponentRateEntryDTO {
+    public partial class PpoComponentRevisionResponseDTO : PpoComponentRevisionEntryDTO {
         public long Id { get; set; }
+
+        /// <summary>
+        /// To date (will be null for regular active bills)
+        /// </summary>
+        [DataType(DataType.Date)]
+        public DateOnly? ToDate { get; set; }
+    }
+
+    public partial class PpoComponentRevisionUpdateDTO : BaseDTO {
+
+        /// <summary>
+        /// From date is the Date of Commencement of pension of the pensioner
+        /// </summary>
+        [Required]
+        [DataType(DataType.Date)]
+        public DateOnly FromDate { get; set; }
+
+        /// <summary>
+        /// Amount per month is the actual amount paid for the mentioned period
+        /// </summary>
+        [Required]
+        public int AmountPerMonth { get; set; }
     }
 }

@@ -9,8 +9,9 @@ namespace CTS_BE.DAL.Entities.Pension;
 /// <summary>
 /// PensionModuleSchema v1
 /// </summary>
-[Table("ppo_component_rates", Schema = "cts_pension")]
-public partial class PpoComponentRate
+[Table("ppo_component_revisions", Schema = "cts_pension")]
+[Index("PpoId", "TreasuryCode", "BreakupId", "FromDate", Name = "ppo_component_revisions_ppo_id_treasury_code_breakup_id_fro_key", IsUnique = true)]
+public partial class PpoComponentRevision
 {
     /// <summary>
     /// RevisionId
@@ -63,6 +64,9 @@ public partial class PpoComponentRate
     public bool ActiveFlag { get; set; }
 
     [ForeignKey("BreakupId")]
-    [InverseProperty("PpoComponentRates")]
+    [InverseProperty("PpoComponentRevisions")]
     public virtual Breakup Breakup { get; set; } = null!;
+
+    [InverseProperty("Revision")]
+    public virtual ICollection<PpoBillBreakup> PpoBillBreakups { get; set; } = new List<PpoBillBreakup>();
 }

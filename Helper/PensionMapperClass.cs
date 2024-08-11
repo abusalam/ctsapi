@@ -29,7 +29,7 @@ namespace CTS_BE.Helper
             CreateMap<PensionBreakupResponseDTO, PensionBreakupEntryDTO>().ReverseMap();
             CreateMap<ComponentRateResponseDTO, ComponentRate>().ReverseMap();
             CreateMap<ComponentRateResponseDTO, ComponentRateEntryDTO>().ReverseMap();
-            CreateMap<PpoComponentRateResponseDTO, PpoComponentRate>().ReverseMap();
+            CreateMap<PpoComponentRevisionResponseDTO, PpoComponentRevision>().ReverseMap();
         }
     }
 }

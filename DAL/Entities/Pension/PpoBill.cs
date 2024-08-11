@@ -79,6 +79,9 @@ public partial class PpoBill
     [Column("bill_gross_amount")]
     public int BillGrossAmount { get; set; }
 
+    [Column("bill_bytransfer_amount")]
+    public int BillBytransferAmount { get; set; }
+
     [Column("bill_net_amount")]
     public int BillNetAmount { get; set; }
 

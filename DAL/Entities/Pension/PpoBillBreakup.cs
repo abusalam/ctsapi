@@ -39,6 +39,9 @@ public partial class PpoBillBreakup
     [Column("rate_id")]
     public long RateId { get; set; }
 
+    [Column("revision_id")]
+    public long RevisionId { get; set; }
+
     [Column("from_date")]
     public DateOnly FromDate { get; set; }
 
@@ -70,4 +73,8 @@ public partial class PpoBillBreakup
     [ForeignKey("RateId")]
     [InverseProperty("PpoBillBreakups")]
     public virtual ComponentRate Rate { get; set; } = null!;
+
+    [ForeignKey("RevisionId")]
+    [InverseProperty("PpoBillBreakups")]
+    public virtual PpoComponentRevision Revision { get; set; } = null!;
 }

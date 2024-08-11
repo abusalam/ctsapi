@@ -81,6 +81,12 @@ builder.Services.AddSwaggerGen(c =>
     c.AddServer(new (){
         Url = "http://api.docker.test"
     });
+    c.AddServer(new (){
+        Url = "https://localhost:7249"
+    });
+    c.AddServer(new (){
+        Url = "http://localhost:7249"
+    });
     // Use method name as operationId
     c.CustomOperationIds(apiDesc =>
     {
@@ -100,7 +106,7 @@ builder.Services.AddTransient<ISubCategoryRepository, SubCategoryRepository>();
 builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
 builder.Services.AddTransient<IBreakupRepository, BreakupRepository>();
 builder.Services.AddTransient<IComponentRateRepository, ComponentRateRepository>();
-builder.Services.AddTransient<IPpoComponentRateRepository, PpoComponentRateRepository>();
+builder.Services.AddTransient<IPpoComponentRevisionRepository, PpoComponentRevisionRepository>();
 
 
 // Pension Services
@@ -113,7 +119,7 @@ builder.Services.AddTransient<IPensionBillService, PensionBillService>();
 builder.Services.AddTransient<IPensionCategoryService, PensionCategoryService>();
 builder.Services.AddTransient<IPensionBreakupService, PensionBreakupService>();
 builder.Services.AddTransient<IComponentRateService, ComponentRateService>();
-builder.Services.AddTransient<IPpoComponentRateService, PpoComponentRateService>();
+builder.Services.AddTransient<IPpoComponentRevisionService, PpoComponentRevisionService>();
 // builder.Services.AddTransient<IPensionCategoryService, PensionCategoryService>();
 
 

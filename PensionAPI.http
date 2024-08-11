@@ -12,47 +12,74 @@
 
 @GeneratedPpoId = {{CreatePPODetails.response.body.$.result.ppoId}}
 
+@RevisionId = {{CreatePpoComponenRevision.response.body.$.result.id}}
+
 @ApprovedPpoId = {{SetApprovePPOFlag.response.body.$.result.ppoId}}
 @ApprovedPpoIdStatusFlag = {{SetApprovePPOFlag.response.body.$.result.statusFlag}}
 
 ### All List APIs
 # @name AllPatchAPIs
 # PATCH {{PensionAPI_HostAddress}}/api/v1/manual-ppo/receipts
-# PATCH {{PensionAPI_HostAddress}}/api/v1/ppo/details
-# PATCH {{PensionAPI_HostAddress}}/api/v1/ppo/bank-accounts
-# PATCH {{PensionAPI_HostAddress}}/api/v1/pension/category
 # PATCH {{PensionAPI_HostAddress}}/api/v1/pension/primary-category
 # PATCH {{PensionAPI_HostAddress}}/api/v1/pension/sub-category
-# PATCH {{PensionAPI_HostAddress}}/api/v1/pension/bill-component
+# PATCH {{PensionAPI_HostAddress}}/api/v1/pension/category
+# PATCH {{PensionAPI_HostAddress}}/api/v1/pension/component
 # PATCH {{PensionAPI_HostAddress}}/api/v1/pension/component-rate
-# PATCH {{PensionAPI_HostAddress}}/api/v1/ppo/component-rate
-POST {{PensionAPI_HostAddress}}/api/v1/echo
+# PATCH {{PensionAPI_HostAddress}}/api/v1/ppo/details
+# PATCH {{PensionAPI_HostAddress}}/api/v1/ppo/bank-accounts
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {"pageSize":10,"pageIndex":0,"filterParameters":[],"sortParameters":{"field":"","order":""}}
 
+### Read Ppo Component Revision
+# @name ReadPpoComponenRevision
+GET {{PensionAPI_HostAddress}}/api/v1/ppo/{{GeneratedPpoId}}/component-revision
+Accept: application/json
+Authorization: Bearer {{accessToken}}
 
-### Create Ppo Component Rate
-# @name CreatePpoComponentRate
-POST {{PensionAPI_HostAddress}}/api/v1/ppo/component-rate
+### Delete Ppo Component Revision
+# @name DeletePpoComponenRevision
+DELETE {{PensionAPI_HostAddress}}/api/v1/ppo/{{RevisionId}}/component-revision
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+
+### Update Ppo Component Revision
+# @name UpdatePpoComponenRevision
+PUT {{PensionAPI_HostAddress}}/api/v1/ppo/{{RevisionId}}/component-revision
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
-  "ppoId": 1,
+  "ppoId": {{GeneratedPpoId}},
   "breakupId": 3,
   "fromDate": "2024-01-01",
-  "toDate": "2024-06-30",
+  "amountPerMonth": 5000
+}
+
+### Create Ppo Component Revision
+# @name CreatePpoComponenRevision
+POST {{PensionAPI_HostAddress}}/api/v1/ppo/component-revision
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "ppoId": {{GeneratedPpoId}},
+  "breakupId": 3,
+  "fromDate": "2024-01-01",
   "amountPerMonth": 5000
 }
 
 
-### Create Pension Component
-# @name CreatePensionBreakup
+### Create Pension Component Rate
+# @name CreatePensionBreakupRate
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
 POST {{PensionAPI_HostAddress}}/api/v1/pension/component-rate
 Accept: application/json
@@ -70,7 +97,7 @@ Content-Type: application/json
 ### Create Pension Component
 # @name CreatePensionBreakup
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
-POST {{PensionAPI_HostAddress}}/api/v1/pension/bill-component
+POST {{PensionAPI_HostAddress}}/api/v1/pension/component
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json

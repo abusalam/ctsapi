@@ -38,7 +38,7 @@ public partial class PensionDbContext : DbContext
 
     public virtual DbSet<PpoBillBytransfer> PpoBillBytransfers { get; set; }
 
-    public virtual DbSet<PpoComponentRate> PpoComponentRates { get; set; }
+    public virtual DbSet<PpoComponentRevision> PpoComponentRevisions { get; set; }
 
     public virtual DbSet<PpoIdSequence> PpoIdSequences { get; set; }
 
@@ -227,6 +227,10 @@ public partial class PensionDbContext : DbContext
             entity.HasOne(d => d.Rate).WithMany(p => p.PpoBillBreakups)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("ppo_bill_breakups_rate_id_fkey");
+
+            entity.HasOne(d => d.Revision).WithMany(p => p.PpoBillBreakups)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("ppo_bill_breakups_revision_id_fkey");
         });
 
         modelBuilder.Entity<PpoBillBytransfer>(entity =>
@@ -242,11 +246,11 @@ public partial class PensionDbContext : DbContext
                 .HasConstraintName("ppo_bill_bytransfers_bill_id_fkey");
         });
 
-        modelBuilder.Entity<PpoComponentRate>(entity =>
+        modelBuilder.Entity<PpoComponentRevision>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("ppo_component_rates_pkey");
+            entity.HasKey(e => e.Id).HasName("ppo_component_revisions_pkey");
 
-            entity.ToTable("ppo_component_rates", "cts_pension", tb => tb.HasComment("PensionModuleSchema v1"));
+            entity.ToTable("ppo_component_revisions", "cts_pension", tb => tb.HasComment("PensionModuleSchema v1"));
 
             entity.Property(e => e.Id).HasComment("RevisionId");
             entity.Property(e => e.AmountPerMonth).HasComment("Amount per month is the actual amount paid for the mentioned period");
@@ -254,9 +258,9 @@ public partial class PensionDbContext : DbContext
             entity.Property(e => e.FromDate).HasComment("From date is the Date of Commencement of pension of the pensioner");
             entity.Property(e => e.ToDate).HasComment("To date (will be null for regular active bills)");
 
-            entity.HasOne(d => d.Breakup).WithMany(p => p.PpoComponentRates)
+            entity.HasOne(d => d.Breakup).WithMany(p => p.PpoComponentRevisions)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("ppo_component_rates_breakup_id_fkey");
+                .HasConstraintName("ppo_component_revisions_breakup_id_fkey");
         });
 
         modelBuilder.Entity<PpoIdSequence>(entity =>

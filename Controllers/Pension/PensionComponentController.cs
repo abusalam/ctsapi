@@ -28,7 +28,7 @@ namespace CTS_BE.Controllers.Pension
         }
 
         
-        [HttpPost("bill-component")]
+        [HttpPost("component")]
         [Tags("Pension: Component")]
         [OpenApi]
         public async Task<JsonAPIResponse<PensionBreakupResponseDTO>> PensionComponentCreate(
@@ -65,7 +65,7 @@ namespace CTS_BE.Controllers.Pension
             return response;
         }
 
-        [HttpPatch("bill-component")]
+        [HttpPatch("component")]
         [Tags("Pension: Component")]
         [OpenApi]
         public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<PensionBreakupResponseDTO>>>> PensionComponentList(

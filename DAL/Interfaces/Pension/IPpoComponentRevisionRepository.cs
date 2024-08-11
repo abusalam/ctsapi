@@ -6,7 +6,7 @@ using CTS_BE.DAL.Entities.Pension;
 
 namespace CTS_BE.DAL.Interfaces.Pension
 {
-    public interface IPpoComponentRateRepository : IRepository<PpoComponentRate>
+    public interface IPpoComponentRevisionRepository : IRepository<PpoComponentRevision>
     {
         
     }

@@ -30,14 +30,14 @@ public partial class PpoBillBytransfer
     [Column("bill_id")]
     public long BillId { get; set; }
 
-    [Column("bytransfers_hoa_id")]
-    public int BytransfersHoaId { get; set; }
+    [Column("bytransfer_hoa_id")]
+    public int BytransferHoaId { get; set; }
 
-    [Column("bytransfers_wef")]
-    public DateOnly BytransfersWef { get; set; }
+    [Column("bytransfer_wef")]
+    public DateOnly BytransferWef { get; set; }
 
-    [Column("bytransfers_amount")]
-    public int BytransfersAmount { get; set; }
+    [Column("bytransfer_amount")]
+    public int BytransferAmount { get; set; }
 
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime? CreatedAt { get; set; }

@@ -14,98 +14,89 @@ namespace CTS_BE.Controllers.Pension
     [Route("api/v1/ppo")]
     public class PpoComponentRevisionController : ApiBaseController
     {
-        private readonly IPpoComponentRateService _ppoComponentRateService;
+        private readonly IPpoComponentRevisionService _ppoComponentRevisionService;
+        // Initializes a new instance of the PpoComponentRevisionController class.
+        // 
+        // Parameters:
+        //   ppoComponentRevisionService (IPpoComponentRevisionService): The PPO component rate service.
+        //   claimService (IClaimService): The claim service.
+        // 
+        // Returns:
+        //   PpoComponentRevisionController: A new instance of the PpoComponentRevisionController class.
         public PpoComponentRevisionController(
-                IPpoComponentRateService ppoComponentRateService,
+                IPpoComponentRevisionService ppoComponentRevisionService,
                 IClaimService claimService
             ) : base(claimService)
         {
-            _ppoComponentRateService = ppoComponentRateService;
+            _ppoComponentRevisionService = ppoComponentRevisionService;
         }
 
-        [HttpPost("component-revision-rate")]
+        // Creates a new PPO component revision.
+        // 
+        // Parameters:
+        //   ppoComponentRevisionEntryDTO (PpoComponentRevisionEntryDTO): The PPO component rate entry DTO.
+        // 
+        // Returns:
+        //   JsonAPIResponse<PpoComponentRevisionResponseDTO>: A JSON API response containing a PPO component rate response DTO.
+        [HttpPost("component-revision")]
         [Tags("Pension: Component Revision")]
         [OpenApi]
-        public async Task<JsonAPIResponse<PpoComponentRateResponseDTO>> PpoComponentRevisionRatesCreate(
-                PpoComponentRateEntryDTO ppoComponentRateEntryDTO
+        public async Task<JsonAPIResponse<PpoComponentRevisionResponseDTO>> CreatePpoComponentRevision(
+                PpoComponentRevisionEntryDTO ppoComponentRevisionEntryDTO
             )
         {
 
-            JsonAPIResponse<PpoComponentRateResponseDTO> response = new(){
+            JsonAPIResponse<PpoComponentRevisionResponseDTO> response = new(){
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
-                Message = $"Component Rate saved sucessfully!",
+                Message = $"PPO Component Revision saved sucessfully!",
                 Result = new(){
                     Id = 0
                 }
             };
             try {
-                response.Result = await _ppoComponentRateService
-                    .CreatePpoComponentRate<PpoComponentRateEntryDTO, PpoComponentRateResponseDTO>(
-                        ppoComponentRateEntryDTO,
+                response.Result = await _ppoComponentRevisionService
+                    .CreatePpoComponentRevision<PpoComponentRevisionEntryDTO, PpoComponentRevisionResponseDTO>(
+                        ppoComponentRevisionEntryDTO,
                         GetCurrentFyYear(),
                         GetTreasuryCode()
                     );
             }
             finally {
-                if(response.Result.Id == 0) {
+                if(response.Result.DataSource != null) {
                     response.ApiResponseStatus = Enum.APIResponseStatus.Error;
-                    response.Message = $"C-Error: Component Rate not saved!";
+                    response.Message = $"C-Error: Component Revision not saved!";
                 }
             }
 
             return response;
         }
 
-        [HttpPatch("component-revision-rate")]
+        // Retrieves a list of PPO component revisions for a given PPO ID.
+        // 
+        // Parameters:
+        //   ppoId (int): The ID of the PPO for which to retrieve component revisions.
+        // 
+        // Returns:
+        //   JsonAPIResponse<IEnumerable<PpoComponentRevisionResponseDTO>>: A JSON API response containing a list of PPO component rate response DTOs.
+        [HttpGet("{ppoId}/component-revision")]
         [Tags("Pension: Component Revision")]
         [OpenApi]
-        public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<PpoComponentRateResponseDTO>>>> PpoComponentRevisionRatesList(
-                DynamicListQueryParameters dynamicListQueryParameters
+        public async Task<JsonAPIResponse<IEnumerable<PpoComponentRevisionResponseDTO>>> GetPpoComponentRevisionsByPpoId(
+                int ppoId
             )
         {
-            JsonAPIResponse<DynamicListResult<IEnumerable<PpoComponentRateResponseDTO>>> response;
+            JsonAPIResponse<IEnumerable<PpoComponentRevisionResponseDTO>> response;
             try {
 
                 response = new() {
 
                     ApiResponseStatus = Enum.APIResponseStatus.Success,
-                    Result = new()
-                        {
-                            Headers = new () {
-                            
-                                new() {
-                                    Name = "Primary Category ID",
-                                    DataType = "text",
-                                    FieldName = "id",
-                                    FilterField = "id",
-                                    IsFilterable = true,
-                                    IsSortable = true,
-                                },
-                                new() {
-                                    Name = "Head of Account",
-                                    DataType = "text",
-                                    FieldName = "hoaId",
-                                    FilterField = "hoaId",
-                                    IsFilterable = true,
-                                    IsSortable = true,
-                                },
-                                new() {
-                                    Name = "Primary Category Name",
-                                    DataType = "text",
-                                    FieldName = "primaryCategoryName",
-                                    FilterField = "primaryCategoryName",
-                                    IsFilterable = true,
-                                    IsSortable = true,
-                                }
-
-                            },
-                            Data = await _ppoComponentRateService.ListPpoComponentRates<PpoComponentRateResponseDTO>(
+                    Result =  await _ppoComponentRevisionService.GetPpoComponentRevisionsByPpoId<PpoComponentRevisionResponseDTO>(
+                                ppoId,
                                 GetCurrentFyYear(),
-                                GetTreasuryCode(),
-                                dynamicListQueryParameters),
-                            DataCount = _ppoComponentRateService.DataCount()
-                        },
-                    Message = $"All Component Rate Details Received Successfully!"
+                                GetTreasuryCode()
+                            ),
+                    Message = $"All Component Revision Details Received Successfully!"
 
                 };
             } catch(DbUpdateException e) {
@@ -116,6 +107,92 @@ namespace CTS_BE.Controllers.Pension
                 Message = e.ToString()
                 //   $"{e.GetType()}=>File:{CallStack.GetFileName()}({CallStack.GetFileLineNumber()}): {e.Message}"
                 };
+            }
+            return response;
+        }
+
+        [HttpPut("{revisionId}/component-revision")]
+        [Tags("Pension: Component Revision")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<PpoComponentRevisionResponseDTO>> UpdatePpoComponentRevisionById(
+                long revisionId,
+                PpoComponentRevisionUpdateDTO ppoComponentRevisionUpdateDTO
+            )
+        {
+            JsonAPIResponse<PpoComponentRevisionResponseDTO> response = new(){
+                ApiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = $"Component Revision saved sucessfully!",
+                Result = new(){
+                    Id = 0
+                }
+            };
+            try {
+                response.Result =  await _ppoComponentRevisionService.UpdatePpoComponentRevisionById<PpoComponentRevisionUpdateDTO, PpoComponentRevisionResponseDTO>(
+                        revisionId,
+                        ppoComponentRevisionUpdateDTO,
+                        GetCurrentFyYear(),
+                        GetTreasuryCode()
+                    );
+            } catch(DbUpdateException e) {
+                // StackFrame CallStack = new(1, true);
+                response = new () {
+                ApiResponseStatus = Enum.APIResponseStatus.Error,
+                Result = null,
+                Message = e.ToString()
+                //   $"{e.GetType()}=>File:{CallStack.GetFileName()}({CallStack.GetFileLineNumber()}): {e.Message}"
+                };
+            }
+            finally {
+                if(response.Result?.DataSource != null) {
+                    response.ApiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.Message = $"C-Error: Component Revision not saved!";
+                }
+            }
+            return response;
+        }
+
+
+        [HttpDelete("{revisionId}/component-revision")]
+        [Tags("Pension: Component Revision")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<PpoComponentRevisionResponseDTO>> DeletePpoComponentRevisionById(
+                long revisionId
+            )
+        {
+            JsonAPIResponse<PpoComponentRevisionResponseDTO> response = new(){
+                ApiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = $"Component Revision deleted sucessfully!",
+                Result = new(){
+                    Id = 0
+                }
+            };
+            try {
+
+                response = new() {
+
+                    ApiResponseStatus = Enum.APIResponseStatus.Success,
+                    Result =  await _ppoComponentRevisionService.DeletePpoComponentRevisionById<PpoComponentRevisionResponseDTO>(
+                                revisionId,
+                                GetCurrentFyYear(),
+                                GetTreasuryCode()
+                            ),
+                    Message = $"Component Revision deleted successfully!"
+
+                };
+            } catch(DbUpdateException e) {
+                // StackFrame CallStack = new(1, true);
+                response = new () {
+                ApiResponseStatus = Enum.APIResponseStatus.Error,
+                Result = null,
+                Message = e.ToString()
+                //   $"{e.GetType()}=>File:{CallStack.GetFileName()}({CallStack.GetFileLineNumber()}): {e.Message}"
+                };
+            }
+            finally {
+                if(response.Result?.DataSource != null) {
+                    response.ApiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.Message = $"C-Error: Component Revision not deleted!";
+                }
             }
             return response;
         }

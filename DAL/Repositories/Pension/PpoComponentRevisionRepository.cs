@@ -7,11 +7,11 @@ using CTS_BE.DAL.Interfaces.Pension;
 
 namespace CTS_BE.DAL.Repositories.Pension
 {
-    public class PpoComponentRateRepository :
-        Repository<PpoComponentRate, PensionDbContext>,
-        IPpoComponentRateRepository
+    public class PpoComponentRevisionRepository :
+        Repository<PpoComponentRevision, PensionDbContext>,
+        IPpoComponentRevisionRepository
     {
-        public PpoComponentRateRepository(PensionDbContext context) : base(context)
+        public PpoComponentRevisionRepository(PensionDbContext context) : base(context)
         {
         }
     }

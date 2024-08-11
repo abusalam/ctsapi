@@ -121,6 +121,14 @@ namespace CTS_BE.BAL.Services.Pension
                         && entity.PpoId == ppoId 
                         && entity.TreasuryCode == treasuryCode
                     );
+
+                if(bankAccountEntity == null) {
+                    dynamic dataSource = new ExpandoObject(){};
+                    dataSource.Message = $"Bank Account not found!";
+                    dataSource.BankAccount = bankAccountEntity;
+                    pensionerBankAcDTO.DataSource = dataSource;
+                    return pensionerBankAcDTO;
+                }
                 bankAccountEntity.FillFrom(pensionerBankAcDTO);
                 
                 if(bankAccountEntity.PpoId > 0 ) {
