@@ -28,7 +28,7 @@ namespace CTS_BE.Controllers.Pension
         [HttpPost("details")]
         [Tags("Pension: PPO Details")]
         [OpenApi]
-        public async Task<JsonAPIResponse<PensionerResponseDTO>> PensionerDetailsCreate(
+        public async Task<JsonAPIResponse<PensionerResponseDTO>> CreatePensioner(
                 PensionerEntryDTO pensionerEntryDTO
             )
         {
@@ -64,7 +64,7 @@ namespace CTS_BE.Controllers.Pension
         [HttpPut("{ppoId}/details")]
         [Tags("Pension: PPO Details")]
         [OpenApi]
-        public async Task<APIResponse<PensionerResponseDTO>> PensionerDetailsUpdate(
+        public async Task<APIResponse<PensionerResponseDTO>> UpdatePensionerByPpoId(
                 int ppoId,
                 PensionerEntryDTO pensionerEntryDTO
             )
@@ -102,7 +102,7 @@ namespace CTS_BE.Controllers.Pension
         [HttpGet("{ppoId}/details")]
         [Tags("Pension: PPO Details")]
         [OpenApi]
-        public async Task<APIResponse<PensionerResponseDTO>> PensionerDetailsRead(
+        public async Task<APIResponse<PensionerResponseDTO>> GetPensionerByPpoId(
                 int ppoId
             )
         {
@@ -138,7 +138,7 @@ namespace CTS_BE.Controllers.Pension
         [HttpPatch("details")]
         [Tags("Pension: PPO Details")]
         [OpenApi]
-        public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<PensionerListItemDTO>>>> PensionerDetailsList(
+        public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<PensionerListItemDTO>>>> GetAllPensioners(
                 DynamicListQueryParameters dynamicListQueryParameters
             )
         {

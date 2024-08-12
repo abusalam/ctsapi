@@ -28,7 +28,7 @@ namespace CTS_BE.Controllers.Pension
         [HttpPost("pension-bill")]
         [Tags("Pension: First Bill")]
         [OpenApi]
-        public async Task<JsonAPIResponse<InitiateFirstPensionBillResponseDTO>> PpoFirstBillGenerate(
+        public async Task<JsonAPIResponse<InitiateFirstPensionBillResponseDTO>> GenerateFirstBill(
                 InitiateFirstPensionBillDTO initiateFirstPensionBillDTO
             )
         {

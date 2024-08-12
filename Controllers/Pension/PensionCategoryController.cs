@@ -27,7 +27,7 @@ namespace CTS_BE.Controllers.Pension
         [HttpPost("primary-category")]
         [Tags("Pension: Category Master")]
         [OpenApi]
-        public async Task<JsonAPIResponse<PensionPrimaryCategoryResponseDTO>> PensionPrimaryCategoryCreate(
+        public async Task<JsonAPIResponse<PensionPrimaryCategoryResponseDTO>> CreatePrimaryCategory(
                 PensionPrimaryCategoryEntryDTO pensionPrimaryCategoryEntryDTO
             )
         {
@@ -60,7 +60,7 @@ namespace CTS_BE.Controllers.Pension
         [HttpPatch("primary-category")]
         [Tags("Pension: Category Master")]
         [OpenApi]
-        public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<PensionPrimaryCategoryResponseDTO>>>> PensionPrimaryCategoryList(
+        public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<PensionPrimaryCategoryResponseDTO>>>> GetAllPrimaryCategories(
                 DynamicListQueryParameters dynamicListQueryParameters
             )
         {
@@ -124,7 +124,7 @@ namespace CTS_BE.Controllers.Pension
         [HttpPost("sub-category")]
         [Tags("Pension: Category Master")]
         [OpenApi]
-        public async Task<JsonAPIResponse<PensionSubCategoryResponseDTO>> PensionSubCategoryCreate(
+        public async Task<JsonAPIResponse<PensionSubCategoryResponseDTO>> CreateSubCategory(
                 PensionSubCategoryEntryDTO pensionSubCategoryEntryDTO
             )
         {
@@ -157,7 +157,7 @@ namespace CTS_BE.Controllers.Pension
         [HttpPatch("sub-category")]
         [Tags("Pension: Category Master")]
         [OpenApi]
-        public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<PensionSubCategoryResponseDTO>>>> PensionSubCategoryList(
+        public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<PensionSubCategoryResponseDTO>>>> GetAllSubCategories(
                 DynamicListQueryParameters dynamicListQueryParameters
             )
         {
@@ -213,7 +213,7 @@ namespace CTS_BE.Controllers.Pension
         [HttpPost("category")]
         [Tags("Pension: Category Master")]
         [OpenApi]
-        public async Task<JsonAPIResponse<PensionCategoryResponseDTO>> PensionCategoryCreate(
+        public async Task<JsonAPIResponse<PensionCategoryResponseDTO>> CreateCategory(
                 PensionCategoryEntryDTO pensionCategoryEntryDTO
             )
         {
@@ -246,7 +246,7 @@ namespace CTS_BE.Controllers.Pension
         [HttpPatch("category")]
         [Tags("Pension: Category Master")]
         [OpenApi]
-        public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<PensionCategoryListDTO>>>> PensionCategoryList(
+        public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<PensionCategoryListDTO>>>> GetAllCategories(
                 DynamicListQueryParameters dynamicListQueryParameters
             )
         {

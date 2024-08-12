@@ -56,8 +56,6 @@ Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
-  "ppoId": {{GeneratedPpoId}},
-  "breakupId": 3,
   "fromDate": "2024-01-01",
   "amountPerMonth": 5000
 }
