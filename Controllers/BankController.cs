@@ -19,7 +19,8 @@ namespace CTS_BE.Controllers
             _branchService = branchService;
         }
         [HttpGet("get-banks")]
-        public async Task<APIResponse<IEnumerable<DropdownDTO>>> Banks()
+        [OpenApi]
+        public async Task<APIResponse<IEnumerable<DropdownDTO>>> GetAllBanks()
         {
             APIResponse<IEnumerable<DropdownDTO>> response = new();
             try
@@ -37,7 +38,8 @@ namespace CTS_BE.Controllers
             }
         }
         [HttpGet("get-bank-branchs")]
-        public async Task<APIResponse<IEnumerable<DropdownDTO>>> BranchsByBank(short bankCode)
+        [OpenApi]
+        public async Task<APIResponse<IEnumerable<DropdownDTO>>> GetBranchesByBankCode(short bankCode)
         {
             APIResponse<IEnumerable<DropdownDTO>> response = new();
             try
@@ -55,7 +57,8 @@ namespace CTS_BE.Controllers
             }
         }
         [HttpGet("get-branch")]
-        public async Task<APIResponse<BranchDeatilsDTO>> BranchByCode(short branchCode)
+        [OpenApi]
+        public async Task<APIResponse<BranchDeatilsDTO>> GetBranchByBranchCode(short branchCode)
         {
             APIResponse<BranchDeatilsDTO> response = new();
             try
