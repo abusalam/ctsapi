@@ -4,18 +4,19 @@ using CTS_BE.DAL.Interfaces.Pension;
 using CTS_BE.DAL.Entities.Pension;
 using CTS_BE.DTOs;
 using CTS_BE.Helper.Authentication;
+using CTS_BE.Helper;
 
 
 namespace CTS_BE.BAL.Services.Pension
 {
-    public class PensionService : BaseService, IPensionService
+    public class PpoReceiptService : BaseService, IPpoReceiptService
     {
         private readonly IManualPpoReceiptRepository _manualPpoReceiptRepository;
         private readonly IReceiptSequenceRepository _receiptSequenceRepository;
         private readonly IClaimService _claimService;
         private readonly IMapper _mapper;
 
-        public PensionService (
+        public PpoReceiptService (
             IManualPpoReceiptRepository manualPpoReceiptRepository,
             IReceiptSequenceRepository receiptSequenceRepository,
             IClaimService claimService,
@@ -94,26 +95,27 @@ namespace CTS_BE.BAL.Services.Pension
         {
 
             PpoReceipt? manualPpoReceiptEntity = new ();
+
+            ManualPpoReceiptResponseDTO manualPpoReceiptDTOResponse = _mapper.Map<ManualPpoReceiptResponseDTO>(manualPpoReceiptEntity);
             try
             {
                 manualPpoReceiptEntity = await _manualPpoReceiptRepository.GetSingleAysnc(
                         entity => entity.TreasuryReceiptNo == treasuryReceiptNo
                         );
-                if(manualPpoReceiptEntity is not null) {                    
-                    manualPpoReceiptEntity.PpoNo = manualPpoReceiptDTO.PpoNo;
-                    manualPpoReceiptEntity.PpoType = manualPpoReceiptDTO.PpoType;
-                    manualPpoReceiptEntity.PsaCode = manualPpoReceiptDTO.PsaCode;
-                    manualPpoReceiptEntity.PensionerName = manualPpoReceiptDTO.PensionerName;
-                    manualPpoReceiptEntity.MobileNumber = manualPpoReceiptDTO.MobileNumber;
-                    manualPpoReceiptEntity.ReceiptDate = manualPpoReceiptDTO.ReceiptDate;
-                    manualPpoReceiptEntity.DateOfCommencement = manualPpoReceiptDTO.DateOfCommencement;
-
-                    if(_manualPpoReceiptRepository.Update(manualPpoReceiptEntity)) {
-                        await _manualPpoReceiptRepository.SaveChangesManagedAsync();
-                    }
-                } else {
-                    manualPpoReceiptEntity = _mapper.Map<PpoReceipt>(manualPpoReceiptDTO);
+                
+                if(manualPpoReceiptEntity is null) {  
+                    manualPpoReceiptDTOResponse.FillDataSource(manualPpoReceiptDTO, "Treasury Receipt No does not exist!");
+                    return manualPpoReceiptDTOResponse;
+                }                  
+                manualPpoReceiptEntity.FillFrom(manualPpoReceiptDTO);
+                _manualPpoReceiptRepository.Update(manualPpoReceiptEntity);
+                if(await _manualPpoReceiptRepository.SaveChangesManagedAsync()==0) {
+                    manualPpoReceiptDTOResponse.FillDataSource(manualPpoReceiptEntity, "Update Failed!");
+                    return manualPpoReceiptDTOResponse;
                 }
+            
+                manualPpoReceiptEntity = _mapper.Map<PpoReceipt>(manualPpoReceiptDTO);
+                
             }
             finally {
 

@@ -14,13 +14,13 @@ namespace CTS_BE.Controllers.Pension
     [Route("api/v1/manual-ppo")]
     public class PpoReceiptController : ApiBaseController
     {
-        private readonly IPensionService _pensionService;
+        private readonly IPpoReceiptService _ppoReceiptService;
         public PpoReceiptController(
-                IPensionService pensionService,
+                IPpoReceiptService ppoReceiptService,
                 IClaimService claimService
             ) : base(claimService)
         {
-            _pensionService = pensionService;
+            _ppoReceiptService = ppoReceiptService;
         }
 
         [HttpPost("receipts")]
@@ -35,7 +35,7 @@ namespace CTS_BE.Controllers.Pension
             try {
                 response = new() {
                 apiResponseStatus = Enum.APIResponseStatus.Success,
-                result = await _pensionService
+                result = await _ppoReceiptService
                         .CreatePpoReceipt(
                             manualPpoReceiptEntryDTO,
                             GetCurrentFyYear(),
@@ -67,7 +67,7 @@ namespace CTS_BE.Controllers.Pension
             try {
                 response = new() {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
-                Result = await _pensionService
+                Result = await _ppoReceiptService
                         .GetPpoReceipt(treasuryReceiptNo),
                 Message = $"PPO Received Successfully!"
 
@@ -136,11 +136,11 @@ namespace CTS_BE.Controllers.Pension
                                 }
 
                             },
-                            Data = await _pensionService.GetAllPpoReceipts(
+                            Data = await _ppoReceiptService.GetAllPpoReceipts(
                                 GetCurrentFyYear(),
                                 GetTreasuryCode(),
                                 dynamicListQueryParameters),
-                            DataCount = _pensionService.DataCount()
+                            DataCount = _ppoReceiptService.DataCount()
                         },
                     Message = $"All PPO Receipts Received Successfully!"
 
@@ -170,7 +170,7 @@ namespace CTS_BE.Controllers.Pension
             try {
                 response = new() {
                     ApiResponseStatus = Enum.APIResponseStatus.Success,
-                    Result = await _pensionService
+                    Result = await _ppoReceiptService
                             .UpdatePpoReceipt(treasuryReceiptNo, manualPpoReceiptEntryDTO),
                     Message = $"PPO Receipt Updated Successfully!"
                 };

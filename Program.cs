@@ -110,7 +110,7 @@ builder.Services.AddTransient<IPpoComponentRevisionRepository, PpoComponentRevis
 
 
 // Pension Services
-builder.Services.AddTransient<IPensionService, PensionService>();
+builder.Services.AddTransient<IPpoReceiptService, PpoReceiptService>();
 builder.Services.AddTransient<IReceiptSequenceService, ReceiptSequenceService>();
 builder.Services.AddTransient<IPensionStatusService, PensionStatusService>();
 builder.Services.AddTransient<IPensionerDetailsService, PensionerDetailsService>();
