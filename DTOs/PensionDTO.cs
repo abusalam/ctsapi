@@ -142,7 +142,7 @@ namespace CTS_BE.DTOs
         public int PpoId { get; set; }
         public PensionCategoryResponseDTO? Category { get; set; }
         public ManualPpoReceiptResponseDTO? Receipt { get; set; }
-        public List<PensionerBankAcDTO>? BankAccounts { get; set; }
+        public List<PensionerBankAcResponseDTO>? BankAccounts { get; set; }
     }
 
     public class PensionerListItemDTO : BaseDTO {
@@ -173,7 +173,7 @@ namespace CTS_BE.DTOs
         public string PpoNo { get; set; } = null!;
     }
 
-    public class PensionerBankAcDTO : BaseDTO {
+    public class PensionerBankAcEntryDTO : BaseDTO {
 
         [StringLength(100)]
         public string AccountHolderName { get; set; } = null!;
@@ -189,6 +189,10 @@ namespace CTS_BE.DTOs
 
         [Required]
         public long? BranchCode { get; set; }
+    }
+
+    public class PensionerBankAcResponseDTO : PensionerBankAcEntryDTO {
+        public long Id { get; set; }
     }
 
     public partial class PensionPrimaryCategoryEntryDTO : BaseDTO {
@@ -294,7 +298,7 @@ namespace CTS_BE.DTOs
         public required PensionerListItemDTO Pensioner { get; set; }
 
         [Required]
-        public required PensionerBankAcDTO BankAccount { get; set; }
+        public required PensionerBankAcResponseDTO BankAccount { get; set; }
 
         [Required]
         public PensionCategoryResponseDTO PensionCategory { get; set; } = null!;
@@ -326,7 +330,7 @@ namespace CTS_BE.DTOs
         public long BreakupId { get; set; }
         public string ComponentName { get; set; } = null!;
         public char ComponentType { get; set; }
-        public long BreakupAmount { get; set; }
+        public long AmountPerMonth { get; set; }
         public long RateId { get; set; }
         public char RateType { get; set; }
         public int RateAmount { get; set; }
@@ -337,10 +341,9 @@ namespace CTS_BE.DTOs
     }
 
     public partial class PpoComponentRevisionEntryDTO : BaseDTO {
-        [Required]        
-        public int PpoId { get; set; }
+
         [Required]
-        public long BreakupId { get; set; }
+        public long RateId { get; set; }
 
         /// <summary>
         /// From date is the Date of Commencement of pension of the pensioner
@@ -380,5 +383,39 @@ namespace CTS_BE.DTOs
         /// </summary>
         [Required]
         public int AmountPerMonth { get; set; }
+    }
+
+    public partial class PpoBillEntryDTO : BaseDTO {
+        public long PensionerId { get; set; }
+        public long BankAccountId { get; set; }
+        public int PpoId { get; set; }
+        public DateOnly FromDate { get; set; }
+        public DateOnly ToDate { get; set; }
+        public char BillType { get; set; }
+        public DateOnly BillDate { get; set; }
+        public int GrossAmount { get; set; }
+        public int ByTransferAmount { get; set; }
+        public int NetAmount { get; set; }
+        public List<PpoBillBreakupEntryDTO> Breakups { get; set; } = null!;
+    }
+
+    public partial class PpoBillResponseDTO : PpoBillEntryDTO {
+        public long Id { get; set; }
+        public PensionerBankAcResponseDTO BankAccount { get; set; } = null!;
+        // public PensionerResponseDTO Pensioner { get; set; } = null!;
+    }
+
+    public partial class PpoBillBreakupEntryDTO : BaseDTO {
+        // public long BillId { get; set; }
+        public int PpoId { get; set; }
+        // public long RateId { get; set; }
+        public long RevisionId { get; set; }
+        public DateOnly FromDate { get; set; }
+        public DateOnly ToDate { get; set; }
+        public int BreakupAmount { get; set; }
+    }
+
+    public partial class PpoBillBreakupResponseDTO : PpoBillBreakupEntryDTO {
+        public long Id { get; set; }
     }
 }

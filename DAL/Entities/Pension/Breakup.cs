@@ -54,7 +54,4 @@ public partial class Breakup
 
     [InverseProperty("Breakup")]
     public virtual ICollection<ComponentRate> ComponentRates { get; set; } = new List<ComponentRate>();
-
-    [InverseProperty("Breakup")]
-    public virtual ICollection<PpoComponentRevision> PpoComponentRevisions { get; set; } = new List<PpoComponentRevision>();
 }

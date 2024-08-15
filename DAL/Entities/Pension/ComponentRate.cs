@@ -66,5 +66,5 @@ public partial class ComponentRate
     public virtual Category Category { get; set; } = null!;
 
     [InverseProperty("Rate")]
-    public virtual ICollection<PpoBillBreakup> PpoBillBreakups { get; set; } = new List<PpoBillBreakup>();
+    public virtual ICollection<PpoComponentRevision> PpoComponentRevisions { get; set; } = new List<PpoComponentRevision>();
 }

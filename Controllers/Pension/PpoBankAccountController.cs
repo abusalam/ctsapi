@@ -30,12 +30,12 @@ namespace CTS_BE.Controllers.Pension
         [HttpPost("{ppoId}/bank-accounts")]
         [Tags("Pension: Bank Accounts")]
         [OpenApi]
-        public async Task<JsonAPIResponse<PensionerBankAcDTO>> CreateBankAccount(
+        public async Task<JsonAPIResponse<PensionerBankAcResponseDTO>> CreateBankAccount(
                 int ppoId,
-                PensionerBankAcDTO pensionerBankAcDTO
+                PensionerBankAcEntryDTO pensionerBankAcDTO
             )
         {
-            JsonAPIResponse<PensionerBankAcDTO> response = new(){
+            JsonAPIResponse<PensionerBankAcResponseDTO> response = new(){
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = $"Bank account details saved sucessfully!",
             };
@@ -75,17 +75,17 @@ namespace CTS_BE.Controllers.Pension
         [HttpPut("{ppoId}/bank-accounts")]
         [Tags("Pension: Bank Accounts")]
         [OpenApi]
-        public async Task<APIResponse<PensionerBankAcDTO>> UpdateBankAccountByPpoId(
+        public async Task<JsonAPIResponse<PensionerBankAcResponseDTO>> UpdateBankAccountByPpoId(
                 int ppoId,
-                PensionerBankAcDTO pensionerBankAcDTO
+                PensionerBankAcEntryDTO pensionerBankAcDTO
             )
         {
-            APIResponse<PensionerBankAcDTO> response = new(){
-                apiResponseStatus = Enum.APIResponseStatus.Success,
+            JsonAPIResponse<PensionerBankAcResponseDTO> response = new(){
+                ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = $"Bank account details saved sucessfully!",
             };
             try {
-                response.result = await _pensionerBankAccountService.UpdatePensionerBankAccount(
+                response.Result = await _pensionerBankAccountService.UpdatePensionerBankAccount(
                     ppoId,
                     pensionerBankAcDTO,
                     GetCurrentFyYear(),
@@ -93,12 +93,12 @@ namespace CTS_BE.Controllers.Pension
                 );
             }
             catch (DbUpdateException ex) {
-                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.ApiResponseStatus = Enum.APIResponseStatus.Error;
                 response.Message = $"Bank account details not saved! Error: {ex.Message}";
             }
             finally {
-                if(response.result?.DataSource != null) {
-                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                if(response.Result?.DataSource != null) {
+                    response.ApiResponseStatus = Enum.APIResponseStatus.Error;
                     response.Message = $"Error: Bank account details not saved!";
                 }
             }
@@ -109,29 +109,29 @@ namespace CTS_BE.Controllers.Pension
         [HttpGet("{ppoId}/bank-accounts")]
         [Tags("Pension: Bank Accounts")]
         [OpenApi]
-        public async Task<APIResponse<PensionerBankAcDTO>> GetBankAccountByPpoId(
+        public async Task<JsonAPIResponse<PensionerBankAcResponseDTO>> GetBankAccountByPpoId(
                 int ppoId
             )
         {
 
-            APIResponse<PensionerBankAcDTO> response = new(){
-                apiResponseStatus = Enum.APIResponseStatus.Success,
+            JsonAPIResponse<PensionerBankAcResponseDTO> response = new(){
+                ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = $"Bank Accounts Details received sucessfully!",
             };
             try {
-                response.result = await _pensionerBankAccountService.GetPensionerBankAccount(
+                response.Result = await _pensionerBankAccountService.GetPensionerBankAccount(
                     ppoId,
                     GetCurrentFyYear(),
                     GetTreasuryCode()
                 );
             }
             catch (DbUpdateException ex) {
-                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.ApiResponseStatus = Enum.APIResponseStatus.Error;
                 response.Message = $"Bank Accounts Details not received! Error: {ex.Message}";
             }
             finally {
-                if(response.result?.DataSource != null) {
-                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                if(response.Result?.DataSource != null) {
+                    response.ApiResponseStatus = Enum.APIResponseStatus.Error;
                     response.Message = $"Bank Accounts Details not received!";
                 }
             }

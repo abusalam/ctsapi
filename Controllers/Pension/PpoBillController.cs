@@ -13,22 +13,25 @@ namespace CTS_BE.Controllers.Pension
         private readonly IPensionerDetailsService _pensionerDetailsService;
         private readonly IPensionerBankAccountService _pensionerBankAccountService;
         private readonly IPensionBillService _pensionBillService;
+        private readonly IPpoBillService _ppoBillService;
         public PpoBillController(
                 IPensionerDetailsService pensionerDetailsService,
                 IPensionerBankAccountService pensionerBankAccountService,
                 IPensionBillService pensionBillService,
+                IPpoBillService ppoBillService,
                 IClaimService claimService
             ) : base(claimService)
         {
             _pensionBillService = pensionBillService;
+            _ppoBillService = ppoBillService;
             _pensionerDetailsService = pensionerDetailsService;
             _pensionerBankAccountService = pensionerBankAccountService;
         }
 
-        [HttpPost("pension-bill")]
+        [HttpPost("first-bill-generate")]
         [Tags("Pension: First Bill")]
         [OpenApi]
-        public async Task<JsonAPIResponse<InitiateFirstPensionBillResponseDTO>> GenerateFirstBill(
+        public async Task<JsonAPIResponse<InitiateFirstPensionBillResponseDTO>> GenerateFirstPensionBill(
                 InitiateFirstPensionBillDTO initiateFirstPensionBillDTO
             )
         {
@@ -42,7 +45,7 @@ namespace CTS_BE.Controllers.Pension
                 }
             };
             try {
-                response.Result = await _pensionBillService.GenerateFirstPensionBills(
+                response.Result = await _pensionBillService.GenerateFirstPensionBill(
                     initiateFirstPensionBillDTO,
                     GetCurrentFyYear(),
                     GetTreasuryCode()
@@ -66,5 +69,40 @@ namespace CTS_BE.Controllers.Pension
             return response;
         }
     
+        [HttpPost("first-bill-save")]
+        [Tags("Pension: First Bill")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<PpoBillResponseDTO>> SaveFirstPensionBill(
+                PpoBillEntryDTO ppoBillEntryDTO
+            )
+        {
+
+            JsonAPIResponse<PpoBillResponseDTO> response = new(){
+                ApiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = $"First Pension Bill saved sucessfully!",
+                Result = new (){
+                    DataSource = new()
+                }
+            };
+            try {
+                response.Result = await _ppoBillService.SaveFirstBill(
+                    ppoBillEntryDTO,
+                    GetCurrentFyYear(),
+                    GetTreasuryCode()
+                );
+            }
+            catch(InvalidCastException ex) {
+                response.ApiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = $"C-InvalidCastException: {ex.Message}";
+            }
+            finally {
+                if(response.Result?.DataSource != null) {
+                    response.ApiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.Message = $"C-Error: Unable to save first pension bill";
+                }
+            }
+
+            return response;
+        }
     }
 }

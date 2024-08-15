@@ -24,6 +24,7 @@ namespace CTS_BE.BAL.Services.Pension
         private readonly IPensionerBankAccountRepository _pensionerBankAccountRepository;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IComponentRateRepository _componentRateRepository;
+        private readonly IPpoComponentRevisionRepository _ppoComponentRevisionRepository;
         private readonly IBreakupRepository _breakupRepository;
         // private readonly IPensionBillRepository _pensionBillRepository;
         private readonly IMapper _mapper;
@@ -32,6 +33,7 @@ namespace CTS_BE.BAL.Services.Pension
                 IPensionerBankAccountRepository pensionerBankAccountRepository,
                 ICategoryRepository categoryRepository,
                 IComponentRateRepository componentRateRepository,
+                IPpoComponentRevisionRepository ppoComponentRevisionRepository,
                 IBreakupRepository breakupRepository,
                 // IPensionBillRepository pensionBillRepository,
                 IClaimService claimService,
@@ -41,13 +43,14 @@ namespace CTS_BE.BAL.Services.Pension
             _pensionerDetailsRepository = pensionerDetailsRepository;
             _pensionerBankAccountRepository = pensionerBankAccountRepository;
             _categoryRepository = categoryRepository;
+            _ppoComponentRevisionRepository = ppoComponentRevisionRepository;
             _componentRateRepository = componentRateRepository;
             _breakupRepository = breakupRepository;
             // _pensionBillRepository = pensionBillRepository;
             _mapper = mapper;
         }
 
-        public async Task<InitiateFirstPensionBillResponseDTO> GenerateFirstPensionBills(
+        public async Task<InitiateFirstPensionBillResponseDTO> GenerateFirstPensionBill(
                 InitiateFirstPensionBillDTO initiateFirstPensionBillDTO,
                 short financialYear,
                 string treasuryCode
@@ -160,7 +163,7 @@ namespace CTS_BE.BAL.Services.Pension
             InitiateFirstPensionBillResponseDTO response = new (){
                 // DataSource = dataSource,
                 Pensioner = _mapper.Map<PensionerListItemDTO>(pensioner),
-                BankAccount = _mapper.Map<PensionerBankAcDTO>(
+                BankAccount = _mapper.Map<PensionerBankAcResponseDTO>(
                         await _pensionerBankAccountRepository.GetSingleAysnc(
                             entity => entity.ActiveFlag
                             && entity.PpoId==initiateFirstPensionBillDTO.PpoId
@@ -179,10 +182,29 @@ namespace CTS_BE.BAL.Services.Pension
                 BillGeneratedUptoDate = initiateFirstPensionBillDTO.ToDate,
                 TreasuryVoucherNo = "N/A",
                 BillDate = initiateFirstPensionBillDTO.ToDate,
-                BillId = 0
-
+                BillId = 0,
+                GrossAmount = 0,
+                NetAmount = 0,
             };
 
+            response.GrossAmount = response.PensionerPayments.ToList().Sum(entity => entity.DueAmount);
+            response.NetAmount = response.PensionerPayments.ToList().Sum(entity => entity.NetAmount);
+
+            // ************************************
+            // Save Pensioner Component Revisions
+            // ************************************
+
+            // pensioner.PpoComponentRevisions = _mapper.Map<List<PpoComponentRevision>>(response.PensionerPayments.ToList());
+
+            // pensioner.PpoComponentRevisions.ToList().ForEach(entity => {
+            //     entity.TreasuryCode = treasuryCode;
+            //     entity.ActiveFlag = true;
+            //     entity.PpoId = initiateFirstPensionBillDTO.PpoId;
+            //     entity.ToDate = (initiateFirstPensionBillDTO.ToDate == entity.ToDate) ? null : entity.ToDate;
+            // });
+
+            // pensionDbContext.Pensioners.Update(pensioner);
+            // await pensionDbContext.SaveChangesAsync();
             return response;
         }
     }

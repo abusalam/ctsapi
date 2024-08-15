@@ -10,7 +10,6 @@ namespace CTS_BE.DAL.Entities.Pension;
 /// PensionModuleSchema v1
 /// </summary>
 [Table("ppo_bill_bytransfers", Schema = "cts_pension")]
-[Index("PpoId", "TreasuryCode", Name = "ppo_bill_bytransfers_ppo_id_treasury_code_key", IsUnique = true)]
 public partial class PpoBillBytransfer
 {
     [Key]

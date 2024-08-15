@@ -218,15 +218,11 @@ public partial class PensionDbContext : DbContext
 
             entity.Property(e => e.BillId).HasComment("BillId is to identify the bill on which the actual payment made");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
-            entity.Property(e => e.RateId).HasComment("RateId is to identify the component rate applied on the bill");
+            entity.Property(e => e.RevisionId).HasComment("RevisionId is to identify the component rate applied on the bill");
 
             entity.HasOne(d => d.Bill).WithMany(p => p.PpoBillBreakups)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("ppo_bill_breakups_bill_id_fkey");
-
-            entity.HasOne(d => d.Rate).WithMany(p => p.PpoBillBreakups)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("ppo_bill_breakups_rate_id_fkey");
 
             entity.HasOne(d => d.Revision).WithMany(p => p.PpoBillBreakups)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -258,9 +254,13 @@ public partial class PensionDbContext : DbContext
             entity.Property(e => e.FromDate).HasComment("From date is the Date of Commencement of pension of the pensioner");
             entity.Property(e => e.ToDate).HasComment("To date (will be null for regular active bills)");
 
-            entity.HasOne(d => d.Breakup).WithMany(p => p.PpoComponentRevisions)
+            entity.HasOne(d => d.Pensioner).WithMany(p => p.PpoComponentRevisions)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("ppo_component_revisions_breakup_id_fkey");
+                .HasConstraintName("ppo_component_revisions_pensioner_id_fkey");
+
+            entity.HasOne(d => d.Rate).WithMany(p => p.PpoComponentRevisions)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("ppo_component_revisions_rate_id_fkey");
         });
 
         modelBuilder.Entity<PpoIdSequence>(entity =>

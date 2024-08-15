@@ -7,6 +7,7 @@ using CTS_BE.PensionEnum;
 using CTS_BE.Helper;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using CTS_BE.DTOs;
+using System.ComponentModel;
 
 namespace CTS_BE.BAL.Services.Pension
 {
@@ -45,7 +46,7 @@ namespace CTS_BE.BAL.Services.Pension
                     RateType = componentRate.RateType,
                     RateAmount = componentRate.RateAmount,
                     BasicPensionAmount = basicPensionAmount,
-                    BreakupAmount = PensionCalculator.CalculatePerMonthBreakupAmount(
+                    AmountPerMonth = PensionCalculator.CalculatePerMonthBreakupAmount(
                         PensionCalculator.CalculateEffectiveRate(
                             componentRates.ToList(),
                             componentRate.Breakup.Id,
@@ -71,7 +72,8 @@ namespace CTS_BE.BAL.Services.Pension
                    ppoPayment.FromDate,
                    ppoPayment.ToDate
                );
-               ppoPayment.DueAmount = ppoPayment.PeriodInMonths * ppoPayment.BreakupAmount;
+               ppoPayment.DueAmount = ppoPayment.PeriodInMonths * ppoPayment.AmountPerMonth;
+               ppoPayment.NetAmount = ppoPayment.DueAmount - ppoPayment.DrawnAmount;
             });
             return ppoPayments.OrderBy(entity => entity.ComponentName)
                 .ThenBy(entity => entity.FromDate).ToList();
@@ -89,21 +91,6 @@ namespace CTS_BE.BAL.Services.Pension
                 return basicPensionAmount;
             }
             return componentRate.RateAmount;
-        }
-
-        public static long CalculateTotalPensionAmount(
-            List<ComponentRate> componentRates,
-            int basicPensionAmount,
-            short forMonths
-        )
-        {
-            return componentRates
-                .Select(componentRate => CalculatePerMonthBreakupAmount(    
-                        componentRate,
-                        basicPensionAmount
-                    ) * forMonths
-                )
-                .Sum();
         }
 
         /// <summary>

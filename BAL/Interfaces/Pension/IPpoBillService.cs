@@ -6,10 +6,10 @@ using CTS_BE.DTOs;
 
 namespace CTS_BE.BAL.Interfaces.Pension
 {
-    public interface IPensionBillService : IBaseService
+    public interface IPpoBillService : IBaseService
     {
-        public Task<InitiateFirstPensionBillResponseDTO> GenerateFirstPensionBill(
-            InitiateFirstPensionBillDTO initiateFirstPensionBillDTO,
+        public Task<PpoBillResponseDTO> SaveFirstBill(
+            PpoBillEntryDTO ppoBillEntryDTO,
             short financialYear,
             string treasuryCode
         );

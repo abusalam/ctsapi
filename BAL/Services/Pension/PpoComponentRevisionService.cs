@@ -17,25 +17,30 @@ namespace CTS_BE.BAL.Services.Pension
     public class PpoComponentRevisionService : BaseService, IPpoComponentRevisionService
     {
         private readonly IPpoComponentRevisionRepository _ppoComponentRevisionRepository;
+        private readonly IPensionerDetailsRepository _pensionerDetailsRepository;
         private readonly IMapper _mapper;
         public PpoComponentRevisionService(
                 IPpoComponentRevisionRepository ppoComponentRevisionRepository,
+                IPensionerDetailsRepository pensionerDetailsRepository,
                 IMapper mapper,
                 IClaimService claimService
             ) : base(claimService)
         {
             _mapper = mapper;
             _ppoComponentRevisionRepository = ppoComponentRevisionRepository;
+            _pensionerDetailsRepository = pensionerDetailsRepository;
         }
 
-        public async Task<TResponse> CreatePpoComponentRevision<TEntry, TResponse>(
+        public async Task<TResponse> CreateSinglePpoComponentRevision<TEntry, TResponse>(
+            int ppoId,
             TEntry ppoComponentRevisionDTO,
             short financialYear,
             string treasuryCode
         )
         {
             PpoComponentRevision ppoComponentRevision = new() {
-                Id = 0
+                Id = 0,
+                PpoId = ppoId
             };
             TResponse? response = _mapper.Map<TResponse>(ppoComponentRevision);
 
@@ -46,7 +51,7 @@ namespace CTS_BE.BAL.Services.Pension
                         entity => entity.ActiveFlag 
                         && entity.TreasuryCode == treasuryCode
                         && entity.PpoId == ppoComponentRevision.PpoId
-                        && entity.BreakupId == ppoComponentRevision.BreakupId
+                        && entity.RateId == ppoComponentRevision.RateId
                         && entity.FromDate == ppoComponentRevision.FromDate
                     );
 
@@ -59,8 +64,24 @@ namespace CTS_BE.BAL.Services.Pension
                     );
                     return response;
                 }
+                
+                Pensioner pensionerFound = await _pensionerDetailsRepository.GetSingleAysnc(
+                        entity => entity.ActiveFlag 
+                        && entity.TreasuryCode == treasuryCode
+                        && entity.PpoId == ppoId
+                    );
+                if(pensionerFound is null)
+                {
+                    response.FillDataSource(
+                        ppoComponentRevisionDTO,
+                        $"Pensioner not found!"
+                    );
+                    return response;
+                }
+
                 SetCreatedBy(ppoComponentRevision);
                 ppoComponentRevision.TreasuryCode = treasuryCode;
+                ppoComponentRevision.PensionerId = pensionerFound.Id;
                 _ppoComponentRevisionRepository.Add(ppoComponentRevision);
 
                 if(await _ppoComponentRevisionRepository.SaveChangesManagedAsync() == 0) {
@@ -79,6 +100,83 @@ namespace CTS_BE.BAL.Services.Pension
             }
             finally {
                 response.FillFrom(ppoComponentRevision);
+            }
+            return response;
+        }
+
+        public async Task<List<TResponse>> CreatePpoComponentRevisions<TEntry, TResponse>(
+            int ppoId,
+            List<TEntry> ppoComponentRevisionDTOs,
+            short financialYear,
+            string treasuryCode
+        )
+        {
+            List<PpoComponentRevision> ppoComponentRevisions = new();
+            List<TResponse>? response = _mapper.Map<List<TResponse>>(ppoComponentRevisions);
+
+            try {
+
+                foreach(TEntry ppoComponentRevisionDTO in ppoComponentRevisionDTOs) {
+                    PpoComponentRevision ppoComponentRevision = new(){
+                        Id = 0,
+                        PpoId = ppoId
+                    };
+                    ppoComponentRevision.FillFrom(ppoComponentRevisionDTO);
+
+                    PpoComponentRevision ppoComponentRevisionFound = await _ppoComponentRevisionRepository.GetSingleAysnc(
+                            entity => entity.ActiveFlag 
+                            && entity.TreasuryCode == treasuryCode
+                            && entity.PpoId == ppoId
+                            && entity.RateId == ppoComponentRevision.RateId
+                            && entity.FromDate == ppoComponentRevision.FromDate
+                        );
+
+                    if(ppoComponentRevisionFound != null)
+                    {
+                        ppoComponentRevision = ppoComponentRevisionFound;
+                        ppoComponentRevisionDTO.FillDataSource(
+                            ppoComponentRevisionFound,
+                            $"PPO Component Revision already exists!"
+                        );
+                        continue;
+                    }
+                    Pensioner pensionerFound = await _pensionerDetailsRepository.GetSingleAysnc(
+                        entity => entity.ActiveFlag 
+                        && entity.TreasuryCode == treasuryCode
+                        && entity.PpoId == ppoId
+                    );
+                    if(pensionerFound is null)
+                    {
+                        ppoComponentRevisionDTO.FillDataSource(
+                            ppoComponentRevision,
+                            $"Pensioner not found!"
+                        );
+                        continue;
+                    }
+                    SetCreatedBy(ppoComponentRevision);
+                    ppoComponentRevision.TreasuryCode = treasuryCode;
+                    ppoComponentRevision.PensionerId = pensionerFound.Id;
+                    ppoComponentRevisions.Add(ppoComponentRevision);
+                }
+                await _ppoComponentRevisionRepository.GetDbContext().AddRangeAsync(ppoComponentRevisions);
+                if(await _ppoComponentRevisionRepository.SaveChangesManagedAsync() == 0) {
+                    response.FillDataSource(
+                        ppoComponentRevisions,
+                        $"PPO Component Rate not saved!"
+                    );
+                    return response;
+                }
+
+            }
+            catch (DbUpdateException ex) {
+                response.FillDataSource(
+                        ppoComponentRevisions,
+                        $"DbUpdateException: {ex.InnerException?.Message}"
+                    );
+            }
+            finally {
+                //TODO: Implement DataSource Channel for List<TResponse> 
+                response = _mapper.Map<List<TResponse>>(ppoComponentRevisions);
             }
             return response;
         }

@@ -38,12 +38,13 @@ namespace CTS_BE.Controllers.Pension
         // 
         // Returns:
         //   JsonAPIResponse<PpoComponentRevisionResponseDTO>: A JSON API response containing a PPO component rate response DTO.
-        [HttpPost("component-revision")]
+        [HttpPost("{ppoId}/component-revision")]
         [Tags("Pension: Component Revision")]
         [OpenApi]
-        public async Task<JsonAPIResponse<PpoComponentRevisionResponseDTO>> CreatePpoComponentRevision(
-                PpoComponentRevisionEntryDTO ppoComponentRevisionEntryDTO
-            )
+        public async Task<JsonAPIResponse<PpoComponentRevisionResponseDTO>> CreateSinglePpoComponentRevision(
+            int ppoId,
+            PpoComponentRevisionEntryDTO ppoComponentRevisionEntryDTO
+        )
         {
 
             JsonAPIResponse<PpoComponentRevisionResponseDTO> response = new(){
@@ -55,7 +56,8 @@ namespace CTS_BE.Controllers.Pension
             };
             try {
                 response.Result = await _ppoComponentRevisionService
-                    .CreatePpoComponentRevision<PpoComponentRevisionEntryDTO, PpoComponentRevisionResponseDTO>(
+                    .CreateSinglePpoComponentRevision<PpoComponentRevisionEntryDTO, PpoComponentRevisionResponseDTO>(
+                        ppoId,
                         ppoComponentRevisionEntryDTO,
                         GetCurrentFyYear(),
                         GetTreasuryCode()
@@ -63,6 +65,39 @@ namespace CTS_BE.Controllers.Pension
             }
             finally {
                 if(response.Result.DataSource != null) {
+                    response.ApiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.Message = $"C-Error: Component Revision not saved!";
+                }
+            }
+
+            return response;
+        }
+
+        [HttpPost("{ppoId}/component-revisions")]
+        [Tags("Pension: Component Revision")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<List<PpoComponentRevisionResponseDTO>>> CreatePpoComponentRevisions(
+                int ppoId,
+                List<PpoComponentRevisionEntryDTO> ppoComponentRevisionEntryDTOs
+            )
+        {
+
+            JsonAPIResponse<List<PpoComponentRevisionResponseDTO>> response = new(){
+                ApiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = $"PPO Component Revision saved sucessfully!",
+                Result = new()
+            };
+            try {
+                response.Result = await _ppoComponentRevisionService
+                    .CreatePpoComponentRevisions<PpoComponentRevisionEntryDTO, PpoComponentRevisionResponseDTO>(
+                        ppoId,
+                        ppoComponentRevisionEntryDTOs,
+                        GetCurrentFyYear(),
+                        GetTreasuryCode()
+                    );
+            }
+            finally {
+                if(response.Result.Count == 0) {
                     response.ApiResponseStatus = Enum.APIResponseStatus.Error;
                     response.Message = $"C-Error: Component Revision not saved!";
                 }

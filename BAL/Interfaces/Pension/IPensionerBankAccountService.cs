@@ -8,25 +8,25 @@ namespace CTS_BE.BAL.Interfaces.Pension
 {
     public interface IPensionerBankAccountService : IBaseService
     {
-        public Task<PensionerBankAcDTO> CreatePensionerBankAccount(
+        public Task<PensionerBankAcResponseDTO> CreatePensionerBankAccount(
             int ppoId,
             long pensionerId,
-            PensionerBankAcDTO pensionerBankAcDTO,
+            PensionerBankAcEntryDTO pensionerBankAcEntryDTO,
             short financialYear,
             string treasuryCode
         );
-        public Task<PensionerBankAcDTO> UpdatePensionerBankAccount(
+        public Task<PensionerBankAcResponseDTO> UpdatePensionerBankAccount(
             int ppoId,
-            PensionerBankAcDTO pensionerBankAcDTO,
+            PensionerBankAcEntryDTO pensionerBankAcEntryDTO,
             short financialYear,
             string treasuryCode
         );
-        public Task<PensionerBankAcDTO> GetPensionerBankAccount(
+        public Task<PensionerBankAcResponseDTO> GetPensionerBankAccount(
             int ppoId,
             short financialYear,
             string treasuryCode
         );
-        public Task<IEnumerable<PensionerBankAcDTO>> GetAllPensionerBankAccounts(
+        public Task<IEnumerable<PensionerBankAcResponseDTO>> GetAllPensionerBankAccounts(
             short financialYear,
             string treasuryCode,
             DynamicListQueryParameters dynamicListQueryParameters

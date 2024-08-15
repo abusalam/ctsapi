@@ -50,8 +50,7 @@ public partial class PpoBill
     /// BillNo is to identify the treasury bill
     /// </summary>
     [Column("bill_no")]
-    [StringLength(100)]
-    public string BillNo { get; set; } = null!;
+    public int BillNo { get; set; }
 
     [Column("bill_date")]
     public DateOnly BillDate { get; set; }
@@ -76,14 +75,14 @@ public partial class PpoBill
     [Column("utr_at", TypeName = "timestamp without time zone")]
     public DateTime? UtrAt { get; set; }
 
-    [Column("bill_gross_amount")]
-    public int BillGrossAmount { get; set; }
+    [Column("gross_amount")]
+    public int GrossAmount { get; set; }
 
-    [Column("bill_bytransfer_amount")]
-    public int BillBytransferAmount { get; set; }
+    [Column("bytransfer_amount")]
+    public int BytransferAmount { get; set; }
 
-    [Column("bill_net_amount")]
-    public int BillNetAmount { get; set; }
+    [Column("net_amount")]
+    public int NetAmount { get; set; }
 
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime? CreatedAt { get; set; }

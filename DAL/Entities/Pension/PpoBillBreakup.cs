@@ -10,7 +10,7 @@ namespace CTS_BE.DAL.Entities.Pension;
 /// PensionModuleSchema v1
 /// </summary>
 [Table("ppo_bill_breakups", Schema = "cts_pension")]
-[Index("TreasuryCode", "PpoId", "BillId", "RateId", Name = "ppo_bill_breakups_treasury_code_ppo_id_bill_id_rate_id_key", IsUnique = true)]
+[Index("TreasuryCode", "PpoId", "BillId", "RevisionId", "FromDate", Name = "ppo_bill_breakups_treasury_code_ppo_id_bill_id_revision_id__key", IsUnique = true)]
 public partial class PpoBillBreakup
 {
     [Key]
@@ -34,11 +34,8 @@ public partial class PpoBillBreakup
     public long BillId { get; set; }
 
     /// <summary>
-    /// RateId is to identify the component rate applied on the bill
+    /// RevisionId is to identify the component rate applied on the bill
     /// </summary>
-    [Column("rate_id")]
-    public long RateId { get; set; }
-
     [Column("revision_id")]
     public long RevisionId { get; set; }
 
@@ -69,10 +66,6 @@ public partial class PpoBillBreakup
     [ForeignKey("BillId")]
     [InverseProperty("PpoBillBreakups")]
     public virtual PpoBill Bill { get; set; } = null!;
-
-    [ForeignKey("RateId")]
-    [InverseProperty("PpoBillBreakups")]
-    public virtual ComponentRate Rate { get; set; } = null!;
 
     [ForeignKey("RevisionId")]
     [InverseProperty("PpoBillBreakups")]

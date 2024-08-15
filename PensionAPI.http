@@ -7,14 +7,14 @@
 
 @refreshToken = {{Login.response.body.$.refreshToken}}
 
-
 @treasuryReceiptNo = {{CreatePPOReceipt.response.body.$.result.treasuryReceiptNo}}
 
 @GeneratedPpoId = {{CreatePPODetails.response.body.$.result.ppoId}}
 
-@RevisionId = {{CreatePpoComponenRevision.response.body.$.result.id}}
+@RevisionId = {{CreatePpoComponenSingleRevision.response.body.$.result.id}}
 
 @ApprovedPpoId = {{SetApprovePPOFlag.response.body.$.result.ppoId}}
+
 @ApprovedPpoIdStatusFlag = {{SetApprovePPOFlag.response.body.$.result.statusFlag}}
 
 ### All List APIs
@@ -60,17 +60,47 @@ Content-Type: application/json
   "amountPerMonth": 5000
 }
 
-### Create Ppo Component Revision
-# @name CreatePpoComponenRevision
-POST {{PensionAPI_HostAddress}}/api/v1/ppo/component-revision
+### Create Ppo Component Revisions
+# @name CreatePpoComponenRevisions
+POST {{PensionAPI_HostAddress}}/api/v1/ppo/{{GeneratedPpoId}}/component-revisions
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+[      
+  {
+    "rateId": 1,
+    "fromDate": "1997-03-31",
+    "amountPerMonth": 10000
+  },
+  {
+    "rateId": 2,
+    "fromDate": "1997-03-31",
+    "amountPerMonth": 1000
+  },
+  {
+    "rateId": 2,
+    "fromDate": "2007-04-01",
+    "amountPerMonth": 5000
+  },
+  {
+    "rateId": 3,
+    "fromDate": "1997-03-31",
+    "amountPerMonth": 100
+  }
+]
+
+### Create Ppo Component Single Revision
+# @name CreatePpoComponenSingleRevision
+POST {{PensionAPI_HostAddress}}/api/v1/ppo/{{GeneratedPpoId}}/component-revision
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
-  "ppoId": {{GeneratedPpoId}},
-  "breakupId": 3,
+  "rateId": 1,
   "fromDate": "2024-01-01",
   "amountPerMonth": 5000
 }
@@ -147,7 +177,7 @@ Content-Type: application/json
 ### Generate Components for First Pension Bill
 # @name GenerateFirstPensionBill
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
-POST {{PensionAPI_HostAddress}}/api/v1/ppo/pension-bill
+POST {{PensionAPI_HostAddress}}/api/v1/ppo/first-bill-generate
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
@@ -158,6 +188,91 @@ Content-Type: application/json
   "toDate": "{{$datetime "YYYY-MM-DD"}}"
 }
 
+### Capture FirstBill Detaills
+@PensionerId = {{CreatePPODetails.response.body.$.result.id}}
+@PensionerBankAcId = {{GenerateFirstPensionBill.response.body.$.result.bankAccount.id}}
+@BillFromDate = {{GenerateFirstPensionBill.response.body.$.result.pensioner.dateOfCommencement}}
+@BillUptoDate = {{GenerateFirstPensionBill.response.body.$.result.billGeneratedUptoDate}}
+@BillDate = {{GenerateFirstPensionBill.response.body.$.result.billDate}}
+@GrossAmount = {{GenerateFirstPensionBill.response.body.$.result.grossAmount}}
+@NetAmount = {{GenerateFirstPensionBill.response.body.$.result.netAmount}}
+@TaxAmount = {{GenerateFirstPensionBill.response.body.$.result.grossAmount}}
+@PensionerPayments = {{GenerateFirstPensionBill.response.body.$.result.pensionerPayments}}
+
+
+
+
+### Save Components for First Pension Bill
+# @name SaveFirstPensionBill
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+POST {{PensionAPI_HostAddress}}/api/v1/ppo/first-bill-save
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "pensionerId": {{PensionerId}},
+  "bankAccountId": {{PensionerBankAcId}},
+  "PpoId": {{GeneratedPpoId}},
+  "fromDate": "{{BillFromDate}}",
+  "toDate": "{{BillUptoDate}}",
+  "billType": "F",
+  "billDate": "{{BillDate}}",
+  "grossAmount": {{GrossAmount}},
+  "ByTransferAmount": {{TaxAmount}},
+  "netAmount": {{NetAmount}},
+  "breakups": [ 
+      {
+        "PpoId": {{GeneratedPpoId}},
+        "revisionId": 1,
+        "fromDate": "1997-03-31",
+        "toDate": "2024-08-14",
+        "breakupAmount": 3330000
+      },
+      {
+        "PpoId": {{GeneratedPpoId}},
+        "revisionId": 2,
+        "fromDate": "1997-03-31",
+        "toDate": "2007-03-31",
+        "breakupAmount": 1210000
+      },
+      {
+        "PpoId": {{GeneratedPpoId}},
+        "revisionId": 2,
+        "fromDate": "2007-04-01",
+        "toDate": "2009-03-31",
+        "breakupAmount": 55200
+      },
+      {
+        "PpoId": {{GeneratedPpoId}},
+        "revisionId": 2,
+        "fromDate": "2009-04-01",
+        "toDate": "2015-12-31",
+        "breakupAmount": 461700
+      },
+      {
+        "PpoId": {{GeneratedPpoId}},
+        "revisionId": 2,
+        "fromDate": "2016-01-01",
+        "toDate": "2024-08-14",
+        "breakupAmount": 1622400
+      },
+      {
+        "PpoId": {{GeneratedPpoId}},
+        "revisionId": 3,
+        "fromDate": "1997-03-31",
+        "toDate": "2009-03-31",
+        "breakupAmount": 14600
+      },
+      {
+        "PpoId": {{GeneratedPpoId}},
+        "revisionId": 3,
+        "fromDate": "2009-04-01",
+        "toDate": "2024-08-14",
+        "breakupAmount": 55800
+      }
+    ]
+}
 
 ### Create Pensioner Bank Account
 # @name CreatePensionerBankAccount

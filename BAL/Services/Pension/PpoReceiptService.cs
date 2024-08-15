@@ -54,6 +54,7 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         ) {
             PpoReceipt manualPpoReceiptEntity;
+            ManualPpoReceiptResponseDTO manualPpoReceiptDTOResponse = _mapper.Map<ManualPpoReceiptResponseDTO>(manualPpoReceiptDTO);
             try
             {
                 manualPpoReceiptEntity = _mapper.Map<PpoReceipt>(manualPpoReceiptDTO);
@@ -66,8 +67,10 @@ namespace CTS_BE.BAL.Services.Pension
                 manualPpoReceiptEntity.PpoStatus = $"PPO Received";
                 SetCreatedBy(manualPpoReceiptEntity);                
                 _manualPpoReceiptRepository.Add(manualPpoReceiptEntity);
-
-                await _manualPpoReceiptRepository.SaveChangesManagedAsync();
+                if(await _manualPpoReceiptRepository.SaveChangesManagedAsync()==0) {
+                    manualPpoReceiptDTOResponse.FillDataSource(manualPpoReceiptEntity, "Failed to create PPO Receipt");
+                    return manualPpoReceiptDTOResponse;
+                }
             }
             finally {
 
@@ -108,6 +111,7 @@ namespace CTS_BE.BAL.Services.Pension
                     return manualPpoReceiptDTOResponse;
                 }                  
                 manualPpoReceiptEntity.FillFrom(manualPpoReceiptDTO);
+                SetUpdatedBy(manualPpoReceiptEntity);
                 _manualPpoReceiptRepository.Update(manualPpoReceiptEntity);
                 if(await _manualPpoReceiptRepository.SaveChangesManagedAsync()==0) {
                     manualPpoReceiptDTOResponse.FillDataSource(manualPpoReceiptEntity, "Update Failed!");

@@ -157,6 +157,9 @@ public partial class Pensioner
     public virtual ICollection<PpoBill> PpoBills { get; set; } = new List<PpoBill>();
 
     [InverseProperty("Pensioner")]
+    public virtual ICollection<PpoComponentRevision> PpoComponentRevisions { get; set; } = new List<PpoComponentRevision>();
+
+    [InverseProperty("Pensioner")]
     public virtual ICollection<PpoStatusFlag> PpoStatusFlags { get; set; } = new List<PpoStatusFlag>();
 
     [ForeignKey("ReceiptId")]

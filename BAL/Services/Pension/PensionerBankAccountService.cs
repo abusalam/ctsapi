@@ -34,10 +34,10 @@ namespace CTS_BE.BAL.Services.Pension
             _userId                         = _claimService.GetUserId();
         }
 
-        public async Task<PensionerBankAcDTO> CreatePensionerBankAccount(
+        public async Task<PensionerBankAcResponseDTO> CreatePensionerBankAccount(
                 int ppoId,
                 long pensionerId,
-                PensionerBankAcDTO pensionerBankAcDTO,
+                PensionerBankAcEntryDTO pensionerBankAcEntryDTO,
                 short financialYear,
                 string treasuryCode
             )
@@ -45,9 +45,10 @@ namespace CTS_BE.BAL.Services.Pension
             BankAccount bankAccountEntity = new() {
                 PpoId = 0
             };
+            PensionerBankAcResponseDTO pensionerBankAcResponseDTO = new();
 
             try {
-                bankAccountEntity.FillFrom(pensionerBankAcDTO);
+                bankAccountEntity.FillFrom(pensionerBankAcEntryDTO);
                 bankAccountEntity.PpoId = ppoId;
                 bankAccountEntity.PensionerId = pensionerId;
                 bankAccountEntity.FinancialYear = financialYear;
@@ -61,26 +62,23 @@ namespace CTS_BE.BAL.Services.Pension
                 );
 
                 if(bankAccountExists != null) {
-                    pensionerBankAcDTO.FillDataSource(bankAccountExists, "Bank Account already exists!");
-                    return pensionerBankAcDTO;
+                    pensionerBankAcResponseDTO.FillDataSource(bankAccountExists, "Bank Account already exists!");
+                    return pensionerBankAcResponseDTO;
                 } else {
                     _pensionerBankAccountRepository.Add(bankAccountEntity);
                 }
 
                 if(await _pensionerBankAccountRepository.SaveChangesManagedAsync() == 0) {
-                    dynamic dataSource = new ExpandoObject(){};
-                    dataSource.Message = $"Bank Account not saved!";
-                    dataSource.BankAccount = bankAccountEntity;
-                    pensionerBankAcDTO.DataSource = dataSource;
+                    pensionerBankAcResponseDTO.FillDataSource(bankAccountEntity, "Bank Account not saved!");
                 }
             }
             finally {
 
             }
-            return pensionerBankAcDTO;
+            return _mapper.Map<PensionerBankAcResponseDTO>(bankAccountEntity);
         }
 
-        public Task<IEnumerable<PensionerBankAcDTO>> GetAllPensionerBankAccounts(
+        public Task<IEnumerable<PensionerBankAcResponseDTO>> GetAllPensionerBankAccounts(
                 short financialYear,
                 string treasuryCode,
                 DynamicListQueryParameters dynamicListQueryParameters
@@ -89,13 +87,13 @@ namespace CTS_BE.BAL.Services.Pension
             throw new NotImplementedException();
         }
 
-        public async Task<PensionerBankAcDTO> GetPensionerBankAccount(
+        public async Task<PensionerBankAcResponseDTO> GetPensionerBankAccount(
                 int ppoId,
                 short financialYear,
                 string treasuryCode
             )
         {
-            return _mapper.Map<PensionerBankAcDTO>(
+            return _mapper.Map<PensionerBankAcResponseDTO>(
                 await _pensionerBankAccountRepository.GetSingleAysnc(
                     entity => entity.ActiveFlag 
                     && entity.PpoId == ppoId 
@@ -104,9 +102,9 @@ namespace CTS_BE.BAL.Services.Pension
             ); 
         }
 
-        public async Task<PensionerBankAcDTO> UpdatePensionerBankAccount(
+        public async Task<PensionerBankAcResponseDTO> UpdatePensionerBankAccount(
                 int ppoId,
-                PensionerBankAcDTO pensionerBankAcDTO,
+                PensionerBankAcEntryDTO pensionerBankAcEntryDTO,
                 short financialYear,
                 string treasuryCode    
             )
@@ -114,7 +112,7 @@ namespace CTS_BE.BAL.Services.Pension
             BankAccount bankAccountEntity = new() {
                 PpoId = 0
             };
-
+            PensionerBankAcResponseDTO pensionerBankAcResponseDTO = new();
             try {
                 bankAccountEntity = await _pensionerBankAccountRepository.GetSingleAysnc(
                         entity => entity.ActiveFlag 
@@ -123,29 +121,24 @@ namespace CTS_BE.BAL.Services.Pension
                     );
 
                 if(bankAccountEntity == null) {
-                    dynamic dataSource = new ExpandoObject(){};
-                    dataSource.Message = $"Bank Account not found!";
-                    dataSource.BankAccount = bankAccountEntity;
-                    pensionerBankAcDTO.DataSource = dataSource;
-                    return pensionerBankAcDTO;
+                    pensionerBankAcResponseDTO.FillDataSource(bankAccountEntity, "Bank Account not found!");
+                    return pensionerBankAcResponseDTO;
                 }
-                bankAccountEntity.FillFrom(pensionerBankAcDTO);
+                bankAccountEntity.FillFrom(pensionerBankAcEntryDTO);
                 
                 if(bankAccountEntity.PpoId > 0 ) {
                     SetUpdatedBy(bankAccountEntity);
                     _pensionerBankAccountRepository.Update(bankAccountEntity);
                     if(await _pensionerBankAccountRepository.SaveChangesManagedAsync() == 0) {
-                        dynamic dataSource = new ExpandoObject(){};
-                        dataSource.Message = $"Bank Account not saved!";
-                        dataSource.BankAccount = bankAccountEntity;
-                        pensionerBankAcDTO.DataSource = dataSource;
+                        pensionerBankAcResponseDTO.FillDataSource(bankAccountEntity, "Bank Account not saved!");
+                        return pensionerBankAcResponseDTO;
                     }
                 }
             }
             finally {
 
             }
-            return pensionerBankAcDTO;
+            return _mapper.Map<PensionerBankAcResponseDTO>(bankAccountEntity);
         }
     }
 }

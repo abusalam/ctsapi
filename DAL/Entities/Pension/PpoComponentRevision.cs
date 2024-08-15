@@ -10,7 +10,6 @@ namespace CTS_BE.DAL.Entities.Pension;
 /// PensionModuleSchema v1
 /// </summary>
 [Table("ppo_component_revisions", Schema = "cts_pension")]
-[Index("PpoId", "TreasuryCode", "BreakupId", "FromDate", Name = "ppo_component_revisions_ppo_id_treasury_code_breakup_id_fro_key", IsUnique = true)]
 public partial class PpoComponentRevision
 {
     /// <summary>
@@ -24,11 +23,14 @@ public partial class PpoComponentRevision
     [StringLength(3)]
     public string TreasuryCode { get; set; } = null!;
 
+    [Column("pensioner_id")]
+    public long PensionerId { get; set; }
+
     [Column("ppo_id")]
     public int PpoId { get; set; }
 
-    [Column("breakup_id")]
-    public long BreakupId { get; set; }
+    [Column("rate_id")]
+    public long RateId { get; set; }
 
     /// <summary>
     /// From date is the Date of Commencement of pension of the pensioner
@@ -63,10 +65,14 @@ public partial class PpoComponentRevision
     [Column("active_flag")]
     public bool ActiveFlag { get; set; }
 
-    [ForeignKey("BreakupId")]
+    [ForeignKey("PensionerId")]
     [InverseProperty("PpoComponentRevisions")]
-    public virtual Breakup Breakup { get; set; } = null!;
+    public virtual Pensioner Pensioner { get; set; } = null!;
 
     [InverseProperty("Revision")]
     public virtual ICollection<PpoBillBreakup> PpoBillBreakups { get; set; } = new List<PpoBillBreakup>();
+
+    [ForeignKey("RateId")]
+    [InverseProperty("PpoComponentRevisions")]
+    public virtual ComponentRate Rate { get; set; } = null!;
 }
