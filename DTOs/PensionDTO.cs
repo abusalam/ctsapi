@@ -268,7 +268,6 @@ namespace CTS_BE.DTOs
     public partial class ComponentRateEntryDTO : BaseDTO {
         public long CategoryId { get; set; }
         public long BreakupId { get; set; }
-        public PensionBreakupResponseDTO? Breakup { get; set; }
 
         [Required]
         [DataType(DataType.Date)]
@@ -284,6 +283,7 @@ namespace CTS_BE.DTOs
 
     public partial class ComponentRateResponseDTO : ComponentRateEntryDTO {
         public long Id { get; set; }
+        public PensionBreakupResponseDTO? Breakup { get; set; }
     }
 
     public partial class InitiateFirstPensionBillDTO : BaseDTO {
