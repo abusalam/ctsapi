@@ -33,12 +33,15 @@ namespace CTS_BE.DTOs
     
     public class ManualPpoReceiptEntryDTO {
 
+        [Required]
         [StringLength(100)]
         public required string PpoNo { get; set; } = null!;
 
+        [Required]
         [StringLength(100)]
         public required string PensionerName { get; set; }
 
+        [Required]
         [DataType(DataType.Date)]
         [PastDateWithinYears(100)]
         public required DateOnly DateOfCommencement { get; set; }
@@ -47,13 +50,16 @@ namespace CTS_BE.DTOs
         [RegularExpression(@"^[6-9]\d{9}$")]
         public string? MobileNumber { get; set; }
 
+        [Required]
         [DataType(DataType.Date)]
         [PastDateWithinYears(10)]
         public required DateOnly ReceiptDate { get; set; }
 
+        [Required]
         [RegularExpression(@"[ADO]", ErrorMessage = "{0} must be one of the following (A, D & O)")]
         public required char PsaCode { get; set; }
 
+        [Required]
         [RegularExpression(@"[NRPO]", ErrorMessage = "{0} must be one of the following (N, R, P & O)")]
         public required char PpoType { get; set; }
     }
@@ -64,7 +70,6 @@ namespace CTS_BE.DTOs
         
         [StringLength(13)]
         public string TreasuryReceiptNo { get; set; } = null!;
-
     }
 
     public class ListAllPpoReceiptsResponseDTO {
@@ -84,24 +89,32 @@ namespace CTS_BE.DTOs
     }
 
     public class PensionerEntryDTO {
+        [Required]
         public long ReceiptId { get; set; }
 
+        [Required]
         [StringLength(100)]
         public string PpoNo { get; set; } = null!;
 
+        [Required]
         [RegularExpression(@"[PFC]", ErrorMessage = "{0} must be one of the following (P, F & C)")]
         public char PpoType { get; set; }
 
+        [Required]
         [RegularExpression(@"[ELUVNRPGJKHW]", ErrorMessage = "{0} must be one of the following (E, L, U, V, N, R, P, G, J, K, H & W)")]
         public char PpoSubType { get; set; }
+        
+        [Required]
         public long CategoryId { get; set; }
 
+        [Required]
         [StringLength(100)]
         public string PensionerName { get; set; } = null!;
         
         [RegularExpression(@"[MF]", ErrorMessage = "{0} must be one of the following (M - Male; F - Female;)")]
         public char? Gender { get; set; }
 
+        [Required]
         [DataType(DataType.Date)]
         [PastDateWithinYears(100)]
         public DateOnly DateOfBirth { get; set; }
@@ -121,18 +134,29 @@ namespace CTS_BE.DTOs
         [StringLength(12)]
         public string? AadhaarNo { get; set; }
 
+        [Required]
         [DataType(DataType.Date)]
         [PastDateWithinYears(100)]
         public DateOnly DateOfRetirement { get; set; }
 
+        [Required]
         [DataType(DataType.Date)]
         [PastDateWithinYears(100)]
         public DateOnly DateOfCommencement { get; set; }
+
+        [Required]
         public int BasicPensionAmount { get; set; }
+        
+        [Required]
         public int CommutedPensionAmount { get; set; }
+        
+        [Required]
         public int EnhancePensionAmount { get; set; }
+        
+        [Required]
         public int ReducedPensionAmount { get; set; }
 
+        [Required]
         [RegularExpression(@"[HMO]", ErrorMessage = "{0} must be one of the following (H, M & O)")]
         public char Religion { get; set; }
     }
@@ -175,12 +199,15 @@ namespace CTS_BE.DTOs
 
     public class PensionerBankAcEntryDTO : BaseDTO {
 
+        [Required]
         [StringLength(100)]
         public string AccountHolderName { get; set; } = null!;
 
+        [Required]
         [StringLength(30)]
         public string? BankAcNo { get; set; }
 
+        [Required]
         [StringLength(11)]
         public string? IfscCode { get; set; }
 
@@ -223,16 +250,16 @@ namespace CTS_BE.DTOs
     }
 
     public partial class PensionCategoryEntryDTO : BaseDTO {
+        [Required]
         public long PrimaryCategoryId { get; set; }
+        
+        [Required]
         public long SubCategoryId { get; set; }
     }
 
     public partial class PensionCategoryResponseDTO : PensionCategoryEntryDTO {
         public long Id { get; set; }
-
-        [StringLength(100)]
         public string CategoryName { get; set; } = null!;
-
         public PensionPrimaryCategoryResponseDTO PrimaryCategory { get; set; } = null!;
         public PensionSubCategoryResponseDTO SubCategory { get; set; } = null!;
         public List<ComponentRateResponseDTO>? ComponentRates { get; set; }
@@ -246,18 +273,21 @@ namespace CTS_BE.DTOs
     }
 
     public partial class PensionBreakupEntryDTO : BaseDTO {
+        [Required]
         [StringLength(100)]
         public string ComponentName { get; set; } = null!;
 
         /// <summary>
         /// P - Payment; D - Deduction;
         /// </summary>
+        [Required]
         [RegularExpression(@"[PD]", ErrorMessage = "{0} must be one of the following (P - Payment; D - Deduction)")]
         public char ComponentType { get; set; }
 
         /// <summary>
         /// Relief Allowed (true/false)
         /// </summary>
+        [Required]
         public bool ReliefFlag { get; set; }
     }
 
@@ -266,17 +296,21 @@ namespace CTS_BE.DTOs
     }
 
     public partial class ComponentRateEntryDTO : BaseDTO {
+        [Required]
         public long CategoryId { get; set; }
+        [Required]
         public long BreakupId { get; set; }
 
         [Required]
         [DataType(DataType.Date)]
         public DateOnly EffectiveFromDate { get; set; }
+        [Required]
         public int RateAmount { get; set; }
 
         /// <summary>
         /// P - Percentage; A - Amount;
         /// </summary>
+        [Required]
         [RegularExpression(@"[PA]", ErrorMessage = "{0} must be one of the following (P - Percentage; A - Amount;)")]
         public char RateType { get; set; }
     }
@@ -289,28 +323,19 @@ namespace CTS_BE.DTOs
     public partial class InitiateFirstPensionBillDTO : BaseDTO {
         [Required]
         public int PpoId { get; set; }
+
+        [Required]
         public DateOnly ToDate { get; set; }
     }
 
     public partial class PensionerFirstBillResponseDTO : BaseDTO {
-
-        [Required]
         public required PensionerListItemDTO Pensioner { get; set; }
-
-        [Required]
         public required PensionerBankAcResponseDTO BankAccount { get; set; }
-
-        [Required]
         public PensionCategoryResponseDTO PensionCategory { get; set; } = null!;
-
-        [Required]
         public ICollection<PpoPaymentListItemDTO>? PensionerPayments { get; set; }
     }
 
     public partial class InitiateFirstPensionBillResponseDTO : PensionerFirstBillResponseDTO {
-
-        [Required]
-        [DataType(DataType.Date)]
         public DateOnly BillGeneratedUptoDate { get; set; }
         public long BillId { get; set; }
         public DateOnly BillDate { get; set; }
@@ -386,16 +411,43 @@ namespace CTS_BE.DTOs
     }
 
     public partial class PpoBillEntryDTO : BaseDTO {
+
+        [Required]
         public long PensionerId { get; set; }
+        
+        [Required]
         public long BankAccountId { get; set; }
+        
+        [Required]
         public int PpoId { get; set; }
+        
+        [Required]
+        [DataType(DataType.Date)]
+        [PastDateWithinYears(100, ErrorMessage = "Date of bill should be less than 100 years from today")]
         public DateOnly FromDate { get; set; }
+
+        [Required]
+        [DataType(DataType.Date)]
+        [PastDateWithinYears(100, ErrorMessage = "Date of bill should be less than 100 years from today")]
         public DateOnly ToDate { get; set; }
+
+        [Required]
         public char BillType { get; set; }
+        
+        [Required]
+        [PastDateWithinYears(1)]
         public DateOnly BillDate { get; set; }
+ 
+        [Required]
         public int GrossAmount { get; set; }
+        
+        [Required]
         public int ByTransferAmount { get; set; }
+        
+        [Required]
         public int NetAmount { get; set; }
+        
+        [Required]
         public List<PpoBillBreakupEntryDTO> Breakups { get; set; } = null!;
     }
 
@@ -407,11 +459,24 @@ namespace CTS_BE.DTOs
 
     public partial class PpoBillBreakupEntryDTO : BaseDTO {
         // public long BillId { get; set; }
+        [Required]
         public int PpoId { get; set; }
         // public long RateId { get; set; }
+        
+        [Required]
         public long RevisionId { get; set; }
+        
+        [Required]
+        [DataType(DataType.Date)]
+        [PastDateWithinYears(100, ErrorMessage = "Date of bill should be less than 100 years from today")]
         public DateOnly FromDate { get; set; }
+        
+        [Required]
+        [DataType(DataType.Date)]
+        [PastDateWithinYears(1, ErrorMessage = "Date of bill should be less than 1 years from today")]
         public DateOnly ToDate { get; set; }
+
+        [Required]
         public int BreakupAmount { get; set; }
     }
 
