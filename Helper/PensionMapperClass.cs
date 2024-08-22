@@ -10,6 +10,7 @@ namespace CTS_BE.Helper
         {
             CreateMap<ManualPpoReceiptEntryDTO, PpoReceipt>().ReverseMap();
             CreateMap<ManualPpoReceiptResponseDTO, PpoReceipt>().ReverseMap();
+            CreateMap<ManualPpoReceiptResponseDTO, ManualPpoReceiptEntryDTO>().ReverseMap();
             CreateMap<ListAllPpoReceiptsResponseDTO, PpoReceipt>().ReverseMap();
             CreateMap<PensionStatusEntryDTO, PpoStatusFlag>().ReverseMap();
             CreateMap<PensionStatusDTO, PpoStatusFlag>().ReverseMap();
