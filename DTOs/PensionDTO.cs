@@ -390,6 +390,8 @@ namespace CTS_BE.DTOs
         /// </summary>
         [DataType(DataType.Date)]
         public DateOnly? ToDate { get; set; }
+
+        public ComponentRateResponseDTO? Rate { get; set; }
     }
 
     public partial class PpoComponentRevisionUpdateDTO : BaseDTO {
@@ -450,6 +452,9 @@ namespace CTS_BE.DTOs
 
     public partial class PpoBillResponseDTO : PpoBillEntryDTO {
         public long Id { get; set; }
+        public long DrawnAmount { get; set; } = 0;
+        public string? TreasuryVoucherNo { get; set; }
+        public DateOnly? TreasuryVoucherDate { get; set; }
         public override List<PpoBillBreakupEntryDTO> Breakups { set => base.Breakups = value; }
         // public PensionerBankAcResponseDTO BankAccount { get; set; } = null!;
         public PensionerResponseDTO Pensioner { get; set; } = null!;
@@ -476,9 +481,14 @@ namespace CTS_BE.DTOs
 
         [Required]
         public int BreakupAmount { get; set; }
+        public int DueAmount { get {return this.BreakupAmount;} set {this.BreakupAmount = value;} }
+        public int DrawnAmount { get; set; } = 0;
+        public int NetAmount { get {return this.BreakupAmount - this.DrawnAmount;} }
     }
 
     public partial class PpoBillBreakupResponseDTO : PpoBillBreakupEntryDTO {
         public long Id { get; set; }
+
+        public PpoComponentRevisionResponseDTO Revision { get; set; } = null!;
     }
 }

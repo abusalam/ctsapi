@@ -70,7 +70,15 @@ namespace CTS_BE.DAL.Repositories.Pension
             if(ppoBill == null) {
                 return null;
             }
-            
+            //Eager loading
+            _pensionDbContext.PpoBills
+                .Include(entity => entity.PpoBillBreakups)
+                .ThenInclude(entity => entity.Revision)
+                .ThenInclude(entity => entity.Rate)
+                .ThenInclude(entity => entity.Breakup)
+                .Load();
+
+            //Explicit loading
             _pensionDbContext.Entry(ppoBill)
                 .Reference(entity => entity.Pensioner)
                 .Load();
@@ -80,6 +88,18 @@ namespace CTS_BE.DAL.Repositories.Pension
             _pensionDbContext.Entry(ppoBill)
                 .Collection(entity => entity.PpoBillBreakups)
                 .Load();
+            // ppoBill.PpoBillBreakups.ToList().ForEach(
+            //     entity => {
+            //     _pensionDbContext.Entry(entity)
+            //         .Reference(entity => entity.Revision)
+            //         .Load();
+            //     _pensionDbContext.Entry(entity.Revision)
+            //         .Reference(entity => entity.Rate)
+            //         .Load();
+            //     _pensionDbContext.Entry(entity.Revision.Rate)
+            //         .Reference(entity => entity.Breakup)
+            //         .Load();
+            // });
             _pensionDbContext.Entry(ppoBill.Pensioner)
                 .Reference(entity => entity.Category)
                 .Load();
