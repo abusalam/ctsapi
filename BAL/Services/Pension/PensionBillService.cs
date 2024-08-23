@@ -64,6 +64,18 @@ namespace CTS_BE.BAL.Services.Pension
                     && entity.TreasuryCode==treasuryCode
                 );
 
+            if(pensioner == null) {
+                var errResponse = new InitiateFirstPensionBillResponseDTO {
+                    Pensioner = new PensionerListItemDTO(),
+                    BankAccount = new PensionerBankAcResponseDTO()
+                };
+                errResponse.FillDataSource(
+                    pensioner,
+                    "No such PPO exists"
+                );
+                return errResponse;
+            }
+
             pensionDbContext.Entry(pensioner)
                 .Reference(entity => entity.Category)
                 .Load();

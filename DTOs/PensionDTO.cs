@@ -325,6 +325,7 @@ namespace CTS_BE.DTOs
         public int PpoId { get; set; }
 
         [Required]
+        [CurrentOrFutureDateUptoYears(1, ErrorMessage = "Date of bill should be within 1 years from today")]
         public DateOnly ToDate { get; set; }
     }
 
@@ -428,6 +429,7 @@ namespace CTS_BE.DTOs
 
         [Required]
         [DataType(DataType.Date)]
+        [CurrentOrFutureDateUptoYears(1, ErrorMessage = "Date of bill should be within 1 years from today")]
         public DateOnly ToDate { get; set; }
 
         [Required]
@@ -473,6 +475,7 @@ namespace CTS_BE.DTOs
         
         [Required]
         [DataType(DataType.Date)]
+        [CurrentOrFutureDateUptoYears(1, ErrorMessage = "Date of bill should be within 1 years from today")]
         public DateOnly ToDate { get; set; }
 
         [Required]
