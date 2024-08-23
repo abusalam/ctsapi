@@ -11,7 +11,7 @@
 
 @GeneratedPpoId = {{CreatePPODetails.response.body.$.result.ppoId}}
 
-@RevisionId = {{CreatePpoComponenSingleRevision.response.body.$.result.id}}
+@RevisionId = {{CreatePpoComponentSingleRevision.response.body.$.result.id}}
 
 @ApprovedPpoId = {{SetApprovePPOFlag.response.body.$.result.ppoId}}
 
@@ -61,7 +61,7 @@ Content-Type: application/json
 }
 
 ### Create Ppo Component Revisions
-# @name CreatePpoComponenRevisions
+# @name CreatePpoComponentRevisions
 POST {{PensionAPI_HostAddress}}/api/v1/ppo/{{GeneratedPpoId}}/component-revisions
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
 Accept: application/json
@@ -92,7 +92,7 @@ Content-Type: application/json
 ]
 
 ### Create Ppo Component Single Revision
-# @name CreatePpoComponenSingleRevision
+# @name CreatePpoComponentSingleRevision
 POST {{PensionAPI_HostAddress}}/api/v1/ppo/{{GeneratedPpoId}}/component-revision
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
 Accept: application/json
@@ -188,6 +188,16 @@ Content-Type: application/json
   "toDate": "{{$datetime "YYYY-MM-DD"}}"
 }
 
+
+### Get First Pension Bill By PpoId
+# @name GetFirstPensionBillByPpoId
+GET {{PensionAPI_HostAddress}}/api/v1/ppo/first-bill/{{GeneratedPpoId}}
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+
+
 ### Capture FirstBill Detaills
 @PensionerId = {{CreatePPODetails.response.body.$.result.id}}
 @PensionerBankAcId = {{GenerateFirstPensionBill.response.body.$.result.bankAccount.id}}
@@ -205,7 +215,7 @@ Content-Type: application/json
 ### Save Components for First Pension Bill
 # @name SaveFirstPensionBill
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
-POST {{PensionAPI_HostAddress}}/api/v1/ppo/first-bill-save
+POST {{PensionAPI_HostAddress}}/api/v1/ppo/first-bill
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json

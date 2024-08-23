@@ -423,19 +423,17 @@ namespace CTS_BE.DTOs
         
         [Required]
         [DataType(DataType.Date)]
-        [PastDateWithinYears(100, ErrorMessage = "Date of bill should be less than 100 years from today")]
+        [PastDateWithinYears(100, ErrorMessage = "Date of bill should be within 100 years from today")]
         public DateOnly FromDate { get; set; }
 
         [Required]
         [DataType(DataType.Date)]
-        [PastDateWithinYears(100, ErrorMessage = "Date of bill should be less than 100 years from today")]
         public DateOnly ToDate { get; set; }
 
         [Required]
         public char BillType { get; set; }
         
         [Required]
-        [PastDateWithinYears(1)]
         public DateOnly BillDate { get; set; }
  
         [Required]
@@ -448,13 +446,15 @@ namespace CTS_BE.DTOs
         public int NetAmount { get; set; }
         
         [Required]
-        public List<PpoBillBreakupEntryDTO> Breakups { get; set; } = null!;
+        public virtual List<PpoBillBreakupEntryDTO> Breakups { get; set; } = null!;
     }
 
     public partial class PpoBillResponseDTO : PpoBillEntryDTO {
         public long Id { get; set; }
-        public PensionerBankAcResponseDTO BankAccount { get; set; } = null!;
-        // public PensionerResponseDTO Pensioner { get; set; } = null!;
+        public override List<PpoBillBreakupEntryDTO> Breakups { set => base.Breakups = value; }
+        // public PensionerBankAcResponseDTO BankAccount { get; set; } = null!;
+        public PensionerResponseDTO Pensioner { get; set; } = null!;
+        public List<PpoBillBreakupResponseDTO> PpoBillBreakups { get; set; } = null!;
     }
 
     public partial class PpoBillBreakupEntryDTO : BaseDTO {
@@ -468,12 +468,11 @@ namespace CTS_BE.DTOs
         
         [Required]
         [DataType(DataType.Date)]
-        [PastDateWithinYears(100, ErrorMessage = "Date of bill should be less than 100 years from today")]
+        [PastDateWithinYears(100, ErrorMessage = "Date of bill should be within 100 years from today")]
         public DateOnly FromDate { get; set; }
         
         [Required]
         [DataType(DataType.Date)]
-        [PastDateWithinYears(1, ErrorMessage = "Date of bill should be less than 1 years from today")]
         public DateOnly ToDate { get; set; }
 
         [Required]

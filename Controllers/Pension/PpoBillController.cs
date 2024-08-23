@@ -69,7 +69,7 @@ namespace CTS_BE.Controllers.Pension
             return response;
         }
     
-        [HttpPost("first-bill-save")]
+        [HttpPost("first-bill")]
         [Tags("Pension: First Bill")]
         [OpenApi]
         public async Task<JsonAPIResponse<PpoBillResponseDTO>> SaveFirstPensionBill(
@@ -99,6 +99,39 @@ namespace CTS_BE.Controllers.Pension
                 if(response.Result?.DataSource != null) {
                     response.ApiResponseStatus = Enum.APIResponseStatus.Error;
                     response.Message = $"C-Error: Unable to save first pension bill";
+                }
+            }
+
+            return response;
+        }
+
+        [HttpGet("first-bill/{ppoId}")]
+        [Tags("Pension: First Bill")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<PpoBillResponseDTO>> GetFirstPensionBillByPpoId(
+                int ppoId
+            )
+        {
+
+            JsonAPIResponse<PpoBillResponseDTO> response = new(){
+                ApiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = $"First Pension Bill retrieved sucessfully!",
+            };
+            try {
+                response.Result = await _ppoBillService.GetFirstBillByPpoId(
+                    ppoId,
+                    GetCurrentFyYear(),
+                    GetTreasuryCode()
+                );
+            }
+            catch(Exception ex) {
+                response.ApiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = $"C-Exception: {ex.Message}";
+            }
+            finally {
+                if(response.Result == null) {
+                    response.ApiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.Message = $"C-Error: Unable to find first pension bill";
                 }
             }
 

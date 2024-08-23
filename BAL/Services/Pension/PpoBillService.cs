@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using AutoMapper;
 using CTS_BE.BAL.Interfaces.Pension;
@@ -43,7 +45,7 @@ namespace CTS_BE.BAL.Services.Pension
 
                 ppoBillEntity.FinancialYear = financialYear;
                 ppoBillEntity.TreasuryCode = treasuryCode;
-                ppoBillEntity.BillNo = await _ppoBillRepository.GetNextBillNo(ppoBillEntity.FinancialYear, ppoBillEntity.TreasuryCode);
+                ppoBillEntity.BillNo = await _ppoBillRepository.GetNextBillNo((short)ppoBillEntity.FinancialYear, ppoBillEntity.TreasuryCode);
                 ppoBillEntity.BillType = 'F';
 
                 SetCreatedBy(ppoBillEntity);
@@ -91,6 +93,48 @@ namespace CTS_BE.BAL.Services.Pension
                 }
             }
             return _mapper.Map<PpoBillResponseDTO>(ppoBillEntity);
+        }
+
+        public async Task<PpoBillResponseDTO?> GetFirstBillByPpoId(
+            int ppoId,
+            short financialYear,
+            string treasuryCode
+        )
+        {
+            PpoBill? ppoBillEntity = new ();
+            PpoBillResponseDTO ppoBillResponseDTO = _mapper.Map<PpoBillResponseDTO>(ppoBillEntity);
+            try {
+
+                ppoBillEntity = await _ppoBillRepository.GetPpoFirstBillByPpoId(
+                    ppoId,
+                    financialYear,
+                    treasuryCode
+                );
+                if(ppoBillEntity == null) {
+                    return null;
+                }
+                ppoBillResponseDTO = _mapper.Map<PpoBillResponseDTO>(ppoBillEntity);
+                // ppoBillResponseDTO.FillDataSource(
+                //     JsonSerializer.Serialize(
+                //         ppoBillEntity,
+                //         new JsonSerializerOptions
+                //         {
+                //             ReferenceHandler = ReferenceHandler.Preserve
+                //         }),
+                //     "Bill found!"
+                // );
+                return ppoBillResponseDTO;
+            }
+            catch (DbUpdateException ex) {
+                ppoBillResponseDTO.FillDataSource(
+                    _mapper.Map<PpoBillResponseDTO>(ppoBillEntity),
+                    $"DbUpdateException: {ex.InnerException?.Message}"
+                );
+                return ppoBillResponseDTO;
+            }
+            finally {
+
+            }
         }
     }
 }

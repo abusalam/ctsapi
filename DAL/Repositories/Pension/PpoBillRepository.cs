@@ -16,7 +16,7 @@ namespace CTS_BE.DAL.Repositories.Pension
             _pensionDbContext = context;
         }
 
-        public async Task<int> GetNextBillNo(int financialYear, string treasuryCode)
+        public async Task<int> GetNextBillNo(short financialYear, string treasuryCode)
         {
             int nextBillNo = await _pensionDbContext.PpoBills
                 .Where(
@@ -35,7 +35,10 @@ namespace CTS_BE.DAL.Repositories.Pension
             return nextBillNo + 1;
         }
 
-        public async Task<PpoBill> SavePpoBillBreakups(long ppoBillId, List<PpoBillBreakup> ppoBillBreakups)
+        public async Task<PpoBill> SavePpoBillBreakups(
+            long ppoBillId,
+            List<PpoBillBreakup> ppoBillBreakups
+        )
         {
             var ppoBill = await _pensionDbContext.PpoBills
                 .Where(
@@ -45,6 +48,44 @@ namespace CTS_BE.DAL.Repositories.Pension
             ppoBill.PpoBillBreakups = ppoBillBreakups;
             await _pensionDbContext.PpoBills.AddAsync(ppoBill);
             await _pensionDbContext.SaveChangesAsync();
+            return ppoBill;
+        }
+
+        public async Task<PpoBill?> GetPpoFirstBillByPpoId(
+            int ppoId,
+            short financialYear,
+            string treasuryCode
+        )
+        {
+            var ppoBill = await _pensionDbContext.PpoBills
+                .Where(
+                    entity => entity.ActiveFlag
+                    && entity.BillType == 'F'
+                    && entity.PpoId == ppoId
+                    && entity.FinancialYear == financialYear
+                    && entity.TreasuryCode == treasuryCode
+                )
+                .FirstOrDefaultAsync();
+
+            if(ppoBill == null) {
+                return null;
+            }
+            
+            _pensionDbContext.Entry(ppoBill)
+                .Reference(entity => entity.Pensioner)
+                .Load();
+            _pensionDbContext.Entry(ppoBill)
+                .Reference(entity => entity.BankAccount)
+                .Load();
+            _pensionDbContext.Entry(ppoBill)
+                .Collection(entity => entity.PpoBillBreakups)
+                .Load();
+            _pensionDbContext.Entry(ppoBill.Pensioner)
+                .Reference(entity => entity.Category)
+                .Load();
+            _pensionDbContext.Entry(ppoBill.Pensioner.Category)
+                .Reference(entity => entity.PrimaryCategory)
+                .Load();
             return ppoBill;
         }
     }

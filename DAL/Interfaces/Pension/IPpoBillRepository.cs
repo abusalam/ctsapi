@@ -10,10 +10,16 @@ namespace CTS_BE.DAL.Interfaces.Pension
     public interface IPpoBillRepository : IRepository<PpoBill>
     {
         public Task<int> GetNextBillNo(
-            int financialYear,
+            short financialYear,
             string treasuryCode
         );
 
         public Task<PpoBill> SavePpoBillBreakups(long ppoBillId, List<PpoBillBreakup> ppoBillBreakups);
+
+        public Task<PpoBill?> GetPpoFirstBillByPpoId(
+            int ppoId,
+            short financialYear,
+            string treasuryCode
+        );
     }
 }
