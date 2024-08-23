@@ -86,6 +86,9 @@ namespace CTS_BE.DAL.Repositories.Pension
             _pensionDbContext.Entry(ppoBill.Pensioner.Category)
                 .Reference(entity => entity.PrimaryCategory)
                 .Load();
+            _pensionDbContext.Entry(ppoBill.Pensioner)
+                .Reference(entity => entity.Receipt)
+                .Load();
             return ppoBill;
         }
     }

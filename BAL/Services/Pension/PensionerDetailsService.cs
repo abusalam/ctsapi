@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using CTS_BE.BAL.Interfaces.Pension;
+using CTS_BE.DAL;
 using CTS_BE.DAL.Entities.Pension;
 using CTS_BE.DAL.Interfaces.Pension;
 using CTS_BE.DTOs;
@@ -19,6 +20,9 @@ namespace CTS_BE.BAL.Services.Pension
         private readonly IPpoIdSequenceRepository _ppoIdSequenceRepository;
         private readonly IClaimService _claimService;
         private readonly IMapper _mapper;
+
+        private readonly PensionDbContext _pensionDbContext;
+        
         public PensionerDetailsService(
             IPensionerDetailsRepository pensionerDetailsRepository,
             IPpoIdSequenceRepository ppoIdSequenceRepository,
@@ -26,6 +30,7 @@ namespace CTS_BE.BAL.Services.Pension
             IMapper mapper) : base(claimService)
         {
             _pensionerDetailsRepository = pensionerDetailsRepository;
+            _pensionDbContext           = (PensionDbContext) _pensionerDetailsRepository.GetDbContext();
             _ppoIdSequenceRepository    = ppoIdSequenceRepository;
             _claimService               = claimService;
             _mapper                     = mapper;
@@ -43,6 +48,18 @@ namespace CTS_BE.BAL.Services.Pension
             };
             PensionerResponseDTO pensionerResponseDTO = _mapper.Map<PensionerResponseDTO>(pensionerEntity);
             try {
+
+                PpoReceipt? ppoReceipt = await _pensionDbContext.PpoReceipts
+                    .Where(entity => entity.PpoNo == pensionerEntryDTO.PpoNo)
+                    .FirstOrDefaultAsync();
+                if(ppoReceipt==null){
+                    PensionerResponseDTO? errResponse = _mapper.Map<PensionerResponseDTO>(pensionerEntryDTO);
+                    errResponse.FillDataSource(
+                        ppoReceipt,
+                        "PPO Receipt not found. Please check PPO No. and try again."
+                    );
+                    return errResponse;
+                }
                 pensionerEntity = _mapper.Map<Pensioner>(pensionerEntryDTO);
                 pensionerEntity.PpoId = await _ppoIdSequenceRepository.GetNextPpoId(
                     financialYear,
@@ -53,8 +70,8 @@ namespace CTS_BE.BAL.Services.Pension
                 
                 if(pensionerEntity.PpoId > 0) {
                     SetCreatedBy(pensionerEntity);
-                    _pensionerDetailsRepository.Add(pensionerEntity);
-                    if(await _pensionerDetailsRepository.SaveChangesManagedAsync() == 0) {
+                    ppoReceipt.Pensioners.Add(pensionerEntity);
+                    if(await _pensionDbContext.SaveChangesAsync() == 0) {
                         pensionerEntity.PpoId = 0;
                     }
                 }

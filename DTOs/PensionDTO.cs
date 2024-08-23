@@ -88,10 +88,7 @@ namespace CTS_BE.DTOs
         public required DateOnly ReceiptDate { get; set; }
     }
 
-    public class PensionerEntryDTO {
-        [Required]
-        public long ReceiptId { get; set; }
-
+    public class PensionerEntryDTO : BaseDTO {
         [Required]
         [StringLength(100)]
         public string PpoNo { get; set; } = null!;

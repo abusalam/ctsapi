@@ -332,8 +332,8 @@ Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
-  "receiptId": 1, 
-  "ppoNo": "PPO-{{$randomInt 100000 999999}}",
+  "receiptId": {{PpoReceiptID}}, 
+  "ppoNo": "{{PpoNo}}",
   "ppoType": "P",
   "psaType": "A",
   "ppoSubType": "N",
@@ -355,6 +355,10 @@ Content-Type: application/json
   "reducedPensionAmount": 8000,
   "religion": "H"
 }
+
+### Collect PPO Receipt Values
+@PpoReceiptID = {{CreatePPOReceipt.response.body.$.result.id}}
+@PpoNo = {{CreatePPOReceipt.response.body.$.result.ppoNo}}
 
 ### Update PPO Details
 # @name UpdatePPODetails
