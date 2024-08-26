@@ -126,9 +126,9 @@ namespace CTS_BE.Controllers.Pension
                 response.Message = $"PPO Details not received! Error: {ex.Message}";
             }
             finally {
-                if(response.result.PpoId == 0) {
+                if(response.result.DataSource != null) {
                     response.apiResponseStatus = Enum.APIResponseStatus.Error;
-                    response.Message = $"PPO Details not received!";
+                    response.Message =((dynamic)response.result.DataSource).Message;
                 }
             }
 
