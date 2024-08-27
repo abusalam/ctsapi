@@ -47,11 +47,12 @@ namespace CTS_BE.Controllers.Pension
                         GetTreasuryCode()
                     );
             }
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
+            }
             finally {
-                if(response.Result.Id == 0) {
-                    response.ApiResponseStatus = Enum.APIResponseStatus.Error;
-                    response.Message = $"C-Error: PrimaryCategory not saved!";
-                }
+                FillErrorMesageFromDataSource(response);
             }
 
             return response;
@@ -64,7 +65,7 @@ namespace CTS_BE.Controllers.Pension
                 DynamicListQueryParameters dynamicListQueryParameters
             )
         {
-            JsonAPIResponse<DynamicListResult<IEnumerable<PensionPrimaryCategoryResponseDTO>>> response;
+            JsonAPIResponse<DynamicListResult<IEnumerable<PensionPrimaryCategoryResponseDTO>>> response = new();
             try {
 
                 response = new() {
@@ -109,14 +110,13 @@ namespace CTS_BE.Controllers.Pension
                     Message = $"All Primary Category Details Received Successfully!"
 
                 };
-            } catch(DbUpdateException e) {
-                // StackFrame CallStack = new(1, true);
-                response = new () {
-                ApiResponseStatus = Enum.APIResponseStatus.Error,
-                Result = null,
-                Message = e.ToString()
-                //   $"{e.GetType()}=>File:{CallStack.GetFileName()}({CallStack.GetFileLineNumber()}): {e.Message}"
-                };
+            }
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
+            }
+            finally {
+                FillErrorMesageFromDataSource(response);
             }
             return response;
         }
@@ -144,11 +144,12 @@ namespace CTS_BE.Controllers.Pension
                         GetTreasuryCode()
                     );
             }
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
+            }
             finally {
-                if(response.Result.Id == 0) {
-                    response.ApiResponseStatus = Enum.APIResponseStatus.Error;
-                    response.Message = $"C-Error: SubCategory not saved!";
-                }
+                FillErrorMesageFromDataSource(response);
             }
 
             return response;
@@ -161,7 +162,7 @@ namespace CTS_BE.Controllers.Pension
                 DynamicListQueryParameters dynamicListQueryParameters
             )
         {
-            JsonAPIResponse<DynamicListResult<IEnumerable<PensionSubCategoryResponseDTO>>> response;
+            JsonAPIResponse<DynamicListResult<IEnumerable<PensionSubCategoryResponseDTO>>> response = new();
             try {
 
                 response = new() {
@@ -198,14 +199,13 @@ namespace CTS_BE.Controllers.Pension
                     Message = $"All Sub Category Details Received Successfully!"
 
                 };
-            } catch(DbUpdateException e) {
-                // StackFrame CallStack = new(1, true);
-                response = new () {
-                ApiResponseStatus = Enum.APIResponseStatus.Error,
-                Result = null,
-                Message = e.ToString()
-                //   $"{e.GetType()}=>File:{CallStack.GetFileName()}({CallStack.GetFileLineNumber()}): {e.Message}"
-                };
+            }
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
+            }
+            finally {
+                FillErrorMesageFromDataSource(response);
             }
             return response;
         }
@@ -233,11 +233,12 @@ namespace CTS_BE.Controllers.Pension
                         GetTreasuryCode()
                     );
             }
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
+            }
             finally {
-                if(response.Result.Id == 0) {
-                    response.ApiResponseStatus = Enum.APIResponseStatus.Error;
-                    response.Message = $"C-Error: Category not saved!";
-                }
+                FillErrorMesageFromDataSource(response);
             }
 
             return response;
@@ -250,7 +251,7 @@ namespace CTS_BE.Controllers.Pension
                 DynamicListQueryParameters dynamicListQueryParameters
             )
         {
-            JsonAPIResponse<DynamicListResult<IEnumerable<PensionCategoryListDTO>>> response;
+            JsonAPIResponse<DynamicListResult<IEnumerable<PensionCategoryListDTO>>> response = new();
             try {
 
                 response = new() {
@@ -304,14 +305,13 @@ namespace CTS_BE.Controllers.Pension
                     Message = $"All PPO Details Received Successfully!"
 
                 };
-            } catch(DbUpdateException e) {
-                // StackFrame CallStack = new(1, true);
-                response = new () {
-                ApiResponseStatus = Enum.APIResponseStatus.Error,
-                Result = null,
-                Message = e.ToString()
-                //   $"{e.GetType()}=>File:{CallStack.GetFileName()}({CallStack.GetFileLineNumber()}): {e.Message}"
-                };
+            }
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
+            }
+            finally {
+                FillErrorMesageFromDataSource(response);
             }
             return response;
         }

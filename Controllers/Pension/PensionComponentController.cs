@@ -51,15 +51,12 @@ namespace CTS_BE.Controllers.Pension
                         GetTreasuryCode()
                     );
             }
-            catch(InvalidCastException ex) {
-                response.ApiResponseStatus = Enum.APIResponseStatus.Error;
-                response.Message = $"C-Error: {ex.Message}";
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
             }
             finally {
-                if(response.Result.Id == 0) {
-                    response.ApiResponseStatus = Enum.APIResponseStatus.Error;
-                    response.Message = $"C-Error: Component not saved!";
-                }
+                FillErrorMesageFromDataSource(response);
             }
 
             return response;
@@ -72,7 +69,7 @@ namespace CTS_BE.Controllers.Pension
                 DynamicListQueryParameters dynamicListQueryParameters
             )
         {
-            JsonAPIResponse<DynamicListResult<IEnumerable<PensionBreakupResponseDTO>>> response;
+            JsonAPIResponse<DynamicListResult<IEnumerable<PensionBreakupResponseDTO>>> response = new();
             try {
 
                 response = new() {
@@ -126,14 +123,13 @@ namespace CTS_BE.Controllers.Pension
                     Message = $"All Bill Breakups Received Successfully!"
 
                 };
-            } catch(DbUpdateException e) {
-                // StackFrame CallStack = new(1, true);
-                response = new () {
-                ApiResponseStatus = Enum.APIResponseStatus.Error,
-                Result = null,
-                Message = e.ToString()
-                //   $"{e.GetType()}=>File:{CallStack.GetFileName()}({CallStack.GetFileLineNumber()}): {e.Message}"
-                };
+            }
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
+            }
+            finally {
+                FillErrorMesageFromDataSource(response);
             }
             return response;
         }
@@ -161,15 +157,12 @@ namespace CTS_BE.Controllers.Pension
                             GetTreasuryCode()
                         );
             }
-            catch(InvalidCastException ex) {
-                response.ApiResponseStatus = Enum.APIResponseStatus.Error;
-                response.Message = $"C-Error: {ex.Message}";
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
             }
             finally {
-                if(response.Result.Id == 0) {
-                    response.ApiResponseStatus = Enum.APIResponseStatus.Error;
-                    response.Message = $"C-Error: Component Rate not saved!";
-                }
+                FillErrorMesageFromDataSource(response);
             }
 
             return response;
@@ -254,8 +247,12 @@ namespace CTS_BE.Controllers.Pension
 
                 };
             }
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
+            }
             finally {
-
+                FillErrorMesageFromDataSource(response);
             }
             return response;
         }

@@ -26,16 +26,16 @@ namespace CTS_BE.Controllers.Pension
         [HttpPost("receipts")]
         [Tags("Pension: Manual PPO Receipt")]
         [OpenApi]
-        public async Task<APIResponse<ManualPpoReceiptResponseDTO>> CreatePpoReceipt(
+        public async Task<JsonAPIResponse<ManualPpoReceiptResponseDTO>> CreatePpoReceipt(
             ManualPpoReceiptEntryDTO manualPpoReceiptEntryDTO
         )
         {
-            APIResponse<ManualPpoReceiptResponseDTO> response;
+            JsonAPIResponse<ManualPpoReceiptResponseDTO> response = new();
 
             try {
                 response = new() {
-                apiResponseStatus = Enum.APIResponseStatus.Success,
-                result = await _ppoReceiptService
+                ApiResponseStatus = Enum.APIResponseStatus.Success,
+                Result = await _ppoReceiptService
                         .CreatePpoReceipt(
                             manualPpoReceiptEntryDTO,
                             GetCurrentFyYear(),
@@ -43,14 +43,13 @@ namespace CTS_BE.Controllers.Pension
                             ),
                 Message = $"PPO Received Successfully!"
                 };
-            } catch(DbUpdateException e) {
-                // StackFrame CallStack = new StackFrame(1, true);
-                response = new () {
-                apiResponseStatus = Enum.APIResponseStatus.Error,
-                result = null,
-                Message = e.ToString()
-                //   $"{e.GetType()}=>File:{CallStack.GetFileName()}({CallStack.GetFileLineNumber()}): {e.Message}"
-                };
+            }
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
+            }
+            finally {
+                FillErrorMesageFromDataSource(response);
             }
             return response;
         }
@@ -62,7 +61,7 @@ namespace CTS_BE.Controllers.Pension
             string treasuryReceiptNo
         )
         {
-            JsonAPIResponse<ManualPpoReceiptResponseDTO> response;
+            JsonAPIResponse<ManualPpoReceiptResponseDTO> response = new();
 
             try {
                 response = new() {
@@ -72,14 +71,13 @@ namespace CTS_BE.Controllers.Pension
                 Message = $"PPO Received Successfully!"
 
                 };
-            } catch(DbUpdateException e) {
-                // StackFrame CallStack = new(1, true);
-                response = new () {
-                    ApiResponseStatus = Enum.APIResponseStatus.Error,
-                    Result = null,
-                    Message = e.ToString()
-                    //   $"{e.GetType()}=>File:{CallStack.GetFileName()}({CallStack.GetFileLineNumber()}): {e.Message}"
-                };
+            }
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
+            }
+            finally {
+                FillErrorMesageFromDataSource(response);
             }
             return response;
         }
@@ -91,7 +89,7 @@ namespace CTS_BE.Controllers.Pension
             DynamicListQueryParameters dynamicListQueryParameters
         ) 
         {
-            JsonAPIResponse<DynamicListResult<IEnumerable<ListAllPpoReceiptsResponseDTO>>> response;
+            JsonAPIResponse<DynamicListResult<IEnumerable<ListAllPpoReceiptsResponseDTO>>> response = new();
             try {
 
                 response = new() {
@@ -145,14 +143,13 @@ namespace CTS_BE.Controllers.Pension
                     Message = $"All PPO Receipts Received Successfully!"
 
                 };
-            } catch(DbUpdateException e) {
-                // StackFrame CallStack = new(1, true);
-                response = new () {
-                ApiResponseStatus = Enum.APIResponseStatus.Error,
-                Result = null,
-                Message = e.ToString()
-                //   $"{e.GetType()}=>File:{CallStack.GetFileName()}({CallStack.GetFileLineNumber()}): {e.Message}"
-                };
+            }
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
+            }
+            finally {
+                FillErrorMesageFromDataSource(response);
             }
             return response;
         }
@@ -165,7 +162,7 @@ namespace CTS_BE.Controllers.Pension
             ManualPpoReceiptEntryDTO manualPpoReceiptEntryDTO
         )
         {
-            JsonAPIResponse<ManualPpoReceiptResponseDTO> response;
+            JsonAPIResponse<ManualPpoReceiptResponseDTO> response = new();
 
             try {
                 response = new() {
@@ -174,14 +171,13 @@ namespace CTS_BE.Controllers.Pension
                             .UpdatePpoReceipt(treasuryReceiptNo, manualPpoReceiptEntryDTO),
                     Message = $"PPO Receipt Updated Successfully!"
                 };
-            } catch(DbUpdateException e) {
-                // StackFrame CallStack = new StackFrame(1, true);
-                response = new () {
-                    ApiResponseStatus = Enum.APIResponseStatus.Error,
-                    Result = null,
-                    Message = e.ToString()
-                //   $"{e.GetType()}=>File:{CallStack.GetFileName()}({CallStack.GetFileLineNumber()}): {e.Message}"
-                };
+            }
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
+            }
+            finally {
+                FillErrorMesageFromDataSource(response);
             }
             return response;
         }

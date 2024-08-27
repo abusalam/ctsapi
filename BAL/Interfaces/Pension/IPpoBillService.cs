@@ -14,7 +14,7 @@ namespace CTS_BE.BAL.Interfaces.Pension
             string treasuryCode
         );
 
-        public Task<PpoBillResponseDTO?> GetFirstBillByPpoId(
+        public Task<PpoBillResponseDTO> GetFirstBillByPpoId(
             int ppoId,
             short financialYear,
             string treasuryCode

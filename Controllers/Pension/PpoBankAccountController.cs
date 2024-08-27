@@ -58,15 +58,12 @@ namespace CTS_BE.Controllers.Pension
                     GetTreasuryCode()
                 );
             }
-            catch (DbUpdateException ex) {
-                response.ApiResponseStatus = Enum.APIResponseStatus.Error;
-                response.Message = $"DbUpdateError: {ex.InnerException?.Message ?? ex.Message} {ex.StackTrace}";
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
             }
             finally {
-                if(response.Result?.DataSource != null) {
-                    response.ApiResponseStatus = Enum.APIResponseStatus.Error;
-                    response.Message = $"Error: Bank account details not saved! Check DataSource for more details!";
-                }
+                FillErrorMesageFromDataSource(response);
             }
 
             return response;
@@ -92,15 +89,12 @@ namespace CTS_BE.Controllers.Pension
                     GetTreasuryCode()
                 );
             }
-            catch (DbUpdateException ex) {
-                response.ApiResponseStatus = Enum.APIResponseStatus.Error;
-                response.Message = $"Bank account details not saved! Error: {ex.Message}";
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
             }
             finally {
-                if(response.Result?.DataSource != null) {
-                    response.ApiResponseStatus = Enum.APIResponseStatus.Error;
-                    response.Message = $"Error: Bank account details not saved!";
-                }
+                FillErrorMesageFromDataSource(response);
             }
 
             return response;
@@ -125,15 +119,12 @@ namespace CTS_BE.Controllers.Pension
                     GetTreasuryCode()
                 );
             }
-            catch (DbUpdateException ex) {
-                response.ApiResponseStatus = Enum.APIResponseStatus.Error;
-                response.Message = $"Bank Accounts Details not received! Error: {ex.Message}";
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
             }
             finally {
-                if(response.Result?.DataSource != null) {
-                    response.ApiResponseStatus = Enum.APIResponseStatus.Error;
-                    response.Message = $"Bank Accounts Details not received!";
-                }
+                FillErrorMesageFromDataSource(response);
             }
 
             return response;

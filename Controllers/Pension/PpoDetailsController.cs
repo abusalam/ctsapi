@@ -47,15 +47,12 @@ namespace CTS_BE.Controllers.Pension
                     GetTreasuryCode()
                 );
             }
-            catch (DbUpdateException ex) {
-                response.ApiResponseStatus = Enum.APIResponseStatus.Error;
-                response.Message = $"PPO Details not saved! Error: {ex.Message}";
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
             }
             finally {
-                if(response.Result.PpoId == 0) {
-                    response.ApiResponseStatus = Enum.APIResponseStatus.Error;
-                    response.Message = $"Error: PPO Details not saved!";
-                }
+                FillErrorMesageFromDataSource(response);
             }
 
             return response;
@@ -64,36 +61,33 @@ namespace CTS_BE.Controllers.Pension
         [HttpPut("{ppoId}/details")]
         [Tags("Pension: PPO Details")]
         [OpenApi]
-        public async Task<APIResponse<PensionerResponseDTO>> UpdatePensionerByPpoId(
+        public async Task<JsonAPIResponse<PensionerResponseDTO>> UpdatePensionerByPpoId(
                 int ppoId,
                 PensionerEntryDTO pensionerEntryDTO
             )
         {
 
-            APIResponse<PensionerResponseDTO> response = new(){
-                apiResponseStatus = Enum.APIResponseStatus.Success,
+            JsonAPIResponse<PensionerResponseDTO> response = new(){
+                ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = $"PPO Details saved sucessfully!",
-                result = new(){
+                Result = new(){
                     PpoId = 0
                 }
             };
             try {
-                response.result = await _pensionerDetailsService.UpdatePensioner(
+                response.Result = await _pensionerDetailsService.UpdatePensioner(
                     ppoId,
                     pensionerEntryDTO,
                     GetCurrentFyYear(),
                     GetTreasuryCode()
                 );
             }
-            catch (DbUpdateException ex) {
-                response.apiResponseStatus = Enum.APIResponseStatus.Error;
-                response.Message = $"PPO Details not saved! Error: {ex.Message}";
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
             }
             finally {
-                if(response.result.PpoId == 0) {
-                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
-                    response.Message = $"Error: PPO Details not saved!";
-                }
+                FillErrorMesageFromDataSource(response);
             }
 
             return response;
@@ -102,34 +96,31 @@ namespace CTS_BE.Controllers.Pension
         [HttpGet("{ppoId}/details")]
         [Tags("Pension: PPO Details")]
         [OpenApi]
-        public async Task<APIResponse<PensionerResponseDTO>> GetPensionerByPpoId(
-                int ppoId
-            )
+        public async Task<JsonAPIResponse<PensionerResponseDTO>> GetPensionerByPpoId(
+            int ppoId
+        )
         {
 
-            APIResponse<PensionerResponseDTO> response = new(){
-                apiResponseStatus = Enum.APIResponseStatus.Success,
+            JsonAPIResponse<PensionerResponseDTO> response = new(){
+                ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = $"PPO Details received sucessfully!",
-                result = new(){
+                Result = new(){
                     PpoId = 0
                 }
             };
             try {
-                response.result = await _pensionerDetailsService.GetPensioner<PensionerResponseDTO>(
+                response.Result = await _pensionerDetailsService.GetPensioner<PensionerResponseDTO>(
                     ppoId,
                     GetCurrentFyYear(),
                     GetTreasuryCode()
                 );
             }
-            catch (DbUpdateException ex) {
-                response.apiResponseStatus = Enum.APIResponseStatus.Error;
-                response.Message = $"PPO Details not received! Error: {ex.Message}";
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
             }
             finally {
-                if(response.result.DataSource != null) {
-                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
-                    response.Message =((dynamic)response.result.DataSource).Message;
-                }
+                FillErrorMesageFromDataSource(response);
             }
 
             return response;
@@ -139,10 +130,10 @@ namespace CTS_BE.Controllers.Pension
         [Tags("Pension: PPO Details")]
         [OpenApi]
         public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<PensionerListItemDTO>>>> GetAllPensioners(
-                DynamicListQueryParameters dynamicListQueryParameters
-            )
+            DynamicListQueryParameters dynamicListQueryParameters
+        )
         {
-            JsonAPIResponse<DynamicListResult<IEnumerable<PensionerListItemDTO>>> response;
+            JsonAPIResponse<DynamicListResult<IEnumerable<PensionerListItemDTO>>> response = new();
             try {
 
                 response = new() {
@@ -212,14 +203,13 @@ namespace CTS_BE.Controllers.Pension
                     Message = $"All PPO Details Received Successfully!"
 
                 };
-            } catch(DbUpdateException e) {
-                // StackFrame CallStack = new(1, true);
-                response = new () {
-                ApiResponseStatus = Enum.APIResponseStatus.Error,
-                Result = null,
-                Message = e.ToString()
-                //   $"{e.GetType()}=>File:{CallStack.GetFileName()}({CallStack.GetFileLineNumber()}): {e.Message}"
-                };
+            }
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
+            }
+            finally {
+                FillErrorMesageFromDataSource(response);
             }
             return response;
         }

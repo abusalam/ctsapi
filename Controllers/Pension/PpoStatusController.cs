@@ -26,117 +26,21 @@ namespace CTS_BE.Controllers.Pension
         [HttpPost("status")]
         [Tags("Pension: PPO Status")]
         [OpenApi]
-        public async Task<APIResponse<PensionStatusEntryDTO>> SetPpoStatusFlag(PensionStatusEntryDTO pensionStatusEntryDTO) {
+        public async Task<JsonAPIResponse<PensionStatusEntryDTO>> SetPpoStatusFlag(PensionStatusEntryDTO pensionStatusEntryDTO) {
 
-            APIResponse<PensionStatusEntryDTO> response = new(){
-                apiResponseStatus = Enum.APIResponseStatus.Success,
-                Message = "|",
-                result = await _pensionStatusService.SetPensionStatusFlag(
-                    pensionStatusEntryDTO,
-                    GetCurrentFyYear(),
-                    GetTreasuryCode()
-                )
-            };
-
-            if(System.Enum.TryParse<PensionStatusFlag>(
-                    $"{pensionStatusEntryDTO.StatusFlag}",
-                    out PensionStatusFlag pensionStatus
-                )
-            ) {
-                if(pensionStatus.HasFlag(PensionStatusFlag.FirstPensionBillGenerated))
-                {
-                    response.Message += " First Pension Generated |";
-                }
-                if(pensionStatus.HasFlag(PensionStatusFlag.PpoApproved))
-                {
-                    response.Message += " PPO Approved |";
-                }
-                if(pensionStatus.HasFlag(PensionStatusFlag.PpoRunning))
-                {
-                    response.Message += " PPO Running |";
-                }
-                if(pensionStatus.HasFlag(PensionStatusFlag.PpoSuspended))
-                {
-                    response.Message += " PPO Suspended |";
-                }
-            }
-
-            return response;
-        }
-
-        [HttpDelete("{ppoId}/status/{statusFlag}")]
-        [Tags("Pension: PPO Status")]
-        [OpenApi]
-        public async Task<APIResponse<PensionStatusDTO>> ClearPpoStatusFlagByPpoId(int ppoId, int statusFlag) {
-
-            APIResponse<PensionStatusDTO> response = new(){
-                apiResponseStatus = Enum.APIResponseStatus.Success,
-                Message = "Reset: |",
-                result = new(){
-                    StatusFlag = 0
-                }
-            };
+            JsonAPIResponse<PensionStatusEntryDTO> response = new();
             try {
-                response.result = await _pensionStatusService.ClearPensionStatusFlag(
-                    ppoId,
-                    statusFlag,
-                    GetCurrentFyYear(),
-                    GetTreasuryCode()
-                );
-                if(System.Enum.TryParse<PensionStatusFlag>(
-                        $"{response.result.StatusFlag}",
-                        out PensionStatusFlag pensionStatus
-                    )
-                ) {
-                    if(pensionStatus.HasFlag(PensionStatusFlag.FirstPensionBillGenerated))
-                    {
-                        response.Message += " First Pension Generated Flag |";
-                    }
-                    if(pensionStatus.HasFlag(PensionStatusFlag.PpoApproved))
-                    {
-                        response.Message += " PPO Approved Flag |";
-                    }
-                    if(pensionStatus.HasFlag(PensionStatusFlag.PpoRunning))
-                    {
-                        response.Message += " PPO Running Flag |";
-                    }
-                    if(pensionStatus.HasFlag(PensionStatusFlag.PpoSuspended))
-                    {
-                        response.Message += " PPO Suspended Flag |";
-                    }
-                }
-            }
-            finally {
-                if(response.result.StatusFlag==0){
-                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
-                    response.Message = $"PPO status flag not found!";
-                }
-            }
-
-            return response;
-        }
-
-        [HttpGet("{ppoId}/status/{statusFlag}")]
-        [Tags("Pension: PPO Status")]
-        [OpenApi]
-        public async Task<APIResponse<PensionStatusDTO>> GetPpoStatusFlagByPpoId(int ppoId, int statusFlag) {
-            APIResponse<PensionStatusDTO> response = new(){
-                apiResponseStatus = Enum.APIResponseStatus.Success,
-                Message = "|",
-                result = new(){
-                    StatusFlag = 0
-                }
-            };
-            try {
-                response.result = await _pensionStatusService.CheckPensionStatusFlag(
-                        ppoId,
-                        statusFlag,
+                response = new(){
+                    ApiResponseStatus = Enum.APIResponseStatus.Success,
+                    Message = "|",
+                    Result = await _pensionStatusService.SetPensionStatusFlag(
+                        pensionStatusEntryDTO,
                         GetCurrentFyYear(),
                         GetTreasuryCode()
-                    );
-
+                    )
+                };
                 if(System.Enum.TryParse<PensionStatusFlag>(
-                        $"{response.result.StatusFlag}",
+                        $"{pensionStatusEntryDTO.StatusFlag}",
                         out PensionStatusFlag pensionStatus
                     )
                 ) {
@@ -158,11 +62,118 @@ namespace CTS_BE.Controllers.Pension
                     }
                 }
             }
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
+            }
             finally {
-                if(response.result.StatusFlag==0){
-                    response.apiResponseStatus = Enum.APIResponseStatus.Error;
-                    response.Message = $"PPO status flag not found!";
+                FillErrorMesageFromDataSource(response);
+            }
+            return response;
+        }
+
+        [HttpDelete("{ppoId}/status/{statusFlag}")]
+        [Tags("Pension: PPO Status")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<PensionStatusDTO>> ClearPpoStatusFlagByPpoId(int ppoId, int statusFlag) {
+
+            JsonAPIResponse<PensionStatusDTO> response = new(){
+                ApiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = "Reset: |",
+                Result = new(){
+                    StatusFlag = 0
                 }
+            };
+            try {
+                response.Result = await _pensionStatusService.ClearPensionStatusFlag(
+                    ppoId,
+                    statusFlag,
+                    GetCurrentFyYear(),
+                    GetTreasuryCode()
+                );
+                if(System.Enum.TryParse<PensionStatusFlag>(
+                        $"{response.Result.StatusFlag}",
+                        out PensionStatusFlag pensionStatus
+                    )
+                )
+                {
+                    if(pensionStatus.HasFlag(PensionStatusFlag.FirstPensionBillGenerated))
+                    {
+                        response.Message += " First Pension Generated Flag |";
+                    }
+                    if(pensionStatus.HasFlag(PensionStatusFlag.PpoApproved))
+                    {
+                        response.Message += " PPO Approved Flag |";
+                    }
+                    if(pensionStatus.HasFlag(PensionStatusFlag.PpoRunning))
+                    {
+                        response.Message += " PPO Running Flag |";
+                    }
+                    if(pensionStatus.HasFlag(PensionStatusFlag.PpoSuspended))
+                    {
+                        response.Message += " PPO Suspended Flag |";
+                    }
+                }
+            }
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
+            }
+            finally {
+                FillErrorMesageFromDataSource(response);
+            }
+
+            return response;
+        }
+
+        [HttpGet("{ppoId}/status/{statusFlag}")]
+        [Tags("Pension: PPO Status")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<PensionStatusDTO>> GetPpoStatusFlagByPpoId(int ppoId, int statusFlag) {
+            JsonAPIResponse<PensionStatusDTO> response = new(){
+                ApiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = "|",
+                Result = new(){
+                    StatusFlag = 0
+                }
+            };
+            try {
+                response.Result = await _pensionStatusService.CheckPensionStatusFlag(
+                        ppoId,
+                        statusFlag,
+                        GetCurrentFyYear(),
+                        GetTreasuryCode()
+                    );
+
+                if(System.Enum.TryParse<PensionStatusFlag>(
+                        $"{response.Result.StatusFlag}",
+                        out PensionStatusFlag pensionStatus
+                    )
+                ) {
+                    if(pensionStatus.HasFlag(PensionStatusFlag.FirstPensionBillGenerated))
+                    {
+                        response.Message += " First Pension Generated |";
+                    }
+                    if(pensionStatus.HasFlag(PensionStatusFlag.PpoApproved))
+                    {
+                        response.Message += " PPO Approved |";
+                    }
+                    if(pensionStatus.HasFlag(PensionStatusFlag.PpoRunning))
+                    {
+                        response.Message += " PPO Running |";
+                    }
+                    if(pensionStatus.HasFlag(PensionStatusFlag.PpoSuspended))
+                    {
+                        response.Message += " PPO Suspended |";
+                    }
+                }
+            }
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
+            }
+            finally {
+                FillErrorMesageFromDataSource(response);
             }
             return response;
         }

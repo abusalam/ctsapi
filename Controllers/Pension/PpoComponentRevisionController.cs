@@ -63,11 +63,12 @@ namespace CTS_BE.Controllers.Pension
                         GetTreasuryCode()
                     );
             }
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
+            }
             finally {
-                if(response.Result.DataSource != null) {
-                    response.ApiResponseStatus = Enum.APIResponseStatus.Error;
-                    response.Message = $"C-Error: Component Revision not saved!";
-                }
+                FillErrorMesageFromDataSource(response);
             }
 
             return response;
@@ -76,10 +77,11 @@ namespace CTS_BE.Controllers.Pension
         [HttpPost("{ppoId}/component-revisions")]
         [Tags("Pension: Component Revision")]
         [OpenApi]
+        [Obsolete("Use CreateSinglePpoComponentRevision instead")]
         public async Task<JsonAPIResponse<List<PpoComponentRevisionResponseDTO>>> CreatePpoComponentRevisions(
-                int ppoId,
-                List<PpoComponentRevisionEntryDTO> ppoComponentRevisionEntryDTOs
-            )
+            int ppoId,
+            List<PpoComponentRevisionEntryDTO> ppoComponentRevisionEntryDTOs
+        )
         {
 
             JsonAPIResponse<List<PpoComponentRevisionResponseDTO>> response = new(){
@@ -117,8 +119,8 @@ namespace CTS_BE.Controllers.Pension
         [Tags("Pension: Component Revision")]
         [OpenApi]
         public async Task<JsonAPIResponse<IEnumerable<PpoComponentRevisionResponseDTO>>> GetPpoComponentRevisionsByPpoId(
-                int ppoId
-            )
+            int ppoId
+        )
         {
             JsonAPIResponse<IEnumerable<PpoComponentRevisionResponseDTO>> response;
             try {
@@ -150,9 +152,9 @@ namespace CTS_BE.Controllers.Pension
         [Tags("Pension: Component Revision")]
         [OpenApi]
         public async Task<JsonAPIResponse<PpoComponentRevisionResponseDTO>> UpdatePpoComponentRevisionById(
-                long revisionId,
-                PpoComponentRevisionUpdateDTO ppoComponentRevisionUpdateDTO
-            )
+            long revisionId,
+            PpoComponentRevisionUpdateDTO ppoComponentRevisionUpdateDTO
+        )
         {
             JsonAPIResponse<PpoComponentRevisionResponseDTO> response = new(){
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -168,20 +170,13 @@ namespace CTS_BE.Controllers.Pension
                         GetCurrentFyYear(),
                         GetTreasuryCode()
                     );
-            } catch(DbUpdateException e) {
-                // StackFrame CallStack = new(1, true);
-                response = new () {
-                ApiResponseStatus = Enum.APIResponseStatus.Error,
-                Result = null,
-                Message = e.ToString()
-                //   $"{e.GetType()}=>File:{CallStack.GetFileName()}({CallStack.GetFileLineNumber()}): {e.Message}"
-                };
+            }
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
             }
             finally {
-                if(response.Result?.DataSource != null) {
-                    response.ApiResponseStatus = Enum.APIResponseStatus.Error;
-                    response.Message = $"C-Error: Component Revision not saved!";
-                }
+                FillErrorMesageFromDataSource(response);
             }
             return response;
         }
@@ -191,8 +186,8 @@ namespace CTS_BE.Controllers.Pension
         [Tags("Pension: Component Revision")]
         [OpenApi]
         public async Task<JsonAPIResponse<PpoComponentRevisionResponseDTO>> DeletePpoComponentRevisionById(
-                long revisionId
-            )
+            long revisionId
+        )
         {
             JsonAPIResponse<PpoComponentRevisionResponseDTO> response = new(){
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -214,20 +209,13 @@ namespace CTS_BE.Controllers.Pension
                     Message = $"Component Revision deleted successfully!"
 
                 };
-            } catch(DbUpdateException e) {
-                // StackFrame CallStack = new(1, true);
-                response = new () {
-                ApiResponseStatus = Enum.APIResponseStatus.Error,
-                Result = null,
-                Message = e.ToString()
-                //   $"{e.GetType()}=>File:{CallStack.GetFileName()}({CallStack.GetFileLineNumber()}): {e.Message}"
-                };
+            }
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
             }
             finally {
-                if(response.Result?.DataSource != null) {
-                    response.ApiResponseStatus = Enum.APIResponseStatus.Error;
-                    response.Message = $"C-Error: Component Revision not deleted!";
-                }
+                FillErrorMesageFromDataSource(response);
             }
             return response;
         }

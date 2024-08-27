@@ -51,19 +51,12 @@ namespace CTS_BE.Controllers.Pension
                     GetTreasuryCode()
                 );
             }
-            catch(InvalidCastException ex) {
-                response.ApiResponseStatus = Enum.APIResponseStatus.Error;
-                response.Message = $"C-Error: {ex.Message}";
-            }
-            catch (DbUpdateException ex) {
-                response.ApiResponseStatus = Enum.APIResponseStatus.Error;
-                response.Message = $"C-Error: Unable to generate first pension bill Error: {ex.Message}";
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
             }
             finally {
-                if(response.Result?.DataSource != null) {
-                    response.ApiResponseStatus = Enum.APIResponseStatus.Error;
-                    response.Message = $"C-Error: Unable to generate first pension bill";
-                }
+                FillErrorMesageFromDataSource(response);
             }
 
             return response;
@@ -91,15 +84,12 @@ namespace CTS_BE.Controllers.Pension
                     GetTreasuryCode()
                 );
             }
-            catch(InvalidCastException ex) {
-                response.ApiResponseStatus = Enum.APIResponseStatus.Error;
-                response.Message = $"C-InvalidCastException: {ex.Message}";
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
             }
             finally {
-                if(response.Result?.DataSource != null) {
-                    response.ApiResponseStatus = Enum.APIResponseStatus.Error;
-                    response.Message = $"C-Error: Unable to save first pension bill";
-                }
+                FillErrorMesageFromDataSource(response);
             }
 
             return response;
@@ -125,16 +115,12 @@ namespace CTS_BE.Controllers.Pension
                 );
             }
             catch(Exception ex) {
-                response.ApiResponseStatus = Enum.APIResponseStatus.Error;
-                response.Message = $"C-Exception: {ex.Message}";
+                FillException(response, ex);
+                return response;
             }
             finally {
-                if(response.Result == null) {
-                    response.ApiResponseStatus = Enum.APIResponseStatus.Error;
-                    response.Message = $"C-Error: Unable to find first pension bill";
-                }
+                FillErrorMesageFromDataSource(response);
             }
-
             return response;
         }
     }

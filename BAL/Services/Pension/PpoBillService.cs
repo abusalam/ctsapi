@@ -95,7 +95,7 @@ namespace CTS_BE.BAL.Services.Pension
             return _mapper.Map<PpoBillResponseDTO>(ppoBillEntity);
         }
 
-        public async Task<PpoBillResponseDTO?> GetFirstBillByPpoId(
+        public async Task<PpoBillResponseDTO> GetFirstBillByPpoId(
             int ppoId,
             short financialYear,
             string treasuryCode
@@ -111,18 +111,13 @@ namespace CTS_BE.BAL.Services.Pension
                     treasuryCode
                 );
                 if(ppoBillEntity == null) {
-                    return null;
+                    ppoBillResponseDTO.FillDataSource(
+                        ppoBillEntity,
+                        "Bill not found! Please add bill first or check PPO id."
+                    );
+                    return ppoBillResponseDTO;
                 }
                 ppoBillResponseDTO = _mapper.Map<PpoBillResponseDTO>(ppoBillEntity);
-                // ppoBillResponseDTO.FillDataSource(
-                //     JsonSerializer.Serialize(
-                //         ppoBillEntity,
-                //         new JsonSerializerOptions
-                //         {
-                //             ReferenceHandler = ReferenceHandler.Preserve
-                //         }),
-                //     "Bill found!"
-                // );
                 return ppoBillResponseDTO;
             }
             catch (DbUpdateException ex) {

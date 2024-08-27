@@ -19,7 +19,7 @@
         public string? Field { get; set; } = "";
         public string? Order { get; set; } = "ASC";
     }
-    public class DynamicListResult<T>
+    public class DynamicListResult<T> : BaseDTO
     {
         public List<ListHeader> Headers { get; set; }
         public T Data { get; set; }

@@ -31,7 +31,7 @@ namespace CTS_BE.DTOs
         public int PpoId { get; set; }
     }
     
-    public class ManualPpoReceiptEntryDTO {
+    public class ManualPpoReceiptEntryDTO : BaseDTO {
 
         [Required]
         [StringLength(100)]
@@ -490,5 +490,9 @@ namespace CTS_BE.DTOs
         public long Id { get; set; }
 
         public PpoComponentRevisionResponseDTO Revision { get; set; } = null!;
+    }
+
+    public partial class PpoComponentRevisionListEntryDTO : BaseDTO {
+        public List<PpoComponentRevisionEntryDTO>? Revisions { get; set; }
     }
 }
