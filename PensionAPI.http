@@ -13,9 +13,9 @@
 
 @RevisionId = {{CreatePpoComponentSingleRevision.response.body.$.result.id}}
 
-@ApprovedPpoId = {{SetApprovePPOFlag.response.body.$.result.ppoId}}
+@ApprovedPpoId = {{SetPpoStatusFlag.response.body.$.result.ppoId}}
 
-@ApprovedPpoIdStatusFlag = {{SetApprovePPOFlag.response.body.$.result.statusFlag}}
+@ApprovedPpoIdStatusFlag = {{SetPpoStatusFlag.response.body.$.result.statusFlag}}
 
 ### All List APIs
 # @name AllPatchAPIs
@@ -399,8 +399,8 @@ Get {{PensionAPI_HostAddress}}/api/v1/ppo/{{GeneratedPpoId}}/details
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
-### Approve PPO
-# @name SetApprovePPOFlag
+### Set PPO Approved Flag
+# @name SetPpoStatusFlag
 POST {{PensionAPI_HostAddress}}/api/v1/ppo/status
 Accept: application/json
 Authorization: Bearer {{accessToken}}
@@ -408,12 +408,12 @@ Content-Type: application/json
 
 {
   "PpoId": "{{GeneratedPpoId}}",
-  "StatusFlag": 12,
+  "StatusFlag": 1,
   "StatusWef": "{{$datetime "YYYY-MM-DD" -5 d}}"
 }
 
-### Set PPO Flag
-# @name SetPPOFlag
+### Set PPO Running Flag
+# @name SetPPORunningFlag
 POST {{PensionAPI_HostAddress}}/api/v1/ppo/status
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
 Accept: application/json
@@ -426,15 +426,15 @@ Content-Type: application/json
   "StatusWef": "{{$datetime "YYYY-MM-DD" -2 d}}"
 }
 
-### Reject Approved PPO
-# @name ClearApprovePPOFlag
+### Clear PPO Approved Flag
+# @name ClearPpoStatusFlagByPpoId
 DELETE {{PensionAPI_HostAddress}}/api/v1/ppo/{{ApprovedPpoId}}/status/{{ApprovedPpoIdStatusFlag}}
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
 
-### Check PPO Status Flag
-# @name CheckPPOFlag
+### Check PPO Approved Flag
+# @name GetPpoStatusFlagByPpoId
 Get {{PensionAPI_HostAddress}}/api/v1/ppo/{{ApprovedPpoId}}/status/{{ApprovedPpoIdStatusFlag}}
 Accept: application/json
 Authorization: Bearer {{accessToken}}
