@@ -34,6 +34,10 @@ public partial class BankAccount
     [StringLength(100)]
     public string AccountHolderName { get; set; } = null!;
 
+    [Column("pay_mode")]
+    [MaxLength(1)]
+    public char PayMode { get; set; }
+
     [Column("bank_ac_no")]
     [StringLength(30)]
     public string? BankAcNo { get; set; }

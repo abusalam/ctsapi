@@ -95,10 +95,13 @@ namespace CTS_BE.DTOs
 
         [Required]
         [RegularExpression(@"[PFC]", ErrorMessage = "{0} must be one of the following (P, F & C)")]
+        /// <value>Property <c>PpoType</c> Must be one of the following (P, F, C).</value>
         public char PpoType { get; set; }
+
 
         [Required]
         [RegularExpression(@"[ELUVNRPGJKHW]", ErrorMessage = "{0} must be one of the following (E, L, U, V, N, R, P, G, J, K, H & W)")]
+        /// <value>Property <c>PpoSubType</c> Must be one of the following (E, L, U, V, N, R, P, G, J, K, H, W).</value>
         public char PpoSubType { get; set; }
         
         [Required]
@@ -109,6 +112,7 @@ namespace CTS_BE.DTOs
         public string PensionerName { get; set; } = null!;
         
         [RegularExpression(@"[MF]", ErrorMessage = "{0} must be one of the following (M - Male; F - Female;)")]
+        /// <value>Property <c>Gender</c> Must be one of the following (M - Male; F - Female;).</value>
         public char? Gender { get; set; }
 
         [Required]
@@ -153,6 +157,9 @@ namespace CTS_BE.DTOs
         [Required]
         public int ReducedPensionAmount { get; set; }
 
+        /// <summary>
+        /// Must be one of the following (H, M, O)
+        /// </summary>
         [Required]
         [RegularExpression(@"[HMO]", ErrorMessage = "{0} must be one of the following (H, M & O)")]
         public char Religion { get; set; }
@@ -195,6 +202,10 @@ namespace CTS_BE.DTOs
     }
 
     public class PensionerBankAcEntryDTO : BaseDTO {
+
+        [Required]
+        [RegularExpression(@"[QB]", ErrorMessage = "{0} must be one of the following (Q, B)")]
+        public char PayMode { get; set; }
 
         [Required]
         [StringLength(100)]

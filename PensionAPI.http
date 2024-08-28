@@ -19,7 +19,7 @@
 
 ### All List APIs
 # @name AllPatchAPIs
-# PATCH {{PensionAPI_HostAddress}}/api/v1/manual-ppo/receipts
+GET {{PensionAPI_HostAddress}}/api/v1/manual-ppo/receipts
 # PATCH {{PensionAPI_HostAddress}}/api/v1/pension/primary-category
 # PATCH {{PensionAPI_HostAddress}}/api/v1/pension/sub-category
 # PATCH {{PensionAPI_HostAddress}}/api/v1/pension/category
@@ -293,6 +293,7 @@ Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
+  "payMode":"Q",
   "accountHolderName": "Jack Dowsel",
   "bankAcNo": "{{$randomInt 1000000000000000 9999999999999999}}",
   "ifscCode": "IFSC{{$randomInt 1000000 9999999}}",
@@ -309,6 +310,7 @@ Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
+  "payMode":"Q",
   "accountHolderName": "Jack Dowsel",
   "bankAcNo": "{{$randomInt 1000000000000000 9999999999999999}}",
   "ifscCode": "IFSC{{$randomInt 1000000 9999999}}",

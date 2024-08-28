@@ -93,10 +93,11 @@ namespace CTS_BE.BAL.Services.Pension
             };
             T pensionerResponseDTO = _mapper.Map<T>(pensionerEntity);
             try {
-                Pensioner? pensioner = await _pensionerDetailsRepository.GetSingleAysnc(
-                        entity => entity.ActiveFlag 
-                        && entity.PpoId == ppoId 
-                        && entity.TreasuryCode == treasuryCode
+                Pensioner? pensioner = await _pensionerDetailsRepository.GetPensionerDetailsByPpoIdAsync(
+                        ppoId,
+                        financialYear,
+                        treasuryCode,
+                        entity => _mapper.Map<Pensioner>(entity)
                     );
 
                 if(pensioner == null) {
