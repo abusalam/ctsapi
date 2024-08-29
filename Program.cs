@@ -96,7 +96,6 @@ builder.Services.AddSwaggerGen(c =>
 
 //Pension Repositories
 builder.Services.AddTransient<IManualPpoReceiptRepository, ManualPpoReceiptRepository>();
-builder.Services.AddTransient<IReceiptSequenceRepository, ReceiptSequenceRepository>();
 builder.Services.AddTransient<IPensionStatusRepository, PensionStatusRepository>();
 builder.Services.AddTransient<IPensionerDetailsRepository, PensionerDetailsRepository>();
 builder.Services.AddTransient<IPpoIdSequenceRepository, PpoIdSequenceRepository>();
@@ -112,7 +111,6 @@ builder.Services.AddTransient<IPpoBillRepository, PpoBillRepository>();
 
 // Pension Services
 builder.Services.AddTransient<IPpoReceiptService, PpoReceiptService>();
-builder.Services.AddTransient<IReceiptSequenceService, ReceiptSequenceService>();
 builder.Services.AddTransient<IPensionStatusService, PensionStatusService>();
 builder.Services.AddTransient<IPensionerDetailsService, PensionerDetailsService>();
 builder.Services.AddTransient<IPensionerBankAccountService, PensionerBankAccountService>();

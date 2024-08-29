@@ -5,8 +5,6 @@ using CTS_BE.DAL.Entities.Pension;
 using CTS_BE.DTOs;
 using CTS_BE.Helper.Authentication;
 using CTS_BE.Helper;
-using CTS_BE.DAL;
-using CTS_BE.DAL.Repositories.Pension;
 
 
 namespace CTS_BE.BAL.Services.Pension
@@ -14,19 +12,16 @@ namespace CTS_BE.BAL.Services.Pension
     public class PpoReceiptService : BaseService, IPpoReceiptService
     {
         private readonly IManualPpoReceiptRepository _manualPpoReceiptRepository;
-        private readonly IReceiptSequenceRepository _receiptSequenceRepository;
         private readonly IClaimService _claimService;
         private readonly IMapper _mapper;
 
         public PpoReceiptService (
             IManualPpoReceiptRepository manualPpoReceiptRepository,
-            IReceiptSequenceRepository receiptSequenceRepository,
             IClaimService claimService,
             IMapper mapper
             ) : base(claimService)
         {
             _manualPpoReceiptRepository = manualPpoReceiptRepository;
-            _receiptSequenceRepository = receiptSequenceRepository;
             _claimService = claimService;
             _mapper = mapper;
             _userId = _claimService.GetUserId();
@@ -55,30 +50,30 @@ namespace CTS_BE.BAL.Services.Pension
             short financialYear,
             string treasuryCode
         ) {
-            PpoReceipt manualPpoReceiptEntity;
+            PpoReceipt manualPpoReceiptEntity = _mapper.Map<PpoReceipt>(manualPpoReceiptDTO);
             ManualPpoReceiptResponseDTO manualPpoReceiptDTOResponse = _mapper.Map<ManualPpoReceiptResponseDTO>(manualPpoReceiptDTO);
             try
             {
                 manualPpoReceiptEntity = _mapper.Map<PpoReceipt>(manualPpoReceiptDTO);
                 manualPpoReceiptEntity.TreasuryCode = treasuryCode;
                 manualPpoReceiptEntity.FinancialYear = financialYear;
-                manualPpoReceiptEntity.TreasuryReceiptNo = _receiptSequenceRepository.GenerateTreasuryReceiptNo(
-                    financialYear,
-                    treasuryCode
-                );
                 manualPpoReceiptEntity.PpoStatus = $"PPO Received";
-                SetCreatedBy(manualPpoReceiptEntity);                
-                _manualPpoReceiptRepository.Add(manualPpoReceiptEntity);
-                if(await _manualPpoReceiptRepository.SaveChangesManagedAsync()==0) {
-                    manualPpoReceiptDTOResponse.FillDataSource(manualPpoReceiptEntity, "Failed to create PPO Receipt");
-                    return manualPpoReceiptDTOResponse;
-                }
+                SetCreatedBy(manualPpoReceiptEntity);              
+                manualPpoReceiptDTOResponse = await _manualPpoReceiptRepository
+                    .CreatePpoReceiptWithTreasuryReceiptNo<ManualPpoReceiptResponseDTO>(
+                        financialYear,
+                        treasuryCode, 
+                        manualPpoReceiptEntity
+                    );
             }
-            finally {
-
-
+            catch (Exception ex) {
+                manualPpoReceiptDTOResponse.FillDataSource(
+                    manualPpoReceiptEntity,
+                    ex.Message
+                );
+                return manualPpoReceiptDTOResponse;
             }
-            return _mapper.Map<ManualPpoReceiptResponseDTO>(manualPpoReceiptEntity);
+            return manualPpoReceiptDTOResponse;
         }
 
         public async Task<IEnumerable<ListAllPpoReceiptsResponseDTO>> GetAllPpoReceipts(
