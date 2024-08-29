@@ -15,6 +15,10 @@ namespace CTS_BE.BAL.Interfaces.Pension
                 string treasuryCode,
                 DynamicListQueryParameters dynamicListQueryParameters
             );
+        public Task<IEnumerable<ListAllPpoReceiptsResponseDTO>> GetAllUnusedPpoReceipts(
+            short financialYear,
+            string treasuryCode
+        );
         public Task<ManualPpoReceiptResponseDTO> UpdatePpoReceipt(
                 string treasuryReceiptNo,
                 ManualPpoReceiptEntryDTO manualPpoReceiptDTO

@@ -11,6 +11,10 @@ namespace CTS_BE.DAL.Interfaces.Pension
 {
     public interface IManualPpoReceiptRepository : IRepository<PpoReceipt>
     {
-
+        public Task<List<ListAllPpoReceiptsResponseDTO>> GetAllUnusedPpoReceipts(
+            short financialYear,
+            string treasuryCode,
+            Expression<Func<PpoReceipt, ListAllPpoReceiptsResponseDTO>> selectExpression
+        );
     }
 }

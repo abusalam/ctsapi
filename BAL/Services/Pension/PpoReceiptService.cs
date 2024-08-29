@@ -5,6 +5,8 @@ using CTS_BE.DAL.Entities.Pension;
 using CTS_BE.DTOs;
 using CTS_BE.Helper.Authentication;
 using CTS_BE.Helper;
+using CTS_BE.DAL;
+using CTS_BE.DAL.Repositories.Pension;
 
 
 namespace CTS_BE.BAL.Services.Pension
@@ -91,6 +93,21 @@ namespace CTS_BE.BAL.Services.Pension
                     entity => _mapper.Map<ListAllPpoReceiptsResponseDTO>(entity),
                     dynamicListQueryParameters
                 );
+        }
+
+
+        public async Task<IEnumerable<ListAllPpoReceiptsResponseDTO>> GetAllUnusedPpoReceipts(
+            short financialYear,
+            string treasuryCode
+        )
+        {
+            var manualPpoReceipts = await _manualPpoReceiptRepository.GetAllUnusedPpoReceipts(
+                financialYear,
+                treasuryCode,
+                entity => _mapper.Map<ListAllPpoReceiptsResponseDTO>(entity)
+            );
+            _dataCount = manualPpoReceipts.Count;
+            return manualPpoReceipts;
         }
 
 

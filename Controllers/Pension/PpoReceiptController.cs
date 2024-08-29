@@ -182,5 +182,74 @@ namespace CTS_BE.Controllers.Pension
             return response;
         }
 
+        [HttpGet("receipts")]
+        [Tags("Pension: Manual PPO Receipt")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<ListAllPpoReceiptsResponseDTO>>>> GetAllUnusedPpoReceipts() 
+        {
+            JsonAPIResponse<DynamicListResult<IEnumerable<ListAllPpoReceiptsResponseDTO>>> response = new();
+            try {
+
+                response = new() {
+
+                    ApiResponseStatus = Enum.APIResponseStatus.Success,
+                    Result = new()
+                        {
+                            Headers = new () {
+                            
+                                new() {
+                                    Name = "Treasury Receipt No",
+                                    DataType = "text",
+                                    FieldName = "treasuryReceiptNo",
+                                    FilterField = "treasuryReceiptNo",
+                                    IsFilterable = true,
+                                    IsSortable = true,
+
+                                },
+                                new() {
+                                    Name = "PPO No",
+                                    DataType = "text",
+                                    FieldName = "ppoNo",
+                                    FilterField = "ppoNo",
+                                    IsFilterable = true,
+                                    IsSortable = true,
+                                },
+                                new() {
+                                    Name = "Name of Pensioner",
+                                    DataType = "text",
+                                    FieldName = "pensionerName",
+                                    FilterField = "pensionerName",
+                                    IsFilterable = true,
+                                    IsSortable = true,
+                                },
+                                new() {
+                                    Name = "Date of Receipt",
+                                    DataType = "text",
+                                    FieldName = "receiptDate",
+                                    FilterField = "receiptDate",
+                                    IsFilterable = true,
+                                    IsSortable = true,
+                                }
+
+                            },
+                            Data = await _ppoReceiptService.GetAllUnusedPpoReceipts(
+                                    GetCurrentFyYear(),
+                                    GetTreasuryCode()
+                                ),
+                            DataCount = _ppoReceiptService.DataCount()
+                        },
+                    Message = $"All Unused PPO Receipts Received Successfully!"
+
+                };
+            }
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
+            }
+            finally {
+                FillErrorMesageFromDataSource(response);
+            }
+            return response;
+        }
     }
 }
