@@ -8,6 +8,7 @@ namespace CTS_BE.DAL.Interfaces.Pension
 {
     public interface IReceiptSequenceRepository : IRepository<PpoReceiptSequence>
     {
-        Task<string> GenerateTreasuryReceiptNo(short finYear, string treasuryCode);
+        Task<string> GenerateTreasuryReceiptNoAsync(short finYear, string treasuryCode);
+        string GenerateTreasuryReceiptNo(short finYear, string treasuryCode);
     }
 }

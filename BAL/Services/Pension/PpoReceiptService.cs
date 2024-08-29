@@ -62,7 +62,7 @@ namespace CTS_BE.BAL.Services.Pension
                 manualPpoReceiptEntity = _mapper.Map<PpoReceipt>(manualPpoReceiptDTO);
                 manualPpoReceiptEntity.TreasuryCode = treasuryCode;
                 manualPpoReceiptEntity.FinancialYear = financialYear;
-                manualPpoReceiptEntity.TreasuryReceiptNo = await _receiptSequenceRepository.GenerateTreasuryReceiptNo(
+                manualPpoReceiptEntity.TreasuryReceiptNo = _receiptSequenceRepository.GenerateTreasuryReceiptNo(
                     financialYear,
                     treasuryCode
                 );

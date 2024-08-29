@@ -19,7 +19,44 @@ namespace CTS_BE.DAL.Repositories.Pension
         }
 
 
-        public async Task<string> GenerateTreasuryReceiptNo(short finYear, string treasuryCode) {
+        public string GenerateTreasuryReceiptNo(short finYear, string treasuryCode) {
+            PpoReceiptSequence? ppoReceiptSequence = new();
+            string treasuryReceiptNo = "";
+            int seqValue = 0;
+            
+            try {
+                ppoReceiptSequence = _context.PpoReceiptSequences
+                .Where(
+                    entity => entity.ActiveFlag == true
+                    && entity.FinancialYear == finYear
+                    && entity.TreasuryCode == treasuryCode
+                )
+                .FirstOrDefault();
+                if(ppoReceiptSequence?.NextSequenceValue > 0) {
+                    ppoReceiptSequence.NextSequenceValue++;
+                    _context.Update(ppoReceiptSequence);                   
+                } else {
+                    ppoReceiptSequence = new () {
+                            FinancialYear = finYear,
+                            TreasuryCode = treasuryCode,
+                            NextSequenceValue = 1
+                        };
+                    _context.Add(ppoReceiptSequence);
+                }
+                if(_context.SaveChanges()>0) {
+                    seqValue = ppoReceiptSequence.NextSequenceValue;
+                }
+            }
+            finally {
+                
+                string paddedNextSequenceValue = $"{seqValue}".PadLeft(6,'0');
+                treasuryReceiptNo = $"{treasuryCode}{finYear}{paddedNextSequenceValue}";
+            }
+            return treasuryReceiptNo;
+        }
+
+
+        public async Task<string> GenerateTreasuryReceiptNoAsync(short finYear, string treasuryCode) {
             PpoReceiptSequence ppoReceiptSequence = new();
             string treasuryReceiptNo = "";
             int seqValue = 0;
@@ -51,6 +88,5 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             return treasuryReceiptNo;
         }
-
     }
 }
