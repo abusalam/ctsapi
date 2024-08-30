@@ -3,9 +3,8 @@ using CTS_BE.DTOs;
 
 namespace CTS_BE.Factories.Pension
 {
-    public class BankAccountFactory : IFactory<PensionerBankAcEntryDTO>
+    public class BankAccountFactory : BaseFactory<PensionerBankAcEntryDTO>
     {
-        private readonly Faker<PensionerBankAcEntryDTO> _faker;
         public BankAccountFactory()
         {
             _faker = new Faker<PensionerBankAcEntryDTO>()
@@ -18,9 +17,5 @@ namespace CTS_BE.Factories.Pension
                 .RuleFor(d => d.AccountHolderName, f => f.Person.FullName);
         }
 
-        public PensionerBankAcEntryDTO Create()
-        {
-            return _faker.Generate();
-        }
     }
 }

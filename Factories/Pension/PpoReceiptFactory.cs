@@ -4,9 +4,8 @@ using CTS_BE.DTOs;
 
 namespace CTS_BE.Factories.Pension
 {
-    public class PpoReceiptFactory : IFactory<ManualPpoReceiptEntryDTO>
+    public class PpoReceiptFactory : BaseFactory<ManualPpoReceiptEntryDTO>
     {
-        private readonly Faker<ManualPpoReceiptEntryDTO> _faker;
         public PpoReceiptFactory()
         {
             _faker = new Faker<ManualPpoReceiptEntryDTO>()
@@ -35,11 +34,6 @@ namespace CTS_BE.Factories.Pension
                 .RuleFor(d => d.PsaCode, f => f.PickRandom('A','D','O'))
                 .RuleFor(d => d.PpoType, f => f.PickRandom('N','R','P','O'))
                 ;
-        }
-
-        public ManualPpoReceiptEntryDTO Create()
-        {
-            return _faker.Generate();
         }
     }
 }

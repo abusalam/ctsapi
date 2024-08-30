@@ -1,4 +1,4 @@
-namespace CTS_BE.Factories.Pension
+namespace CTS_BE.Factories
 {
     public interface IFactory<T>
     {

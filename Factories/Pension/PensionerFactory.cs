@@ -4,9 +4,8 @@ using CTS_BE.DTOs;
 
 namespace CTS_BE.Factories.Pension
 {
-    public class PensionerFactory : IFactory<PensionerEntryDTO>
+    public class PensionerFactory : BaseFactory<PensionerEntryDTO>
     {
-        private readonly Faker<PensionerEntryDTO> _faker;
         public PensionerFactory()
         {
             _faker = new Faker<PensionerEntryDTO>()
@@ -46,16 +45,6 @@ namespace CTS_BE.Factories.Pension
                     d => d.DateOfCommencement,
                     (f,d) => d.DateOfRetirement.AddDays(1)
                 );
-        }
-
-        public PensionerEntryDTO Create()
-        {
-            return _faker.Generate();
-        }
-
-        public List<PensionerEntryDTO> Make(int count)
-        {
-            return _faker.Generate(count);
         }
     }
 }

@@ -18,7 +18,10 @@ namespace CTS_BE.Controllers.Pension
             {
                 {"ManualPpoReceiptEntryDTO", new PpoReceiptFactory().Create()},
                 {"PensionerEntryDTO", new PensionerFactory().Create()},
-                {"PensionerBankAcEntryDTO", new BankAccountFactory().Create()}
+                {"PensionerBankAcEntryDTO", new BankAccountFactory().Create()},
+                {"PensionPrimaryCategoryEntryDTO", new PrimaryCategoryFactory().Create()},
+                {"PensionSubCategoryEntryDTO", new SubCategoryFactory().Create()},
+                {"PensionBreakupEntryDTO", new ComponentFactory().Create()}
             };
         }
 
