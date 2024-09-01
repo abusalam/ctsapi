@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using AutoMapper;
 using CTS_BE.BAL.Interfaces.Pension;
 using CTS_BE.DAL;
@@ -12,6 +6,7 @@ using CTS_BE.DAL.Interfaces.Pension;
 using CTS_BE.DTOs;
 using CTS_BE.Helper;
 using CTS_BE.Helper.Authentication;
+using CTS_BE.PensionEnum;
 using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.BAL.Services.Pension
@@ -32,67 +27,61 @@ namespace CTS_BE.BAL.Services.Pension
             _pensionDbContext = (PensionDbContext) this._ppoBillRepository.GetDbContext();
         }
 
-        public async Task<PpoBillResponseDTO> SaveFirstBill(
-            PpoBillEntryDTO ppoBillEntryDTO,
+        public async Task<T> SaveFirstBill<T>(
+            InitiateFirstPensionBillResponseDTO firstBill,
             short financialYear,
             string treasuryCode
         )
         {
-            PpoBill ppoBillEntity = new ();
-            PpoBillResponseDTO ppoBillResponseDTO = _mapper.Map<PpoBillResponseDTO>(ppoBillEntryDTO);
+            PpoBill ppoBillEntity = _mapper.Map<PpoBill>(firstBill);
+            T ppoBillResponseDTO = _mapper.Map<T>(ppoBillEntity);
             try {
-                ppoBillEntity.FillFrom(ppoBillEntryDTO);
 
-                ppoBillEntity.FinancialYear = financialYear;
-                ppoBillEntity.TreasuryCode = treasuryCode;
-                ppoBillEntity.BillNo = await _ppoBillRepository.GetNextBillNo((short)ppoBillEntity.FinancialYear, ppoBillEntity.TreasuryCode);
-                ppoBillEntity.BillType = 'F';
-
-                SetCreatedBy(ppoBillEntity);
-                
-                List<PpoBillBreakup> ppoBillBreakups = new ();
-
-                ppoBillEntryDTO.Breakups.ForEach(breakup => {
-                    PpoBillBreakup ppoBillBreakupEntity = new ();
-                    ppoBillBreakupEntity.FillFrom(breakup);
-                    // ppoBillBreakupEntity.BillId = ppoBillEntity.Id;
-                    ppoBillBreakupEntity.TreasuryCode = treasuryCode;
-                    ppoBillBreakupEntity.FinancialYear = financialYear;
-                    SetCreatedBy(ppoBillBreakupEntity);
-                    ppoBillBreakups.Add(ppoBillBreakupEntity);
-                });
-
-                ppoBillEntity.PpoBillBreakups = ppoBillBreakups;
-                
-                _ppoBillRepository.Add(ppoBillEntity);
-
-                if(await _ppoBillRepository.SaveChangesManagedAsync()==0) {
+                PpoBill? ppoBill = await _pensionDbContext.PpoBills
+                    .Where(
+                        entity => entity.ActiveFlag
+                        && entity.PpoId == firstBill.PpoId
+                        && entity.BillType == BillType.FirstBill
+                        // && entity.BillDate == billDate
+                        // && entity.FinancialYear == financialYear
+                        && entity.TreasuryCode == treasuryCode
+                    )
+                    // .Select(
+                    //     entity => _mapper.Map<PpoBill>(entity)
+                    // )
+                    .FirstOrDefaultAsync();
+                // Console.WriteLine(JsonConvert.SerializeObject(ppoBill, Formatting.Indented));
+                if(ppoBill != null) {
+                    ppoBillResponseDTO = _mapper.Map<T>(ppoBill);
                     ppoBillResponseDTO.FillDataSource(
-                        _mapper.Map<PpoBillResponseDTO>(ppoBillEntity),
-                        "Bill not saved!"
+                        ppoBill,
+                        "Bill already exists! Please check PPO ID, bill date and bill type."
                     );
                     return ppoBillResponseDTO;
                 }
-                // ppoBillEntity = await _ppoBillRepository.SavePpoBillBreakups(
-                //     ppoBillEntity.Id,
-                //     ppoBillBreakups
-                //     );
 
+                ppoBillResponseDTO = await _ppoBillRepository.SavePpoBill<T>(
+                        BillType.FirstBill,
+                        _mapper.Map<PpoBill>(firstBill),
+                        financialYear,
+                        treasuryCode
+                    );
             }
             catch (DbUpdateException ex) {
                 ppoBillResponseDTO.FillDataSource(
-                    _mapper.Map<PpoBillResponseDTO>(ppoBillEntity),
+                    _mapper.Map<T>(ppoBillEntity),
                     $"DbUpdateException: {ex.InnerException?.Message}"
                 );
                 return ppoBillResponseDTO;
             }
-            finally {
-                if(ppoBillEntity.Id > 0) {
-                    _pensionDbContext.Entry(ppoBillEntity)
-                        .Reference(entity => entity.BankAccount).Load();
-                }
+            catch (Exception ex) {
+                ppoBillResponseDTO.FillDataSource(
+                    _mapper.Map<T>(ppoBillEntity),
+                    $"ServiceException: {ex.InnerException?.Message ?? ex.ToString()}"
+                );
+                return ppoBillResponseDTO;
             }
-            return _mapper.Map<PpoBillResponseDTO>(ppoBillEntity);
+            return ppoBillResponseDTO;
         }
 
         public async Task<PpoBillResponseDTO> GetFirstBillByPpoId(
@@ -118,6 +107,8 @@ namespace CTS_BE.BAL.Services.Pension
                     return ppoBillResponseDTO;
                 }
                 ppoBillResponseDTO = _mapper.Map<PpoBillResponseDTO>(ppoBillEntity);
+                ppoBillResponseDTO.PreparedBy = GetUserName();
+                ppoBillResponseDTO.PreparedOn = DateOnly.FromDateTime(DateTime.Now);
                 return ppoBillResponseDTO;
             }
             catch (DbUpdateException ex) {

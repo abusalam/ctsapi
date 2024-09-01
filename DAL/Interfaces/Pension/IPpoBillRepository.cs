@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Sockets;
-using System.Threading.Tasks;
+using CTS_BE.DTOs;
 using CTS_BE.DAL.Entities.Pension;
 
 namespace CTS_BE.DAL.Interfaces.Pension
@@ -18,6 +14,24 @@ namespace CTS_BE.DAL.Interfaces.Pension
 
         public Task<PpoBill?> GetPpoFirstBillByPpoId(
             int ppoId,
+            short financialYear,
+            string treasuryCode
+        );
+
+        public Task<PpoBill?> GetPpoBillByPpoId(
+            int ppoId,
+            string treasuryCode
+        );
+
+        public Task<PpoBill?> GetPpoBillByPpoId(
+            int ppoId,
+            string treasuryCode,
+            short financialYear
+        );
+
+        public Task<T> SavePpoBill<T>(
+            char billType,
+            PpoBill firstBill,
             short financialYear,
             string treasuryCode
         );

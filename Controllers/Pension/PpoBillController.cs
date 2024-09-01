@@ -3,7 +3,6 @@ using CTS_BE.Helper;
 using CTS_BE.Helper.Authentication;
 using CTS_BE.BAL.Interfaces.Pension;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.Controllers.Pension
 {
@@ -40,8 +39,8 @@ namespace CTS_BE.Controllers.Pension
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = $"First Pension Bill generated sucessfully!",
                 Result = new (){
-                    Pensioner = new(){},
-                    BankAccount = new(){}
+                    // Pensioner = new(){},
+                    // BankAccount = new(){}
                 }
             };
             try {
@@ -73,13 +72,22 @@ namespace CTS_BE.Controllers.Pension
             JsonAPIResponse<PpoBillResponseDTO> response = new(){
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = $"First Pension Bill saved sucessfully!",
-                Result = new (){
+                Result = new () {
                     DataSource = new()
                 }
             };
             try {
-                response.Result = await _ppoBillService.SaveFirstBill(
-                    ppoBillEntryDTO,
+                InitiateFirstPensionBillResponseDTO firstBill = await _pensionBillService.GenerateFirstPensionBill(
+                    new InitiateFirstPensionBillDTO
+                    {
+                        PpoId = ppoBillEntryDTO.PpoId,
+                        ToDate = ppoBillEntryDTO.ToDate
+                    },
+                    GetCurrentFyYear(),
+                    GetTreasuryCode()
+                );
+                response.Result = await _ppoBillService.SaveFirstBill<PpoBillResponseDTO>(
+                    firstBill,
                     GetCurrentFyYear(),
                     GetTreasuryCode()
                 );

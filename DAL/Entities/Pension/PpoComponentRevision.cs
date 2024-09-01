@@ -19,10 +19,6 @@ public partial class PpoComponentRevision
     [Column("id")]
     public long Id { get; set; }
 
-    [Column("treasury_code")]
-    [StringLength(3)]
-    public string TreasuryCode { get; set; } = null!;
-
     [Column("pensioner_id")]
     public long PensionerId { get; set; }
 

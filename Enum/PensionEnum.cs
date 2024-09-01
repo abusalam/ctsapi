@@ -18,4 +18,10 @@ namespace CTS_BE.PensionEnum
         public const char Amount = 'A';
         public const char Percentage = 'P';
     }
+
+    public sealed class BillType
+    {
+        public const char FirstBill = 'F';
+        public const char RegularBill = 'R';
+    }
 }

@@ -41,6 +41,14 @@ namespace CTS_BE.Helper
             CreateMap<PpoBillBreakupResponseDTO, PpoBillBreakupEntryDTO>().ReverseMap();
             CreateMap<PpoBillBreakupResponseDTO, PpoBillBreakup>().ReverseMap();
             CreateMap<PpoBillBreakupEntryDTO, PpoBillBreakup>().ReverseMap();
+            CreateMap<PpoBill, InitiateFirstPensionBillResponseDTO>().ReverseMap();
+            CreateMap<PpoBill, PpoBillResponseDTO>().ReverseMap();
+            CreateMap<PpoBillResponseDTO, InitiateFirstPensionBillResponseDTO>().ReverseMap();
+            CreateMap<PpoBillEntryDTO, InitiateFirstPensionBillResponseDTO>().ReverseMap();
+            CreateMap<PpoPaymentListItemDTO, PpoBillBreakup>().ReverseMap();
+            CreateMap<PpoPaymentListItemDTO, PpoBillBreakupResponseDTO>().ReverseMap();
+            CreateMap<PensionerListItemDTO, PensionerResponseDTO>().ReverseMap();
+            CreateMap<PpoBillEntryDTO, PpoBillResponseDTO>().ReverseMap();
         }
     }
 }

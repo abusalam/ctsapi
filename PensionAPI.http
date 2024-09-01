@@ -60,37 +60,6 @@ Content-Type: application/json
   "amountPerMonth": 5000
 }
 
-### Create Ppo Component Revisions
-# @name CreatePpoComponentRevisions
-POST {{PensionAPI_HostAddress}}/api/v1/ppo/{{GeneratedPpoId}}/component-revisions
-# POST {{PensionAPI_HostAddress}}/api/v1/echo
-Accept: application/json
-Authorization: Bearer {{accessToken}}
-Content-Type: application/json
-
-[      
-  {
-    "rateId": 1,
-    "fromDate": "1997-03-31",
-    "amountPerMonth": 10000
-  },
-  {
-    "rateId": 2,
-    "fromDate": "1997-03-31",
-    "amountPerMonth": 1000
-  },
-  {
-    "rateId": 2,
-    "fromDate": "2007-04-01",
-    "amountPerMonth": 5000
-  },
-  {
-    "rateId": 3,
-    "fromDate": "1997-03-31",
-    "amountPerMonth": 100
-  }
-]
-
 ### Create Ppo Component Single Revision
 # @name CreatePpoComponentSingleRevision
 POST {{PensionAPI_HostAddress}}/api/v1/ppo/{{GeneratedPpoId}}/component-revision
@@ -174,7 +143,20 @@ Content-Type: application/json
   "PrimaryCategoryName": "Defence Pension"
 }
 
-### Generate Components for First Pension Bill
+
+
+
+### Get First Pension Bill By PpoId
+# @name GetFirstPensionBillByPpoId
+GET {{PensionAPI_HostAddress}}/api/v1/ppo/first-bill/{{GeneratedPpoId}}
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+
+
+
+### Generate First Pension Bill
 # @name GenerateFirstPensionBill
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
 POST {{PensionAPI_HostAddress}}/api/v1/ppo/first-bill-generate
@@ -187,15 +169,6 @@ Content-Type: application/json
   "billType": "F",
   "toDate": "{{$datetime "YYYY-MM-DD"}}"
 }
-
-
-### Get First Pension Bill By PpoId
-# @name GetFirstPensionBillByPpoId
-GET {{PensionAPI_HostAddress}}/api/v1/ppo/first-bill/{{GeneratedPpoId}}
-# POST {{PensionAPI_HostAddress}}/api/v1/echo
-Accept: application/json
-Authorization: Bearer {{accessToken}}
-
 
 
 ### Capture FirstBill Detaills
@@ -211,8 +184,7 @@ Authorization: Bearer {{accessToken}}
 
 
 
-
-### Save Components for First Pension Bill
+### Save First Pension Bill
 # @name SaveFirstPensionBill
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
 POST {{PensionAPI_HostAddress}}/api/v1/ppo/first-bill
@@ -221,67 +193,8 @@ Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
-  "pensionerId": {{PensionerId}},
-  "bankAccountId": {{PensionerBankAcId}},
   "PpoId": {{GeneratedPpoId}},
-  "fromDate": "{{BillFromDate}}",
-  "toDate": "{{BillUptoDate}}",
-  "billType": "F",
-  "billDate": "{{BillDate}}",
-  "grossAmount": {{GrossAmount}},
-  "ByTransferAmount": {{TaxAmount}},
-  "netAmount": {{NetAmount}},
-  "breakups": [ 
-      {
-        "PpoId": {{GeneratedPpoId}},
-        "revisionId": 1,
-        "fromDate": "1997-03-31",
-        "toDate": "2024-08-14",
-        "breakupAmount": 3330000
-      },
-      {
-        "PpoId": {{GeneratedPpoId}},
-        "revisionId": 2,
-        "fromDate": "1997-03-31",
-        "toDate": "2007-03-31",
-        "breakupAmount": 1210000
-      },
-      {
-        "PpoId": {{GeneratedPpoId}},
-        "revisionId": 2,
-        "fromDate": "2007-04-01",
-        "toDate": "2009-03-31",
-        "breakupAmount": 55200
-      },
-      {
-        "PpoId": {{GeneratedPpoId}},
-        "revisionId": 2,
-        "fromDate": "2009-04-01",
-        "toDate": "2015-12-31",
-        "breakupAmount": 461700
-      },
-      {
-        "PpoId": {{GeneratedPpoId}},
-        "revisionId": 2,
-        "fromDate": "2016-01-01",
-        "toDate": "2024-08-14",
-        "breakupAmount": 1622400
-      },
-      {
-        "PpoId": {{GeneratedPpoId}},
-        "revisionId": 3,
-        "fromDate": "1997-03-31",
-        "toDate": "2009-03-31",
-        "breakupAmount": 14600
-      },
-      {
-        "PpoId": {{GeneratedPpoId}},
-        "revisionId": 3,
-        "fromDate": "2009-04-01",
-        "toDate": "2024-08-14",
-        "breakupAmount": 55800
-      }
-    ]
+  "toDate": "{{$datetime "YYYY-MM-DD"}}"
 }
 
 ### Create Pensioner Bank Account

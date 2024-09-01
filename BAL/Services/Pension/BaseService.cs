@@ -31,5 +31,9 @@ namespace CTS_BE.BAL.Services.Pension
             entity?.GetType()?.GetProperty("UpdatedBy")?.SetValue(entity, _userId);
             entity?.GetType()?.GetProperty("UpdatedAt")?.SetValue(entity, DateTime.Now);
         }
+        protected string GetUserName()
+        {
+            return _claimService.GetUserName();
+        }
     }
 }

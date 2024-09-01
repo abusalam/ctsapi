@@ -1,10 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using AutoMapper;
 using CTS_BE.BAL.Interfaces.Pension;
 using CTS_BE.DAL;
@@ -66,8 +59,8 @@ namespace CTS_BE.BAL.Services.Pension
 
             if(pensioner == null) {
                 var errResponse = new InitiateFirstPensionBillResponseDTO {
-                    Pensioner = new PensionerListItemDTO(),
-                    BankAccount = new PensionerBankAcResponseDTO()
+                    // Pensioner = new PensionerListItemDTO(),
+                    // BankAccount = new PensionerBankAcResponseDTO()
                 };
                 errResponse.FillDataSource(
                     pensioner,
@@ -172,35 +165,55 @@ namespace CTS_BE.BAL.Services.Pension
             //     pensioner.BasicPensionAmount,
             //     12
             // );
-            InitiateFirstPensionBillResponseDTO response = new (){
-                // DataSource = dataSource,
-                Pensioner = _mapper.Map<PensionerListItemDTO>(pensioner),
-                BankAccount = _mapper.Map<PensionerBankAcResponseDTO>(
-                        await _pensionerBankAccountRepository.GetSingleAysnc(
-                            entity => entity.ActiveFlag
-                            && entity.PpoId==initiateFirstPensionBillDTO.PpoId
-                            && entity.TreasuryCode==treasuryCode
-                        )
-                    ),
-                PensionerPayments = PensionCalculator.CalculatePpoPayments(
+            List<PpoPaymentListItemDTO>? ppoPayments = PensionCalculator.CalculatePpoPayments(
                         pensioner.Category.ComponentRates,
                         pensioner.DateOfCommencement,
                         initiateFirstPensionBillDTO.ToDate,
                         pensioner.BasicPensionAmount
-                    ),
+                    );
+            List<PpoBillBreakupResponseDTO> ppoBillBreakups = new();
+
+            foreach (PpoPaymentListItemDTO ppoPayment in ppoPayments) {
+                ppoBillBreakups.Add(new PpoBillBreakupResponseDTO()
+                {
+                    PpoId = pensioner.PpoId,
+                    DrawnAmount = pensioner.BasicPensionAmount,
+                    DueAmount = (int) ppoPayment.DueAmount,
+                    BreakupAmount = (int) ppoPayment.AmountPerMonth * ppoPayment.PeriodInMonths,
+                    FromDate = ppoPayment.FromDate,
+                    ToDate = ppoPayment.ToDate,
+                    Revision = new PpoComponentRevisionResponseDTO() {
+                        AmountPerMonth = (int) ppoPayment.AmountPerMonth,
+                        FromDate = ppoPayment.FromDate,
+                        RateId = ppoPayment.RateId
+                    }
+                });
+            }
+            InitiateFirstPensionBillResponseDTO response = new (){
+                // DataSource = dataSource,
+                // Pensioner = _mapper.Map<PensionerListItemDTO>(pensioner),
+                // BankAccount = _mapper.Map<PensionerBankAcResponseDTO>(
+                //         await _pensionerBankAccountRepository.GetSingleAysnc(
+                //             entity => entity.ActiveFlag
+                //             && entity.PpoId==initiateFirstPensionBillDTO.PpoId
+                //             && entity.TreasuryCode==treasuryCode
+                //         )
+                //     ),
+                PpoId = initiateFirstPensionBillDTO.PpoId,
+                PpoBillBreakups = ppoBillBreakups,
                 PensionCategory = _mapper.Map<PensionCategoryResponseDTO>(pensioner.Category),
                 // ComponentRates = _mapper.Map<List<ComponentRateResponseDTO>>(pensioner.Category.ComponentRates)
                 //     .OrderBy(entity => entity.EffectiveFromDate).ToList(),
                 BillGeneratedUptoDate = initiateFirstPensionBillDTO.ToDate,
                 TreasuryVoucherNo = "N/A",
                 BillDate = initiateFirstPensionBillDTO.ToDate,
-                BillId = 0,
+                Id = 0,
                 GrossAmount = 0,
                 NetAmount = 0,
             };
 
-            response.GrossAmount = response.PensionerPayments.ToList().Sum(entity => entity.DueAmount);
-            response.NetAmount = response.PensionerPayments.ToList().Sum(entity => entity.NetAmount);
+            response.GrossAmount = response.PpoBillBreakups.ToList().Sum(entity => entity.DueAmount);
+            response.NetAmount = response.PpoBillBreakups.ToList().Sum(entity => entity.NetAmount);
 
             // ************************************
             // Save Pensioner Component Revisions

@@ -49,7 +49,7 @@ namespace CTS_BE.BAL.Services.Pension
 
                 PpoComponentRevision ppoComponentRevisionFound = await _ppoComponentRevisionRepository.GetSingleAysnc(
                         entity => entity.ActiveFlag 
-                        && entity.TreasuryCode == treasuryCode
+                        // && entity.TreasuryCode == treasuryCode
                         && entity.PpoId == ppoComponentRevision.PpoId
                         && entity.RateId == ppoComponentRevision.RateId
                         && entity.FromDate == ppoComponentRevision.FromDate
@@ -80,7 +80,7 @@ namespace CTS_BE.BAL.Services.Pension
                 }
 
                 SetCreatedBy(ppoComponentRevision);
-                ppoComponentRevision.TreasuryCode = treasuryCode;
+                // ppoComponentRevision.TreasuryCode = treasuryCode;
                 ppoComponentRevision.PensionerId = pensionerFound.Id;
                 _ppoComponentRevisionRepository.Add(ppoComponentRevision);
 
@@ -125,7 +125,7 @@ namespace CTS_BE.BAL.Services.Pension
 
                     PpoComponentRevision ppoComponentRevisionFound = await _ppoComponentRevisionRepository.GetSingleAysnc(
                             entity => entity.ActiveFlag 
-                            && entity.TreasuryCode == treasuryCode
+                            // && entity.TreasuryCode == treasuryCode
                             && entity.PpoId == ppoId
                             && entity.RateId == ppoComponentRevision.RateId
                             && entity.FromDate == ppoComponentRevision.FromDate
@@ -154,7 +154,7 @@ namespace CTS_BE.BAL.Services.Pension
                         continue;
                     }
                     SetCreatedBy(ppoComponentRevision);
-                    ppoComponentRevision.TreasuryCode = treasuryCode;
+                    // ppoComponentRevision.TreasuryCode = treasuryCode;
                     ppoComponentRevision.PensionerId = pensionerFound.Id;
                     ppoComponentRevisions.Add(ppoComponentRevision);
                 }
@@ -241,7 +241,9 @@ namespace CTS_BE.BAL.Services.Pension
             // _dataCount = _ppoComponentRevisionRepository.Count();
             return await _ppoComponentRevisionRepository
                 .GetSelectedColumnByConditionAsync(
-                    entity => entity.ActiveFlag && entity.TreasuryCode == treasuryCode && entity.PpoId == ppoId,
+                    entity => entity.ActiveFlag
+                    // && entity.TreasuryCode == treasuryCode 
+                    && entity.PpoId == ppoId,
                     entity => _mapper.Map<TResponse>(entity),
                     new DynamicListQueryParameters(){}
                 );
