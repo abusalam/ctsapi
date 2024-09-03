@@ -10,6 +10,7 @@ namespace CTS_BE.BAL.Interfaces.Pension
                 string treasuryCode
             );
         public Task<ManualPpoReceiptResponseDTO> GetPpoReceipt(string treasuryReceiptNo);
+        public Task<ManualPpoReceiptResponseDTO> GetPpoReceipt(long receiptId);
         public Task<IEnumerable<ListAllPpoReceiptsResponseDTO>> GetAllPpoReceipts(
                 short financialYear,
                 string treasuryCode,
@@ -20,8 +21,12 @@ namespace CTS_BE.BAL.Interfaces.Pension
             string treasuryCode
         );
         public Task<ManualPpoReceiptResponseDTO> UpdatePpoReceipt(
-                string treasuryReceiptNo,
-                ManualPpoReceiptEntryDTO manualPpoReceiptDTO
-            );
+            string treasuryReceiptNo,
+            ManualPpoReceiptEntryDTO manualPpoReceiptDTO
+        );
+        public Task<ManualPpoReceiptResponseDTO> UpdatePpoReceipt(
+            long receiptId,
+            ManualPpoReceiptEntryDTO manualPpoReceiptDTO
+        );
     }
 }

@@ -5,8 +5,6 @@
 @accessToken = eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhcHBsaWNhdGlvbiI6IntcIklkXCI6MyxcIk5hbWVcIjpcIkNUU1wiLFwiTGV2ZWxzXCI6W3tcIklkXCI6OCxcIk5hbWVcIjpcIlRyZWFzdXJ5XCIsXCJTY29wZVwiOltcIkRBQVwiXX1dLFwiUm9sZXNcIjpbe1wiSWRcIjoyNyxcIk5hbWVcIjpcImNsZXJrXCIsXCJQZXJtaXNzaW9uc1wiOltcImNhbi1yZWNlaXZlLWJpbGxcIl19XX0iLCJuYW1laWQiOiIzOSIsIm5hbWUiOiJDVFMgQ2xlcmsiLCJuYmYiOjE3MTc5OTY2OTksImV4cCI6MTcxODA4MzA5OSwiaWF0IjoxNzE3OTk2Njk5fQ.tLMRXKlXb2eyiE2ApSRgFgbX9EjvPbGNi1dgp_UpGadv-UitDdS4su2ZV6B4kp4Rf0TXjDQHTW7YvNkwciQVQg
 # {{Login.response.body.$.accessToken}}
 
-@refreshToken = {{Login.response.body.$.refreshToken}}
-
 @treasuryReceiptNo = {{CreatePPOReceipt.response.body.$.result.treasuryReceiptNo}}
 
 @GeneratedPpoId = {{CreatePPODetails.response.body.$.result.ppoId}}
@@ -356,7 +354,7 @@ Authorization: Bearer {{accessToken}}
 
 
 ### Read PPO Receipt Request
-# @name GetPPOReceipt
+# @name GetPPOReceiptByTreasuryReceiptNo
 GET {{PensionAPI_HostAddress}}/api/v1/manual-ppo/receipts/{{treasuryReceiptNo}}
 Accept: application/json
 Authorization: Bearer {{accessToken}}
@@ -417,38 +415,30 @@ Content-Type: application/json
   "dateOnly": "{{$datetime "YYYY-MM-DD"}}"
 }
 
+### Retrieve Receipt ID
+@ReceiptID = {{CreatePPOReceipt.response.body.$.result.id}}
 
-### WeatherForecast Request
-# @name GetWeatherForecast
-GET {{PensionAPI_HostAddress}}/weatherforecast/
+### Get PPO Receipt By Receipt ID
+# @name GetPPOReceiptById
+GET {{PensionAPI_HostAddress}}/api/v1/manual-ppo/receipt/{{ReceiptID}}
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
-### Register User
-# @name Register
-POST {{PensionAPI_HostAddress}}/auth/register/
+
+### Update PPO Receipt By Receipt ID
+# @name UpdatePPOReceiptById
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+PUT {{PensionAPI_HostAddress}}/api/v1/manual-ppo/receipt/{{ReceiptID}}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
-  "email": "sns@example.com",
-  "password": "P@ssw0rd"
-}
-
-### Login Request
-# @name Login
-POST {{PensionAPI_HostAddress}}/auth/login/
-Content-Type: application/json
-
-{
-  "email": "sns@example.com",
-  "password": "P@ssw0rd"
-}
-
-### RefreshToken Request
-# @name RefreshToken
-POST {{PensionAPI_HostAddress}}/auth/refresh/
-Content-Type: application/json
-
-{
-  "refreshToken": "{{refreshToken}}"
+  "ppoNo": "PPO-{{$randomInt 100000 999999}}",
+  "pensionerName": "Jack Smith",
+  "dateOfCommencement": "2024-07-19",
+  "mobileNumber": "{{$randomInt 6000000000 9999999999}}",
+  "receiptDate": "{{$datetime "YYYY-MM-DD"}}",
+  "psaCode": "A",
+  "ppoType": "N"
 }

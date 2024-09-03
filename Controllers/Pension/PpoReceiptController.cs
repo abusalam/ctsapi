@@ -82,6 +82,34 @@ namespace CTS_BE.Controllers.Pension
             return response;
         }
 
+        [HttpGet("receipt/{receiptId}")]
+        [Tags("Pension: Manual PPO Receipt")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<ManualPpoReceiptResponseDTO>> GetPpoReceiptById(
+            long receiptId
+        )
+        {
+            JsonAPIResponse<ManualPpoReceiptResponseDTO> response = new();
+
+            try {
+                response = new() {
+                ApiResponseStatus = Enum.APIResponseStatus.Success,
+                Result = await _ppoReceiptService
+                        .GetPpoReceipt(receiptId),
+                Message = $"PPO Received Successfully!"
+
+                };
+            }
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
+            }
+            finally {
+                FillErrorMesageFromDataSource(response);
+            }
+            return response;
+        }
+
         [HttpPatch("receipts")]
         [Tags("Pension: Manual PPO Receipt")]
         [OpenApi]
@@ -182,7 +210,38 @@ namespace CTS_BE.Controllers.Pension
             return response;
         }
 
-        [HttpGet("receipts")]
+        [HttpPut("receipt/{receiptId}")]
+        [Tags("Pension: Manual PPO Receipt")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<ManualPpoReceiptResponseDTO>> UpdatePpoReceipt(
+            long receiptId,
+            ManualPpoReceiptEntryDTO manualPpoReceiptEntryDTO
+        )
+        {
+            JsonAPIResponse<ManualPpoReceiptResponseDTO> response = new();
+
+            try {
+                response = new() {
+                    ApiResponseStatus = Enum.APIResponseStatus.Success,
+                    Result = await _ppoReceiptService
+                            .UpdatePpoReceipt(
+                                receiptId,
+                                manualPpoReceiptEntryDTO
+                            ),
+                    Message = $"PPO Receipt Updated Successfully!"
+                };
+            }
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
+            }
+            finally {
+                FillErrorMesageFromDataSource(response);
+            }
+            return response;
+        }
+
+        [HttpGet("receipts/unused")]
         [Tags("Pension: Manual PPO Receipt")]
         [OpenApi]
         public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<ListAllPpoReceiptsResponseDTO>>>> GetAllUnusedPpoReceipts() 
