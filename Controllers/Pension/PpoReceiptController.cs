@@ -229,6 +229,14 @@ namespace CTS_BE.Controllers.Pension
                                     FilterField = "receiptDate",
                                     IsFilterable = true,
                                     IsSortable = true,
+                                },
+                                new() {
+                                    Name = "Date of Commencement",
+                                    DataType = "text",
+                                    FieldName = "dateOfCommencement",
+                                    FilterField = "DateOfCommencement",
+                                    IsFilterable = true,
+                                    IsSortable = true,
                                 }
 
                             },

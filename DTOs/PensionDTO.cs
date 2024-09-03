@@ -86,6 +86,9 @@ namespace CTS_BE.DTOs
 
         [DataType(DataType.Date)]
         public required DateOnly ReceiptDate { get; set; }
+
+        [DataType(DataType.Date)]
+        public required DateOnly DateOfCommencement { get; set; }
     }
 
     public class PensionerEntryDTO : BaseDTO {
