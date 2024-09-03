@@ -170,6 +170,20 @@ namespace CTS_BE.BAL.Services.Pension
                     dynamicListQueryParameters
                 );
         }
+        public async Task<IEnumerable<PensionerListItemDTO>> GetAllNonApprovedPensioners(
+            short financialYear, 
+            string treasuryCode
+        )
+        {
+            var pensioners = await _pensionerDetailsRepository
+                .GetAllNotApprovedPensionerDetailsAsync(
+                    financialYear,
+                    treasuryCode,
+                    entity => _mapper.Map<PensionerListItemDTO>(entity)
+                );
+            _dataCount = pensioners.Count();
+            return pensioners;
+        }
 
         public int Add(int a, int b) {
             return a+b;

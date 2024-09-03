@@ -30,5 +30,9 @@ namespace CTS_BE.BAL.Interfaces.Pension
             string treasuryCode,
             DynamicListQueryParameters dynamicListQueryParameters
         );
+        public Task<IEnumerable<PensionerListItemDTO>> GetAllNonApprovedPensioners(
+            short financialYear,
+            string treasuryCode
+        );
     }
 }

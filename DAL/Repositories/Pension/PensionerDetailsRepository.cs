@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CTS_BE.DAL.Entities.Pension;
 using CTS_BE.DAL.Interfaces.Pension;
 using CTS_BE.DTOs;
+using CTS_BE.PensionEnum;
 using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Repositories.Pension
@@ -32,6 +33,32 @@ namespace CTS_BE.DAL.Repositories.Pension
                 .Include(entity => entity.BankAccounts)
                 .Include(entity => entity.Category)
                 .Include(entity => entity.Receipt)
+                .Select(selectExpression)
+                .ToListAsync();
+
+            return pensioners;
+        }
+
+        public async Task<IEnumerable<PensionerListItemDTO>> GetAllNotApprovedPensionerDetailsAsync(
+            short financialYear,
+            string treasuryCode,
+            Expression<Func<Pensioner, PensionerListItemDTO>> selectExpression
+        )
+        {
+            var pensioners = await _context.Pensioners
+                .Where(
+                    entity => entity.ActiveFlag
+                    && entity.TreasuryCode == treasuryCode
+                )
+                .Include(entity => entity.BankAccounts)
+                .Include(entity => entity.Category)
+                .Include(entity => entity.Receipt)
+                .Include(entity => entity.PpoStatusFlags)
+                .Where(entity => !entity.PpoStatusFlags
+                    .Any(entity => entity.ActiveFlag
+                        && entity.StatusFlag == PpoStatus.PpoApproved
+                    )
+                )
                 .Select(selectExpression)
                 .ToListAsync();
 

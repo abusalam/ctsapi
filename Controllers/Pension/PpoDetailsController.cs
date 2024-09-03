@@ -213,6 +213,92 @@ namespace CTS_BE.Controllers.Pension
             }
             return response;
         }
+
+        [HttpGet("details/not-approved")]
+        [Tags("Pension: PPO Details")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<PensionerListItemDTO>>>> GetAllNotApprovedPensioners()
+        {
+            JsonAPIResponse<DynamicListResult<IEnumerable<PensionerListItemDTO>>> response = new();
+            try {
+
+                response = new() {
+
+                    ApiResponseStatus = Enum.APIResponseStatus.Success,
+                    Result = new()
+                        {
+                            Headers = new () {
+                            
+                                new() {
+                                    Name = "PPO ID",
+                                    DataType = "text",
+                                    FieldName = "ppoId",
+                                    FilterField = "ppoId",
+                                    IsFilterable = true,
+                                    IsSortable = true,
+
+                                },
+                                new() {
+                                    Name = "Name of Pensioner",
+                                    DataType = "text",
+                                    FieldName = "pensionerName",
+                                    FilterField = "pensionerName",
+                                    IsFilterable = true,
+                                    IsSortable = true,
+                                },
+                                new() {
+                                    Name = "Mobile",
+                                    DataType = "text",
+                                    FieldName = "mobileNumber",
+                                    FilterField = "mobileNumber",
+                                    IsFilterable = true,
+                                    IsSortable = true,
+                                },
+                                new() {
+                                    Name = "Date of Birth",
+                                    DataType = "text",
+                                    FieldName = "dateOfBirth",
+                                    FilterField = "dateOfBirth",
+                                    IsFilterable = true,
+                                    IsSortable = true,
+                                },
+                                new() {
+                                    Name = "Date of Retirement",
+                                    DataType = "text",
+                                    FieldName = "dateOfRetirement",
+                                    FilterField = "dateOfRetirement",
+                                    IsFilterable = true,
+                                    IsSortable = true,
+                                },
+                                new() {
+                                    Name = "PPO No",
+                                    DataType = "text",
+                                    FieldName = "ppoNo",
+                                    FilterField = "ppoNo",
+                                    IsFilterable = true,
+                                    IsSortable = true,
+                                }
+
+                            },
+                            Data = await _pensionerDetailsService.GetAllNonApprovedPensioners(
+                                GetCurrentFyYear(),
+                                GetTreasuryCode()
+                            ),
+                            DataCount = _pensionerDetailsService.DataCount()
+                        },
+                    Message = $"All Not Approved PPO Details Received Successfully!"
+
+                };
+            }
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
+            }
+            finally {
+                FillErrorMesageFromDataSource(response);
+            }
+            return response;
+        }
     
     }
 }

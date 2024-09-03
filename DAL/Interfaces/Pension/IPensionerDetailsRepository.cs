@@ -22,5 +22,11 @@ namespace CTS_BE.DAL.Interfaces.Pension
             string treasuryCode,
             Expression<Func<Pensioner, T>> selectExpression
         );
+        
+        public Task<IEnumerable<PensionerListItemDTO>> GetAllNotApprovedPensionerDetailsAsync(
+            short financialYear,
+            string treasuryCode,
+            Expression<Func<Pensioner, PensionerListItemDTO>> selectExpression
+        );
     }
 }

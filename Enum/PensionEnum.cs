@@ -10,6 +10,15 @@ namespace CTS_BE.PensionEnum
         PpoBankAccountApproved = 16,
     }
 
+    public sealed class PpoStatus
+    {
+        public const int PpoApproved = 1;
+        public const int FirstPensionBillGenerated = 2;
+        public const int PpoRunning = 4;
+        public const int PpoSuspended = 8;
+        public const int PpoBankAccountApproved = 16;
+    }
+
     /// <summary>
     /// P - Percentage; A - Amount;
     /// </summary>
