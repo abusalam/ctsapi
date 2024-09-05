@@ -347,10 +347,10 @@ namespace CTS_BE.DTOs
         public char BillType { get; set; } = 'F';
         // public required PensionerBankAcResponseDTO BankAccount { get; set; }
         // public long BankAccountId { get {return this.BankAccount.Id;} }
-        public PensionCategoryResponseDTO PensionCategory { get; set; } = null!;
-        public ICollection<PpoPaymentListItemDTO>? PensionerPayments { get; set; }
+        // public PensionCategoryResponseDTO PensionCategory { get; set; } = null!;
+        // public ICollection<PpoPaymentListItemDTO>? PensionerPayments { get; set; }
         public List<PpoBillBreakupResponseDTO>? PpoBillBreakups { get; set; }
-        public List<PpoComponentRevisionResponseDTO>? PpoComponentRevisions { get; set; }
+        // public List<PpoComponentRevisionResponseDTO>? PpoComponentRevisions { get; set; }
         public DateOnly BillGeneratedUptoDate { get; set; }
         // public long BillId { get; set; }
         public override DateOnly ToDate { get {return this.BillGeneratedUptoDate;} }
@@ -366,7 +366,7 @@ namespace CTS_BE.DTOs
 
     public partial class InitiateFirstPensionBillResponseDTO : PensionerFirstBillResponseDTO {
         public long PensionerId { get {return this.Pensioner?.Id ?? 0;} }
-        public PensionerListItemDTO? Pensioner { get; set; } = null!;
+        public PensionerResponseDTO? Pensioner { get; set; } = null!;
     }
 
     public partial class PpoPaymentListItemDTO : BaseDTO {
