@@ -66,6 +66,7 @@ builder.Services.AddDbContext<PensionDbContext>(
             options => options.EnableRetryOnFailure(10, TimeSpan.FromSeconds(5), null)
         );
         options.UseNpgsql(dataSource);
+        options.EnableSensitiveDataLogging();
     },
     ServiceLifetime.Transient
 );

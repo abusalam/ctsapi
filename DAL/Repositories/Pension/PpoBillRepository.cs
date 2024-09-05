@@ -214,7 +214,13 @@ namespace CTS_BE.DAL.Repositories.Pension
             );
             ppoBillEntity.BillNo = await GetNextBillNo(financialYear, treasuryCode);
             await _pensionDbContext.PpoBills.AddAsync(ppoBillEntity);
-            await _pensionDbContext.SaveChangesAsync();
+            if(await _pensionDbContext.SaveChangesAsync() == 0) {
+                ppoBillResponseDTO.FillDataSource(
+                    ppoBillEntity,
+                    "Pension bill not saved!"
+                );
+                return ppoBillResponseDTO;
+            }
             _pensionDbContext.Entry(ppoBillEntity)
                 .Reference(entity => entity.Pensioner)
                 .Load();

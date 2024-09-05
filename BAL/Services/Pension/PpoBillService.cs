@@ -28,10 +28,10 @@ namespace CTS_BE.BAL.Services.Pension
         }
 
         public async Task<T> SaveFirstBill<T>(
-            InitiateFirstPensionBillResponseDTO firstBill,
+            PensionerFirstBillResponseDTO firstBill,
             short financialYear,
             string treasuryCode
-        )
+        ) where T : PpoBillResponseDTO
         {
             PpoBill ppoBillEntity = _mapper.Map<PpoBill>(firstBill);
             T ppoBillResponseDTO = _mapper.Map<T>(ppoBillEntity);
@@ -60,12 +60,15 @@ namespace CTS_BE.BAL.Services.Pension
                     return ppoBillResponseDTO;
                 }
 
+                SetCreatedBy(ppoBillEntity);
                 ppoBillResponseDTO = await _ppoBillRepository.SavePpoBill<T>(
                         BillType.FirstBill,
-                        _mapper.Map<PpoBill>(firstBill),
+                        ppoBillEntity,
                         financialYear,
                         treasuryCode
                     );
+                ppoBillResponseDTO.PreparedBy = GetUserName();
+                ppoBillResponseDTO.PreparedOn = DateOnly.FromDateTime(DateTime.Now);
             }
             catch (DbUpdateException ex) {
                 ppoBillResponseDTO.FillDataSource(
@@ -118,8 +121,12 @@ namespace CTS_BE.BAL.Services.Pension
                 );
                 return ppoBillResponseDTO;
             }
-            finally {
-
+            catch (Exception ex) {
+                ppoBillResponseDTO.FillDataSource(
+                    _mapper.Map<PpoBillResponseDTO>(ppoBillEntity),
+                    $"ServiceException: {ex.InnerException?.Message ?? ex.ToString()}"
+                );
+                return ppoBillResponseDTO;
             }
         }
     }

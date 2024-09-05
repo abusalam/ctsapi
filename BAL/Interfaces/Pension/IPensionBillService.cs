@@ -8,10 +8,10 @@ namespace CTS_BE.BAL.Interfaces.Pension
 {
     public interface IPensionBillService : IBaseService
     {
-        public Task<InitiateFirstPensionBillResponseDTO> GenerateFirstPensionBill(
+        public Task<T> GenerateFirstPensionBill<T>(
             InitiateFirstPensionBillDTO initiateFirstPensionBillDTO,
             short financialYear,
             string treasuryCode
-        );
+        ) where T : PensionerFirstBillResponseDTO;
     }
 }

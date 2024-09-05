@@ -345,17 +345,12 @@ namespace CTS_BE.DTOs
         // public override int PpoId { get {return this.Pensioner.PpoId;} }
         // public DateOnly FromDate { get {return this.Pensioner.DateOfCommencement;} }
         public char BillType { get; set; } = 'F';
-        // public long PensionerId { get {return this.Pensioner.Id;} }
-        // public required PensionerListItemDTO Pensioner { get; set; }
         // public required PensionerBankAcResponseDTO BankAccount { get; set; }
         // public long BankAccountId { get {return this.BankAccount.Id;} }
         public PensionCategoryResponseDTO PensionCategory { get; set; } = null!;
         public ICollection<PpoPaymentListItemDTO>? PensionerPayments { get; set; }
         public List<PpoBillBreakupResponseDTO>? PpoBillBreakups { get; set; }
         public List<PpoComponentRevisionResponseDTO>? PpoComponentRevisions { get; set; }
-    }
-
-    public partial class InitiateFirstPensionBillResponseDTO : PensionerFirstBillResponseDTO {
         public DateOnly BillGeneratedUptoDate { get; set; }
         // public long BillId { get; set; }
         public override DateOnly ToDate { get {return this.BillGeneratedUptoDate;} }
@@ -365,6 +360,13 @@ namespace CTS_BE.DTOs
         public DateOnly TreasuryVoucherDate { get; set; }
         public long GrossAmount { get; set; }
         public long NetAmount { get; set; }
+        public string PreparedBy { get; set; } = null!;
+        public DateOnly PreparedOn { get; set; }
+    }
+
+    public partial class InitiateFirstPensionBillResponseDTO : PensionerFirstBillResponseDTO {
+        public long PensionerId { get {return this.Pensioner?.Id ?? 0;} }
+        public PensionerListItemDTO? Pensioner { get; set; } = null!;
     }
 
     public partial class PpoPaymentListItemDTO : BaseDTO {

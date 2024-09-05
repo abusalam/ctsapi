@@ -44,7 +44,7 @@ namespace CTS_BE.Controllers.Pension
                 }
             };
             try {
-                response.Result = await _pensionBillService.GenerateFirstPensionBill(
+                response.Result = await _pensionBillService.GenerateFirstPensionBill<InitiateFirstPensionBillResponseDTO>(
                     initiateFirstPensionBillDTO,
                     GetCurrentFyYear(),
                     GetTreasuryCode()
@@ -77,7 +77,7 @@ namespace CTS_BE.Controllers.Pension
                 }
             };
             try {
-                InitiateFirstPensionBillResponseDTO firstBill = await _pensionBillService.GenerateFirstPensionBill(
+                PensionerFirstBillResponseDTO firstBill = await _pensionBillService.GenerateFirstPensionBill<PensionerFirstBillResponseDTO>(
                     new InitiateFirstPensionBillDTO
                     {
                         PpoId = ppoBillEntryDTO.PpoId,

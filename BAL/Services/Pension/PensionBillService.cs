@@ -43,11 +43,11 @@ namespace CTS_BE.BAL.Services.Pension
             _mapper = mapper;
         }
 
-        public async Task<InitiateFirstPensionBillResponseDTO> GenerateFirstPensionBill(
+        public async Task<T> GenerateFirstPensionBill<T>(
                 InitiateFirstPensionBillDTO initiateFirstPensionBillDTO,
                 short financialYear,
                 string treasuryCode
-            )
+            ) where T : PensionerFirstBillResponseDTO
         {
 
             PensionDbContext pensionDbContext = (PensionDbContext) _pensionerDetailsRepository.GetDbContext();
@@ -58,10 +58,7 @@ namespace CTS_BE.BAL.Services.Pension
                 );
 
             if(pensioner == null) {
-                var errResponse = new InitiateFirstPensionBillResponseDTO {
-                    // Pensioner = new PensionerListItemDTO(),
-                    // BankAccount = new PensionerBankAcResponseDTO()
-                };
+                T errResponse = default!;
                 errResponse.FillDataSource(
                     pensioner,
                     "No such PPO exists"
@@ -212,6 +209,11 @@ namespace CTS_BE.BAL.Services.Pension
                 NetAmount = 0,
             };
 
+            // The instance of entity type cannot be tracked because another instance with the same key value for Pensioner is already being tracked
+            if(typeof(T) == typeof(InitiateFirstPensionBillResponseDTO)) {
+                response.Pensioner = _mapper.Map<PensionerListItemDTO>(pensioner);
+            }
+
             response.GrossAmount = response.PpoBillBreakups.ToList().Sum(entity => entity.DueAmount);
             response.NetAmount = response.PpoBillBreakups.ToList().Sum(entity => entity.NetAmount);
 
@@ -230,7 +232,7 @@ namespace CTS_BE.BAL.Services.Pension
 
             // pensionDbContext.Pensioners.Update(pensioner);
             // await pensionDbContext.SaveChangesAsync();
-            return response;
+            return _mapper.Map<T>(response);
         }
     }
 }
