@@ -197,7 +197,6 @@ namespace CTS_BE.BAL.Services.Pension
                 //         )
                 //     ),
                 PpoId = initiateFirstPensionBillDTO.PpoId,
-                PpoBillBreakups = ppoBillBreakups,
                 // PensionCategory = _mapper.Map<PensionCategoryResponseDTO>(pensioner.Category),
                 // ComponentRates = _mapper.Map<List<ComponentRateResponseDTO>>(pensioner.Category.ComponentRates)
                 //     .OrderBy(entity => entity.EffectiveFromDate).ToList(),
@@ -212,10 +211,15 @@ namespace CTS_BE.BAL.Services.Pension
             // The instance of entity type cannot be tracked because another instance with the same key value for Pensioner is already being tracked
             if(typeof(T) == typeof(InitiateFirstPensionBillResponseDTO)) {
                 response.Pensioner = _mapper.Map<PensionerResponseDTO>(pensioner);
+                response.PensionerPayments = ppoPayments;
+                response.GrossAmount = response.PensionerPayments.ToList().Sum(entity => entity.DueAmount);
+                response.NetAmount = response.PensionerPayments.ToList().Sum(entity => entity.NetAmount);
+            } else {
+                response.PpoBillBreakups = ppoBillBreakups;
+                response.GrossAmount = response.PpoBillBreakups.ToList().Sum(entity => entity.DueAmount);
+                response.NetAmount = response.PpoBillBreakups.ToList().Sum(entity => entity.NetAmount);
             }
 
-            response.GrossAmount = response.PpoBillBreakups.ToList().Sum(entity => entity.DueAmount);
-            response.NetAmount = response.PpoBillBreakups.ToList().Sum(entity => entity.NetAmount);
 
             // ************************************
             // Save Pensioner Component Revisions

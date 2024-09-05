@@ -348,7 +348,7 @@ namespace CTS_BE.DTOs
         // public required PensionerBankAcResponseDTO BankAccount { get; set; }
         // public long BankAccountId { get {return this.BankAccount.Id;} }
         // public PensionCategoryResponseDTO PensionCategory { get; set; } = null!;
-        // public ICollection<PpoPaymentListItemDTO>? PensionerPayments { get; set; }
+        public ICollection<PpoPaymentListItemDTO>? PensionerPayments { get; set; }
         public List<PpoBillBreakupResponseDTO>? PpoBillBreakups { get; set; }
         // public List<PpoComponentRevisionResponseDTO>? PpoComponentRevisions { get; set; }
         public DateOnly BillGeneratedUptoDate { get; set; }
