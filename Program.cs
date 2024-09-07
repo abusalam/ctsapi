@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
+using CTS_BE.Adapters;
+using Newtonsoft.Json;
 using System.Reflection;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using CTS_BE.PensionEnum;
@@ -94,6 +96,29 @@ builder.Services.AddSwaggerGen(c =>
         return apiDesc.TryGetMethodInfo(out MethodInfo methodInfo) ? methodInfo.Name : null;
     });
 });
+
+
+// Add MessageQueue services to the container with specified configurations.
+RabbitMqOptions rabbitMqOptions = new();
+builder.Configuration.GetSection(RabbitMqOptions.RabbitMq).Bind(rabbitMqOptions);
+try {
+    IMqService mqService = new MqService(
+        new RabbitMqAdapter(rabbitMqOptions)
+        // new MockMqAdapter()
+    );
+    builder.Services.AddSingleton(mqService);
+}
+catch(Exception ex) {
+    Console.WriteLine($"RabbitMQ connection failed: {ex.GetType()} {ex.Message}");
+    string jsonRabbitMqOptions = JsonConvert.SerializeObject(rabbitMqOptions);
+    Console.WriteLine($"RabbitMQ Options: {jsonRabbitMqOptions}");
+    
+    // Start RabbitMQ with default configurations
+    builder.Services.AddSingleton(rabbitMqOptions);
+    builder.Services.AddSingleton<MqAdapter, RabbitMqAdapter>();
+    builder.Services.AddSingleton<IMqService, MqService>();
+}
+
 
 //Pension Repositories
 builder.Services.AddTransient<IManualPpoReceiptRepository, ManualPpoReceiptRepository>();

@@ -73,6 +73,7 @@ Content-Type: application/json
 }
 
 
+
 ### Create Pension Component Rate
 # @name CreatePensionBreakupRate
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
@@ -179,6 +180,47 @@ Content-Type: application/json
 @NetAmount = {{GenerateFirstPensionBill.response.body.$.result.netAmount}}
 @TaxAmount = {{GenerateFirstPensionBill.response.body.$.result.grossAmount}}
 @PensionerPayments = {{GenerateFirstPensionBill.response.body.$.result.pensionerPayments}}
+
+
+
+
+
+
+
+@QueueName = "cts"
+@ConsumerTag = {{StartMqComsumer.response.body.$.result}}
+
+### Send Message
+# @name SendMessage
+POST {{PensionAPI_HostAddress}}/api/v1/mq/message/{{QueueName}}?contents={{Contents}}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+@Contents = 50
+
+
+### Receive SingleMessage
+# @name ReceiveSingleMessage
+GET {{PensionAPI_HostAddress}}/api/v1/mq/message/{{QueueName}}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+
+### Start Message Queue Comsumer
+# @name StartMqComsumer
+GET {{PensionAPI_HostAddress}}/api/v1/mq/start-worker/{{QueueName}}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+
+### Stop Message Queue Comsumer
+# @name StopMqComsumer
+GET {{PensionAPI_HostAddress}}/api/v1/mq/stop-worker/{{ConsumerTag}}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+
+
 
 
 
