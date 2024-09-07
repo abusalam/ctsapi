@@ -53,7 +53,7 @@ namespace CTS_BE.BAL.Services.Pension
                     .Where(entity => entity.PpoNo == pensionerEntryDTO.PpoNo)
                     .FirstOrDefaultAsync();
                 if(ppoReceipt==null){
-                    PensionerResponseDTO? errResponse = _mapper.Map<PensionerResponseDTO>(pensionerEntryDTO);
+                    PensionerResponseDTO errResponse = _mapper.Map<PensionerResponseDTO>(pensionerEntryDTO);
                     errResponse.FillDataSource(
                         ppoReceipt,
                         "PPO Receipt not found. Please check PPO No. and try again."
@@ -61,6 +61,14 @@ namespace CTS_BE.BAL.Services.Pension
                     return errResponse;
                 }
                 pensionerEntity = _mapper.Map<Pensioner>(pensionerEntryDTO);
+                if(pensionerEntity.DateOfCommencement != ppoReceipt.DateOfCommencement) {
+                    PensionerResponseDTO errResponse = _mapper.Map<PensionerResponseDTO>(pensionerEntryDTO);
+                    errResponse.FillDataSource(
+                        ppoReceipt,
+                        "Date of Commencement does not match with PPO Receipt. Please check PPO No. and try again."
+                    );
+                    return errResponse;
+                }
                 pensionerEntity.PpoId = await _ppoIdSequenceRepository.GetNextPpoId(
                     financialYear,
                     treasuryCode

@@ -10,6 +10,7 @@ namespace CTS_BE.BAL.Interfaces.Pension
     {
         public Task<T> GenerateFirstPensionBill<T>(
             InitiateFirstPensionBillDTO initiateFirstPensionBillDTO,
+            char billType,
             short financialYear,
             string treasuryCode
         ) where T : PensionerFirstBillResponseDTO;

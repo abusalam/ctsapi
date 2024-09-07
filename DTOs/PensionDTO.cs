@@ -383,6 +383,7 @@ namespace CTS_BE.DTOs
         public char RateType { get; set; }
         public int RateAmount { get; set; }
         public int PeriodInMonths { get; set; }
+        public int PeriodInDays { get; set; }
         public long DueAmount { get; set; }
         public long DrawnAmount { get; set; }
         public long NetAmount { get; set; }

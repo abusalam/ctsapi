@@ -28,51 +28,63 @@ namespace CTS_BE.BAL.Services.Pension
             componentRates.OrderBy(entity => entity.BreakupId)
                 .ThenByDescending(entity => entity.EffectiveFromDate)
                 .ToList().ForEach(componentRate => {
-                $"{componentRate.Breakup.Id}, {componentRate.Breakup.ComponentName}".PrintOut();
+                    $"{componentRate.Breakup.Id}, {componentRate.Breakup.ComponentName}".PrintOut();
 
 
-                // Reset the period start date for the next breakup
-                if(componentRate.Breakup.Id != prevBreakupId) {
-                    calculatedPeriodStartDate = toDate;
-                }
-                prevBreakupId = componentRate.Breakup.Id;
-                ppoPayments.Add(new PpoPaymentListItemDTO()
-                {
-                    RateId = componentRate.Id,
-                    BreakupId = componentRate.Breakup.Id,
-                    ComponentName = componentRate.Breakup.ComponentName,
-                    ComponentType = componentRate.Breakup.ComponentType,
+                    // Reset the period start date for the next breakup
+                    if(componentRate.Breakup.Id != prevBreakupId) {
+                        calculatedPeriodStartDate = toDate;
+                    }
+                    if(commencementDate > calculatedPeriodStartDate) {
+                        return;
+                    }
+                    prevBreakupId = componentRate.Breakup.Id;
 
-                    RateType = componentRate.RateType,
-                    RateAmount = componentRate.RateAmount,
-                    BasicPensionAmount = basicPensionAmount,
-                    AmountPerMonth = PensionCalculator.CalculatePerMonthBreakupAmount(
-                        PensionCalculator.CalculateEffectiveRate(
-                            componentRates.ToList(),
-                            componentRate.Breakup.Id,
-                            calculatedPeriodStartDate      
-                        ),
-                        basicPensionAmount
-                        ),
-                    FromDate = PensionCalculator.CalculatePeriodStartFromDate(
-                            PensionCalculator.CalculateEffectiveRate(
+                    if(calculatedPeriodStartDate.Day > 1) {
+                        
+                    }
+
+                    ppoPayments.Add(new PpoPaymentListItemDTO()
+                    {
+                        RateId = componentRate.Id,
+                        BreakupId = componentRate.Breakup.Id,
+                        ComponentName = componentRate.Breakup.ComponentName,
+                        ComponentType = componentRate.Breakup.ComponentType,
+
+                        RateType = componentRate.RateType,
+                        RateAmount = componentRate.RateAmount,
+                        BasicPensionAmount = basicPensionAmount,
+                        AmountPerMonth = PensionCalculator.CalculatePerMonthBreakupAmount(
+                                PensionCalculator.CalculateEffectiveRate(
                                     componentRates.ToList(),
                                     componentRate.Breakup.Id,
-                                    calculatedPeriodStartDate.AddDays(-1)
-                                ).EffectiveFromDate,
-                            commencementDate
-                        ),
-                    ToDate = calculatedPeriodStartDate.AddDays(-1),
+                                    calculatedPeriodStartDate      
+                                ),
+                                basicPensionAmount
+                            ),
+                        FromDate = PensionCalculator.CalculatePeriodStartFromDate(
+                                PensionCalculator.CalculateEffectiveRate(
+                                        componentRates.ToList(),
+                                        componentRate.Breakup.Id,
+                                        calculatedPeriodStartDate.AddDays(-1)
+                                    ).EffectiveFromDate,
+                                commencementDate
+                            ),
+                        ToDate = calculatedPeriodStartDate.AddDays(-1),
+                    });
+                    calculatedPeriodStartDate = componentRate.EffectiveFromDate;
                 });
-                calculatedPeriodStartDate = componentRate.EffectiveFromDate;
-            });
 
             ppoPayments.ForEach(ppoPayment => {
-               ppoPayment.PeriodInMonths = PensionCalculator.CalculatePeriodInMonths(
+               ppoPayment.PeriodInMonths = PensionCalculator.CalculateMonthsAndDays(
                    ppoPayment.FromDate,
-                   ppoPayment.ToDate
+                   ppoPayment.ToDate,
+                   out int days
                );
-               ppoPayment.DueAmount = ppoPayment.PeriodInMonths * ppoPayment.AmountPerMonth;
+               ppoPayment.PeriodInDays = days;
+               $"{ppoPayment.FromDate}-{ppoPayment.ToDate}, {ppoPayment.PeriodInMonths}-{days} days".PrintOut();
+               ppoPayment.DueAmount = (ppoPayment.PeriodInMonths * ppoPayment.AmountPerMonth)
+               + ((ppoPayment.AmountPerMonth / DateTime.DaysInMonth(ppoPayment.FromDate.Year, ppoPayment.FromDate.Month)) * days);
                ppoPayment.NetAmount = ppoPayment.DueAmount - ppoPayment.DrawnAmount;
             });
             return ppoPayments.OrderBy(entity => entity.ComponentName)
@@ -99,26 +111,45 @@ namespace CTS_BE.BAL.Services.Pension
         /// <param name="fromDate">The start date.</param>
         /// <param name="toDate">The end date.</param>
         /// <returns>The number of whole months between the two dates.</returns>
-        public static int CalculatePeriodInMonths(
+        public static int CalculateMonthsAndDays(
             DateOnly fromDate,
-            DateOnly toDate
+            DateOnly toDate,
+            out int days
         )
         {
+            days = 0;
+            int months = 0;
             if (fromDate > toDate) {
-                return CalculatePeriodInMonths(toDate, fromDate);
+                return CalculateMonthsAndDays(toDate, fromDate, out days);
             }
 
-            DateTime startDate = CalculatePeriodStartDate(fromDate).ToDateTime(new TimeOnly(0, 0, 0));
-            DateTime endDate = CalculatePeriodEndDate(toDate).ToDateTime(new TimeOnly(0, 0, 0));
-            var roughMonths = (int)(endDate - startDate).TotalDays / 30;
+            DateTime startDate = fromDate.ToDateTime(new TimeOnly(0, 0, 0));
+            DateTime endDate = toDate.ToDateTime(new TimeOnly(0, 0, 0));
 
-            if(startDate.AddMonths(roughMonths) > endDate) {
-                $"fromDate:{fromDate}, toDate:{toDate}, roughMonths(-1):{roughMonths}".PrintOut();
-                return roughMonths - 1;
-            } else {
-                $"fromDate:{fromDate}, toDate:{toDate}, roughMonths:{roughMonths}".PrintOut();
-                return roughMonths;
+            for( var i = 1; ; ++i )
+            {
+                if( startDate.AddMonths( i ) > endDate )
+                {
+                    months = i - 1;
+
+                    break;
+                }
             }
+
+            for( var i = 1; ; ++i )
+            {
+                if( startDate.AddMonths( months ).AddDays( i ) > endDate )
+                {
+                    days = i;
+
+                    break;
+                }
+            }
+            if(endDate.Day == days && DateTime.DaysInMonth(endDate.Year, endDate.Month) == days) {
+                days = 0;
+                months++;
+            }
+            return months;
         }
 
         public static List<long> CalculateBreakups(

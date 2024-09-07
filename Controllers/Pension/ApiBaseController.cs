@@ -40,7 +40,7 @@ namespace CTS_BE.Controllers.Pension
 
         protected void FillException<T>(JsonAPIResponse<T> response, Exception exception) where T : BaseDTO
         {
-            response.Message = exception?.InnerException?.Message ?? exception?.Message;
+            response.Message = exception.ToString(); //exception?.InnerException?.Message ?? exception?.Message;
             response.ApiResponseStatus = Enum.APIResponseStatus.Error;
             response.Result = null;
         }

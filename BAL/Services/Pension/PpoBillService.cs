@@ -27,7 +27,7 @@ namespace CTS_BE.BAL.Services.Pension
             _pensionDbContext = (PensionDbContext) this._ppoBillRepository.GetDbContext();
         }
 
-        public async Task<T> SaveFirstBill<T>(
+        public async Task<T> SavePpoBill<T>(
             PensionerFirstBillResponseDTO firstBill,
             short financialYear,
             string treasuryCode
@@ -41,7 +41,7 @@ namespace CTS_BE.BAL.Services.Pension
                     .Where(
                         entity => entity.ActiveFlag
                         && entity.PpoId == firstBill.PpoId
-                        && entity.BillType == BillType.FirstBill
+                        && entity.BillType == firstBill.BillType
                         // && entity.BillDate == billDate
                         // && entity.FinancialYear == financialYear
                         && entity.TreasuryCode == treasuryCode
@@ -62,7 +62,6 @@ namespace CTS_BE.BAL.Services.Pension
 
                 SetCreatedBy(ppoBillEntity);
                 ppoBillResponseDTO = await _ppoBillRepository.SavePpoBill<T>(
-                        BillType.FirstBill,
                         ppoBillEntity,
                         financialYear,
                         treasuryCode

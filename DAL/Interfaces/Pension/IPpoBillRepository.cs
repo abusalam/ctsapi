@@ -30,7 +30,6 @@ namespace CTS_BE.DAL.Interfaces.Pension
         );
 
         public Task<T> SavePpoBill<T>(
-            char billType,
             PpoBill firstBill,
             short financialYear,
             string treasuryCode

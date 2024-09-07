@@ -4,7 +4,7 @@ namespace CTS_BE.BAL.Interfaces.Pension
 {
     public interface IPpoBillService : IBaseService
     {
-        public Task<T> SaveFirstBill<T>(
+        public Task<T> SavePpoBill<T>(
             PensionerFirstBillResponseDTO firstBill,
             short financialYear,
             string treasuryCode

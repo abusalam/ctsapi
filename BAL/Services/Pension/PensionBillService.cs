@@ -45,6 +45,7 @@ namespace CTS_BE.BAL.Services.Pension
 
         public async Task<T> GenerateFirstPensionBill<T>(
                 InitiateFirstPensionBillDTO initiateFirstPensionBillDTO,
+                char billType,
                 short financialYear,
                 string treasuryCode
             ) where T : PensionerFirstBillResponseDTO
@@ -103,8 +104,10 @@ namespace CTS_BE.BAL.Services.Pension
             }
             List<PpoPaymentListItemDTO>? ppoPayments = PensionCalculator.CalculatePpoPayments(
                         pensioner.Category.ComponentRates,
-                        pensioner.DateOfCommencement,
-                        initiateFirstPensionBillDTO.ToDate,
+                        billType == BillType.FirstBill ? pensioner.DateOfCommencement 
+                        : PensionCalculator.CalculatePeriodStartDate(initiateFirstPensionBillDTO.ToDate),
+                        billType == BillType.FirstBill ? initiateFirstPensionBillDTO.ToDate 
+                        : PensionCalculator.CalculatePeriodEndDate(initiateFirstPensionBillDTO.ToDate),
                         pensioner.BasicPensionAmount
                     );
             List<PpoBillBreakupResponseDTO> ppoBillBreakups = new();
@@ -127,9 +130,12 @@ namespace CTS_BE.BAL.Services.Pension
             }
             InitiateFirstPensionBillResponseDTO response = new (){
                 PpoId = initiateFirstPensionBillDTO.PpoId,
+                BillType = billType,
                 // PensionCategory = _mapper.Map<PensionCategoryResponseDTO>(pensioner.Category),
                 // ComponentRates = _mapper.Map<List<ComponentRateResponseDTO>>(pensioner.Category.ComponentRates)
                 //     .OrderBy(entity => entity.EffectiveFromDate).ToList(),
+                // PpoBillBreakups = ppoBillBreakups,
+                // PensionCategory = _mapper.Map<PensionCategoryResponseDTO>(pensioner.Category),
                 BillGeneratedUptoDate = initiateFirstPensionBillDTO.ToDate,
                 TreasuryVoucherNo = "N/A",
                 BillDate = initiateFirstPensionBillDTO.ToDate,

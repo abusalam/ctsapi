@@ -166,13 +166,13 @@ Content-Type: application/json
 {
   "PpoId": {{GeneratedPpoId}},
   "billType": "F",
-  "toDate": "{{$datetime "YYYY-MM-DD"}}"
+  "toDate": "2024-10-01"
 }
 
 
 ### Capture FirstBill Detaills
 @PensionerId = {{CreatePPODetails.response.body.$.result.id}}
-@PensionerBankAcId = {{GenerateFirstPensionBill.response.body.$.result.bankAccount.id}}
+# @PensionerBankAcId = {{GenerateFirstPensionBill.response.body.$.result.pensioner.bankAccounts}}
 @BillFromDate = {{GenerateFirstPensionBill.response.body.$.result.pensioner.dateOfCommencement}}
 @BillUptoDate = {{GenerateFirstPensionBill.response.body.$.result.billGeneratedUptoDate}}
 @BillDate = {{GenerateFirstPensionBill.response.body.$.result.billDate}}
@@ -237,6 +237,20 @@ Content-Type: application/json
   "toDate": "{{$datetime "YYYY-MM-DD"}}"
 }
 
+
+### Save Regular Pension Bill
+# @name SaveRegularPensionBill
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+POST {{PensionAPI_HostAddress}}/api/v1/ppo/pension-bill
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "PpoId": {{GeneratedPpoId}},
+  "toDate": "{{$datetime "YYYY-MM-DD"}}"
+}
+
 ### Create Pensioner Bank Account
 # @name CreatePensionerBankAccount
 POST {{PensionAPI_HostAddress}}/api/v1/ppo/{{GeneratedPpoId}}/bank-accounts
@@ -278,6 +292,8 @@ GET {{PensionAPI_HostAddress}}/api/v1/ppo/{{GeneratedPpoId}}/bank-accounts
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
+### Read Date of Commencement
+@DateOfCommencement = {{CreatePPOReceipt.response.body.$.result.dateOfCommencement}}
 ### Create PPO Details
 # @name CreatePPODetails
 POST {{PensionAPI_HostAddress}}/api/v1/ppo/details
@@ -294,7 +310,7 @@ Content-Type: application/json
   "ppoSubType": "N",
   "categoryId": 30,
   "pensionerName": "Jack Dowsel",
-  "dateOfBirth": "{{$datetime "YYYY-MM-DD"}}",
+  "dateOfBirth": "1954-01-01",
   "gender": "M",
   "mobileNumber": "{{$randomInt 6000000000 9999999999}}",
   "emailId": "string",
@@ -302,8 +318,8 @@ Content-Type: application/json
   "identificationMark": "S",
   "panNo": "PANNO{{$randomInt 1000 9999}}F",
   "aadhaarNo": "{{$randomInt 600000000000 999999999999}}",
-  "dateOfRetirement": "{{$datetime "YYYY-MM-DD" -10000 d}}",
-  "dateOfCommencement": "{{$datetime "YYYY-MM-DD" -9999 d}}",
+  "dateOfRetirement": "2014-01-31",
+  "dateOfCommencement": "{{DateOfCommencement}}",
   "basicPensionAmount": 10000,
   "commutedPensionAmount": 2000,
   "enhancePensionAmount": 10000,
@@ -413,7 +429,7 @@ Content-Type: application/json
 {
   "ppoNo": "PPO-{{$randomInt 100000 999999}}",
   "pensionerName": "Jack Dowsel",
-  "dateOfCommencement": "2024-07-15",
+  "dateOfCommencement": "2014-02-01",
   "mobileNumber": "{{$randomInt 6000000000 9999999999}}",
   "receiptDate": "{{$datetime "YYYY-MM-DD"}}",
   "psaCode": "A",

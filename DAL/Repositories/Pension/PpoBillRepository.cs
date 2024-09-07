@@ -3,6 +3,7 @@ using CTS_BE.DAL.Entities.Pension;
 using CTS_BE.DAL.Interfaces.Pension;
 using CTS_BE.DTOs;
 using CTS_BE.Helper;
+using CTS_BE.PensionEnum;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
@@ -163,15 +164,12 @@ namespace CTS_BE.DAL.Repositories.Pension
         }
     
         public async Task<T> SavePpoBill<T>(
-            char billType,
             PpoBill ppoBillEntity,
             short financialYear,
             string treasuryCode
         )
         {
-            T ppoBillResponseDTO = default!;
-
-            ppoBillResponseDTO = _mapper.Map<T>(ppoBillEntity);
+            T ppoBillResponseDTO = _mapper.Map<T>(ppoBillEntity);
 
             Pensioner? pensioner = await _pensionDbContext.Pensioners
                 .Where(
@@ -207,11 +205,19 @@ namespace CTS_BE.DAL.Repositories.Pension
             ppoBillEntity.TreasuryCode = treasuryCode;
             ppoBillEntity.PpoBillBreakups.ToList().ForEach(
                 entity => {
+                    entity.ActiveFlag = true;
                     entity.Revision.PensionerId = pensioner.Id;
                     entity.TreasuryCode = treasuryCode;
                     entity.FinancialYear = financialYear;
+                    entity.CreatedAt = DateTime.Now;
+                    entity.CreatedBy = ppoBillEntity.CreatedBy;
+                    entity.BreakupAmount = ppoBillEntity.BillType == BillType.RegularBill ? entity.Revision.AmountPerMonth 
+                    : entity.BreakupAmount;
                 }
             );
+            ppoBillEntity.GrossAmount = ppoBillEntity.PpoBillBreakups.Sum(entity => entity.BreakupAmount);
+            ppoBillEntity.NetAmount = ppoBillEntity.GrossAmount - ppoBillEntity.BytransferAmount;
+            
             ppoBillEntity.BillNo = await GetNextBillNo(financialYear, treasuryCode);
             await _pensionDbContext.PpoBills.AddAsync(ppoBillEntity);
             if(await _pensionDbContext.SaveChangesAsync() == 0) {

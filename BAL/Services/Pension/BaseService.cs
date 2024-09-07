@@ -26,6 +26,13 @@ namespace CTS_BE.BAL.Services.Pension
             entity?.GetType()?.GetProperty("CreatedAt")?.SetValue(entity, DateTime.Now);
             entity?.GetType()?.GetProperty("ActiveFlag")?.SetValue(entity, true);
         }
+        protected void SetPreparer<T>(T entity) where T : class 
+        {
+            entity?.GetType()?.GetProperty("PreparedBy")?
+                .SetValue(entity, _userId);
+            entity?.GetType()?.GetProperty("PreparedOn")?
+                .SetValue(entity, DateOnly.FromDateTime(DateTime.Now));
+        }
         protected void SetUpdatedBy<T>(T entity) where T : class
         {
             entity?.GetType()?.GetProperty("UpdatedBy")?.SetValue(entity, _userId);
