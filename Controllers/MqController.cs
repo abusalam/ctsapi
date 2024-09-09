@@ -55,6 +55,7 @@ namespace CTS_BE.Controllers
     
         [HttpGet("message/{queueName}")]
         [Tags("Message Queue: Worker")]
+        [OpenApi]
         public Task<string> ReceiveSingleMessage(string queueName)
         {
 
@@ -72,6 +73,7 @@ namespace CTS_BE.Controllers
 
         [HttpGet("start-worker/{queueName}")]
         [Tags("Message Queue: Worker")]
+        [OpenApi]
         public Task<JsonAPIResponse<string>> StartMqComsumer(string queueName)
         {
             
@@ -101,6 +103,7 @@ namespace CTS_BE.Controllers
 
         [HttpGet("stop-worker/{consumerTag}")]
         [Tags("Message Queue: Worker")]
+        [OpenApi]
         public Task<string> StopMqComsumer(string consumerTag)
         {
             string response = "";

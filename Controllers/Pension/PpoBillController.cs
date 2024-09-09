@@ -145,7 +145,7 @@ namespace CTS_BE.Controllers.Pension
             return response;
         }
 
-        [HttpPost("bill")]
+        [HttpPost("send-bill")]
         [Tags("Pension: First Bill")]
         [OpenApi]
         public Task<string> SendFirstPensionBill(string message)
