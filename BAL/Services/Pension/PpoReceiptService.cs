@@ -93,7 +93,7 @@ namespace CTS_BE.BAL.Services.Pension
             catch (Exception ex) {
                 manualPpoReceiptDTOResponse.FillDataSource(
                     manualPpoReceiptEntity,
-                    ex.ToString()//.Message
+                    ex.Message
                 );
                 return manualPpoReceiptDTOResponse;
             }

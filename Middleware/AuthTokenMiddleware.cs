@@ -38,8 +38,8 @@ namespace CTS_BE.Middlewares
                     else
                     {
                         context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                        _logger.LogError("ErrorMessages.UnAuthenticated");
-                        await context.Response.WriteAsync("ErrorMessages.UnAuthenticated");
+                        _logger.LogError(new Exception("UnAuthenticated"), "UnAuthenticated");
+                        await context.Response.WriteAsync("UnAuthenticated");
                     }
                 }
             }
@@ -47,7 +47,7 @@ namespace CTS_BE.Middlewares
             {
                 _logger.LogError(ex, ex.Message);
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                await context.Response.WriteAsync("{ \"msg\":\"Error: "+ex.ToString()+"\"}");
+                await context.Response.WriteAsync("{ \"middlewareException\":\""+ex.Message+"\"}");
 
             }
         }

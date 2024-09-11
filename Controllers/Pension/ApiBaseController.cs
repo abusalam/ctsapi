@@ -3,6 +3,8 @@ using CTS_BE.DTOs;
 using CTS_BE.Helper;
 using CTS_BE.Helper.Authentication;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System.Dynamic;
 
 namespace CTS_BE.Controllers.Pension
 {
@@ -31,10 +33,10 @@ namespace CTS_BE.Controllers.Pension
             return CURRENT_FINANCIAL_YEAR;
         }
         protected void FillErrorMesageFromDataSource<T>(JsonAPIResponse<T> response) where T : BaseDTO
-        {
+        {            
             if(response.Result?.DataSource != null) {
-                response.ApiResponseStatus = Enum.APIResponseStatus.Error;
                 response.Message = ((dynamic)response.Result.DataSource).Message;
+                response.ApiResponseStatus = Enum.APIResponseStatus.Error;
             }
         }
 

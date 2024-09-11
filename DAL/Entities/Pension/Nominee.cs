@@ -75,7 +75,7 @@ public partial class Nominee
     public DateTime? CreatedAt { get; set; }
 
     [Column("created_by")]
-    public int? CreatedBy { get; set; }
+    public int CreatedBy { get; set; }
 
     [Column("updated_at", TypeName = "timestamp without time zone")]
     public DateTime? UpdatedAt { get; set; }

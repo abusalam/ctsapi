@@ -62,7 +62,7 @@ namespace CTS_BE.BAL.Services.Pension
                 InitiateFirstPensionBillResponseDTO errResponse = new ();
                 errResponse.FillDataSource(
                     pensioner,
-                    "No such PPO exists"
+                    "Pensioner not found!"
                 );
                 return _mapper.Map<T>(errResponse);
             }
@@ -75,7 +75,7 @@ namespace CTS_BE.BAL.Services.Pension
                 InitiateFirstPensionBillResponseDTO errResponse = new ();
                 errResponse.FillDataSource(
                     pensioner,
-                    "No bank account exists"
+                    "Pensioner bank account not found!"
                 );
                 return _mapper.Map<T>(errResponse);
             }

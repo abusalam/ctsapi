@@ -163,6 +163,37 @@ namespace CTS_BE.DAL.Repositories.Pension
             return ppoBill;
         }
     
+        private PpoComponentRevision GetPpoComponentRevision(
+            PpoComponentRevision revision,
+            long pensionerId,
+            int ppoId,
+            int createdBy
+        )
+        {
+            PpoComponentRevision? ppoComponentRevisionFound = _pensionDbContext.PpoComponentRevisions
+                .Where(
+                    entity => entity.ActiveFlag 
+                    // && entity.TreasuryCode == treasuryCode
+                    && entity.PpoId == ppoId
+                    && entity.RateId == revision.RateId
+                    // && entity.FromDate == revision.FromDate
+                )
+                .FirstOrDefault();
+
+
+            if(ppoComponentRevisionFound != null)
+            {
+                revision = ppoComponentRevisionFound;
+                return revision;
+            }
+            revision.ActiveFlag = true;
+            revision.PensionerId = pensionerId;
+            revision.PpoId = ppoId;
+            revision.CreatedBy = createdBy;
+            revision.CreatedAt = DateTime.Now;
+            return revision;
+        }
+
         public async Task<T> SavePpoBill<T>(
             PpoBill ppoBillEntity,
             short financialYear,
@@ -206,7 +237,13 @@ namespace CTS_BE.DAL.Repositories.Pension
             ppoBillEntity.PpoBillBreakups.ToList().ForEach(
                 entity => {
                     entity.ActiveFlag = true;
-                    entity.Revision.PensionerId = pensioner.Id;
+                    entity.Revision = GetPpoComponentRevision(
+                        entity.Revision,
+                        pensioner.Id,
+                        ppoBillEntity.PpoId,
+                        ppoBillEntity.CreatedBy
+                    );
+                    entity.RevisionId = entity.Revision.Id;
                     entity.TreasuryCode = treasuryCode;
                     entity.FinancialYear = financialYear;
                     entity.CreatedAt = DateTime.Now;

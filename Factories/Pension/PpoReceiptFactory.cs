@@ -14,21 +14,16 @@ namespace CTS_BE.Factories.Pension
                 .RuleFor(d => d.PensionerName, f => f.Person.FullName)
                 .RuleFor(
                     d => d.DateOfCommencement,
-                    (f,d) => PensionCalculator.CalculatePeriodEndDate(
+                    (f,d) => PensionCalculator.CalculatePeriodStartDate(
                         f.Date.PastDateOnly(
-                            0,
+                            1,
                             DateOnly.FromDateTime(DateTime.Now).AddMonths(-2)
                         )
                     )
                 )
                 .RuleFor(
                     d => d.ReceiptDate,
-                    (f,d) => PensionCalculator.CalculatePeriodEndDate(
-                        f.Date.PastDateOnly(
-                            0,
-                            d.DateOfCommencement
-                        )
-                    ).AddDays(1)
+                    (f,d) => d.DateOfCommencement.AddDays(1)
                 )
                 .RuleFor(d => d.MobileNumber, f => f.Random.Replace("9#########"))
                 .RuleFor(d => d.PsaCode, f => f.PickRandom('A','D','O'))

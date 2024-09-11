@@ -499,4 +499,8 @@ namespace CTS_BE.DTOs
     public partial class PpoComponentRevisionListEntryDTO : BaseDTO {
         public List<PpoComponentRevisionEntryDTO>? Revisions { get; set; }
     }
+
+    public partial class PpoListResponseDTO : BaseDTO {
+        public List<PensionerListItemDTO> PpoList { get; set; } = null!;
+    }
 }

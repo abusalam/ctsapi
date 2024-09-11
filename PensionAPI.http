@@ -11,9 +11,9 @@
 
 @RevisionId = {{CreatePpoComponentSingleRevision.response.body.$.result.id}}
 
-@ApprovedPpoId = {{SetPpoStatusFlag.response.body.$.result.ppoId}}
+@ApprovedPpoId = {{SetPPOApprovedFlag.response.body.$.result.ppoId}}
 
-@ApprovedPpoIdStatusFlag = {{SetPpoStatusFlag.response.body.$.result.statusFlag}}
+@ApprovedPpoIdStatusFlag = {{SetPPOApprovedFlag.response.body.$.result.statusFlag}}
 
 ### All List APIs
 # @name AllPatchAPIs
@@ -221,6 +221,20 @@ Authorization: Bearer {{accessToken}}
 
 
 
+### Set PPO Running Flag
+# @name SetPPORunningFlag
+POST {{PensionAPI_HostAddress}}/api/v1/ppo/status
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "PpoId": "{{ApprovedPpoId}}",
+  "StatusFlag": 4,
+  "StatusWef": "{{$datetime "YYYY-MM-DD" -2 d}}"
+}
+
 
 
 
@@ -238,6 +252,10 @@ Content-Type: application/json
 }
 
 
+
+
+
+
 ### Save Regular Pension Bill
 # @name SaveRegularPensionBill
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
@@ -250,6 +268,10 @@ Content-Type: application/json
   "PpoId": {{GeneratedPpoId}},
   "toDate": "{{$datetime "YYYY-MM-DD"}}"
 }
+
+
+
+
 
 ### Create Pensioner Bank Account
 # @name CreatePensionerBankAccount
@@ -268,6 +290,10 @@ Content-Type: application/json
   "branchCode": 531
 }
 
+
+
+
+
 ### Update Pensioner Bank Account
 # @name UpdatePensionerBankAccount
 PUT {{PensionAPI_HostAddress}}/api/v1/ppo/{{GeneratedPpoId}}/bank-accounts
@@ -285,12 +311,20 @@ Content-Type: application/json
   "branchCode": 531
 }
 
+
+
+
+
 ### Read Pensioner Bank Account
 # @name ReadPensionerBankAccount
 GET {{PensionAPI_HostAddress}}/api/v1/ppo/{{GeneratedPpoId}}/bank-accounts
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
 Accept: application/json
 Authorization: Bearer {{accessToken}}
+
+
+
+
 
 ### Read Date of Commencement
 @DateOfCommencement = {{CreatePPOReceipt.response.body.$.result.dateOfCommencement}}
@@ -326,6 +360,10 @@ Content-Type: application/json
   "reducedPensionAmount": 8000,
   "religion": "H"
 }
+
+
+
+
 
 ### Collect PPO Receipt Values
 @PpoReceiptID = {{CreatePPOReceipt.response.body.$.result.id}}
@@ -364,14 +402,22 @@ Content-Type: application/json
   "religion": "H"
 }
 
+
+
+
+
 ### Check PPO Details
 # @name CheckPpoDetails
 Get {{PensionAPI_HostAddress}}/api/v1/ppo/{{GeneratedPpoId}}/details
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
+
+
+
+
 ### Set PPO Approved Flag
-# @name SetPpoStatusFlag
+# @name SetPPOApprovedFlag
 POST {{PensionAPI_HostAddress}}/api/v1/ppo/status
 Accept: application/json
 Authorization: Bearer {{accessToken}}
@@ -383,19 +429,9 @@ Content-Type: application/json
   "StatusWef": "{{$datetime "YYYY-MM-DD" -5 d}}"
 }
 
-### Set PPO Running Flag
-# @name SetPPORunningFlag
-POST {{PensionAPI_HostAddress}}/api/v1/ppo/status
-# POST {{PensionAPI_HostAddress}}/api/v1/echo
-Accept: application/json
-Authorization: Bearer {{accessToken}}
-Content-Type: application/json
 
-{
-  "PpoId": "{{ApprovedPpoId}}",
-  "StatusFlag": 4,
-  "StatusWef": "{{$datetime "YYYY-MM-DD" -2 d}}"
-}
+
+
 
 ### Clear PPO Approved Flag
 # @name ClearPpoStatusFlagByPpoId
@@ -436,6 +472,10 @@ Content-Type: application/json
   "ppoType": "N"
 }
 
+
+
+
+
 ### Update PPO Receipt Request
 # @name UpdatePPOReceipt
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
@@ -454,11 +494,26 @@ Content-Type: application/json
   "ppoType": "N"
 }
 
+
+
+
+
 ### Get DateOnly Request
 # @name GetDateOnly
 GET {{PensionAPI_HostAddress}}/api/v1/date-only
 Accept: application/json
 Authorization: Bearer {{accessToken}}
+
+
+
+
+### Get Ppo List for Regular Bill Generation
+# @name GetAllPposForRegularBill
+GET {{PensionAPI_HostAddress}}/api/v1/ppo/pension-bill/{{$datetime "YYYY"}}/{{$datetime "MM"}}/ppos
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+
 
 
 ### Set DateOnly Request
@@ -473,6 +528,10 @@ Content-Type: application/json
   "dateOnly": "{{$datetime "YYYY-MM-DD"}}"
 }
 
+
+
+
+
 ### Retrieve Receipt ID
 @ReceiptID = {{CreatePPOReceipt.response.body.$.result.id}}
 
@@ -481,6 +540,10 @@ Content-Type: application/json
 GET {{PensionAPI_HostAddress}}/api/v1/manual-ppo/receipt/{{ReceiptID}}
 Accept: application/json
 Authorization: Bearer {{accessToken}}
+
+
+
+
 
 
 ### Update PPO Receipt By Receipt ID

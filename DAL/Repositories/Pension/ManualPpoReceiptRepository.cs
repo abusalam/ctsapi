@@ -55,23 +55,23 @@ namespace CTS_BE.DAL.Repositories.Pension
         {
             T result = _mapper.Map<T>(ppoReceiptEntity);
             try {
-                PpoReceiptSequence ppoReceiptSequence = _context.PpoReceiptSequences
+                PpoReceiptSequence? ppoReceiptSequence = _context.PpoReceiptSequences
                 .Where(
                     entity => entity.ActiveFlag == true
                     && entity.FinancialYear == finYear
                     && entity.TreasuryCode == treasuryCode
                 )
-                .First();
-                if(ppoReceiptSequence.NextSequenceValue > 0) {
+                .FirstOrDefault();
+                if(ppoReceiptSequence == null) {
+                    ppoReceiptSequence = new () {
+                        FinancialYear = finYear,
+                        TreasuryCode = treasuryCode,
+                        NextSequenceValue = 1
+                    };
+                    _context.Add(ppoReceiptSequence);
+                } else {
                     ppoReceiptSequence.NextSequenceValue++;
                     _context.Update(ppoReceiptSequence);                   
-                } else {
-                    ppoReceiptSequence = new () {
-                            FinancialYear = finYear,
-                            TreasuryCode = treasuryCode,
-                            NextSequenceValue = 1
-                        };
-                    _context.Add(ppoReceiptSequence);
                 }
                 string paddedNextSequenceValue = $"{ppoReceiptSequence.NextSequenceValue}".PadLeft(6,'0');
                 ppoReceiptEntity.TreasuryReceiptNo = $"{treasuryCode}{finYear}{paddedNextSequenceValue}";
