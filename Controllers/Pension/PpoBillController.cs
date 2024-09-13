@@ -257,5 +257,39 @@ namespace CTS_BE.Controllers.Pension
             return response;
         }
     
+        [HttpGet("pension-bill/{year}/{month}/regular-bills")]
+        [Tags("Pension: Regular Bill")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<PpoBillListResponseDTO>> GetAllRegularPensionBills(
+            short year,
+            short month,
+            long? categoryId = null,
+            long? bankId = null
+        )
+        {
+
+            JsonAPIResponse<PpoBillListResponseDTO> response = new(){
+                ApiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = $"Regular Pension Bills received sucessfully!"
+            };
+            try {
+                response.Result = await _ppoBillService.GetRegularPensionBills<PpoBillListResponseDTO>(
+                    year,
+                    month,
+                    GetCurrentFyYear(),
+                    GetTreasuryCode(),
+                    categoryId,
+                    bankId
+                );
+            }
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
+            }
+            finally {
+                FillErrorMesageFromDataSource(response);
+            }
+            return response;
+        }
     }
 }

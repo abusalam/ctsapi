@@ -26,6 +26,53 @@ namespace CTS_BE.BAL.Services.Pension
             _ppoBillRepository = ppoBillRepository;
             _pensionDbContext = (PensionDbContext) this._ppoBillRepository.GetDbContext();
         }
+        public async Task<T> GetRegularPensionBills<T>(
+            short year,
+            short month,
+            short financialYear,
+            string treasuryCode,
+            long? categoryId = null,
+            long? bankCode = null
+        ) where T : BaseDTO
+        {
+            PpoBillListResponseDTO ppoBillListResponseDTO = new();
+
+            try {
+
+                var ppoBillList = await _pensionDbContext.PpoBills
+                .Where(
+                    entity => entity.ActiveFlag
+                    && entity.TreasuryCode == treasuryCode
+                    && entity.Pensioner.BankAccounts.Any(
+                        entity => entity.ActiveFlag
+                        && bankCode == null || entity.BankCode == bankCode
+                    )
+                    && categoryId == null || entity.Pensioner.Category.Id == categoryId
+                )
+                .Include(
+                    entity => entity.Pensioner
+                )
+                .ThenInclude(
+                    entity => entity.BankAccounts
+                    .Where(
+                        entity => entity.ActiveFlag
+                    )
+                )
+                .ToListAsync();
+
+                ppoBillListResponseDTO.PpoBills = _mapper.Map<List<PpoBillResponseDTO>>(ppoBillList);
+            }
+            catch (Exception ex) {
+                T? ppoBillResponseDTO = _mapper.Map<T>(ppoBillListResponseDTO);
+                ppoBillResponseDTO.FillDataSource(
+                    ppoBillResponseDTO,
+                    $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
+                );
+                return ppoBillResponseDTO;
+            }
+
+            return _mapper.Map<T>(ppoBillListResponseDTO);
+        }
 
         public async Task<T> GetAllPposForBillGeneration<T>(
             short year,

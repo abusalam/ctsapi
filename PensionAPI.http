@@ -563,3 +563,48 @@ Content-Type: application/json
   "psaCode": "A",
   "ppoType": "N"
 }
+
+
+
+
+
+### Get List of Regular Bills All Category & All Bank
+# @name GetAllRegularBill
+GET {{PensionAPI_HostAddress}}/api/v1/ppo/pension-bill/{{$datetime "YYYY"}}/{{$datetime "MM"}}/regular-bills
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+
+
+
+
+
+### Get List of Regular Bills  Specific Category & Specific Bank
+# @name GetAllRegularBill
+GET {{PensionAPI_HostAddress}}/api/v1/ppo/pension-bill/{{$datetime "YYYY"}}/{{$datetime "MM"}}/regular-bills?categoryId=30&bankId=2
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+
+
+
+
+
+### Get List of Regular Bills Specific Category & All Bank
+# @name GetAllRegularBill
+GET {{PensionAPI_HostAddress}}/api/v1/ppo/pension-bill/{{$datetime "YYYY"}}/{{$datetime "MM"}}/regular-bills?categoryId=30
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+
+
+
+
+
+### Get List of Regular Bills All Category & Specific Bank
+# @name GetAllRegularBill
+GET {{PensionAPI_HostAddress}}/api/v1/ppo/pension-bill/{{$datetime "YYYY"}}/{{$datetime "MM"}}/regular-bills?bankId=2
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+

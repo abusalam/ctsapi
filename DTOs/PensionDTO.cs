@@ -503,4 +503,8 @@ namespace CTS_BE.DTOs
     public partial class PpoListResponseDTO : BaseDTO {
         public List<PensionerListItemDTO> PpoList { get; set; } = null!;
     }
+
+    public partial class PpoBillListResponseDTO : BaseDTO {
+        public List<PpoBillResponseDTO> PpoBills { get; set; } = null!;
+    }
 }
