@@ -507,4 +507,11 @@ namespace CTS_BE.DTOs
     public partial class PpoBillListResponseDTO : BaseDTO {
         public List<PpoBillResponseDTO> PpoBills { get; set; } = null!;
     }
+
+    public partial class PpoBillSaveResponseDTO : BaseDTO {
+        public long Id { get; set; }
+        public int PpoId { get; set; }
+        public DateOnly BillDate { get; set; }
+        public char BillType { get; set; }
+    }
 }

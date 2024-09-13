@@ -72,12 +72,12 @@ namespace CTS_BE.Controllers.Pension
         [HttpPost("first-bill")]
         [Tags("Pension: First Bill")]
         [OpenApi]
-        public async Task<JsonAPIResponse<PpoBillResponseDTO>> SaveFirstPensionBill(
+        public async Task<JsonAPIResponse<PpoBillSaveResponseDTO>> SaveFirstPensionBill(
             PpoBillEntryDTO ppoBillEntryDTO
         )
         {
 
-            JsonAPIResponse<PpoBillResponseDTO> response = new(){
+            JsonAPIResponse<PpoBillSaveResponseDTO> response = new(){
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = $"First Pension Bill saved sucessfully!",
                 Result = new () {
@@ -99,7 +99,7 @@ namespace CTS_BE.Controllers.Pension
                     response.Result.DataSource = firstBill.DataSource;
                     return response;
                 }
-                response.Result = await _ppoBillService.SavePpoBill<PpoBillResponseDTO>(
+                response.Result = await _ppoBillService.SavePpoBill<PpoBillSaveResponseDTO>(
                     firstBill,
                     GetCurrentFyYear(),
                     GetTreasuryCode()
@@ -211,16 +211,16 @@ namespace CTS_BE.Controllers.Pension
         [HttpPost("pension-bill")]
         [Tags("Pension: Regular Bill")]
         [OpenApi]
-        public async Task<JsonAPIResponse<PpoBillResponseDTO>> SaveRegularPensionBill(
+        public async Task<JsonAPIResponse<PpoBillSaveResponseDTO>> SaveRegularPensionBill(
             PpoBillEntryDTO ppoBillEntryDTO
         )
         {
 
-            JsonAPIResponse<PpoBillResponseDTO> response = new(){
+            JsonAPIResponse<PpoBillSaveResponseDTO> response = new(){
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = $"Regular Pension Bill saved sucessfully!",
                 Result = new () {
-                    DataSource = new()
+                    DataSource = null
                 }
             };
             try {
@@ -238,13 +238,13 @@ namespace CTS_BE.Controllers.Pension
                     response.Result.DataSource = ppoRegularBill.DataSource;
                     return response;
                 }
-                response.Result = await _ppoBillService.SavePpoBill<PpoBillResponseDTO>(
+                response.Result = await _ppoBillService.SavePpoBill<PpoBillSaveResponseDTO>(
                     ppoRegularBill,
                     GetCurrentFyYear(),
                     GetTreasuryCode()
                 );
-                response.Result.PreparedBy = _claimService.GetUserName();
-                response.Result.PreparedOn = DateOnly.FromDateTime(DateTime.Now);
+                // response.Result.PreparedBy = _claimService.GetUserName();
+                // response.Result.PreparedOn = DateOnly.FromDateTime(DateTime.Now);
             }
             catch(Exception ex) {
                 FillException(response, ex);

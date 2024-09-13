@@ -42,6 +42,7 @@ namespace CTS_BE.BAL.Services.Pension
                 var ppoBillList = await _pensionDbContext.PpoBills
                 .Where(
                     entity => entity.ActiveFlag
+                    && entity.BillType == BillType.RegularBill
                     && entity.TreasuryCode == treasuryCode
                     && entity.Pensioner.BankAccounts.Any(
                         entity => entity.ActiveFlag
@@ -131,28 +132,12 @@ namespace CTS_BE.BAL.Services.Pension
             PensionerFirstBillResponseDTO ppoBillDTO,
             short financialYear,
             string treasuryCode
-        ) where T : PpoBillResponseDTO
+        )
         {
             PpoBill ppoBillEntity = _mapper.Map<PpoBill>(ppoBillDTO);
             T ppoBillResponseDTO = _mapper.Map<T>(ppoBillEntity);
             try {
 
-                PpoBill? ppoFirstBill = await _pensionDbContext.PpoBills
-                    .Where(
-                        entity => entity.ActiveFlag
-                        && entity.PpoId == ppoBillDTO.PpoId
-                        && entity.BillType == BillType.FirstBill
-                        && entity.TreasuryCode == treasuryCode
-                    )
-                    .FirstOrDefaultAsync();
-                if(ppoFirstBill == null) {
-                    ppoBillResponseDTO = _mapper.Map<T>(new PpoBill());
-                    ppoBillResponseDTO.FillDataSource(
-                        ppoFirstBill,
-                        "First Bill not generated! Please check PPO ID or generate first bill."
-                    );
-                    return ppoBillResponseDTO;
-                }
                 PpoBill? ppoBill = await _pensionDbContext.PpoBills
                     .Where(
                         entity => entity.ActiveFlag
@@ -172,15 +157,32 @@ namespace CTS_BE.BAL.Services.Pension
                     );
                     return ppoBillResponseDTO;
                 }
-
+                if(ppoBillDTO.BillType == BillType.RegularBill) {   
+                    PpoBill? ppoFirstBill = await _pensionDbContext.PpoBills
+                        .Where(
+                            entity => entity.ActiveFlag
+                            && entity.PpoId == ppoBillDTO.PpoId
+                            && entity.BillType == BillType.FirstBill
+                            && entity.TreasuryCode == treasuryCode
+                        )
+                        .FirstOrDefaultAsync();
+                    if(ppoFirstBill == null) {
+                        ppoBillResponseDTO = _mapper.Map<T>(new PpoBill());
+                        ppoBillResponseDTO.FillDataSource(
+                            ppoFirstBill,
+                            "First Bill not generated! Please check PPO ID or generate first bill."
+                        );
+                        return ppoBillResponseDTO;
+                    }
+                }
                 SetCreatedBy(ppoBillEntity);
                 ppoBillResponseDTO = await _ppoBillRepository.SavePpoBill<T>(
                         ppoBillEntity,
                         financialYear,
                         treasuryCode
                     );
-                ppoBillResponseDTO.PreparedBy = GetUserName();
-                ppoBillResponseDTO.PreparedOn = DateOnly.FromDateTime(DateTime.Now);
+                // ppoBillResponseDTO.PreparedBy = GetUserName();
+                // ppoBillResponseDTO.PreparedOn = DateOnly.FromDateTime(DateTime.Now);
             }
             catch (DbUpdateException ex) {
                 ppoBillResponseDTO.FillDataSource(
