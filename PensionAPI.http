@@ -569,7 +569,7 @@ Content-Type: application/json
 
 
 ### Get List of Regular Bills All Category & All Bank
-# @name GetAllRegularBill
+# @name GetAllRegularBills
 GET {{PensionAPI_HostAddress}}/api/v1/ppo/pension-bill/{{$datetime "YYYY"}}/{{$datetime "MM"}}/regular-bills
 Accept: application/json
 Authorization: Bearer {{accessToken}}
@@ -580,7 +580,7 @@ Authorization: Bearer {{accessToken}}
 
 
 ### Get List of Regular Bills  Specific Category & Specific Bank
-# @name GetAllRegularBill
+# @name GetAllRegularBillsByCategoryAndBank
 GET {{PensionAPI_HostAddress}}/api/v1/ppo/pension-bill/{{$datetime "YYYY"}}/{{$datetime "MM"}}/regular-bills?categoryId=30&bankId=2
 Accept: application/json
 Authorization: Bearer {{accessToken}}
@@ -591,7 +591,7 @@ Authorization: Bearer {{accessToken}}
 
 
 ### Get List of Regular Bills Specific Category & All Bank
-# @name GetAllRegularBill
+# @name GetAllRegularBillsByCategory
 GET {{PensionAPI_HostAddress}}/api/v1/ppo/pension-bill/{{$datetime "YYYY"}}/{{$datetime "MM"}}/regular-bills?categoryId=30
 Accept: application/json
 Authorization: Bearer {{accessToken}}
@@ -602,7 +602,7 @@ Authorization: Bearer {{accessToken}}
 
 
 ### Get List of Regular Bills All Category & Specific Bank
-# @name GetAllRegularBill
+# @name GetAllRegularBillsByBank
 GET {{PensionAPI_HostAddress}}/api/v1/ppo/pension-bill/{{$datetime "YYYY"}}/{{$datetime "MM"}}/regular-bills?bankId=2
 Accept: application/json
 Authorization: Bearer {{accessToken}}

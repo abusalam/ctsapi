@@ -128,27 +128,40 @@ namespace CTS_BE.BAL.Services.Pension
         }
 
         public async Task<T> SavePpoBill<T>(
-            PensionerFirstBillResponseDTO firstBill,
+            PensionerFirstBillResponseDTO ppoBillDTO,
             short financialYear,
             string treasuryCode
         ) where T : PpoBillResponseDTO
         {
-            PpoBill ppoBillEntity = _mapper.Map<PpoBill>(firstBill);
+            PpoBill ppoBillEntity = _mapper.Map<PpoBill>(ppoBillDTO);
             T ppoBillResponseDTO = _mapper.Map<T>(ppoBillEntity);
             try {
 
+                PpoBill? ppoFirstBill = await _pensionDbContext.PpoBills
+                    .Where(
+                        entity => entity.ActiveFlag
+                        && entity.PpoId == ppoBillDTO.PpoId
+                        && entity.BillType == BillType.FirstBill
+                        && entity.TreasuryCode == treasuryCode
+                    )
+                    .FirstOrDefaultAsync();
+                if(ppoFirstBill == null) {
+                    ppoBillResponseDTO = _mapper.Map<T>(new PpoBill());
+                    ppoBillResponseDTO.FillDataSource(
+                        ppoFirstBill,
+                        "First Bill not generated! Please check PPO ID or generate first bill."
+                    );
+                    return ppoBillResponseDTO;
+                }
                 PpoBill? ppoBill = await _pensionDbContext.PpoBills
                     .Where(
                         entity => entity.ActiveFlag
-                        && entity.PpoId == firstBill.PpoId
-                        && entity.BillType == firstBill.BillType
+                        && entity.PpoId == ppoBillDTO.PpoId
+                        && entity.BillType == ppoBillDTO.BillType
                         // && entity.BillDate == billDate
                         // && entity.FinancialYear == financialYear
                         && entity.TreasuryCode == treasuryCode
                     )
-                    // .Select(
-                    //     entity => _mapper.Map<PpoBill>(entity)
-                    // )
                     .FirstOrDefaultAsync();
                 // Console.WriteLine(JsonConvert.SerializeObject(ppoBill, Formatting.Indented));
                 if(ppoBill != null) {
