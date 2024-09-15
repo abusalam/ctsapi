@@ -39,7 +39,7 @@ namespace CTS_BE.BAL.Services.Pension
 
             try {
 
-                var ppoBillList = await _pensionDbContext.PpoBills
+                List<PpoBill>? ppoBillList = await _pensionDbContext.PpoBills
                 .Where(
                     entity => entity.ActiveFlag
                     && entity.BillType == BillType.RegularBill
@@ -59,9 +59,28 @@ namespace CTS_BE.BAL.Services.Pension
                         entity => entity.ActiveFlag
                     )
                 )
+                .Include(
+                    entity => entity.PpoBillBreakups
+                )
+                .ThenInclude(
+                    entity => entity.Revision
+                )
+                .ThenInclude(
+                    entity => entity.Rate
+                )
+                .ThenInclude(
+                    entity => entity.Breakup
+                )
                 .ToListAsync();
 
+
                 ppoBillListResponseDTO.PpoBills = _mapper.Map<List<PpoBillResponseDTO>>(ppoBillList);
+                ppoBillListResponseDTO.PpoBills.ForEach(
+                    entity => {
+                        entity.PreparedOn = DateOnly.FromDateTime(DateTime.Today);
+                        entity.PreparedBy = GetUserName();
+                        }
+                );
             }
             catch (Exception ex) {
                 T? ppoBillResponseDTO = _mapper.Map<T>(ppoBillListResponseDTO);
