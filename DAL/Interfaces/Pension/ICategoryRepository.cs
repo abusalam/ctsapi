@@ -8,6 +8,10 @@ namespace CTS_BE.DAL.Interfaces.Pension
 {
     public interface ICategoryRepository : IRepository<Category>
     {
-        
+        public Task<Category?> GetCategoryById(
+            long categoryId,
+            short financialYear,
+            string treasuryCode
+        );
     }
 }

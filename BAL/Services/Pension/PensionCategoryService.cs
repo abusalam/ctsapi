@@ -185,6 +185,48 @@ namespace CTS_BE.BAL.Services.Pension
             return response;
         }
 
+
+        public async Task<T> GetPensionCategoryById<T>(
+            long categoryId,
+            short financialYear,
+            string treasuryCode
+        )
+        {
+            Category? pensionCategoryEntity = new ();
+            T PensionCategoryDTO = _mapper.Map<T>(pensionCategoryEntity);
+            try {
+
+                pensionCategoryEntity = await _categoryRepository.GetCategoryById(
+                    categoryId,
+                    financialYear,
+                    treasuryCode
+                );
+                if(pensionCategoryEntity == null) {
+                    PensionCategoryDTO.FillDataSource(
+                        pensionCategoryEntity,
+                        $"Category not found! Please check category id: {categoryId}"
+                    );
+                    return PensionCategoryDTO;
+                }
+                PensionCategoryDTO = _mapper.Map<T>(pensionCategoryEntity);
+                return PensionCategoryDTO;
+            }
+            catch (DbUpdateException ex) {
+                PensionCategoryDTO.FillDataSource(
+                    _mapper.Map<T>(pensionCategoryEntity),
+                    $"DbUpdateException: {ex.InnerException?.Message} {this.ToString()}"
+                );
+                return PensionCategoryDTO;
+            }
+            catch (Exception ex) {
+                PensionCategoryDTO.FillDataSource(
+                    _mapper.Map<T>(pensionCategoryEntity),
+                    $"ServiceException: {ex.InnerException?.Message ?? ex.Message} {this.ToString()}"
+                );
+                return PensionCategoryDTO;
+            }
+        }
+
        public async Task<IEnumerable<TResponse>> ListPensionCategory<TResponse>(
                 short financialYear,
                 string treasuryCode,

@@ -38,5 +38,11 @@ namespace CTS_BE.BAL.Interfaces.Pension
             string treasuryCode,
             DynamicListQueryParameters dynamicListQueryParameters
         );
+
+        public Task<T> GetPensionCategoryById<T>(
+            long categoryId,
+            short financialYear,
+            string treasuryCode
+        );
     }
 }

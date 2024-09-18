@@ -244,6 +244,40 @@ namespace CTS_BE.Controllers.Pension
             return response;
         }
 
+        [HttpGet("category/{categoryId}")]
+        [Tags("Pension: Category Master")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<PensionCategoryResponseDTO>> GetCategoryById(
+            long categoryId
+        )
+        {
+
+            JsonAPIResponse<PensionCategoryResponseDTO> response = new(){
+                ApiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = $"Category received successfully!",
+                Result = new(){
+                    Id = 0
+                }
+            };
+            try {
+                response.Result = await _pensionCategoryService
+                    .GetPensionCategoryById<PensionCategoryResponseDTO>(
+                        categoryId,
+                        GetCurrentFyYear(),
+                        GetTreasuryCode()
+                    );
+            }
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
+            }
+            finally {
+                FillErrorMesageFromDataSource(response);
+            }
+
+            return response;
+        }
+
         [HttpPatch("category")]
         [Tags("Pension: Category Master")]
         [OpenApi]
