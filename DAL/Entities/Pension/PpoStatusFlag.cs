@@ -29,8 +29,8 @@ public partial class PpoStatusFlag
     [Column("ppo_id")]
     public int PpoId { get; set; }
 
-    [Column("status_flag")]
-    public int StatusFlag { get; set; }
+    // [Column("status_flag")]
+    // public int StatusFlag { get; set; }
 
     [Column("status_wef")]
     public DateOnly StatusWef { get; set; }

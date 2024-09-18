@@ -17,9 +17,9 @@ namespace CTS_BE.DTOs
     
     public class PensionStatusDTO : BaseDTO {
         [Required]
-        // [EnumDataType(typeof(PensionStatusFlag))]
-        // public PensionStatusFlag StatusFlag {get; set; }
-        public int StatusFlag {get; set; }
+        [EnumDataType(typeof(PensionStatusFlag))]
+        public PensionStatusFlag StatusFlag {get; set; }
+        // public int StatusFlag {get; set; }
 
         [Required]
         [DataType(DataType.Date)]

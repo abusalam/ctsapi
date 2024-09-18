@@ -32,35 +32,35 @@ namespace CTS_BE.Controllers.Pension
             try {
                 response = new(){
                     ApiResponseStatus = Enum.APIResponseStatus.Success,
-                    Message = "|",
+                    Message = "PPO Status Flag Set Successfully",
                     Result = await _pensionStatusService.SetPensionStatusFlag(
                         pensionStatusEntryDTO,
                         GetCurrentFyYear(),
                         GetTreasuryCode()
                     )
                 };
-                if(System.Enum.TryParse<PensionStatusFlag>(
-                        $"{pensionStatusEntryDTO.StatusFlag}",
-                        out PensionStatusFlag pensionStatus
-                    )
-                ) {
-                    if(pensionStatus.HasFlag(PensionStatusFlag.FirstPensionBillGenerated))
-                    {
-                        response.Message += " First Pension Generated |";
-                    }
-                    if(pensionStatus.HasFlag(PensionStatusFlag.PpoApproved))
-                    {
-                        response.Message += " PPO Approved |";
-                    }
-                    if(pensionStatus.HasFlag(PensionStatusFlag.PpoRunning))
-                    {
-                        response.Message += " PPO Running |";
-                    }
-                    if(pensionStatus.HasFlag(PensionStatusFlag.PpoSuspended))
-                    {
-                        response.Message += " PPO Suspended |";
-                    }
-                }
+                // if(System.Enum.TryParse<PensionStatusFlag>(
+                //         $"{pensionStatusEntryDTO.StatusFlag}",
+                //         out PensionStatusFlag pensionStatus
+                //     )
+                // ) {
+                //     if(pensionStatus.HasFlag(PensionStatusFlag.FirstPensionBillGenerated))
+                //     {
+                //         response.Message += " First Pension Generated |";
+                //     }
+                //     if(pensionStatus.HasFlag(PensionStatusFlag.PpoApproved))
+                //     {
+                //         response.Message += " PPO Approved |";
+                //     }
+                //     if(pensionStatus.HasFlag(PensionStatusFlag.PpoRunning))
+                //     {
+                //         response.Message += " PPO Running |";
+                //     }
+                //     if(pensionStatus.HasFlag(PensionStatusFlag.PpoSuspended))
+                //     {
+                //         response.Message += " PPO Suspended |";
+                //     }
+                // }
             }
             catch(Exception ex) {
                 FillException(response, ex);
@@ -75,13 +75,13 @@ namespace CTS_BE.Controllers.Pension
         [HttpDelete("{ppoId}/status/{statusFlag}")]
         [Tags("Pension: PPO Status")]
         [OpenApi]
-        public async Task<JsonAPIResponse<PensionStatusDTO>> ClearPpoStatusFlagByPpoId(int ppoId, int statusFlag) {
+        public async Task<JsonAPIResponse<PensionStatusDTO>> ClearPpoStatusFlagByPpoId(int ppoId, PensionStatusFlag statusFlag) {
 
             JsonAPIResponse<PensionStatusDTO> response = new(){
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
-                Message = "Reset: |",
+                Message = "PPO Status Flag Cleared Successfully",
                 Result = new(){
-                    StatusFlag = 0
+                    StatusFlag = statusFlag
                 }
             };
             try {
@@ -91,29 +91,29 @@ namespace CTS_BE.Controllers.Pension
                     GetCurrentFyYear(),
                     GetTreasuryCode()
                 );
-                if(System.Enum.TryParse<PensionStatusFlag>(
-                        $"{response.Result.StatusFlag}",
-                        out PensionStatusFlag pensionStatus
-                    )
-                )
-                {
-                    if(pensionStatus.HasFlag(PensionStatusFlag.FirstPensionBillGenerated))
-                    {
-                        response.Message += " First Pension Generated Flag |";
-                    }
-                    if(pensionStatus.HasFlag(PensionStatusFlag.PpoApproved))
-                    {
-                        response.Message += " PPO Approved Flag |";
-                    }
-                    if(pensionStatus.HasFlag(PensionStatusFlag.PpoRunning))
-                    {
-                        response.Message += " PPO Running Flag |";
-                    }
-                    if(pensionStatus.HasFlag(PensionStatusFlag.PpoSuspended))
-                    {
-                        response.Message += " PPO Suspended Flag |";
-                    }
-                }
+                // if(System.Enum.TryParse<PensionStatusFlag>(
+                //         $"{response.Result.StatusFlag}",
+                //         out PensionStatusFlag pensionStatus
+                //     )
+                // )
+                // {
+                //     if(pensionStatus.HasFlag(PensionStatusFlag.FirstPensionBillApproved))
+                //     {
+                //         response.Message += " First Pension Generated Flag |";
+                //     }
+                //     if(pensionStatus.HasFlag(PensionStatusFlag.PpoApproved))
+                //     {
+                //         response.Message += " PPO Approved Flag |";
+                //     }
+                //     if(pensionStatus.HasFlag(PensionStatusFlag.PpoRunning))
+                //     {
+                //         response.Message += " PPO Running Flag |";
+                //     }
+                //     if(pensionStatus.HasFlag(PensionStatusFlag.PpoSuspended))
+                //     {
+                //         response.Message += " PPO Suspended Flag |";
+                //     }
+                // }
             }
             catch(Exception ex) {
                 FillException(response, ex);
@@ -129,12 +129,12 @@ namespace CTS_BE.Controllers.Pension
         [HttpGet("{ppoId}/status/{statusFlag}")]
         [Tags("Pension: PPO Status")]
         [OpenApi]
-        public async Task<JsonAPIResponse<PensionStatusDTO>> GetPpoStatusFlagByPpoId(int ppoId, int statusFlag) {
+        public async Task<JsonAPIResponse<PensionStatusDTO>> GetPpoStatusFlagByPpoId(int ppoId, PensionStatusFlag statusFlag) {
             JsonAPIResponse<PensionStatusDTO> response = new(){
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
-                Message = "|",
+                Message = "PPO Status Flag Retrieved Successfully",
                 Result = new(){
-                    StatusFlag = 0
+                    StatusFlag = statusFlag
                 }
             };
             try {
@@ -145,28 +145,28 @@ namespace CTS_BE.Controllers.Pension
                         GetTreasuryCode()
                     );
 
-                if(System.Enum.TryParse<PensionStatusFlag>(
-                        $"{response.Result.StatusFlag}",
-                        out PensionStatusFlag pensionStatus
-                    )
-                ) {
-                    if(pensionStatus.HasFlag(PensionStatusFlag.FirstPensionBillGenerated))
-                    {
-                        response.Message += " First Pension Generated |";
-                    }
-                    if(pensionStatus.HasFlag(PensionStatusFlag.PpoApproved))
-                    {
-                        response.Message += " PPO Approved |";
-                    }
-                    if(pensionStatus.HasFlag(PensionStatusFlag.PpoRunning))
-                    {
-                        response.Message += " PPO Running |";
-                    }
-                    if(pensionStatus.HasFlag(PensionStatusFlag.PpoSuspended))
-                    {
-                        response.Message += " PPO Suspended |";
-                    }
-                }
+                // if(System.Enum.TryParse<PensionStatusFlag>(
+                //         $"{response.Result.StatusFlag}",
+                //         out PensionStatusFlag pensionStatus
+                //     )
+                // ) {
+                //     if(pensionStatus.HasFlag(PensionStatusFlag.FirstPensionBillGenerated))
+                //     {
+                //         response.Message += " First Pension Generated |";
+                //     }
+                //     if(pensionStatus.HasFlag(PensionStatusFlag.PpoApproved))
+                //     {
+                //         response.Message += " PPO Approved |";
+                //     }
+                //     if(pensionStatus.HasFlag(PensionStatusFlag.PpoRunning))
+                //     {
+                //         response.Message += " PPO Running |";
+                //     }
+                //     if(pensionStatus.HasFlag(PensionStatusFlag.PpoSuspended))
+                //     {
+                //         response.Message += " PPO Suspended |";
+                //     }
+                // }
             }
             catch(Exception ex) {
                 FillException(response, ex);

@@ -113,7 +113,7 @@ namespace CTS_BE.BAL.Services.Pension
                     && entity.TreasuryCode == treasuryCode
                     && entity.PpoStatusFlags.Any(
                         entity => entity.ActiveFlag
-                        && entity.StatusFlag == PpoStatus.PpoRunning
+                        && entity.StatusFlag == PensionStatusFlag.PpoRunning
                     )
                     && entity.PpoComponentRevisions.Any(
                         entity => entity.ActiveFlag
@@ -156,6 +156,24 @@ namespace CTS_BE.BAL.Services.Pension
             PpoBill ppoBillEntity = _mapper.Map<PpoBill>(ppoBillDTO);
             T ppoBillResponseDTO = _mapper.Map<T>(ppoBillEntity);
             try {
+                PpoStatusFlag? ppoRunningFlag = await _pensionDbContext.PpoStatusFlags
+                    .Where(
+                        entity => entity.ActiveFlag
+                        && entity.StatusFlag == PensionStatusFlag.PpoApproved
+                        && entity.PpoId == ppoBillDTO.PpoId
+                        && entity.TreasuryCode == treasuryCode
+                    )
+                    .FirstOrDefaultAsync();
+
+                if(ppoRunningFlag == null)
+                {
+                    ppoBillResponseDTO = _mapper.Map<T>(new PpoBill());
+                    ppoBillResponseDTO.FillDataSource(
+                        ppoRunningFlag,
+                        "PPO is not Approved! Please check PPO ID or approve PPO."
+                    );
+                    return ppoBillResponseDTO;
+                }
 
                 PpoBill? ppoBill = await _pensionDbContext.PpoBills
                     .Where(

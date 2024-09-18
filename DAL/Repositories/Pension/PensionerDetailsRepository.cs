@@ -56,7 +56,7 @@ namespace CTS_BE.DAL.Repositories.Pension
                 .Include(entity => entity.PpoStatusFlags)
                 .Where(entity => !entity.PpoStatusFlags
                     .Any(entity => entity.ActiveFlag
-                        && entity.StatusFlag == PpoStatus.PpoApproved
+                        && entity.StatusFlag == PensionStatusFlag.PpoApproved
                     )
                 )
                 .Select(selectExpression)

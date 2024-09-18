@@ -231,7 +231,7 @@ Content-Type: application/json
 
 {
   "PpoId": "{{ApprovedPpoId}}",
-  "StatusFlag": 4,
+  "StatusFlag": "PpoRunning",
   "StatusWef": "{{$datetime "YYYY-MM-DD" -2 d}}"
 }
 
@@ -425,7 +425,7 @@ Content-Type: application/json
 
 {
   "PpoId": "{{GeneratedPpoId}}",
-  "StatusFlag": 1,
+  "StatusFlag": "PpoApproved",
   "StatusWef": "{{$datetime "YYYY-MM-DD" -5 d}}"
 }
 

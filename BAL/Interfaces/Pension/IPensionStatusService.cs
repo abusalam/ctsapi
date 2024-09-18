@@ -16,13 +16,13 @@ namespace CTS_BE.BAL.Interfaces.Pension
         );
         public Task<PensionStatusDTO> ClearPensionStatusFlag(
             int ppoId,
-            int pensionStatusFlag,
+            PensionStatusFlag pensionStatusFlag,
             short financialYear,
             string treasuryCode
         );
         public Task<PensionStatusDTO> CheckPensionStatusFlag(
             int ppoId,
-            int pensionStatusFlag,
+            PensionStatusFlag pensionStatusFlag,
             short financialYear,
             string treasuryCode
         );

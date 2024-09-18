@@ -66,7 +66,7 @@ namespace CTS_BE.DAL.Repositories.Pension
             var ppoBill = await _pensionDbContext.PpoBills
                 .Where(
                     entity => entity.ActiveFlag
-                    && entity.BillType == 'F'
+                    && entity.BillType == BillType.FirstBill
                     && entity.PpoId == ppoId
                     && entity.FinancialYear == financialYear
                     && entity.TreasuryCode == treasuryCode
@@ -226,6 +226,19 @@ namespace CTS_BE.DAL.Repositories.Pension
                     "Pensioner bank account not found!"
                 );
                 return ppoBillResponseDTO;
+            }
+
+            if(ppoBillEntity.BillType == BillType.FirstBill) {
+                pensioner.PpoStatusFlags.Add(new PpoStatusFlag() {
+                    ActiveFlag = true,
+                    TreasuryCode = treasuryCode,
+                    FinancialYear = financialYear,
+                    StatusFlag = PensionStatusFlag.PpoRunning,
+                    PpoId = pensioner.PpoId,
+                    StatusWef = DateOnly.FromDateTime(DateTime.Now),
+                    CreatedAt = DateTime.Now,
+                    CreatedBy = ppoBillEntity.CreatedBy
+                });
             }
 
             ppoBillEntity.ActiveFlag = true;

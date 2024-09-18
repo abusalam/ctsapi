@@ -37,7 +37,7 @@ namespace CTS_BE.BAL.Services.Pension
 
         public async Task<PensionStatusDTO> CheckPensionStatusFlag(
                 int ppoId,
-                int pensionStatusFlag,
+                PensionStatusFlag pensionStatusFlag,
                 short financialYear,
                 string treasuryCode
             )
@@ -55,7 +55,7 @@ namespace CTS_BE.BAL.Services.Pension
                     );
                 if(pensionStatusDTO is null) {
                     pensionStatusDTO = new(){
-                        StatusFlag = 0,
+                        StatusFlag = pensionStatusFlag,
                     };
                 }
             }
@@ -125,7 +125,7 @@ namespace CTS_BE.BAL.Services.Pension
 
         public async Task<PensionStatusDTO> ClearPensionStatusFlag(
             int ppoId,
-            int pensionStatusFlag,
+            PensionStatusFlag pensionStatusFlag,
             short financialYear,
             string treasuryCode
             )
@@ -134,7 +134,11 @@ namespace CTS_BE.BAL.Services.Pension
             try
             {
                 ppoStatusEntity = await _pensionStatusRepository.GetSingleAysnc(
-                    entity => entity.ActiveFlag == true && entity.FinancialYear == financialYear && entity.TreasuryCode == treasuryCode && entity.PpoId == ppoId && entity.StatusFlag == pensionStatusFlag
+                    entity => entity.ActiveFlag
+                    && entity.FinancialYear == financialYear
+                    && entity.TreasuryCode == treasuryCode
+                    && entity.PpoId == ppoId
+                    && entity.StatusFlag == pensionStatusFlag
                 );
                 if(ppoStatusEntity is not null) {                    
                     ppoStatusEntity.ActiveFlag = false;
@@ -145,7 +149,7 @@ namespace CTS_BE.BAL.Services.Pension
                     }
                 } else {
                     ppoStatusEntity = _mapper.Map<PpoStatusFlag>(new PensionStatusEntryDTO() {
-                        StatusFlag = 0
+                        StatusFlag = pensionStatusFlag
                     });
                 }
             }
