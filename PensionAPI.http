@@ -33,7 +33,7 @@ Content-Type: application/json
 {"pageSize":10,"pageIndex":0,"filterParameters":[],"sortParameters":{"field":"","order":""}}
 
 ### Read Ppo Component Revision
-# @name ReadPpoComponenRevision
+# @name GetPpoComponentRevisionsByPpoId
 GET {{PensionAPI_HostAddress}}/api/v1/ppo/{{GeneratedPpoId}}/component-revision
 Accept: application/json
 Authorization: Bearer {{accessToken}}
