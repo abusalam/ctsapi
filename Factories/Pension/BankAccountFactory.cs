@@ -12,7 +12,7 @@ namespace CTS_BE.Factories.Pension
                 .RuleFor(d => d.PayMode, f => f.PickRandom('Q','B'))
                 .RuleFor(d => d.BankAcNo, f => f.Random.Replace("################"))
                 .RuleFor(d => d.IfscCode, f => f.Random.Replace("????#######"))
-                .RuleFor(d => d.BranchCode, 531)
+                .RuleFor(d => d.BranchCode, f=>f.PickRandom(531,746))
                 .RuleFor(d => d.BankCode, f => f.PickRandom(2,3))
                 .RuleFor(d => d.AccountHolderName, f => f.Person.FullName);
         }

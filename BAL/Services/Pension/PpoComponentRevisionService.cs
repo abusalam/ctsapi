@@ -238,15 +238,14 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
-            // _dataCount = _ppoComponentRevisionRepository.Count();
-            return await _ppoComponentRevisionRepository
-                .GetSelectedColumnByConditionAsync(
-                    entity => entity.ActiveFlag
-                    // && entity.TreasuryCode == treasuryCode 
-                    && entity.PpoId == ppoId,
-                    entity => _mapper.Map<TResponse>(entity),
-                    new DynamicListQueryParameters(){}
-                );
+            var revisions = await _ppoComponentRevisionRepository.GetAllRevisionsByPpoIdAsync(
+                ppoId,
+                entity => _mapper.Map<TResponse>(entity),
+                financialYear,
+                treasuryCode
+            );
+            _dataCount = revisions.Count;
+            return revisions;
         }
 
         public async Task<TResponse> DeletePpoComponentRevisionById<TResponse>(
