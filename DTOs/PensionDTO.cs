@@ -454,6 +454,7 @@ namespace CTS_BE.DTOs
         [DataType(DataType.Date)]
         public DateOnly FromDate { get; set; }
         public char BillType { get; set; }
+        public int BillNo { get; set; }
         public DateOnly BillDate { get; set; }
         public int GrossAmount { get; set; }
         public int ByTransferAmount { get; set; }

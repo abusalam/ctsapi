@@ -26,6 +26,7 @@ namespace CTS_BE.BAL.Services.Pension
             _ppoBillRepository = ppoBillRepository;
             _pensionDbContext = (PensionDbContext) this._ppoBillRepository.GetDbContext();
         }
+
         public async Task<T> GetRegularPensionBills<T>(
             short year,
             short month,
@@ -49,6 +50,15 @@ namespace CTS_BE.BAL.Services.Pension
                         && bankCode == null || entity.BankCode == bankCode
                     )
                     && categoryId == null || entity.Pensioner.Category.Id == categoryId
+                )
+                .Include(
+                    entity => entity.Pensioner
+                )
+                .ThenInclude(
+                    entity => entity.Category
+                )
+                .ThenInclude(
+                    entity => entity.PrimaryCategory
                 )
                 .Include(
                     entity => entity.Pensioner
