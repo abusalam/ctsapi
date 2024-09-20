@@ -58,19 +58,19 @@ namespace CTS_BE.Controllers
         }
         [HttpGet("get-branch")]
         [OpenApi]
-        public async Task<APIResponse<BranchDeatilsDTO>> GetBranchByBranchCode(short branchCode)
+        public async Task<JsonAPIResponse<BranchDeatilsDTO>> GetBranchByBranchCode(short branchCode)
         {
-            APIResponse<BranchDeatilsDTO> response = new();
+            JsonAPIResponse<BranchDeatilsDTO> response = new();
             try
             {
-                response.apiResponseStatus = Enum.APIResponseStatus.Success;
+                response.ApiResponseStatus = Enum.APIResponseStatus.Success;
                 response.Message = "";
-                response.result = await _branchService.GetBranchByBranchCode(branchCode);
+                response.Result = await _branchService.GetBranchByBranchCode(branchCode);
                 return response;
             }
             catch (Exception Ex)
             {
-                response.apiResponseStatus = Enum.APIResponseStatus.Error;
+                response.ApiResponseStatus = Enum.APIResponseStatus.Error;
                 response.Message = Ex.Message;
                 return response;
             }

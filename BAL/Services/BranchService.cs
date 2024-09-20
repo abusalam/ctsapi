@@ -10,7 +10,11 @@ namespace CTS_BE.BAL
     {
         private readonly IBranchRepository _BranchRepository;
         private readonly IMapper _mapper;
-        public BranchService(IBranchRepository BranchRepository, IMapper mapper) {
+        public BranchService(
+            IBranchRepository BranchRepository,
+            IMapper mapper
+        )
+        {
             _BranchRepository = BranchRepository;
             _mapper = mapper;
         }
@@ -24,16 +28,9 @@ namespace CTS_BE.BAL
                 });
             return branchDropdownData;
         }
-        public async Task<BranchDeatilsDTO> GetBranchByBranchCode(short branchCode)
+        public async Task<BranchDeatilsDTO?> GetBranchByBranchCode(short branchCode)
         {
-            BranchDeatilsDTO branchDetails = (BranchDeatilsDTO)await _BranchRepository.GetSingleSelectedColumnByConditionAsync(entity => entity.BranchCode == branchCode && entity.IsActive,
-                entity => new BranchDeatilsDTO
-                {
-                    BranchName = entity.BranchName,
-                    MircCode = entity.MicrCode,
-                    BranchAddress = entity.Address,
-                });
-            return branchDetails;
+            return await _BranchRepository.GetBranchByCode(branchCode);
         }
     }
 }
