@@ -18,5 +18,9 @@ namespace CTS_BE.BAL.Interfaces.Pension
             string treasuryCode,
             DynamicListQueryParameters dynamicListQueryParameters
         );
+
+        public Task<IEnumerable<TResponse>> ListComponentRatesByCategoryId<TResponse>(
+            long categoryId
+        );
     }
 }

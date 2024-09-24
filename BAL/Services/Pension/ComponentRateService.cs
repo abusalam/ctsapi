@@ -72,5 +72,19 @@ namespace CTS_BE.BAL.Services.Pension
                     dynamicListQueryParameters
                 );        
         }
+
+        public async Task<IEnumerable<TResponse>> ListComponentRatesByCategoryId<TResponse>(
+            long categoryId
+        )
+        {
+            var breakups = await _pensionRateRepository
+                .GetComponentRatesByCategoryId<TResponse>(
+                    categoryId,
+                    entity => _mapper.Map<TResponse>(entity)
+                );
+            _dataCount = _pensionRateRepository.Count();
+
+            return breakups;
+        }
     }
 }
