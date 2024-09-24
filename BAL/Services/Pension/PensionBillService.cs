@@ -44,11 +44,11 @@ namespace CTS_BE.BAL.Services.Pension
         }
 
         public async Task<T> GenerateFirstPensionBill<T>(
-                InitiateFirstPensionBillDTO initiateFirstPensionBillDTO,
-                char billType,
-                short financialYear,
-                string treasuryCode
-            ) where T : PensionerFirstBillResponseDTO
+            InitiateFirstPensionBillDTO initiateFirstPensionBillDTO,
+            char billType,
+            short financialYear,
+            string treasuryCode
+        ) where T : PensionerFirstBillResponseDTO
         {
 
             PensionDbContext pensionDbContext = (PensionDbContext) _pensionerDetailsRepository.GetDbContext();
@@ -108,7 +108,8 @@ namespace CTS_BE.BAL.Services.Pension
                         : PensionCalculator.CalculatePeriodStartDate(initiateFirstPensionBillDTO.ToDate),
                         billType == BillType.FirstBill ? initiateFirstPensionBillDTO.ToDate 
                         : PensionCalculator.CalculatePeriodEndDate(initiateFirstPensionBillDTO.ToDate),
-                        pensioner.BasicPensionAmount
+                        pensioner.BasicPensionAmount,
+                        pensioner.CommutedPensionAmount    
                     );
             List<PpoBillBreakupResponseDTO> ppoBillBreakups = new();
 
@@ -116,13 +117,17 @@ namespace CTS_BE.BAL.Services.Pension
                 ppoBillBreakups.Add(new PpoBillBreakupResponseDTO()
                 {
                     PpoId = pensioner.PpoId,
-                    DrawnAmount = pensioner.BasicPensionAmount,
-                    DueAmount = (int) ppoPayment.DueAmount,
-                    BreakupAmount = (int) ppoPayment.AmountPerMonth * ppoPayment.PeriodInMonths,
+                    DrawnAmount = ppoPayment.DrawnAmount,
+                    DueAmount = ppoPayment.DueAmount,
+                    ComponentName = ppoPayment.ComponentName,
+                    ComponentType = ppoPayment.ComponentType,
+                    AmountPerMonth = ppoPayment.AmountPerMonth,
+                    BaseAmount = ppoPayment.BaseAmount,
+                    BreakupAmount = ppoPayment.AmountPerMonth * ppoPayment.PeriodInMonths,
                     FromDate = ppoPayment.FromDate,
                     ToDate = ppoPayment.ToDate,
                     Revision = new PpoComponentRevisionResponseDTO() {
-                        AmountPerMonth = (int) ppoPayment.AmountPerMonth,
+                        AmountPerMonth = ppoPayment.AmountPerMonth,
                         FromDate = ppoPayment.FromDate,
                         RateId = ppoPayment.RateId
                     }
@@ -131,11 +136,7 @@ namespace CTS_BE.BAL.Services.Pension
             InitiateFirstPensionBillResponseDTO response = new (){
                 PpoId = initiateFirstPensionBillDTO.PpoId,
                 BillType = billType,
-                // PensionCategory = _mapper.Map<PensionCategoryResponseDTO>(pensioner.Category),
-                // ComponentRates = _mapper.Map<List<ComponentRateResponseDTO>>(pensioner.Category.ComponentRates)
-                //     .OrderBy(entity => entity.EffectiveFromDate).ToList(),
-                // PpoBillBreakups = ppoBillBreakups,
-                // PensionCategory = _mapper.Map<PensionCategoryResponseDTO>(pensioner.Category),
+                FromDate = pensioner.DateOfCommencement,
                 BillGeneratedUptoDate = initiateFirstPensionBillDTO.ToDate,
                 TreasuryVoucherNo = "N/A",
                 BillDate = initiateFirstPensionBillDTO.ToDate,

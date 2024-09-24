@@ -9,9 +9,8 @@ namespace CTS_BE.DAL.Entities.Pension;
 /// <summary>
 /// PensionModuleSchema v1
 /// </summary>
-[Table("ppo_bill_breakups", Schema = "cts_pension")]
-[Index("TreasuryCode", "PpoId", "PpoBillId", "RevisionId", "FromDate", Name = "ppo_bill_breakups_treasury_code_ppo_id_ppo_bill_id_revision_key", IsUnique = true)]
-public partial class PpoBillBreakup
+[Table("bills", Schema = "cts_pension")]
+public partial class Bill
 {
     [Key]
     [Column("id")]
@@ -24,20 +23,22 @@ public partial class PpoBillBreakup
     [StringLength(3)]
     public string TreasuryCode { get; set; } = null!;
 
-    [Column("ppo_id")]
-    public int PpoId { get; set; }
+    [Column("hoa_id")]
+    [StringLength(50)]
+    public string HoaId { get; set; } = null!;
 
-    /// <summary>
-    /// BillId is to identify the bill on which the actual payment made
-    /// </summary>
-    [Column("ppo_bill_id")]
-    public long PpoBillId { get; set; }
+    [Column("bill_no")]
+    public int BillNo { get; set; }
 
-    /// <summary>
-    /// RevisionId is to identify the component rate applied on the bill
-    /// </summary>
-    [Column("revision_id")]
-    public long RevisionId { get; set; }
+    [Column("bill_date")]
+    public DateOnly BillDate { get; set; }
+
+    [Column("treasury_voucher_no")]
+    [StringLength(100)]
+    public string? TreasuryVoucherNo { get; set; }
+
+    [Column("treasury_voucher_date")]
+    public DateOnly? TreasuryVoucherDate { get; set; }
 
     [Column("from_date")]
     public DateOnly FromDate { get; set; }
@@ -45,8 +46,14 @@ public partial class PpoBillBreakup
     [Column("to_date")]
     public DateOnly ToDate { get; set; }
 
-    [Column("breakup_amount")]
-    public int BreakupAmount { get; set; }
+    [Column("gross_amount")]
+    public int GrossAmount { get; set; }
+
+    [Column("bytransfer_amount")]
+    public int BytransferAmount { get; set; }
+
+    [Column("net_amount")]
+    public int NetAmount { get; set; }
 
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime? CreatedAt { get; set; }
@@ -63,11 +70,6 @@ public partial class PpoBillBreakup
     [Column("active_flag")]
     public bool ActiveFlag { get; set; }
 
-    [ForeignKey("PpoBillId")]
-    [InverseProperty("PpoBillBreakups")]
-    public virtual PpoBill PpoBill { get; set; } = null!;
-
-    [ForeignKey("RevisionId")]
-    [InverseProperty("PpoBillBreakups")]
-    public virtual PpoComponentRevision Revision { get; set; } = null!;
+    [InverseProperty("Bill")]
+    public virtual ICollection<PpoBill> PpoBills { get; set; } = new List<PpoBill>();
 }

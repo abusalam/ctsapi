@@ -50,6 +50,7 @@ namespace CTS_BE.Helper
             CreateMap<PensionerListItemDTO, PensionerResponseDTO>().ReverseMap();
             CreateMap<PpoBillEntryDTO, PpoBillResponseDTO>().ReverseMap();
             CreateMap<PpoBillSaveResponseDTO, PpoBill>().ReverseMap();
+            CreateMap<Bill, BillResponseDTO>().ReverseMap();
         }
     }
 }

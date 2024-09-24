@@ -1,24 +1,27 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using CTS_BE.DAL.Entities.Pension;
-using CTS_BE.PensionEnum;
-using CTS_BE.Helper;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using CTS_BE.DTOs;
-using System.ComponentModel;
+using CTS_BE.Helper;
+using CTS_BE.PensionEnum;
 
 namespace CTS_BE.BAL.Services.Pension
 {
     public class PensionCalculator
     {
 
+        /// <summary>
+        /// Calculates pension payments for a given period from a list of component rates.
+        /// </summary>
+        /// <param name="componentRates">List of component rates.</param>
+        /// <param name="commencementDate">Date when the pension is commencing.</param>
+        /// <param name="toDate">Date till which the pension payment is to be calculated.</param>
+        /// <param name="basicPensionAmount">The basic pension amount.</param>
+        /// <returns>List of pension payments.</returns>
         public static List<PpoPaymentListItemDTO> CalculatePpoPayments(
             ICollection<ComponentRate> componentRates,
             DateOnly commencementDate,
             DateOnly toDate,
-            long basicPensionAmount
+            long basicPensionAmount,
+            long commutedPensionAmount
         )
         {
             List<PpoPaymentListItemDTO>? ppoPayments = new();
@@ -28,7 +31,7 @@ namespace CTS_BE.BAL.Services.Pension
             componentRates.OrderBy(entity => entity.BreakupId)
                 .ThenByDescending(entity => entity.EffectiveFromDate)
                 .ToList().ForEach(componentRate => {
-                    $"{componentRate.Breakup.Id}, {componentRate.Breakup.ComponentName}".PrintOut();
+                    // $"{componentRate.Breakup.Id}, {componentRate.Breakup.ComponentName}".PrintOut();
 
 
                     // Reset the period start date for the next breakup
@@ -40,9 +43,12 @@ namespace CTS_BE.BAL.Services.Pension
                     }
                     prevBreakupId = componentRate.Breakup.Id;
 
-                    if(calculatedPeriodStartDate.Day > 1) {
-                        
-                    }
+                    int baseAmount = CalculateBaseAmount(
+                        componentRate.Breakup.ComponentName,
+                        componentRate.RateType,
+                        basicPensionAmount,
+                        commutedPensionAmount
+                    );
 
                     ppoPayments.Add(new PpoPaymentListItemDTO()
                     {
@@ -54,16 +60,17 @@ namespace CTS_BE.BAL.Services.Pension
                         RateType = componentRate.RateType,
                         RateAmount = componentRate.RateAmount,
                         BasicPensionAmount = basicPensionAmount,
-                        AmountPerMonth = PensionCalculator.CalculatePerMonthBreakupAmount(
-                                PensionCalculator.CalculateEffectiveRate(
-                                    componentRates.ToList(),
-                                    componentRate.Breakup.Id,
-                                    calculatedPeriodStartDate      
-                                ),
-                                basicPensionAmount
+                        BaseAmount = baseAmount,
+                        AmountPerMonth = CalculatePerMonthBreakupAmount(
+                                CalculateEffectiveRate(
+                                        componentRates.ToList(),
+                                        componentRate.Breakup.Id,
+                                        calculatedPeriodStartDate      
+                                    ),
+                                baseAmount
                             ),
-                        FromDate = PensionCalculator.CalculatePeriodStartFromDate(
-                                PensionCalculator.CalculateEffectiveRate(
+                        FromDate = CalculatePeriodStartFromDate(
+                                CalculateEffectiveRate(
                                         componentRates.ToList(),
                                         componentRate.Breakup.Id,
                                         calculatedPeriodStartDate.AddDays(-1)
@@ -76,34 +83,111 @@ namespace CTS_BE.BAL.Services.Pension
                 });
 
             ppoPayments.ForEach(ppoPayment => {
-               ppoPayment.PeriodInMonths = PensionCalculator.CalculateMonthsAndDays(
-                   ppoPayment.FromDate,
-                   ppoPayment.ToDate,
-                   out int days
-               );
-               ppoPayment.PeriodInDays = days;
-               $"{ppoPayment.FromDate}-{ppoPayment.ToDate}, {ppoPayment.PeriodInMonths}-{days} days".PrintOut();
-               ppoPayment.DueAmount = (ppoPayment.PeriodInMonths * ppoPayment.AmountPerMonth)
-               + ((ppoPayment.AmountPerMonth / DateTime.DaysInMonth(ppoPayment.FromDate.Year, ppoPayment.FromDate.Month)) * days);
-               ppoPayment.NetAmount = ppoPayment.DueAmount - ppoPayment.DrawnAmount;
+                ppoPayment.PeriodInMonths = CalculateMonthsAndDays(
+                        ppoPayment.FromDate,
+                        ppoPayment.ToDate,
+                        out int days
+                    );
+                ppoPayment.PeriodInDays = days;
+                // $"{ppoPayment.FromDate}-{ppoPayment.ToDate}, {ppoPayment.PeriodInMonths}-{days} days".PrintOut();
+
+                ppoPayment.DueAmount = CalculateDueAmount(
+                        ppoPayment.ComponentType,
+                        ppoPayment.AmountPerMonth,
+                        days,
+                        ppoPayment.PeriodInMonths,
+                        ppoPayment.FromDate.Year,
+                        ppoPayment.FromDate.Month
+                    );
+                ppoPayment.NetAmount = ppoPayment.DueAmount - ppoPayment.DrawnAmount;
             });
             return ppoPayments.OrderBy(entity => entity.ComponentName)
                 .ThenBy(entity => entity.FromDate).ToList();
         }
 
-        public static long CalculatePerMonthBreakupAmount(
+
+        /// <summary>
+        /// Calculates the base amount for a given component, based on its name. 
+        /// If the component name is "AMOUNT COMMUTED", the base amount is the commuted pension amount, otherwise it is the basic pension amount.
+        /// </summary>
+        /// <param name="componentName">The name of the component.</param>
+        /// <param name="basicPensionAmount">The basic pension amount.</param>
+        /// <param name="commutedPensionAmount">The commuted pension amount.</param>
+        /// <returns>The base amount for the component.</returns>
+        public static int CalculateBaseAmount(
+            string componentName,
+            char rateType,
+            long basicPensionAmount,
+            long commutedPensionAmount
+        )
+        {
+            return rateType switch {
+                BreakupRateType.Percentage => (int) basicPensionAmount,
+                BreakupRateType.Amount => componentName switch {
+                    "AMOUNT COMMUTED" => (int) commutedPensionAmount * -1,
+                    _ => (int) basicPensionAmount
+                },
+                _ => (int) basicPensionAmount
+            };
+        }
+
+
+        /// <summary>
+        /// Calculates the due amount for a given breakup component type (Payment or Deduction).
+        /// </summary>
+        /// <param name="breakupComponentType">The type of the breakup component.</param>
+        /// <param name="amountPerMonth">The amount per month for the breakup component.</param>
+        /// <param name="periodInDays">The period in days for which the amount is to be calculated.</param>
+        /// <param name="periodInMonths">The period in months for which the amount is to be calculated.</param>
+        /// <param name="forYear">The year for which the amount is to be calculated.</param>
+        /// <param name="forMonth">The month for which the amount is to be calculated.</param>
+        /// <returns>The due amount for the given breakup component.</returns>
+        public static long CalculateDueAmount(
+            char breakupComponentType,
+            long amountPerMonth,
+            int periodInDays,
+            int periodInMonths,
+            int forYear,
+            int forMonth
+        )
+        {
+            return breakupComponentType switch
+            {
+                BreakupComponentType.Payment => 1,
+                BreakupComponentType.Deduction => -1,
+                _ => 0
+            } * (
+                (periodInMonths * amountPerMonth)
+                + amountPerMonth / DateTime.DaysInMonth(forYear, forMonth) * periodInDays
+            );
+        }
+
+
+        /// <summary>
+        /// Calculates the monthly amount for a given breakup rate.
+        /// </summary>
+        /// <param name="componentRate">The component rate.</param>
+        /// <param name="basicPensionAmount">The basic pension amount.</param>
+        /// <returns>The monthly breakup amount.</returns>
+        /// <remarks>
+        /// If the <paramref name="componentRate"/> is a percentage, the returned value is the percentage of the <paramref name="basicPensionAmount"/>.</br>
+        /// If the <paramref name="componentRate"/> is a fixed amount and the rate amount is 0, the returned value is the <paramref name="basicPensionAmount"/>.</br>
+        /// If the <paramref name="componentRate"/> is a fixed amount and the rate amount is not 0, the returned value is the rate amount.
+        /// </remarks>
+        public static int CalculatePerMonthBreakupAmount(
             ComponentRate componentRate,
-            long basicPensionAmount
+            int baseAmount
         )
         {
             if(componentRate.RateType == BreakupRateType.Percentage) {
-                return componentRate.RateAmount * basicPensionAmount / 100;
+                return componentRate.RateAmount * baseAmount / 100;
             }
             if (componentRate.RateAmount == 0) {
-                return basicPensionAmount;
+                return baseAmount;
             }
             return componentRate.RateAmount;
         }
+
 
         /// <summary>
         /// Calculates the number of months between two given dates.
@@ -152,6 +236,12 @@ namespace CTS_BE.BAL.Services.Pension
             return months;
         }
 
+
+        /// <summary>
+        /// Calculates distinct breakups from the given component rates.
+        /// </summary>
+        /// <param name="componentRates">List of component rates.</param>
+        /// <returns>List of distinct breakups.</returns>
         public static List<long> CalculateBreakups(
             List<ComponentRate> componentRates
         )
@@ -165,6 +255,14 @@ namespace CTS_BE.BAL.Services.Pension
             return componentBreakupIds;
         }
 
+
+        /// <summary>
+        /// Calculate effective rate for a given date and breakup
+        /// </summary>
+        /// <param name="componentRates">List of component rates</param>
+        /// <param name="forBreakupId">Breakup id for which the effective rate is to be calculated</param>
+        /// <param name="forDate">Date for which the effective rate is to be calculated</param>
+        /// <returns>The effective rate for the given date and breakup</returns>
         public static ComponentRate CalculateEffectiveRate(
             List<ComponentRate> componentRates,
             long forBreakupId,
@@ -196,7 +294,11 @@ namespace CTS_BE.BAL.Services.Pension
         /// <param name="fromDate">The date from which the period starts.</param>
         /// <param name="commencementDate">The date when the pension is commencing.</param>
         /// <returns>The fromDate or commencementDate whichever is the later.</returns>
-        public static DateOnly CalculatePeriodStartFromDate(DateOnly fromDate, DateOnly commencementDate) {
+        public static DateOnly CalculatePeriodStartFromDate(
+            DateOnly fromDate,
+            DateOnly commencementDate
+        )
+        {
             if(fromDate < commencementDate) {
                 return commencementDate;
             } else {
@@ -206,7 +308,7 @@ namespace CTS_BE.BAL.Services.Pension
 
 
         /// <summary>
-        /// Calculates the period start date based on the given date.
+        /// Calculates the period start date based on the given date i.e the starting date of the month of the given date.
         /// </summary>
         /// <param name="fromDate">The date from which the period starts.</param>
         /// <returns>The period start date, which is the first day of the month of the given date.</returns>
@@ -216,7 +318,7 @@ namespace CTS_BE.BAL.Services.Pension
 
 
         /// <summary>
-        /// Calculates the period end date based on the given date.
+        /// Calculates the period end date based on the given date i.e the last day of the month of the given date.
         /// </summary>
         /// <param name="fromDate">The start date of the period.</param>
         /// <returns>The end date of the month of the given date.</returns>

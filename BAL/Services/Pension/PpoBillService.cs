@@ -27,31 +27,40 @@ namespace CTS_BE.BAL.Services.Pension
             _pensionDbContext = (PensionDbContext) this._ppoBillRepository.GetDbContext();
         }
 
-        public async Task<T> GetRegularPensionBills<T>(
+        public async Task<BillListResponseDTO> GetRegularPensionBills(
             short year,
             short month,
             short financialYear,
             string treasuryCode,
             long? categoryId = null,
             long? bankCode = null
-        ) where T : BaseDTO
+        )
         {
-            PpoBillListResponseDTO ppoBillListResponseDTO = new();
-
+            BillListResponseDTO billListResponseDTO = new();
+            List<Bill>? bills = null;
             try {
 
-                List<PpoBill>? ppoBillList = await _pensionDbContext.PpoBills
+                bills = await _pensionDbContext.Bills
                 .Where(
                     entity => entity.ActiveFlag
-                    && entity.BillType == BillType.RegularBill
+                    && entity.FromDate == new DateOnly(year, month, 1)
+                    && entity.ToDate == new DateOnly(year, month, DateTime.DaysInMonth(year, month))
                     && entity.TreasuryCode == treasuryCode
-                    && entity.Pensioner.BankAccounts.Any(
-                        entity => entity.ActiveFlag
-                        && bankCode == null || entity.BankCode == bankCode
-                    )
-                    && categoryId == null || entity.Pensioner.Category.Id == categoryId
+                    && entity.FinancialYear == financialYear
                 )
                 .Include(
+                    entity => entity.PpoBills.Where(
+                        entity => entity.ActiveFlag
+                        && entity.BillType == BillType.RegularBill
+                        && entity.TreasuryCode == treasuryCode
+                        && entity.Pensioner.BankAccounts.Any(
+                            entity => entity.ActiveFlag
+                            && bankCode == null || entity.BankCode == bankCode
+                        )
+                        && categoryId == null || entity.Pensioner.Category.Id == categoryId
+                    )
+                )
+                .ThenInclude(
                     entity => entity.Pensioner
                 )
                 .ThenInclude(
@@ -61,6 +70,9 @@ namespace CTS_BE.BAL.Services.Pension
                     entity => entity.PrimaryCategory
                 )
                 .Include(
+                    entity => entity.PpoBills
+                )
+                .ThenInclude(
                     entity => entity.Pensioner
                 )
                 .ThenInclude(
@@ -70,6 +82,9 @@ namespace CTS_BE.BAL.Services.Pension
                     )
                 )
                 .Include(
+                    entity => entity.PpoBills
+                )
+                .ThenInclude(
                     entity => entity.PpoBillBreakups
                 )
                 .ThenInclude(
@@ -81,27 +96,56 @@ namespace CTS_BE.BAL.Services.Pension
                 .ThenInclude(
                     entity => entity.Breakup
                 )
+                .AsSplitQuery()
                 .ToListAsync();
 
 
-                ppoBillListResponseDTO.PpoBills = _mapper.Map<List<PpoBillResponseDTO>>(ppoBillList);
-                ppoBillListResponseDTO.PpoBills.ForEach(
+                billListResponseDTO.Bills = _mapper.Map<List<BillResponseDTO>>(bills);
+                billListResponseDTO.Bills.ForEach(
                     entity => {
+                                var pensionBill = entity;
+                        entity.PpoBills.ForEach(
+                            entity => {
+                                var pensioner = entity.Pensioner;
+                                entity.PpoBillBreakups.ForEach(
+                                    entity => {
+                                        entity.ComponentName = entity.Revision?.Rate?.Breakup?.ComponentName ?? "";
+                                        entity.ComponentType = entity.Revision?.Rate?.Breakup?.ComponentType ?? '-';
+                                        entity.AmountPerMonth = entity.Revision?.AmountPerMonth ?? 0;
+                                        entity.BaseAmount = PensionCalculator.CalculateBaseAmount(
+                                                entity.Revision?.Rate?.Breakup?.ComponentName ?? "",
+                                                entity.Revision?.Rate?.RateType ?? '-',
+                                                pensioner.BasicPensionAmount,
+                                                pensioner.CommutedPensionAmount ?? 0
+                                            );
+                                    }
+                                );
+                                entity.BillDate = pensionBill.BillDate;
+                                entity.BillNo = pensionBill.BillNo;
+                                entity.ToDate = pensionBill.ToDate;
+                                entity.PreparedBy = GetUserName();
+                                entity.PreparedOn = DateOnly.FromDateTime(DateTime.Today);
+                            }
+                        );
+                        entity.GrossAmount = entity.PpoBills.Sum(bill => bill.GrossAmount);
+                        entity.NetAmount = entity.PpoBills.Sum(bill => bill.NetAmount);
+                        entity.ByTransferAmount = entity.PpoBills.Sum(bill => bill.ByTransferAmount);
                         entity.PreparedOn = DateOnly.FromDateTime(DateTime.Today);
                         entity.PreparedBy = GetUserName();
-                        }
+                    }
                 );
+                billListResponseDTO.PreparedBy = GetUserName();
+                billListResponseDTO.PreparedOn = DateOnly.FromDateTime(DateTime.Today);
             }
             catch (Exception ex) {
-                T? ppoBillResponseDTO = _mapper.Map<T>(ppoBillListResponseDTO);
-                ppoBillResponseDTO.FillDataSource(
-                    ppoBillResponseDTO,
+                billListResponseDTO.FillDataSource(
+                    new object(),
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );
-                return ppoBillResponseDTO;
+                return billListResponseDTO;
             }
 
-            return _mapper.Map<T>(ppoBillListResponseDTO);
+            return billListResponseDTO;
         }
 
         public async Task<T> GetAllPposForBillGeneration<T>(
@@ -174,6 +218,7 @@ namespace CTS_BE.BAL.Services.Pension
                         && entity.StatusFlag == PensionStatusFlag.PpoApproved
                         && entity.PpoId == ppoBillDTO.PpoId
                         && entity.TreasuryCode == treasuryCode
+                        && entity.FinancialYear == financialYear
                     )
                     .FirstOrDefaultAsync();
 
@@ -192,12 +237,10 @@ namespace CTS_BE.BAL.Services.Pension
                         entity => entity.ActiveFlag
                         && entity.PpoId == ppoBillDTO.PpoId
                         && entity.BillType == ppoBillDTO.BillType
-                        // && entity.BillDate == billDate
-                        // && entity.FinancialYear == financialYear
+                        && entity.FinancialYear == financialYear
                         && entity.TreasuryCode == treasuryCode
                     )
                     .FirstOrDefaultAsync();
-                // Console.WriteLine(JsonConvert.SerializeObject(ppoBill, Formatting.Indented));
                 if(ppoBill != null) {
                     ppoBillResponseDTO = _mapper.Map<T>(ppoBill);
                     ppoBillResponseDTO.FillDataSource(
@@ -224,7 +267,69 @@ namespace CTS_BE.BAL.Services.Pension
                         return ppoBillResponseDTO;
                     }
                 }
+
                 SetCreatedBy(ppoBillEntity);
+
+                string hoaId = await _pensionDbContext.Pensioners
+                    .Where(
+                        entity => entity.ActiveFlag
+                        && entity.PpoId == ppoBillDTO.PpoId
+                        && entity.TreasuryCode == treasuryCode
+                    )
+                    .Include(
+                        entity => entity.Category
+                    )
+                    .ThenInclude(
+                        entity => entity.PrimaryCategory
+                    )
+                    .Select(entity => entity.Category.PrimaryCategory.HoaId)
+                    .FirstOrDefaultAsync() ?? "";
+
+                Bill billEntity = new()
+                    {
+                        ActiveFlag = true,
+                        CreatedBy = ppoBillEntity.CreatedBy,
+                        CreatedAt = DateTime.Now,
+                        BillDate = ppoBillDTO.ToDate,
+                        TreasuryCode = treasuryCode,
+                        FinancialYear = financialYear,
+                        FromDate = ppoBillDTO.FromDate,
+                        ToDate = ppoBillDTO.ToDate,
+                        HoaId = hoaId,
+                        BillNo = await _ppoBillRepository.GetNextBillNo(financialYear, treasuryCode)
+                    };
+                
+                if(ppoBillDTO.BillType == BillType.RegularBill) {
+
+                    billEntity =  await _pensionDbContext.Bills
+                    .Where(
+                        entity => entity.ActiveFlag
+                        && entity.TreasuryCode == treasuryCode
+                        && entity.FromDate == PensionCalculator.CalculatePeriodStartDate(ppoBillDTO.BillDate)
+                        && entity.ToDate == PensionCalculator.CalculatePeriodEndDate(ppoBillDTO.BillDate)
+                        && entity.FinancialYear == financialYear
+                        && entity.HoaId == hoaId
+                    )
+                    .FirstOrDefaultAsync() ?? new()
+                    {
+                        ActiveFlag = true,
+                        CreatedBy = ppoBillEntity.CreatedBy,
+                        CreatedAt = DateTime.Now,
+                        BillDate = ppoBillDTO.ToDate,
+                        TreasuryCode = treasuryCode,
+                        FinancialYear = financialYear,
+                        FromDate = PensionCalculator.CalculatePeriodStartDate(ppoBillDTO.BillDate),
+                        ToDate = PensionCalculator.CalculatePeriodEndDate(ppoBillDTO.BillDate),
+                        HoaId = hoaId,
+                        BillNo = billEntity.BillNo
+                    };
+                    // $"RegularBill ID: {billEntity.Id}".PrintOut();
+                    // $"RegularBill HoA: {billEntity.HoaId}".PrintOut();
+                    // $"RegularBill PensionerHoA: {hoaId}".PrintOut();
+                }
+
+                ppoBillEntity.Bill = billEntity;
+
                 ppoBillResponseDTO = await _ppoBillRepository.SavePpoBill<T>(
                         ppoBillEntity,
                         financialYear,

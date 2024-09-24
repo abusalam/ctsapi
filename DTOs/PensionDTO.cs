@@ -152,8 +152,14 @@ namespace CTS_BE.DTOs
         public int BasicPensionAmount { get; set; }
         
         [Required]
-        public int CommutedPensionAmount { get; set; }
+        public long? CommutedPensionAmount { get; set; }
+
+        [DataType(DataType.Date)]
+        public DateOnly? CommutedFromDate { get; set; }
         
+        [DataType(DataType.Date)]
+        public DateOnly? CommutedUptoDate { get; set; }
+
         [Required]
         public int EnhancePensionAmount { get; set; }
         
@@ -343,7 +349,7 @@ namespace CTS_BE.DTOs
     public partial class PensionerFirstBillResponseDTO : InitiateFirstPensionBillDTO {
         public long Id { get; set; }
         // public override int PpoId { get {return this.Pensioner.PpoId;} }
-        // public DateOnly FromDate { get {return this.Pensioner.DateOfCommencement;} }
+        public DateOnly FromDate { get; set; }
         public char BillType { get; set; } = 'F';
         // public required PensionerBankAcResponseDTO BankAccount { get; set; }
         // public long BankAccountId { get {return this.BankAccount.Id;} }
@@ -375,10 +381,15 @@ namespace CTS_BE.DTOs
         public DateOnly FromDate { get; set; }
         public DateOnly ToDate { get; set; }
         public long BasicPensionAmount { get; set; }
+
+        /// <summary>
+        /// BaseAmount will be same as AmountPerMonth except in case of DA where BaseAmount will be BasicPensionAmount
+        /// </summary>
+        public long BaseAmount { get; set; }
         public long BreakupId { get; set; }
         public string ComponentName { get; set; } = null!;
         public char ComponentType { get; set; }
-        public long AmountPerMonth { get; set; }
+        public int AmountPerMonth { get; set; }
         public long RateId { get; set; }
         public char RateType { get; set; }
         public int RateAmount { get; set; }
@@ -485,16 +496,20 @@ namespace CTS_BE.DTOs
         public DateOnly ToDate { get; set; }
 
         [Required]
-        public int BreakupAmount { get; set; }
-        public int DueAmount { get {return this.BreakupAmount;} set {this.BreakupAmount = value;} }
-        public int DrawnAmount { get; set; } = 0;
-        public int NetAmount { get {return this.BreakupAmount - this.DrawnAmount;} }
+        public long BreakupAmount { get; set; }
+        public long DueAmount { get {return this.BreakupAmount;} set {this.BreakupAmount = value;} }
+        public long DrawnAmount { get; set; } = 0;
+        public long NetAmount { get {return this.BreakupAmount - this.DrawnAmount;} }
     }
 
     public partial class PpoBillBreakupResponseDTO : PpoBillBreakupEntryDTO {
         public long Id { get; set; }
         public long RevisionId { get {return this.Revision?.Id ?? 0;} }
         public PpoComponentRevisionResponseDTO Revision { get; set; } = null!;
+        public string ComponentName { get; set; } = null!;
+        public char ComponentType { get; set; }
+        public int AmountPerMonth { get; set; }
+        public long BaseAmount { get; set; }
     }
 
     public partial class PpoComponentRevisionListEntryDTO : BaseDTO {
@@ -506,7 +521,52 @@ namespace CTS_BE.DTOs
     }
 
     public partial class PpoBillListResponseDTO : BaseDTO {
+        public long Id { get; set; }
+        
+        [StringLength(50)]
+        public string HoaId { get; set; } = null!;
+        public int BillNo { get; set; }
+        public DateOnly BillDate { get; set; }
+
+        [DataType(DataType.Date)]
+        public DateOnly FromDate { get; set; }
+
+        [DataType(DataType.Date)]
+        public DateOnly ToDate { get; set; }
+        public long GrossAmount { get; set; }
+        public long ByTransferAmount { get; set; }
+        public long NetAmount { get; set; }
+        public string? TreasuryVoucherNo { get; set; }
+        public DateOnly? TreasuryVoucherDate { get; set; }
         public List<PpoBillResponseDTO> PpoBills { get; set; } = null!;
+        public string PreparedBy { get; set; } = null!;
+        public DateOnly PreparedOn { get; set; }
+    }
+
+    public partial class BillResponseDTO : BaseDTO {
+        public long Id { get; set; }
+        public string FinancialYear { get; set; } = null!;
+        public string HoaId { get; set; } = null!;
+        public int BillNo { get; set; }
+        public DateOnly BillDate { get; set; }
+        public string TreasuryVoucherNo { get; set; } = null!;
+        public DateOnly TreasuryVoucherDate { get; set; }
+        public DateOnly FromDate { get; set; }
+        public DateOnly ToDate { get; set; }
+        public List<PpoBillResponseDTO> PpoBills { get; set; } = null!;
+        public long PpoBillCount { get { return this.PpoBills?.Count ?? 0;} }
+        public int GrossAmount { get; set; }
+        public int ByTransferAmount { get; set; }
+        public int NetAmount { get; set; }
+        public string PreparedBy { get; set; } = null!;
+        public DateOnly PreparedOn { get; set; }
+    }
+
+    public partial class BillListResponseDTO : BaseDTO {
+        public List<BillResponseDTO> Bills { get; set; } = null!;
+        public long BillCount { get { return this.Bills?.Count ?? 0;} }
+        public string PreparedBy { get; set; } = null!;
+        public DateOnly PreparedOn { get; set; }
     }
 
     public partial class PpoBillSaveResponseDTO : BaseDTO {

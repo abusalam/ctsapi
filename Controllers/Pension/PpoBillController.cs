@@ -260,7 +260,7 @@ namespace CTS_BE.Controllers.Pension
         [HttpGet("pension-bill/{year}/{month}/regular-bills")]
         [Tags("Pension: Regular Bill")]
         [OpenApi]
-        public async Task<JsonAPIResponse<PpoBillListResponseDTO>> GetAllRegularPensionBills(
+        public async Task<JsonAPIResponse<BillListResponseDTO>> GetAllRegularPensionBills(
             short year,
             short month,
             long? categoryId = null,
@@ -268,12 +268,12 @@ namespace CTS_BE.Controllers.Pension
         )
         {
 
-            JsonAPIResponse<PpoBillListResponseDTO> response = new(){
+            JsonAPIResponse<BillListResponseDTO> response = new(){
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = $"Regular Pension Bills received sucessfully!"
             };
             try {
-                response.Result = await _ppoBillService.GetRegularPensionBills<PpoBillListResponseDTO>(
+                response.Result = await _ppoBillService.GetRegularPensionBills(
                     year,
                     month,
                     GetCurrentFyYear(),

@@ -33,7 +33,6 @@ using CTS_BE.DAL.Repositories.stamp;
 using CTS_BE.BAL.Interfaces.stamp;
 using CTS_BE.BAL.Services.stamp;
 using Swashbuckle.AspNetCore.SwaggerUI;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.Mvc;
 using CTS_BE.Enum;
 using CTS_BE.Helper;
@@ -255,6 +254,7 @@ builder.Services.AddControllers()
     .AddJsonOptions(
         options => {
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            // options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
         }
     );
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

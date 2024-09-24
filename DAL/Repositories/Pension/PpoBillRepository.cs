@@ -24,7 +24,7 @@ namespace CTS_BE.DAL.Repositories.Pension
 
         public async Task<int> GetNextBillNo(short financialYear, string treasuryCode)
         {
-            int nextBillNo = await _pensionDbContext.PpoBills
+            int nextBillNo = await _pensionDbContext.Bills
                 .Where(
                     entity => entity.ActiveFlag
                     && entity.TreasuryCode == treasuryCode
@@ -242,8 +242,8 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
 
             ppoBillEntity.ActiveFlag = true;
-            ppoBillEntity.FromDate = pensioner.DateOfCommencement;
             ppoBillEntity.PensionerId = pensioner.Id;
+            ppoBillEntity.PpoId = ppoBillEntity.PpoId;
             ppoBillEntity.BankAccountId = pensioner.BankAccounts.First().Id;
             ppoBillEntity.FinancialYear = financialYear;
             ppoBillEntity.TreasuryCode = treasuryCode;
@@ -268,7 +268,7 @@ namespace CTS_BE.DAL.Repositories.Pension
             ppoBillEntity.GrossAmount = ppoBillEntity.PpoBillBreakups.Sum(entity => entity.BreakupAmount);
             ppoBillEntity.NetAmount = ppoBillEntity.GrossAmount - ppoBillEntity.BytransferAmount;
             
-            ppoBillEntity.BillNo = await GetNextBillNo(financialYear, treasuryCode);
+            // ppoBillEntity.BillNo = await GetNextBillNo(financialYear, treasuryCode);
             await _pensionDbContext.PpoBills.AddAsync(ppoBillEntity);
             if(await _pensionDbContext.SaveChangesAsync() == 0) {
                 ppoBillResponseDTO.FillDataSource(

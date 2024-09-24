@@ -82,7 +82,7 @@ namespace CTS_BE.BAL.Services.Pension
                     categoryId,
                     entity => _mapper.Map<TResponse>(entity)
                 );
-            _dataCount = _pensionRateRepository.Count();
+            _dataCount = breakups.Count();
 
             return breakups;
         }

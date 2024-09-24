@@ -18,7 +18,11 @@ public partial class PensionDbContext : DbContext
 
     public virtual DbSet<BankAccount> BankAccounts { get; set; }
 
+    public virtual DbSet<Bill> Bills { get; set; }
+
     public virtual DbSet<Breakup> Breakups { get; set; }
+
+    public virtual DbSet<Bytransfer> Bytransfers { get; set; }
 
     public virtual DbSet<Category> Categories { get; set; }
 
@@ -36,8 +40,6 @@ public partial class PensionDbContext : DbContext
 
     public virtual DbSet<PpoBillBreakup> PpoBillBreakups { get; set; }
 
-    public virtual DbSet<PpoBillBytransfer> PpoBillBytransfers { get; set; }
-
     public virtual DbSet<PpoComponentRevision> PpoComponentRevisions { get; set; }
 
     public virtual DbSet<PpoIdSequence> PpoIdSequences { get; set; }
@@ -45,6 +47,8 @@ public partial class PensionDbContext : DbContext
     public virtual DbSet<PpoReceipt> PpoReceipts { get; set; }
 
     public virtual DbSet<PpoReceiptSequence> PpoReceiptSequences { get; set; }
+
+    public virtual DbSet<PpoSanctionDetail> PpoSanctionDetails { get; set; }
 
     public virtual DbSet<PpoStatusFlag> PpoStatusFlags { get; set; }
 
@@ -72,6 +76,15 @@ public partial class PensionDbContext : DbContext
                 .HasConstraintName("bank_accounts_pensioner_id_fkey");
         });
 
+        modelBuilder.Entity<Bill>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("bills_pkey");
+
+            entity.ToTable("bills", "cts_pension", tb => tb.HasComment("PensionModuleSchema v1"));
+
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+        });
+
         modelBuilder.Entity<Breakup>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("breakups_pkey");
@@ -82,6 +95,19 @@ public partial class PensionDbContext : DbContext
             entity.Property(e => e.ComponentType).HasComment("P - Payment; D - Deduction;");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.ReliefFlag).HasComment("Relief Allowed (Yes/No)");
+        });
+
+        modelBuilder.Entity<Bytransfer>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("bytransfers_pkey");
+
+            entity.ToTable("bytransfers", "cts_pension", tb => tb.HasComment("PensionModuleSchema v1"));
+
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            entity.HasOne(d => d.PpoBill).WithMany(p => p.Bytransfers)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("bytransfers_ppo_bill_id_fkey");
         });
 
         modelBuilder.Entity<Category>(entity =>
@@ -195,7 +221,6 @@ public partial class PensionDbContext : DbContext
 
             entity.ToTable("ppo_bills", "cts_pension", tb => tb.HasComment("PensionModuleSchema v1"));
 
-            entity.Property(e => e.BillNo).HasComment("BillNo is to identify the treasury bill");
             entity.Property(e => e.BillType).HasComment("F - First Bill; R - Regular Bill;");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.UtrAt).HasComment("UTRAt timestamp when the UTR is received");
@@ -204,6 +229,10 @@ public partial class PensionDbContext : DbContext
             entity.HasOne(d => d.BankAccount).WithMany(p => p.PpoBills)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("ppo_bills_bank_account_id_fkey");
+
+            entity.HasOne(d => d.Bill).WithMany(p => p.PpoBills)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("ppo_bills_bill_id_fkey");
 
             entity.HasOne(d => d.Pensioner).WithMany(p => p.PpoBills)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -216,30 +245,17 @@ public partial class PensionDbContext : DbContext
 
             entity.ToTable("ppo_bill_breakups", "cts_pension", tb => tb.HasComment("PensionModuleSchema v1"));
 
-            entity.Property(e => e.BillId).HasComment("BillId is to identify the bill on which the actual payment made");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.PpoBillId).HasComment("BillId is to identify the bill on which the actual payment made");
             entity.Property(e => e.RevisionId).HasComment("RevisionId is to identify the component rate applied on the bill");
 
-            entity.HasOne(d => d.Bill).WithMany(p => p.PpoBillBreakups)
+            entity.HasOne(d => d.PpoBill).WithMany(p => p.PpoBillBreakups)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("ppo_bill_breakups_bill_id_fkey");
+                .HasConstraintName("ppo_bill_breakups_ppo_bill_id_fkey");
 
             entity.HasOne(d => d.Revision).WithMany(p => p.PpoBillBreakups)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("ppo_bill_breakups_revision_id_fkey");
-        });
-
-        modelBuilder.Entity<PpoBillBytransfer>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("ppo_bill_bytransfers_pkey");
-
-            entity.ToTable("ppo_bill_bytransfers", "cts_pension", tb => tb.HasComment("PensionModuleSchema v1"));
-
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-            entity.HasOne(d => d.Bill).WithMany(p => p.PpoBillBytransfers)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("ppo_bill_bytransfers_bill_id_fkey");
         });
 
         modelBuilder.Entity<PpoComponentRevision>(entity =>
@@ -290,6 +306,19 @@ public partial class PensionDbContext : DbContext
 
             entity.Property(e => e.ActiveFlag).HasDefaultValueSql("true");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+        });
+
+        modelBuilder.Entity<PpoSanctionDetail>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("ppo_sanction_details_pkey");
+
+            entity.ToTable("ppo_sanction_details", "cts_pension", tb => tb.HasComment("PensionModuleSchema v1"));
+
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            entity.HasOne(d => d.Pensioner).WithMany(p => p.PpoSanctionDetails)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("ppo_sanction_details_pensioner_id_fkey");
         });
 
         modelBuilder.Entity<PpoStatusFlag>(entity =>

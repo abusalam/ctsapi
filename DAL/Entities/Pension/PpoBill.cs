@@ -10,7 +10,6 @@ namespace CTS_BE.DAL.Entities.Pension;
 /// PensionModuleSchema v1
 /// </summary>
 [Table("ppo_bills", Schema = "cts_pension")]
-[Index("TreasuryCode", "PpoId", "BillNo", Name = "ppo_bills_treasury_code_ppo_id_bill_no_key", IsUnique = true)]
 public partial class PpoBill
 {
     [Key]
@@ -24,6 +23,9 @@ public partial class PpoBill
     [StringLength(3)]
     public string TreasuryCode { get; set; } = null!;
 
+    [Column("bill_id")]
+    public long BillId { get; set; }
+
     [Column("pensioner_id")]
     public long PensionerId { get; set; }
 
@@ -33,34 +35,12 @@ public partial class PpoBill
     [Column("ppo_id")]
     public int PpoId { get; set; }
 
-    [Column("from_date")]
-    public DateOnly FromDate { get; set; }
-
-    [Column("to_date")]
-    public DateOnly ToDate { get; set; }
-
     /// <summary>
     /// F - First Bill; R - Regular Bill;
     /// </summary>
     [Column("bill_type")]
     [MaxLength(1)]
     public char BillType { get; set; }
-
-    /// <summary>
-    /// BillNo is to identify the treasury bill
-    /// </summary>
-    [Column("bill_no")]
-    public int BillNo { get; set; }
-
-    [Column("bill_date")]
-    public DateOnly BillDate { get; set; }
-
-    [Column("treasury_voucher_no")]
-    [StringLength(100)]
-    public string? TreasuryVoucherNo { get; set; }
-
-    [Column("treasury_voucher_date")]
-    public DateOnly? TreasuryVoucherDate { get; set; }
 
     /// <summary>
     /// UTRNo to refer to the actual transaction of the payment
@@ -103,13 +83,17 @@ public partial class PpoBill
     [InverseProperty("PpoBills")]
     public virtual BankAccount BankAccount { get; set; } = null!;
 
+    [ForeignKey("BillId")]
+    [InverseProperty("PpoBills")]
+    public virtual Bill Bill { get; set; } = null!;
+
+    [InverseProperty("PpoBill")]
+    public virtual ICollection<Bytransfer> Bytransfers { get; set; } = new List<Bytransfer>();
+
     [ForeignKey("PensionerId")]
     [InverseProperty("PpoBills")]
     public virtual Pensioner Pensioner { get; set; } = null!;
 
-    [InverseProperty("Bill")]
+    [InverseProperty("PpoBill")]
     public virtual ICollection<PpoBillBreakup> PpoBillBreakups { get; set; } = new List<PpoBillBreakup>();
-
-    [InverseProperty("Bill")]
-    public virtual ICollection<PpoBillBytransfer> PpoBillBytransfers { get; set; } = new List<PpoBillBytransfer>();
 }

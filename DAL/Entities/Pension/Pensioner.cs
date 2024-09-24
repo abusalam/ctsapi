@@ -58,6 +58,9 @@ public partial class Pensioner
     [Column("date_of_birth")]
     public DateOnly DateOfBirth { get; set; }
 
+    [Column("date_of_death")]
+    public DateOnly? DateOfDeath { get; set; }
+
     /// <summary>
     /// M - Male; F - Female;
     /// </summary>
@@ -97,6 +100,12 @@ public partial class Pensioner
 
     [Column("basic_pension_amount")]
     public int BasicPensionAmount { get; set; }
+
+    [Column("commuted_from_date")]
+    public DateOnly? CommutedFromDate { get; set; }
+
+    [Column("commuted_upto_date")]
+    public DateOnly? CommutedUptoDate { get; set; }
 
     [Column("commuted_pension_amount")]
     public int CommutedPensionAmount { get; set; }
@@ -157,6 +166,9 @@ public partial class Pensioner
 
     [InverseProperty("Pensioner")]
     public virtual ICollection<PpoComponentRevision> PpoComponentRevisions { get; set; } = new List<PpoComponentRevision>();
+
+    [InverseProperty("Pensioner")]
+    public virtual ICollection<PpoSanctionDetail> PpoSanctionDetails { get; set; } = new List<PpoSanctionDetail>();
 
     [InverseProperty("Pensioner")]
     public virtual ICollection<PpoStatusFlag> PpoStatusFlags { get; set; } = new List<PpoStatusFlag>();

@@ -9,9 +9,8 @@ namespace CTS_BE.DAL.Entities.Pension;
 /// <summary>
 /// PensionModuleSchema v1
 /// </summary>
-[Table("ppo_bill_breakups", Schema = "cts_pension")]
-[Index("TreasuryCode", "PpoId", "PpoBillId", "RevisionId", "FromDate", Name = "ppo_bill_breakups_treasury_code_ppo_id_ppo_bill_id_revision_key", IsUnique = true)]
-public partial class PpoBillBreakup
+[Table("bytransfers", Schema = "cts_pension")]
+public partial class Bytransfer
 {
     [Key]
     [Column("id")]
@@ -24,29 +23,17 @@ public partial class PpoBillBreakup
     [StringLength(3)]
     public string TreasuryCode { get; set; } = null!;
 
-    [Column("ppo_id")]
-    public int PpoId { get; set; }
-
-    /// <summary>
-    /// BillId is to identify the bill on which the actual payment made
-    /// </summary>
     [Column("ppo_bill_id")]
     public long PpoBillId { get; set; }
 
-    /// <summary>
-    /// RevisionId is to identify the component rate applied on the bill
-    /// </summary>
-    [Column("revision_id")]
-    public long RevisionId { get; set; }
+    [Column("bytransfer_hoa_id")]
+    public int BytransferHoaId { get; set; }
 
-    [Column("from_date")]
-    public DateOnly FromDate { get; set; }
+    [Column("bytransfer_wef")]
+    public DateOnly BytransferWef { get; set; }
 
-    [Column("to_date")]
-    public DateOnly ToDate { get; set; }
-
-    [Column("breakup_amount")]
-    public int BreakupAmount { get; set; }
+    [Column("bytransfer_amount")]
+    public int BytransferAmount { get; set; }
 
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime? CreatedAt { get; set; }
@@ -64,10 +51,6 @@ public partial class PpoBillBreakup
     public bool ActiveFlag { get; set; }
 
     [ForeignKey("PpoBillId")]
-    [InverseProperty("PpoBillBreakups")]
+    [InverseProperty("Bytransfers")]
     public virtual PpoBill PpoBill { get; set; } = null!;
-
-    [ForeignKey("RevisionId")]
-    [InverseProperty("PpoBillBreakups")]
-    public virtual PpoComponentRevision Revision { get; set; } = null!;
 }

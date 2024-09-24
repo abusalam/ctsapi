@@ -154,6 +154,19 @@ Authorization: Bearer {{accessToken}}
 
 
 
+### Set Category ID
+
+@CategoryID = 30
+
+### Get Component Rates By CategoryId
+# @name GetComponentRatesByCategoryId
+GET {{PensionAPI_HostAddress}}/api/v1/pension/{{CategoryID}}/component-rate
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+
+
 
 ### Generate First Pension Bill
 # @name GenerateFirstPensionBill
@@ -356,6 +369,8 @@ Content-Type: application/json
   "dateOfCommencement": "{{DateOfCommencement}}",
   "basicPensionAmount": 10000,
   "commutedPensionAmount": 2000,
+  "commutedFromDate": "{{DateOfCommencement}}",
+  "commutedUptoDate": "2034-01-31",
   "enhancePensionAmount": 10000,
   "reducedPensionAmount": 8000,
   "religion": "H"

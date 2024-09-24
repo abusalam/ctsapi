@@ -16,7 +16,7 @@ namespace CTS_BE.Factories.Pension
                     (f,d) => f.Name.FullName(d.Gender == 'M' ? Bogus.DataSets.Name.Gender.Male : Bogus.DataSets.Name.Gender.Female))
                 .RuleFor(d => d.PpoType, f => f.PickRandom('P','F','C'))
                 .RuleFor(d => d.PpoSubType, f => f.PickRandom('E', 'L', 'U', 'V', 'N', 'R', 'P', 'G', 'J', 'K', 'H', 'W'))
-                .RuleFor(d => d.CategoryId, f => f.PickRandom(25, 29, 30, 31, 138, 48))
+                .RuleFor(d => d.CategoryId, f => f.PickRandom(30, 48))
                 .RuleFor(d => d.MobileNumber, f => f.Random.Replace("9#########"))
                 .RuleFor(d => d.EmailId, f => f.Person.Email)
                 .RuleFor(d => d.IdentificationMark, f => f.Random.Words(1))
