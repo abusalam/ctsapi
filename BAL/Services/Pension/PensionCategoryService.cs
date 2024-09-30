@@ -47,6 +47,19 @@ namespace CTS_BE.BAL.Services.Pension
 
             try {
                 primaryCategoryEntity.FillFrom(pensionPrimaryCategoryEntryDTO);
+
+                var primaryCategory = await _primaryCategoryRepository.GetSingleAysnc(
+                        entity => entity.ActiveFlag
+                        && entity.PrimaryCategoryName == primaryCategoryEntity.PrimaryCategoryName
+                    );
+                if (primaryCategory != null) {
+                    response.FillDataSource(
+                        primaryCategoryEntity,
+                        $"Primary Category already exists!"
+                    );
+                    return response;
+                }
+
                 primaryCategoryEntity.ActiveFlag = true;
                 primaryCategoryEntity.CreatedAt = DateTime.Now;
                 
@@ -100,6 +113,19 @@ namespace CTS_BE.BAL.Services.Pension
 
             try {
                 subCategoryEntity.FillFrom(pensionSubCategoryEntryDTO);
+
+                var subCategory = await _subCategoryRepository.GetSingleAysnc(
+                        entity => entity.ActiveFlag
+                        && entity.SubCategoryName == subCategoryEntity.SubCategoryName
+                    );
+                if (subCategory != null) {
+                    response.FillDataSource(
+                        subCategoryEntity,
+                        $"Sub Category already exists!"
+                    );
+                    return response;
+                }
+
                 subCategoryEntity.ActiveFlag = true;
                 subCategoryEntity.CreatedAt = DateTime.Now;
                 
@@ -154,6 +180,20 @@ namespace CTS_BE.BAL.Services.Pension
 
             try {
                 categoryEntity.FillFrom(pensionCategoryEntryDTO);
+                
+                var category = await _categoryRepository.GetSingleAysnc(
+                        entity => entity.ActiveFlag
+                        && entity.PrimaryCategoryId == categoryEntity.PrimaryCategoryId
+                        && entity.SubCategoryId == categoryEntity.SubCategoryId
+                    );
+
+                if (category != null) {
+                    response.FillDataSource(
+                        categoryEntity,
+                        $"Category already exists!"
+                    );
+                    return response;
+                }
                 categoryEntity.ActiveFlag = true;
                 categoryEntity.CreatedAt = DateTime.Now;
 

@@ -45,7 +45,7 @@ namespace CTS_BE.BAL.Services.Pension
                 if(_dataCount == 0) {
                     response.FillDataSource(
                         componentRateEntity,
-                        $"Primary Category not saved!"
+                        $"Component Rate not saved!"
                     );
                     return response;
                 }

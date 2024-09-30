@@ -38,6 +38,20 @@ namespace CTS_BE.BAL.Services.Pension
 
             try {
                 breakupEntity.FillFrom(pensionBreakupEntryDTO);
+
+                var breakup = await _billBreakupRepository.GetSingleAysnc(
+                        entity => entity.ActiveFlag
+                        && entity.ComponentName == breakupEntity.ComponentName
+                    );
+
+                if (breakup != null) {
+                    response.FillDataSource(
+                        breakupEntity,
+                        $"Breakup already exists!"
+                    );
+                    return response;
+                }
+
                 SetCreatedBy(breakupEntity);
                 
                 _billBreakupRepository.Add(breakupEntity);
@@ -45,7 +59,7 @@ namespace CTS_BE.BAL.Services.Pension
                 if(await _billBreakupRepository.SaveChangesManagedAsync() == 0) {
                     response.FillDataSource(
                         breakupEntity,
-                        $"Primary Category not saved!"
+                        $"Breakup not saved!"
                     );
                     return response;
                 }
