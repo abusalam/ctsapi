@@ -623,3 +623,14 @@ Accept: application/json
 Authorization: Bearer {{accessToken}}
 
 
+
+
+
+### Get Ppo List for First Bill Generation
+# @name GetAllPposForFirstBill
+GET {{PensionAPI_HostAddress}}/api/v1/ppo/first-bill/ppos
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+
+

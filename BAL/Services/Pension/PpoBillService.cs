@@ -203,6 +203,69 @@ namespace CTS_BE.BAL.Services.Pension
             return _mapper.Map<T>(ppoListResponseDTO);
         }
 
+        public async Task<T> GetAllPposForFirstBillGeneration<T>(
+            short financialYear,
+            string treasuryCode
+        ) where T : BaseDTO
+        {
+
+            PpoListResponseDTO ppoListResponseDTO = new();
+
+            try {
+
+                List<Pensioner>? ppoList = await _pensionDbContext.Pensioners
+                .Where(
+                    entity => entity.ActiveFlag
+                    && entity.TreasuryCode == treasuryCode
+                    && entity.PpoStatusFlags.Any(
+                        entity => entity.ActiveFlag
+                        && entity.StatusFlag == PensionStatusFlag.PpoApproved
+                    )
+                    && entity.PpoBills.Count == 0
+                )
+                .Include(
+                    entity => entity.PpoStatusFlags
+                    .Where(
+                        entity => entity.ActiveFlag
+                    )
+                )
+                .Include(
+                    entity => entity.PpoBills
+                    .Where(
+                        entity => entity.ActiveFlag
+                        && entity.BillType == BillType.FirstBill
+                    )
+                )
+                // .Select(
+                //     entity => new {
+                //         entity.Id,
+                //         entity.PpoId,
+                //         entity.PpoNo,
+                //         entity.PensionerName,
+                //         entity.MobileNumber,
+                //         entity.DateOfBirth,
+                //         entity.DateOfRetirement,
+                //         entity.DateOfCommencement
+                //     }
+                // )
+                .AsSplitQuery()
+                .ToListAsync();
+
+
+                ppoListResponseDTO.PpoList = _mapper.Map<List<PensionerListItemDTO>>(ppoList);
+            }
+            catch (Exception ex) {
+                T? ppoBillResponseDTO = _mapper.Map<T>(ppoListResponseDTO);
+                ppoBillResponseDTO.FillDataSource(
+                    ppoBillResponseDTO,
+                    $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
+                );
+                return ppoBillResponseDTO;
+            }
+
+            return _mapper.Map<T>(ppoListResponseDTO);
+        }
+
         public async Task<T> SavePpoBill<T>(
             PensionerFirstBillResponseDTO ppoBillDTO,
             short financialYear,

@@ -4,6 +4,11 @@ namespace CTS_BE.BAL.Interfaces.Pension
 {
     public interface IPpoBillService : IBaseService
     {
+        public Task<T> GetAllPposForFirstBillGeneration<T>(
+            short financialYear,
+            string treasuryCode
+        ) where T : BaseDTO;
+
         public Task<T> GetAllPposForBillGeneration<T>(
             short year,
             short month,

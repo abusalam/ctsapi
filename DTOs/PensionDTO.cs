@@ -518,6 +518,7 @@ namespace CTS_BE.DTOs
 
     public partial class PpoListResponseDTO : BaseDTO {
         public List<PensionerListItemDTO> PpoList { get; set; } = null!;
+        public int PpoCount { get { return this.PpoList?.Count ?? 0;} }
     }
 
     public partial class PpoBillListResponseDTO : BaseDTO {

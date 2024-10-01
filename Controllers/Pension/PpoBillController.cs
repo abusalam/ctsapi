@@ -37,6 +37,72 @@ namespace CTS_BE.Controllers.Pension
             _claimService = claimService;
         }
 
+        [HttpGet("first-bill/ppos")]
+        [Tags("Pension: First Bill")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<PensionerListItemDTO>>>> GetAllPposForFirstBill()
+        {
+
+            JsonAPIResponse<DynamicListResult<IEnumerable<PensionerListItemDTO>>> response = new(){
+                ApiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = $"PPO List for first bill received sucessfully!"
+            };
+            try {
+                var ppoList = await _ppoBillService.GetAllPposForFirstBillGeneration<PpoListResponseDTO>(
+                    GetCurrentFyYear(),
+                    GetTreasuryCode()
+                );
+                response.Result = new(){
+                    Headers = new(){
+                        new(){
+                            Name = "PPO ID",
+                            FieldName = "ppoId",
+                        },
+                        new(){
+                            Name = "PPO Number",
+                            FieldName = "ppoNo",
+                        },
+                        new(){
+                            Name = "Pensioner Name",
+                            FieldName = "pensionerName",
+                        },
+                        new(){
+                            Name = "Mobile",
+                            FieldName = "mobileNumber",
+                        },
+                        new(){
+                            Name = "Date of Birth",
+                            FieldName = "dateOfBirth",
+                        },
+                        new(){
+                            Name = "Date of Commencement",
+                            FieldName = "dateOfCommencement",
+                        },
+                        new(){
+                            Name = "Date of Retirement",
+                            FieldName = "dateOfRetirement",
+                        },
+                        new(){
+                            Name = "Date of Commencement",
+                            FieldName = "dateOfCommencement",
+                        }
+                    },
+                    Data = ppoList.PpoList,
+                    DataCount = ppoList.PpoList.Count
+                };
+            }
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
+            }
+            finally {
+                FillErrorMesageFromDataSource(response);
+            }
+
+            return response;
+        }
+
+
         [HttpPost("first-bill-generate")]
         [Tags("Pension: First Bill")]
         [OpenApi]
@@ -207,6 +273,8 @@ namespace CTS_BE.Controllers.Pension
 
             return response;
         }
+    
+
     
         [HttpPost("pension-bill")]
         [Tags("Pension: Regular Bill")]
