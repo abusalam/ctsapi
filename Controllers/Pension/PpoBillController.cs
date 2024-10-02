@@ -12,7 +12,6 @@ namespace CTS_BE.Controllers.Pension
     public class PpoBillController : ApiBaseController
     {
         private readonly IPensionerDetailsService _pensionerDetailsService;
-        private readonly IPensionerBankAccountService _pensionerBankAccountService;
         private readonly IPensionBillService _pensionBillService;
         private readonly IPpoBillService _ppoBillService;
         private readonly IMqService _mqService;
@@ -21,7 +20,6 @@ namespace CTS_BE.Controllers.Pension
         private readonly IClaimService _claimService;
         public PpoBillController(
                 IPensionerDetailsService pensionerDetailsService,
-                IPensionerBankAccountService pensionerBankAccountService,
                 IPensionBillService pensionBillService,
                 IPpoBillService ppoBillService,
                 IMqService mqService,
@@ -32,7 +30,6 @@ namespace CTS_BE.Controllers.Pension
             _ppoBillService = ppoBillService;
             _mqService = mqService;
             _pensionerDetailsService = pensionerDetailsService;
-            _pensionerBankAccountService = pensionerBankAccountService;
             _cancellationTokenSource = new CancellationTokenSource();
             _claimService = claimService;
         }
@@ -139,7 +136,7 @@ namespace CTS_BE.Controllers.Pension
         [Tags("Pension: First Bill")]
         [OpenApi]
         public async Task<JsonAPIResponse<PpoBillSaveResponseDTO>> SaveFirstPensionBill(
-            PpoBillEntryDTO ppoBillEntryDTO
+            InitiateFirstPensionBillDTO ppoBillEntryDTO
         )
         {
 
@@ -178,7 +175,7 @@ namespace CTS_BE.Controllers.Pension
             finally {
                 FillErrorMesageFromDataSource(response);
             }
-
+            response.Result.BillDate = ppoBillEntryDTO.ToDate;
             return response;
         }
 
@@ -321,14 +318,14 @@ namespace CTS_BE.Controllers.Pension
             finally {
                 FillErrorMesageFromDataSource(response);
             }
-
+            response.Result.BillDate = ppoBillEntryDTO.ToDate;
             return response;
         }
     
         [HttpGet("pension-bill/{year}/{month}/regular-bills")]
         [Tags("Pension: Regular Bill")]
         [OpenApi]
-        public async Task<JsonAPIResponse<BillListResponseDTO>> GetAllRegularPensionBills(
+        public async Task<JsonAPIResponse<RegularBillListResponseDTO>> GetAllRegularPensionBills(
             short year,
             short month,
             long? categoryId = null,
@@ -336,7 +333,7 @@ namespace CTS_BE.Controllers.Pension
         )
         {
 
-            JsonAPIResponse<BillListResponseDTO> response = new(){
+            JsonAPIResponse<RegularBillListResponseDTO> response = new(){
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = $"Regular Pension Bills received sucessfully!"
             };

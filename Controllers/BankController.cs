@@ -20,6 +20,7 @@ namespace CTS_BE.Controllers
         }
         [HttpGet("get-banks")]
         [OpenApi]
+        [Obsolete("Check GetAllBankBranches instead")]
         public async Task<APIResponse<IEnumerable<DropdownDTO>>> GetAllBanks()
         {
             APIResponse<IEnumerable<DropdownDTO>> response = new();
@@ -39,6 +40,7 @@ namespace CTS_BE.Controllers
         }
         [HttpGet("get-bank-branchs")]
         [OpenApi]
+        [Obsolete("Check GetAllBankBranches instead")]
         public async Task<APIResponse<IEnumerable<DropdownDTO>>> GetBranchesByBankCode(short bankCode)
         {
             APIResponse<IEnumerable<DropdownDTO>> response = new();
@@ -58,6 +60,7 @@ namespace CTS_BE.Controllers
         }
         [HttpGet("get-branch")]
         [OpenApi]
+        [Obsolete("Check GetAllBankBranches instead")]
         public async Task<JsonAPIResponse<BranchDeatilsDTO>> GetBranchByBranchCode(short branchCode)
         {
             JsonAPIResponse<BranchDeatilsDTO> response = new();

@@ -14,7 +14,7 @@ namespace CTS_BE.BAL.Services.Pension
     public class PensionBillService : BaseService, IPensionBillService
     {
         private readonly IPensionerDetailsRepository _pensionerDetailsRepository;
-        private readonly IPensionerBankAccountRepository _pensionerBankAccountRepository;
+
         private readonly ICategoryRepository _categoryRepository;
         private readonly IComponentRateRepository _componentRateRepository;
         private readonly IPpoComponentRevisionRepository _ppoComponentRevisionRepository;
@@ -23,7 +23,6 @@ namespace CTS_BE.BAL.Services.Pension
         private readonly IMapper _mapper;
         public PensionBillService(
                 IPensionerDetailsRepository pensionerDetailsRepository,
-                IPensionerBankAccountRepository pensionerBankAccountRepository,
                 ICategoryRepository categoryRepository,
                 IComponentRateRepository componentRateRepository,
                 IPpoComponentRevisionRepository ppoComponentRevisionRepository,
@@ -34,7 +33,6 @@ namespace CTS_BE.BAL.Services.Pension
             ) : base(claimService)
         {
             _pensionerDetailsRepository = pensionerDetailsRepository;
-            _pensionerBankAccountRepository = pensionerBankAccountRepository;
             _categoryRepository = categoryRepository;
             _ppoComponentRevisionRepository = ppoComponentRevisionRepository;
             _componentRateRepository = componentRateRepository;
@@ -63,19 +61,6 @@ namespace CTS_BE.BAL.Services.Pension
                 errResponse.FillDataSource(
                     pensioner,
                     "Pensioner not found!"
-                );
-                return _mapper.Map<T>(errResponse);
-            }
-
-            pensionDbContext.Entry(pensioner)
-                .Collection(entity => entity.BankAccounts)
-                .Query().Where(entity => entity.ActiveFlag)
-                .Load();
-            if(pensioner.BankAccounts.Count == 0) {
-                InitiateFirstPensionBillResponseDTO errResponse = new ();
-                errResponse.FillDataSource(
-                    pensioner,
-                    "Pensioner bank account not found!"
                 );
                 return _mapper.Map<T>(errResponse);
             }
@@ -137,6 +122,7 @@ namespace CTS_BE.BAL.Services.Pension
                 PpoId = initiateFirstPensionBillDTO.PpoId,
                 BillType = billType,
                 FromDate = pensioner.DateOfCommencement,
+                BranchId = pensioner.BranchId,
                 BillGeneratedUptoDate = initiateFirstPensionBillDTO.ToDate,
                 TreasuryVoucherNo = "N/A",
                 BillDate = initiateFirstPensionBillDTO.ToDate,

@@ -6,29 +6,36 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CTS_BE.Controllers.Pension
 {
+    public enum FactoryEntityEnum
+    {
+        ManualPpoReceiptEntryDTO,
+        PensionerEntryDTO,
+        PensionPrimaryCategoryEntryDTO,
+        PensionSubCategoryEntryDTO,
+        PensionBreakupEntryDTO,
+    }
     [Route("api/v1")]
     public class FactoryController : ApiBaseController
     {
-        private readonly IDictionary<string, BaseDTO> _factories;
+        private readonly IDictionary<FactoryEntityEnum, BaseDTO> _factories;
         public FactoryController(
             IClaimService claimService
         ) : base(claimService)
         {
-            _factories = new Dictionary<string, BaseDTO>()
+            _factories = new Dictionary<FactoryEntityEnum, BaseDTO>()
             {
-                {"ManualPpoReceiptEntryDTO", new PpoReceiptFactory().Create()},
-                {"PensionerEntryDTO", new PensionerFactory().Create()},
-                {"PensionerBankAcEntryDTO", new BankAccountFactory().Create()},
-                {"PensionPrimaryCategoryEntryDTO", new PrimaryCategoryFactory().Create()},
-                {"PensionSubCategoryEntryDTO", new SubCategoryFactory().Create()},
-                {"PensionBreakupEntryDTO", new ComponentFactory().Create()}
+                {FactoryEntityEnum.ManualPpoReceiptEntryDTO, new PpoReceiptFactory().Create()},
+                {FactoryEntityEnum.PensionerEntryDTO, new PensionerFactory().Create()},
+                {FactoryEntityEnum.PensionPrimaryCategoryEntryDTO, new PrimaryCategoryFactory().Create()},
+                {FactoryEntityEnum.PensionSubCategoryEntryDTO, new SubCategoryFactory().Create()},
+                {FactoryEntityEnum.PensionBreakupEntryDTO, new ComponentFactory().Create()}
             };
         }
 
         [HttpGet("factory/{dtoName}")]
         [Tags("Pension: Factory")]
         [OpenApi]
-        public async Task<JsonAPIResponse<object>> CreateFake(string dtoName)
+        public async Task<JsonAPIResponse<object>> CreateFake(FactoryEntityEnum dtoName)
         {
             JsonAPIResponse<object> response = new()
             {

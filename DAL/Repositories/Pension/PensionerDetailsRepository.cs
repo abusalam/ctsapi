@@ -30,7 +30,6 @@ namespace CTS_BE.DAL.Repositories.Pension
                     entity => entity.ActiveFlag
                     && entity.TreasuryCode == treasuryCode
                 )
-                .Include(entity => entity.BankAccounts)
                 .Include(entity => entity.Category)
                 .Include(entity => entity.Receipt)
                 .Select(selectExpression)
@@ -50,7 +49,6 @@ namespace CTS_BE.DAL.Repositories.Pension
                     entity => entity.ActiveFlag
                     && entity.TreasuryCode == treasuryCode
                 )
-                .Include(entity => entity.BankAccounts)
                 .Include(entity => entity.Category)
                 .Include(entity => entity.Receipt)
                 .Include(entity => entity.PpoStatusFlags)
@@ -78,7 +76,6 @@ namespace CTS_BE.DAL.Repositories.Pension
                     && entity.PpoId == ppoId
                     && entity.TreasuryCode == treasuryCode
                 )
-                .Include(entity => entity.BankAccounts)
                 .Include(entity => entity.Category)
                 .Include(entity => entity.Receipt)
                 .Select(selectExpression)

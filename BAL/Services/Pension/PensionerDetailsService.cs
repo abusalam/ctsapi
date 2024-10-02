@@ -49,6 +49,39 @@ namespace CTS_BE.BAL.Services.Pension
             PensionerResponseDTO pensionerResponseDTO = _mapper.Map<PensionerResponseDTO>(pensionerEntity);
             try {
 
+                Category? category = await _pensionDbContext.Categories
+                    .Where(
+                        entity => entity.ActiveFlag
+                        && entity.Id == pensionerEntryDTO.CategoryId
+                    )
+                    .Include(entity => entity.PrimaryCategory)
+                    .FirstOrDefaultAsync();
+                if(category == null){
+                    PensionerResponseDTO errResponse = _mapper.Map<PensionerResponseDTO>(pensionerEntryDTO);
+                    errResponse.FillDataSource(
+                        category,
+                        "Pension category not found. Please check category Id. and try again."
+                    );
+                    return errResponse;
+                }
+
+                Branch? branch = await _pensionDbContext.Branches
+                    .Where(
+                        entity => entity.ActiveFlag
+                        && entity.Id == pensionerEntryDTO.BranchId
+                        && entity.TreasuryCode == treasuryCode
+                    )
+                    .Include(entity => entity.Bank)
+                    .FirstOrDefaultAsync();
+                if(branch == null){
+                    PensionerResponseDTO errResponse = _mapper.Map<PensionerResponseDTO>(pensionerEntryDTO);
+                    errResponse.FillDataSource(
+                        branch,
+                        "Bank branch not found. Please check branch Id. and try again."
+                    );
+                    return errResponse;
+                }
+
                 PpoReceipt? ppoReceipt = await _pensionDbContext.PpoReceipts
                     .Where(entity => entity.PpoNo == pensionerEntryDTO.PpoNo)
                     .FirstOrDefaultAsync();

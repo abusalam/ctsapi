@@ -145,6 +145,16 @@ Content-Type: application/json
 
 
 
+### Get Banks
+# @name GetBanks
+GET {{PensionAPI_HostAddress}}/api/v1/banks
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+
+
+
 ### Get First Pension Bill By PpoId
 # @name GetFirstPensionBillByPpoId
 GET {{PensionAPI_HostAddress}}/api/v1/ppo/first-bill/{{GeneratedPpoId}}
@@ -251,6 +261,20 @@ Content-Type: application/json
 
 
 
+###
+@BankId = 1
+
+### Get Branches By BankId
+# @name GetBranchesBankId
+GET {{PensionAPI_HostAddress}}/api/v1/branches/{{BankId}}
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+
+
+
+
 ### Save First Pension Bill
 # @name SaveFirstPensionBill
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
@@ -260,80 +284,9 @@ Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
-  "PpoId": {{GeneratedPpoId}},
+  "ppoId": {{GeneratedPpoId}},
   "toDate": "{{$datetime "YYYY-MM-DD"}}"
 }
-
-
-
-
-
-
-### Save Regular Pension Bill
-# @name SaveRegularPensionBill
-# POST {{PensionAPI_HostAddress}}/api/v1/echo
-POST {{PensionAPI_HostAddress}}/api/v1/ppo/pension-bill
-Accept: application/json
-Authorization: Bearer {{accessToken}}
-Content-Type: application/json
-
-{
-  "PpoId": {{GeneratedPpoId}},
-  "toDate": "{{$datetime "YYYY-MM-DD"}}"
-}
-
-
-
-
-
-### Create Pensioner Bank Account
-# @name CreatePensionerBankAccount
-POST {{PensionAPI_HostAddress}}/api/v1/ppo/{{GeneratedPpoId}}/bank-accounts
-# POST {{PensionAPI_HostAddress}}/api/v1/echo
-Accept: application/json
-Authorization: Bearer {{accessToken}}
-Content-Type: application/json
-
-{
-  "payMode":"Q",
-  "accountHolderName": "Jack Dowsel",
-  "bankAcNo": "{{$randomInt 1000000000000000 9999999999999999}}",
-  "ifscCode": "IFSC{{$randomInt 1000000 9999999}}",
-  "bankCode": 2,
-  "branchCode": 531
-}
-
-
-
-
-
-### Update Pensioner Bank Account
-# @name UpdatePensionerBankAccount
-PUT {{PensionAPI_HostAddress}}/api/v1/ppo/{{GeneratedPpoId}}/bank-accounts
-# POST {{PensionAPI_HostAddress}}/api/v1/echo
-Accept: application/json
-Authorization: Bearer {{accessToken}}
-Content-Type: application/json
-
-{
-  "payMode":"Q",
-  "accountHolderName": "Jack Dowsel",
-  "bankAcNo": "{{$randomInt 1000000000000000 9999999999999999}}",
-  "ifscCode": "IFSC{{$randomInt 1000000 9999999}}",
-  "bankCode": 2,
-  "branchCode": 531
-}
-
-
-
-
-
-### Read Pensioner Bank Account
-# @name ReadPensionerBankAccount
-GET {{PensionAPI_HostAddress}}/api/v1/ppo/{{GeneratedPpoId}}/bank-accounts
-# POST {{PensionAPI_HostAddress}}/api/v1/echo
-Accept: application/json
-Authorization: Bearer {{accessToken}}
 
 
 
@@ -341,6 +294,10 @@ Authorization: Bearer {{accessToken}}
 
 ### Read Date of Commencement
 @DateOfCommencement = {{CreatePPOReceipt.response.body.$.result.dateOfCommencement}}
+
+
+
+
 ### Create PPO Details
 # @name CreatePPODetails
 POST {{PensionAPI_HostAddress}}/api/v1/ppo/details
@@ -356,6 +313,13 @@ Content-Type: application/json
   "psaType": "A",
   "ppoSubType": "N",
   "categoryId": 30,
+  "payMode": "Q",
+  "bankAcNo": "6831551168546692",
+  "accountHolderName": "Jerome Fay",
+  "branchId": {{$randomInt 1 4}},
+  "categoryId": 30,
+  "commutedFromDate": "2024-02-01",
+  "commutedUptoDate": "2031-02-01",
   "pensionerName": "Jack Dowsel",
   "dateOfBirth": "1954-01-01",
   "gender": "M",
@@ -634,3 +598,21 @@ Authorization: Bearer {{accessToken}}
 
 
 
+
+
+
+
+### Save Regular Pension Bill
+# @name SaveRegularPensionBill
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+POST {{PensionAPI_HostAddress}}/api/v1/ppo/pension-bill
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "ppoId": {{GeneratedPpoId}},
+  "month": {{$datetime "MM"}},
+  "year": {{$datetime "YYYY"}},
+  "toDate": "{{$datetime "YYYY-MM-DD"}}"
+}

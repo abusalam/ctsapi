@@ -18,9 +18,6 @@ namespace CTS_BE.Helper
             CreateMap<PensionerResponseDTO, Pensioner>().ReverseMap();
             CreateMap<PensionerListItemDTO, Pensioner>().ReverseMap();
             CreateMap<PensionerResponseDTO, PensionerEntryDTO>().ReverseMap();
-            CreateMap<PensionerBankAcEntryDTO, BankAccount>().ReverseMap();
-            CreateMap<PensionerBankAcResponseDTO, BankAccount>().ReverseMap();
-            CreateMap<PensionerBankAcResponseDTO, PensionerBankAcEntryDTO>().ReverseMap();
             CreateMap<PensionPrimaryCategoryResponseDTO, PrimaryCategory>().ReverseMap();
             CreateMap<PensionPrimaryCategoryResponseDTO, PensionPrimaryCategoryEntryDTO>().ReverseMap();
             CreateMap<PensionSubCategoryResponseDTO, SubCategory>().ReverseMap();
@@ -50,7 +47,10 @@ namespace CTS_BE.Helper
             CreateMap<PensionerListItemDTO, PensionerResponseDTO>().ReverseMap();
             CreateMap<PpoBillEntryDTO, PpoBillResponseDTO>().ReverseMap();
             CreateMap<PpoBillSaveResponseDTO, PpoBill>().ReverseMap();
-            CreateMap<Bill, BillResponseDTO>().ReverseMap();
+            CreateMap<PpoRegularBillDetailsDTO, PpoBill>().ReverseMap();
+            CreateMap<Bill, RegularBillResponseDTO>().ReverseMap();
+            CreateMap<Branch, BranchResponseDTO>().ReverseMap();
+            CreateMap<Bank, BankResponseDTO>().ReverseMap();
         }
     }
 }

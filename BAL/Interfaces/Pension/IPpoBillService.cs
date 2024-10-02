@@ -16,7 +16,7 @@ namespace CTS_BE.BAL.Interfaces.Pension
             short financialYear,
             string treasuryCode
         ) where T : BaseDTO;
-        public Task<BillListResponseDTO> GetRegularPensionBills(
+        public Task<RegularBillListResponseDTO> GetRegularPensionBills(
             short year,
             short month,
             short financialYear,

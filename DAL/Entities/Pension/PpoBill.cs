@@ -29,9 +29,6 @@ public partial class PpoBill
     [Column("pensioner_id")]
     public long PensionerId { get; set; }
 
-    [Column("bank_account_id")]
-    public long BankAccountId { get; set; }
-
     [Column("ppo_id")]
     public int PpoId { get; set; }
 
@@ -78,10 +75,6 @@ public partial class PpoBill
 
     [Column("active_flag")]
     public bool ActiveFlag { get; set; }
-
-    [ForeignKey("BankAccountId")]
-    [InverseProperty("PpoBills")]
-    public virtual BankAccount BankAccount { get; set; } = null!;
 
     [ForeignKey("BillId")]
     [InverseProperty("PpoBills")]

@@ -89,9 +89,6 @@ namespace CTS_BE.DAL.Repositories.Pension
                 .Reference(entity => entity.Pensioner)
                 .Load();
             _pensionDbContext.Entry(ppoBill)
-                .Reference(entity => entity.BankAccount)
-                .Load();
-            _pensionDbContext.Entry(ppoBill)
                 .Collection(entity => entity.PpoBillBreakups)
                 .Load();
             // ppoBill.PpoBillBreakups.ToList().ForEach(
@@ -216,17 +213,6 @@ namespace CTS_BE.DAL.Repositories.Pension
                 );
                 return ppoBillResponseDTO;
             }
-            _pensionDbContext.Entry(pensioner)
-                .Collection(entity => entity.BankAccounts)
-                .Query().Where(entity => entity.ActiveFlag)
-                .Load();
-            if(pensioner.BankAccounts.Count == 0) {
-                ppoBillResponseDTO.FillDataSource(
-                    pensioner,
-                    "Pensioner bank account not found!"
-                );
-                return ppoBillResponseDTO;
-            }
 
             if(ppoBillEntity.BillType == BillType.FirstBill) {
                 pensioner.PpoStatusFlags.Add(new PpoStatusFlag() {
@@ -244,7 +230,6 @@ namespace CTS_BE.DAL.Repositories.Pension
             ppoBillEntity.ActiveFlag = true;
             ppoBillEntity.PensionerId = pensioner.Id;
             ppoBillEntity.PpoId = ppoBillEntity.PpoId;
-            ppoBillEntity.BankAccountId = pensioner.BankAccounts.First().Id;
             ppoBillEntity.FinancialYear = financialYear;
             ppoBillEntity.TreasuryCode = treasuryCode;
             ppoBillEntity.PpoBillBreakups.ToList().ForEach(

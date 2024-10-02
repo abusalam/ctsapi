@@ -9,34 +9,35 @@ namespace CTS_BE.DAL.Entities.Pension;
 /// <summary>
 /// PensionModuleSchema v1
 /// </summary>
-[Table("ppo_bill_bytransfers", Schema = "cts_pension")]
-public partial class PpoBillBytransfer
+[Table("branches", Schema = "cts_pension")]
+public partial class Branch
 {
     [Key]
     [Column("id")]
     public long Id { get; set; }
 
-    [Column("financial_year")]
-    public int FinancialYear { get; set; }
-
     [Column("treasury_code")]
     [StringLength(3)]
     public string TreasuryCode { get; set; } = null!;
 
-    [Column("ppo_id")]
-    public int PpoId { get; set; }
+    [Column("bank_id")]
+    public long BankId { get; set; }
 
-    [Column("bill_id")]
-    public long BillId { get; set; }
+    [Column("branch_name")]
+    [StringLength(100)]
+    public string BranchName { get; set; } = null!;
 
-    [Column("bytransfer_hoa_id")]
-    public int BytransferHoaId { get; set; }
+    [Column("branch_address")]
+    [StringLength(500)]
+    public string BranchAddress { get; set; } = null!;
 
-    [Column("bytransfer_wef")]
-    public DateOnly BytransferWef { get; set; }
+    [Column("ifsc_code")]
+    [StringLength(11)]
+    public string IfscCode { get; set; } = null!;
 
-    [Column("bytransfer_amount")]
-    public int BytransferAmount { get; set; }
+    [Column("micr_code")]
+    [StringLength(11)]
+    public string MicrCode { get; set; } = null!;
 
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime? CreatedAt { get; set; }
@@ -53,7 +54,13 @@ public partial class PpoBillBytransfer
     [Column("active_flag")]
     public bool ActiveFlag { get; set; }
 
-    [ForeignKey("BillId")]
-    [InverseProperty("PpoBillBytransfers")]
-    public virtual PpoBill Bill { get; set; } = null!;
+    [ForeignKey("BankId")]
+    [InverseProperty("Branches")]
+    public virtual Bank Bank { get; set; } = null!;
+
+    [InverseProperty("Branch")]
+    public virtual ICollection<Bill> Bills { get; set; } = new List<Bill>();
+
+    [InverseProperty("Branch")]
+    public virtual ICollection<Pensioner> Pensioners { get; set; } = new List<Pensioner>();
 }

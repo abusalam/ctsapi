@@ -16,9 +16,11 @@ public partial class PensionDbContext : DbContext
     {
     }
 
-    public virtual DbSet<BankAccount> BankAccounts { get; set; }
+    public virtual DbSet<Bank> Banks { get; set; }
 
     public virtual DbSet<Bill> Bills { get; set; }
+
+    public virtual DbSet<Branch> Branches { get; set; }
 
     public virtual DbSet<Breakup> Breakups { get; set; }
 
@@ -63,17 +65,13 @@ public partial class PensionDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<BankAccount>(entity =>
+        modelBuilder.Entity<Bank>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("bank_accounts_pkey");
+            entity.HasKey(e => e.Id).HasName("banks_pkey");
 
-            entity.ToTable("bank_accounts", "cts_pension", tb => tb.HasComment("PensionModuleSchema v1"));
+            entity.ToTable("banks", "cts_pension", tb => tb.HasComment("PensionModuleSchema v1"));
 
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-            entity.HasOne(d => d.Pensioner).WithMany(p => p.BankAccounts)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("bank_accounts_pensioner_id_fkey");
         });
 
         modelBuilder.Entity<Bill>(entity =>
@@ -83,6 +81,23 @@ public partial class PensionDbContext : DbContext
             entity.ToTable("bills", "cts_pension", tb => tb.HasComment("PensionModuleSchema v1"));
 
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            entity.HasOne(d => d.Branch).WithMany(p => p.Bills)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("bills_branch_id_fkey");
+        });
+
+        modelBuilder.Entity<Branch>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("branches_pkey");
+
+            entity.ToTable("branches", "cts_pension", tb => tb.HasComment("PensionModuleSchema v1"));
+
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            entity.HasOne(d => d.Bank).WithMany(p => p.Branches)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("branches_bank_id_fkey");
         });
 
         modelBuilder.Entity<Breakup>(entity =>
@@ -202,6 +217,10 @@ public partial class PensionDbContext : DbContext
             entity.Property(e => e.PpoType).HasComment("P - Pension; F - Family Pension; C - CPF;");
             entity.Property(e => e.Religion).HasComment("H - Hindu; M - Muslim; O - Other;");
 
+            entity.HasOne(d => d.Branch).WithMany(p => p.Pensioners)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("pensioners_branch_id_fkey");
+
             entity.HasOne(d => d.Category).WithMany(p => p.Pensioners)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("pensioners_category_id_fkey");
@@ -225,10 +244,6 @@ public partial class PensionDbContext : DbContext
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.UtrAt).HasComment("UTRAt timestamp when the UTR is received");
             entity.Property(e => e.UtrNo).HasComment("UTRNo to refer to the actual transaction of the payment");
-
-            entity.HasOne(d => d.BankAccount).WithMany(p => p.PpoBills)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("ppo_bills_bank_account_id_fkey");
 
             entity.HasOne(d => d.Bill).WithMany(p => p.PpoBills)
                 .OnDelete(DeleteBehavior.ClientSetNull)

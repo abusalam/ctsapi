@@ -27,6 +27,9 @@ public partial class Bill
     [StringLength(50)]
     public string HoaId { get; set; } = null!;
 
+    [Column("branch_id")]
+    public long BranchId { get; set; }
+
     [Column("bill_no")]
     public int BillNo { get; set; }
 
@@ -69,6 +72,10 @@ public partial class Bill
 
     [Column("active_flag")]
     public bool ActiveFlag { get; set; }
+
+    [ForeignKey("BranchId")]
+    [InverseProperty("Bills")]
+    public virtual Branch Branch { get; set; } = null!;
 
     [InverseProperty("Bill")]
     public virtual ICollection<PpoBill> PpoBills { get; set; } = new List<PpoBill>();

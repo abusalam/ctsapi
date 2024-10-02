@@ -51,6 +51,21 @@ public partial class Pensioner
     [Column("category_id")]
     public long CategoryId { get; set; }
 
+    [Column("branch_id")]
+    public long BranchId { get; set; }
+
+    [Column("bank_ac_no")]
+    [StringLength(30)]
+    public string BankAcNo { get; set; } = null!;
+
+    [Column("account_holder_name")]
+    [StringLength(100)]
+    public string AccountHolderName { get; set; } = null!;
+
+    [Column("pay_mode")]
+    [MaxLength(1)]
+    public char PayMode { get; set; }
+
     [Column("pensioner_name")]
     [StringLength(100)]
     public string PensionerName { get; set; } = null!;
@@ -66,7 +81,7 @@ public partial class Pensioner
     /// </summary>
     [Column("gender")]
     [MaxLength(1)]
-    public char? Gender { get; set; }
+    public char Gender { get; set; }
 
     [Column("mobile_number")]
     [StringLength(10)]
@@ -144,8 +159,9 @@ public partial class Pensioner
     [Column("active_flag")]
     public bool ActiveFlag { get; set; }
 
-    [InverseProperty("Pensioner")]
-    public virtual ICollection<BankAccount> BankAccounts { get; set; } = new List<BankAccount>();
+    [ForeignKey("BranchId")]
+    [InverseProperty("Pensioners")]
+    public virtual Branch Branch { get; set; } = null!;
 
     [ForeignKey("CategoryId")]
     [InverseProperty("Pensioners")]

@@ -20,8 +20,8 @@ namespace CTS_BE.BAL.Services.Pension
             ICollection<ComponentRate> componentRates,
             DateOnly commencementDate,
             DateOnly toDate,
-            long basicPensionAmount,
-            long commutedPensionAmount
+            int basicPensionAmount,
+            int commutedPensionAmount
         )
         {
             List<PpoPaymentListItemDTO>? ppoPayments = new();
@@ -142,9 +142,9 @@ namespace CTS_BE.BAL.Services.Pension
         /// <param name="forYear">The year for which the amount is to be calculated.</param>
         /// <param name="forMonth">The month for which the amount is to be calculated.</param>
         /// <returns>The due amount for the given breakup component.</returns>
-        public static long CalculateDueAmount(
+        public static int CalculateDueAmount(
             char breakupComponentType,
-            long amountPerMonth,
+            int amountPerMonth,
             int periodInDays,
             int periodInMonths,
             int forYear,
@@ -331,6 +331,52 @@ namespace CTS_BE.BAL.Services.Pension
                         fromDate.Month
                     )
                 );
+        }
+
+        public static string InWords(long number)   
+        {  
+            if (number == 0) return "ZERO";  
+            if (number < 0) return "minus " + InWords(Math.Abs(number));  
+            string words = "";  
+            if ((number / 1000000) > 0)   
+            {  
+                words += InWords(number / 100000) + " LAKH ";  
+                number %= 1000000;  
+            }  
+            if ((number / 1000) > 0)   
+            {  
+                words += InWords(number / 1000) + " THOUSAND ";  
+                number %= 1000;  
+            }  
+            if ((number / 100) > 0)   
+            {  
+                words += InWords(number / 100) + " HUNDRED ";  
+                number %= 100;  
+            }  
+            //if ((number / 10) > 0)  
+            //{  
+            // words += ConvertNumbertoWords(number / 10) + " RUPEES ";  
+            // number %= 10;  
+            //}  
+            if (number > 0)   
+            {  
+                if (words != "") words += "AND ";  
+                var unitsMap = new[]   
+                {  
+                    "ZERO", "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT", "NINE", "TEN", "ELEVEN", "TWELVE", "THIRTEEN", "FOURTEEN", "FIFTEEN", "SIXTEEN", "SEVENTEEN", "EIGHTEEN", "NINETEEN"  
+                };  
+                var tensMap = new[]   
+                {  
+                    "ZERO", "TEN", "TWENTY", "THIRTY", "FORTY", "FIFTY", "SIXTY", "SEVENTY", "EIGHTY", "NINETY"  
+                };  
+                if (number < 20) words += unitsMap[number];  
+                else   
+                {  
+                    words += tensMap[number / 10];  
+                    if ((number % 10) > 0) words += " " + unitsMap[number % 10];  
+                }  
+            }  
+            return words;  
         }
     }
 }

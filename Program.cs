@@ -75,9 +75,9 @@ builder.Services.AddDbContext<PensionDbContext>(
 
 
 // Hide non OpenAPI Conventions from Swagger.
-// builder.Services.AddMvc(c =>
-//     c.Conventions.Add(new OpenApiConvention())
-// );
+builder.Services.AddMvc(c =>
+    c.Conventions.Add(new OpenApiConvention())
+);
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -125,7 +125,6 @@ builder.Services.AddTransient<IManualPpoReceiptRepository, ManualPpoReceiptRepos
 builder.Services.AddTransient<IPensionStatusRepository, PensionStatusRepository>();
 builder.Services.AddTransient<IPensionerDetailsRepository, PensionerDetailsRepository>();
 builder.Services.AddTransient<IPpoIdSequenceRepository, PpoIdSequenceRepository>();
-builder.Services.AddTransient<IPensionerBankAccountRepository, PensionerBankAccountRepository>();
 builder.Services.AddTransient<IPrimaryCategoryRepository, PrimaryCategoryRepository>();
 builder.Services.AddTransient<ISubCategoryRepository, SubCategoryRepository>();
 builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
@@ -133,19 +132,20 @@ builder.Services.AddTransient<IBreakupRepository, BreakupRepository>();
 builder.Services.AddTransient<IComponentRateRepository, ComponentRateRepository>();
 builder.Services.AddTransient<IPpoComponentRevisionRepository, PpoComponentRevisionRepository>();
 builder.Services.AddTransient<IPpoBillRepository, PpoBillRepository>();
+builder.Services.AddTransient<IBankBranchRepository, BankBranchRepository>();
 
 
 // Pension Services
 builder.Services.AddTransient<IPpoReceiptService, PpoReceiptService>();
 builder.Services.AddTransient<IPensionStatusService, PensionStatusService>();
 builder.Services.AddTransient<IPensionerDetailsService, PensionerDetailsService>();
-builder.Services.AddTransient<IPensionerBankAccountService, PensionerBankAccountService>();
 builder.Services.AddTransient<IPensionBillService, PensionBillService>();
 builder.Services.AddTransient<IPensionCategoryService, PensionCategoryService>();
 builder.Services.AddTransient<IPensionBreakupService, PensionBreakupService>();
 builder.Services.AddTransient<IComponentRateService, ComponentRateService>();
 builder.Services.AddTransient<IPpoComponentRevisionService, PpoComponentRevisionService>();
 builder.Services.AddTransient<IPpoBillService, PpoBillService>();
+builder.Services.AddTransient<IBankBranchService, BankBranchService>();
 // builder.Services.AddTransient<IPpoBillService, PpoBillService>();
 
 
