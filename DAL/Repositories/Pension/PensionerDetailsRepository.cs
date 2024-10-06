@@ -78,6 +78,8 @@ namespace CTS_BE.DAL.Repositories.Pension
                 )
                 .Include(entity => entity.Category)
                 .Include(entity => entity.Receipt)
+                .Include(entity => entity.Branch)
+                .ThenInclude(entity => entity.Bank)
                 .Select(selectExpression)
                 .FirstOrDefaultAsync();
             return pensioner;
