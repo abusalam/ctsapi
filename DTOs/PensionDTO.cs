@@ -358,6 +358,10 @@ namespace CTS_BE.DTOs
 
     public partial class ComponentRateResponseDTO : ComponentRateEntryDTO {
         public long Id { get; set; }
+        public string ComponentName { get {return Breakup?.Id + "-" + Breakup?.ComponentName;} }
+        public string ComponentRate { get {return RateType == BreakupRateType.Amount ? "₹" + RateAmount : "" + RateAmount + "%";}}
+        public string ComponentType { get {return Breakup?.ComponentType == BreakupComponentType.Payment ? "Payment" : "Deduction";}}
+        public string WithEffectFrom { get {return EffectiveFromDate.ToString("dd-MM-yyyy");} }
         public PensionBreakupResponseDTO? Breakup { get; set; }
     }
 

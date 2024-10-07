@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Bogus;
 using CTS_BE.DTOs;
 
@@ -17,7 +13,7 @@ namespace CTS_BE.Factories.Pension
                     f => CapitalizeFirstLetter().Replace(
                         f.Random.Word(),
                         m => m.Value.ToUpper()
-                    )
+                    ) + f.Random.Replace("######")
                 )
                 .RuleFor(
                     x => x.ComponentType,

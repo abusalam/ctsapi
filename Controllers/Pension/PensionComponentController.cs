@@ -187,53 +187,29 @@ namespace CTS_BE.Controllers.Pension
                             Headers = new () {
                             
                                 new() {
-                                    Name = "Component Rate ID",
+                                    Name = "Rate ID",
                                     DataType = "text",
                                     FieldName = "id",
-                                    FilterField = "id",
-                                    IsFilterable = true,
-                                    IsSortable = true,
-
                                 },
                                 new() {
-                                    Name = "Category ID",
+                                    Name = "Breakup",
                                     DataType = "text",
-                                    FieldName = "categoryId",
-                                    FilterField = "categoryId",
-                                    IsFilterable = true,
-                                    IsSortable = true,
-                                },
-                                new() {
-                                    Name = "Bill Breakup ID",
-                                    DataType = "text",
-                                    FieldName = "breakupId",
-                                    FilterField = "breakupId",
-                                    IsFilterable = true,
-                                    IsSortable = true,
+                                    FieldName = "componentName",
                                 },
                                 new() {
                                     Name = "Effective From Date",
                                     DataType = "text",
-                                    FieldName = "effectiveFromDate",
-                                    FilterField = "effectiveFromDate",
-                                    IsFilterable = true,
-                                    IsSortable = true,
+                                    FieldName = "withEffectFrom",
                                 },
                                 new() {
-                                    Name = "Rate Amount",
+                                    Name = "Rate",
                                     DataType = "text",
-                                    FieldName = "rateAmount",
-                                    FilterField = "rateAmount",
-                                    IsFilterable = true,
-                                    IsSortable = true,
+                                    FieldName = "componentRate",
                                 },
                                 new() {
-                                    Name = "Rate Type",
+                                    Name = "Type",
                                     DataType = "text",
-                                    FieldName = "rateType",
-                                    FilterField = "rateType",
-                                    IsFilterable = true,
-                                    IsSortable = true,
+                                    FieldName = "componentType",
                                 }
 
                             },
