@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using Bogus;
 using CTS_BE.DTOs;
 
@@ -15,10 +14,7 @@ namespace CTS_BE.Factories.Pension
                 )
                 .RuleFor(
                     x => x.PrimaryCategoryName,
-                    f => CapitalizeFirstLetter().Replace(
-                        f.Random.Word(),
-                        m => m.Value.ToUpper()
-                    ) + f.Random.Replace("######")
+                    f => f.Random.Word() + " " + f.Random.Replace("######")
                 );
         }
     }

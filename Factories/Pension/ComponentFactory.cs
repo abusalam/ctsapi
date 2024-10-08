@@ -10,10 +10,7 @@ namespace CTS_BE.Factories.Pension
             _faker = new Faker<PensionBreakupEntryDTO>()
                 .RuleFor(
                     x => x.ComponentName,
-                    f => CapitalizeFirstLetter().Replace(
-                        f.Random.Word(),
-                        m => m.Value.ToUpper()
-                    ) + f.Random.Replace("######")
+                    f => f.Random.Word() + " " + f.Random.Replace("######")
                 )
                 .RuleFor(
                     x => x.ComponentType,

@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using Bogus;
 using CTS_BE.DTOs;
 
@@ -22,8 +21,5 @@ namespace CTS_BE.Factories
         {
             return _faker.Generate(count);
         }
-
-        [GeneratedRegex("(^\\w)|(\\s\\w)")]
-        protected static partial Regex CapitalizeFirstLetter();
     }
 }

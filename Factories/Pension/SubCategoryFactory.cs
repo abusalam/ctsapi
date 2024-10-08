@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Bogus;
 using CTS_BE.DTOs;
 
@@ -14,10 +10,7 @@ namespace CTS_BE.Factories.Pension
             _faker = new Faker<PensionSubCategoryEntryDTO>()
                 .RuleFor(
                     x => x.SubCategoryName,
-                    f => CapitalizeFirstLetter().Replace(
-                        f.Random.Word(),
-                        m => m.Value.ToUpper()
-                    ) + f.Random.Replace("######")
+                    f => f.Random.Word() + " " + f.Random.Replace("######")
                 );
         }
     }

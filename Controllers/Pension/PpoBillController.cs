@@ -16,7 +16,6 @@ namespace CTS_BE.Controllers.Pension
         private readonly IPpoBillService _ppoBillService;
         private readonly IMqService _mqService;
         private readonly CancellationTokenSource _cancellationTokenSource;
-        static bool IsQueueWorkerRunning = false;
         private readonly IClaimService _claimService;
         public PpoBillController(
                 IPensionerDetailsService pensionerDetailsService,
