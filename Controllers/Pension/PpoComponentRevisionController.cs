@@ -31,6 +31,67 @@ namespace CTS_BE.Controllers.Pension
             _ppoComponentRevisionService = ppoComponentRevisionService;
         }
 
+
+        [HttpGet("component-revision/ppos")]
+        [Tags("Pension: Component Revision")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<TableResponseDTO<PpoComponentRevisionPpoListItemDTO>>> GetAllPposForComponentRevisions()
+        {
+            JsonAPIResponse<TableResponseDTO<PpoComponentRevisionPpoListItemDTO>> response= new() {
+                    ApiResponseStatus = Enum.APIResponseStatus.Success,
+                    Message = $"All PPOs for Component Revisions Received Successfully!"
+                };
+
+            try {
+
+                response.Result = new TableResponseDTO<PpoComponentRevisionPpoListItemDTO>() {
+                    Headers = new () {
+                        new() {
+                            Name = "PPO ID",
+                            FieldName = "ppoId"
+                        },
+                        new() {
+                            Name = "PPO No",
+                            FieldName = "ppoNo"
+                        },
+                        new() {
+                            Name = "Pensioner Name",
+                            FieldName = "pensionerName"
+                        },
+                        new() {
+                            Name = "Category Description",
+                            FieldName = "categoryDescription"
+                        },
+                        new() {
+                            Name = "Bank",
+                            FieldName = "bankBranchName"
+                        },
+                    },
+                    Data = await _ppoComponentRevisionService.GetPposForComponentRevisions<PpoComponentRevisionPpoListItemDTO>(
+                        GetCurrentFyYear(),
+                        GetTreasuryCode()
+                    )
+                };
+                response.Result.Data.ForEach(
+                    item => {
+                        item.BankBranchName = item.Branch?.Bank?.BankName + "-" + item.Branch?.BranchName;
+                        item.CategoryDescription = item.Category?.CategoryName ?? "";
+                        item.Branch = null;
+                        item.Category = null;
+                    }
+                );
+            } catch(DbUpdateException e) {
+                // StackFrame CallStack = new(1, true);
+                response = new () {
+                ApiResponseStatus = Enum.APIResponseStatus.Error,
+                Result = null,
+                Message = e.ToString()
+                //   $"{e.GetType()}=>File:{CallStack.GetFileName()}({CallStack.GetFileLineNumber()}): {e.Message}"
+                };
+            }
+            return response;
+        }
+
         // Creates a new PPO component revision.
         // 
         // Parameters:

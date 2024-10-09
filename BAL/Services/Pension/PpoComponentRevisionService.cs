@@ -31,6 +31,20 @@ namespace CTS_BE.BAL.Services.Pension
             _pensionerDetailsRepository = pensionerDetailsRepository;
         }
 
+
+        public async Task<List<TResponse>> GetPposForComponentRevisions<TResponse>(
+            short financialYear,
+            string treasuryCode
+        )
+        {
+            var revisions = await _ppoComponentRevisionRepository.GetAllPpos(
+                entity => _mapper.Map<TResponse>(entity),
+                financialYear,
+                treasuryCode
+            );
+            return revisions;
+        }
+
         public async Task<TResponse> CreateSinglePpoComponentRevision<TEntry, TResponse>(
             int ppoId,
             TEntry ppoComponentRevisionDTO,

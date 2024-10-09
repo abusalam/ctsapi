@@ -616,3 +616,17 @@ Content-Type: application/json
   "year": {{$datetime "YYYY"}},
   "toDate": "{{$datetime "YYYY-MM-DD"}}"
 }
+
+
+
+
+
+
+### Get All Ppos For Component Revisions
+# @name GetAllPposForComponentRevisions
+GET {{PensionAPI_HostAddress}}/api/v1/ppo/component-revision/ppos
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+
+

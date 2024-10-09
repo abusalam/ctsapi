@@ -22,6 +22,28 @@ namespace CTS_BE.DAL.Repositories.Pension
             _context = context;
         }
 
+        public async Task<List<T>> GetAllPpos<T>(
+            Expression<Func<Pensioner, T>> selectExpression,
+            short financialYear,
+            string treasuryCode
+        )
+        {
+            var ppos = await _context.Pensioners
+                .Where(
+                    entity => entity.ActiveFlag
+                    && entity.TreasuryCode == treasuryCode
+                    && entity.PpoComponentRevisions.Count > 0
+                )
+                .Include(entity => entity.Branch)
+                .ThenInclude(entity => entity.Bank)
+                .Include(entity => entity.Category)
+                .Include(entity => entity.PpoComponentRevisions)
+                .Select(selectExpression)
+                .ToListAsync();
+            return ppos;
+        }
+
+
         public async Task<List<T>> GetAllRevisionsByPpoIdAsync<T>(
             int ppoId,
             Expression<Func<PpoComponentRevision, T>> selectExpression,

@@ -677,4 +677,25 @@ namespace CTS_BE.DTOs
         public List<PpoBillBreakupResponseDTO> PpoBillBreakups { get; set; } = null!;
         public PensionerResponseDTO? Pensioner { get; set; }
     }
+
+    public partial class TableResponseDTO<T> : BaseDTO {
+        public List<TableHeader> Headers { get; set; } = null!;
+        public List<T> Data { get; set; } = null!;
+        public int DataCount { get{return this.Data.Count;}}
+    }
+
+    public partial class TableHeader : BaseDTO {
+        public string Name { get; set; } = null!;
+        public string FieldName { get; set; } = null!;
+    }
+
+    public partial class PpoComponentRevisionPpoListItemDTO : BaseDTO {
+        public int PpoId { get; set; }
+        public string PpoNo { get; set; } = null!;
+        public string PensionerName { get; set; } = null!;
+        public string CategoryDescription { get; set; } = null!;
+        public string BankBranchName { get; set; } = null!;
+        public PensionCategoryResponseDTO? Category { get; set; }
+        public BranchResponseDTO? Branch { get; set; }
+    }
 }
