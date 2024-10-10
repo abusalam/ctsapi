@@ -6,8 +6,16 @@ namespace CTS_BE.Factories.Pension
 {
     public class PensionerFactory : BaseFactory<PensionerEntryDTO>
     {
+        private static readonly long[] BankIds = {1,2};
+        private static readonly IDictionary<long, long[]> BranchIds = new Dictionary<long, long[]>
+        {
+            {1, new long[] {1,2}},
+            {2, new long[] {3,4}}
+        };
+
         public PensionerFactory()
         {
+
             _faker = new Faker<PensionerEntryDTO>()
                 .RuleFor(d => d.PpoNo, f => f.Random.Replace("PPO-###?###?"))
                 .RuleFor(d => d.Gender, f => f.PickRandom('F', 'M'))
@@ -20,7 +28,8 @@ namespace CTS_BE.Factories.Pension
                 .RuleFor(d => d.PayMode, f => f.PickRandom('Q','B'))
                 .RuleFor(d => d.BankAcNo, f => f.Random.Replace("################"))
                 // .RuleFor(d => d.IfscCode, f => f.Random.Replace("????#######"))
-                .RuleFor(d => d.BranchId, f=>f.PickRandom(1,2,3,4))
+                .RuleFor(d => d.BankId, f => f.PickRandom(BankIds))
+                .RuleFor(d => d.BranchId, (f, d) => f.PickRandom(BranchIds[d.BankId]))
                 .RuleFor(d => d.MobileNumber, f => f.Random.Replace("9#########"))
                 .RuleFor(d => d.EmailId, f => f.Person.Email)
                 .RuleFor(d => d.IdentificationMark, f => f.Random.Words(1))

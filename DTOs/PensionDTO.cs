@@ -109,6 +109,7 @@ namespace CTS_BE.DTOs
         
         [Required]
         public long CategoryId { get; set; }
+        public long BankId { get; set; }
 
         [Required]
         public long BranchId { get; set; }
