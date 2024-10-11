@@ -8,6 +8,7 @@ namespace CTS_BE.Controllers.Pension
 {
     public enum FactoryEntityEnum
     {
+        ComponentRateEntryDTO,
         ManualPpoReceiptEntryDTO,
         PensionerEntryDTO,
         PensionPrimaryCategoryEntryDTO,
@@ -24,6 +25,7 @@ namespace CTS_BE.Controllers.Pension
         {
             _factories = new Dictionary<FactoryEntityEnum, BaseDTO>()
             {
+                {FactoryEntityEnum.ComponentRateEntryDTO, new ComponentRateFactory().Create()},
                 {FactoryEntityEnum.ManualPpoReceiptEntryDTO, new PpoReceiptFactory().Create()},
                 {FactoryEntityEnum.PensionerEntryDTO, new PensionerFactory().Create()},
                 {FactoryEntityEnum.PensionPrimaryCategoryEntryDTO, new PrimaryCategoryFactory().Create()},
@@ -43,7 +45,7 @@ namespace CTS_BE.Controllers.Pension
                 Message = $"{dtoName} received successfully",
                 Result = null
             };
-            
+
             if(!_factories.ContainsKey(dtoName))
             {
                 response.ApiResponseStatus = Enum.APIResponseStatus.Error;
