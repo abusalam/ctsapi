@@ -89,12 +89,12 @@ namespace CTS_BE.BAL.Services.Pension
             }
             List<PpoPaymentListItemDTO>? ppoPayments = PensionCalculator.CalculatePpoPayments(
                         pensioner.Category.ComponentRates,
-                        billType == BillType.FirstBill ? pensioner.DateOfCommencement 
-                        : PensionCalculator.CalculatePeriodStartDate(initiateFirstPensionBillDTO.ToDate),
-                        billType == BillType.FirstBill ? initiateFirstPensionBillDTO.ToDate 
-                        : PensionCalculator.CalculatePeriodEndDate(initiateFirstPensionBillDTO.ToDate),
+                        billType == BillType.FirstBill ? pensioner.DateOfCommencement :
+                        PensionCalculator.CalculatePeriodStartDate(initiateFirstPensionBillDTO.ToDate),
+                        // billType == BillType.FirstBill ? initiateFirstPensionBillDTO.ToDate :
+                        PensionCalculator.CalculatePeriodEndDate(initiateFirstPensionBillDTO.ToDate).AddDays(1),
                         pensioner.BasicPensionAmount,
-                        pensioner.CommutedPensionAmount    
+                        pensioner.CommutedPensionAmount
                     );
             List<PpoBillBreakupResponseDTO> ppoBillBreakups = new();
 

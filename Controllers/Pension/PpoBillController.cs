@@ -130,7 +130,7 @@ namespace CTS_BE.Controllers.Pension
 
             return response;
         }
-    
+
         [HttpPost("first-bill")]
         [Tags("Pension: First Bill")]
         [OpenApi]
@@ -236,7 +236,7 @@ namespace CTS_BE.Controllers.Pension
             }
             return Task.FromResult(response);
         }
-    
+
         [HttpGet("pension-bill/{year}/{month}/ppos")]
         [Tags("Pension: Regular Bill")]
         [OpenApi]
@@ -269,9 +269,9 @@ namespace CTS_BE.Controllers.Pension
 
             return response;
         }
-    
 
-    
+
+
         [HttpPost("pension-bill")]
         [Tags("Pension: Regular Bill")]
         [OpenApi]
@@ -320,7 +320,7 @@ namespace CTS_BE.Controllers.Pension
             response.Result.BillDate = ppoBillEntryDTO.ToDate;
             return response;
         }
-    
+
         [HttpGet("pension-bill/{year}/{month}/regular-bills")]
         [Tags("Pension: Regular Bill")]
         [OpenApi]

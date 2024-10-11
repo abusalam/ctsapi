@@ -19,7 +19,7 @@ namespace CTS_BE.DAL.Repositories.Pension
             _context = context;
         }
 
-        public async Task<IEnumerable<T>> GetComponentRatesByCategoryId<T>(
+        public async Task<List<T>> GetComponentRatesByCategoryId<T>(
             long categoryId,
             Expression<Func<ComponentRate, T>> selectExpression
 

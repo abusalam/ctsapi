@@ -14,26 +14,26 @@ namespace CTS_BE.Controllers.Pension
     [Route("api/v1/pension")]
     public class PensionComponentController : ApiBaseController
     {
-        
+
         private readonly IPensionBreakupService _pensionBreakupService;
         private readonly IComponentRateService _pensionRateService;
         public PensionComponentController(
                 IPensionBreakupService pensionBreakupService,
                 IComponentRateService pensionRateService,
                 IClaimService claimService
-            ) : base(claimService)
+        ) : base(claimService)
         {
             _pensionBreakupService = pensionBreakupService;
             _pensionRateService = pensionRateService;
         }
 
-        
+
         [HttpPost("component")]
         [Tags("Pension: Component")]
         [OpenApi]
         public async Task<JsonAPIResponse<PensionBreakupResponseDTO>> CreateComponent(
-                PensionBreakupEntryDTO pensionBreakupEntryDTO
-            )
+            PensionBreakupEntryDTO pensionBreakupEntryDTO
+        )
         {
 
             JsonAPIResponse<PensionBreakupResponseDTO> response = new(){
@@ -66,8 +66,8 @@ namespace CTS_BE.Controllers.Pension
         [Tags("Pension: Component")]
         [OpenApi]
         public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<PensionBreakupResponseDTO>>>> GetAllComponents(
-                DynamicListQueryParameters dynamicListQueryParameters
-            )
+            DynamicListQueryParameters dynamicListQueryParameters
+        )
         {
             JsonAPIResponse<DynamicListResult<IEnumerable<PensionBreakupResponseDTO>>> response = new();
             try {
@@ -78,7 +78,7 @@ namespace CTS_BE.Controllers.Pension
                     Result = new()
                         {
                             Headers = new () {
-                            
+
                                 new() {
                                     Name = "Bill Component ID",
                                     DataType = "text",
@@ -133,13 +133,13 @@ namespace CTS_BE.Controllers.Pension
             }
             return response;
         }
- 
+
         [HttpPost("component-rate")]
         [Tags("Pension: Component Rate")]
         [OpenApi]
         public async Task<JsonAPIResponse<ComponentRateResponseDTO>> CreateComponentRate(
-                ComponentRateEntryDTO pensionRatesEntryDTO
-            )
+            ComponentRateEntryDTO pensionRatesEntryDTO
+        )
         {
 
             JsonAPIResponse<ComponentRateResponseDTO> response = new(){
@@ -151,7 +151,7 @@ namespace CTS_BE.Controllers.Pension
             };
             try {
                 response.Result = await _pensionRateService
-                    .CreateComponentRates<ComponentRateEntryDTO, ComponentRateResponseDTO>(                    
+                    .CreateComponentRates<ComponentRateEntryDTO, ComponentRateResponseDTO>(
                             pensionRatesEntryDTO,
                             GetCurrentFyYear(),
                             GetTreasuryCode()
@@ -172,11 +172,11 @@ namespace CTS_BE.Controllers.Pension
         [HttpGet("{categoryId}/component-rate")]
         [Tags("Pension: Component Rate")]
         [OpenApi]
-        public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<ComponentRateResponseDTO>>>> GetComponentRatesByCategoryId(
-                long categoryId
-            )
+        public async Task<JsonAPIResponse<TableResponseDTO<ComponentRateResponseDTO>>> GetComponentRatesByCategoryId(
+            long categoryId
+        )
         {
-            JsonAPIResponse<DynamicListResult<IEnumerable<ComponentRateResponseDTO>>> response = new();
+            JsonAPIResponse<TableResponseDTO<ComponentRateResponseDTO>> response = new();
             try {
 
                 response = new() {
@@ -185,30 +185,25 @@ namespace CTS_BE.Controllers.Pension
                     Result = new()
                         {
                             Headers = new () {
-                            
+
                                 new() {
                                     Name = "Rate ID",
-                                    DataType = "text",
                                     FieldName = "id",
                                 },
                                 new() {
                                     Name = "Breakup",
-                                    DataType = "text",
                                     FieldName = "componentName",
                                 },
                                 new() {
                                     Name = "Effective From Date",
-                                    DataType = "text",
                                     FieldName = "withEffectFrom",
                                 },
                                 new() {
                                     Name = "Rate",
-                                    DataType = "text",
                                     FieldName = "componentRate",
                                 },
                                 new() {
                                     Name = "Type",
-                                    DataType = "text",
                                     FieldName = "componentType",
                                 }
 
@@ -216,7 +211,6 @@ namespace CTS_BE.Controllers.Pension
                             Data = await _pensionRateService.ListComponentRatesByCategoryId<ComponentRateResponseDTO>(
                                     categoryId
                                 ),
-                            DataCount = _pensionRateService.DataCount()
                         },
                     Message = $"All Component Rates Received Successfully!"
 
@@ -238,8 +232,8 @@ namespace CTS_BE.Controllers.Pension
         [OpenApi]
         [Obsolete("Use GetComponentRatesByCategoryId instead")]
         public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<ComponentRateResponseDTO>>>> GetAllComponentRates(
-                DynamicListQueryParameters dynamicListQueryParameters
-            )
+            DynamicListQueryParameters dynamicListQueryParameters
+        )
         {
             JsonAPIResponse<DynamicListResult<IEnumerable<ComponentRateResponseDTO>>> response = new();
             try {
@@ -250,7 +244,7 @@ namespace CTS_BE.Controllers.Pension
                     Result = new()
                         {
                             Headers = new () {
-                            
+
                                 new() {
                                     Name = "Component Rate ID",
                                     DataType = "text",
@@ -322,6 +316,6 @@ namespace CTS_BE.Controllers.Pension
             }
             return response;
         }
- 
+
     }
 }

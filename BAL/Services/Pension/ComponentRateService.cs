@@ -38,7 +38,7 @@ namespace CTS_BE.BAL.Services.Pension
             try {
                 componentRateEntity.FillFrom(pensionRateEntryDTO);
                 SetCreatedBy(componentRateEntity);
-                
+
                 _pensionRateRepository.Add(componentRateEntity);
 
                 _dataCount=await _pensionRateRepository.SaveChangesManagedAsync();
@@ -70,10 +70,10 @@ namespace CTS_BE.BAL.Services.Pension
                     entity => entity.ActiveFlag,
                     entity => _mapper.Map<TResponse>(entity),
                     dynamicListQueryParameters
-                );        
+                );
         }
 
-        public async Task<IEnumerable<TResponse>> ListComponentRatesByCategoryId<TResponse>(
+        public async Task<List<TResponse>> ListComponentRatesByCategoryId<TResponse>(
             long categoryId
         )
         {

@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using CTS_BE.DTOs.Validators;
 using System.Dynamic;
-using System.Reflection;
 using CTS_BE.PensionEnum;
 
 namespace CTS_BE.DTOs
@@ -109,7 +108,7 @@ namespace CTS_BE.DTOs
         
         [Required]
         public long CategoryId { get; set; }
-        public long BankId { get; set; }
+        public virtual long BankId { get; set; }
 
         [Required]
         public long BranchId { get; set; }
@@ -233,7 +232,7 @@ namespace CTS_BE.DTOs
         public PensionCategoryResponseDTO? Category { get; set; }
         public ManualPpoReceiptResponseDTO? Receipt { get; set; }
         public BranchResponseDTO? Branch { get; set; }
-
+        public override long BankId => Branch != null ? Branch.Bank != null ? Branch.Bank.Id : 0 : 0;
     }
 
     public class PensionerListItemDTO : BaseDTO {

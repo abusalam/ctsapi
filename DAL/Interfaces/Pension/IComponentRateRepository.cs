@@ -9,10 +9,10 @@ namespace CTS_BE.DAL.Interfaces.Pension
 {
     public interface IComponentRateRepository : IRepository<ComponentRate>
     {
-        public Task<IEnumerable<T>> GetComponentRatesByCategoryId<T>(
+        public Task<List<T>> GetComponentRatesByCategoryId<T>(
             long categoryId,
             Expression<Func<ComponentRate, T>> selectExpression
         );
-        
+
     }
 }
