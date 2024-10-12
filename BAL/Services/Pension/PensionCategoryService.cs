@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using CTS_BE.BAL.Interfaces.Pension;
 using CTS_BE.DAL.Entities.Pension;
@@ -35,10 +30,10 @@ namespace CTS_BE.BAL.Services.Pension
         }
 
         public async Task<TResponse> CreatePensionPrimaryCategory<TEntry, TResponse>(
-                TEntry pensionPrimaryCategoryEntryDTO,
-                short financialYear,
-                string treasuryCode
-            )
+            TEntry pensionPrimaryCategoryEntryDTO,
+            short financialYear,
+            string treasuryCode
+        )
         {
             PrimaryCategory primaryCategoryEntity = new() {
                 Id = 0
@@ -62,7 +57,7 @@ namespace CTS_BE.BAL.Services.Pension
 
                 primaryCategoryEntity.ActiveFlag = true;
                 primaryCategoryEntity.CreatedAt = DateTime.Now;
-                
+
                 _primaryCategoryRepository.Add(primaryCategoryEntity);
 
                 if(await _primaryCategoryRepository.SaveChangesManagedAsync() == 0) {
@@ -84,7 +79,7 @@ namespace CTS_BE.BAL.Services.Pension
             }
             return response;
         }
-    
+
         public async Task<IEnumerable<TResponse>> ListPrimaryCategory<TResponse>(
                 short financialYear,
                 string treasuryCode,
@@ -99,12 +94,12 @@ namespace CTS_BE.BAL.Services.Pension
                     dynamicListQueryParameters
                 );
         }
-    
+
         public async Task<TResponse> CreatePensionSubCategory<TEntry, TResponse>(
-                TEntry pensionSubCategoryEntryDTO,
-                short financialYear,
-                string treasuryCode
-            )
+            TEntry pensionSubCategoryEntryDTO,
+            short financialYear,
+            string treasuryCode
+        )
         {
             SubCategory subCategoryEntity = new() {
                 Id = 0
@@ -128,7 +123,7 @@ namespace CTS_BE.BAL.Services.Pension
 
                 subCategoryEntity.ActiveFlag = true;
                 subCategoryEntity.CreatedAt = DateTime.Now;
-                
+
                 _subCategoryRepository.Add(subCategoryEntity);
 
                 if(await _subCategoryRepository.SaveChangesManagedAsync() == 0) {
@@ -150,7 +145,7 @@ namespace CTS_BE.BAL.Services.Pension
             }
             return response;
         }
-    
+
        public async Task<IEnumerable<TResponse>> ListSubCategory<TResponse>(
                 short financialYear,
                 string treasuryCode,
@@ -165,13 +160,13 @@ namespace CTS_BE.BAL.Services.Pension
                     dynamicListQueryParameters
                 );
         }
-    
+
 
         public async Task<TResponse> CreatePensionCategory<TEntry, TResponse>(
-                TEntry pensionCategoryEntryDTO,
-                short financialYear,
-                string treasuryCode
-            )
+            TEntry pensionCategoryEntryDTO,
+            short financialYear,
+            string treasuryCode
+        )
         {
             Category categoryEntity = new() {
                 Id = 0
@@ -180,47 +175,20 @@ namespace CTS_BE.BAL.Services.Pension
 
             try {
                 categoryEntity.FillFrom(pensionCategoryEntryDTO);
-                
-                var category = await _categoryRepository.GetSingleAysnc(
-                        entity => entity.ActiveFlag
-                        && entity.PrimaryCategoryId == categoryEntity.PrimaryCategoryId
-                        && entity.SubCategoryId == categoryEntity.SubCategoryId
-                    );
-
-                if (category != null) {
-                    response.FillDataSource(
-                        categoryEntity,
-                        $"Category already exists!"
-                    );
-                    return response;
-                }
                 categoryEntity.ActiveFlag = true;
                 categoryEntity.CreatedAt = DateTime.Now;
-
-                PrimaryCategory primaryCategoryEntity = await _primaryCategoryRepository.GetSingleAysnc(entity => entity.Id == categoryEntity.PrimaryCategoryId);
-                SubCategory subCategoryEntity = await _subCategoryRepository.GetSingleAysnc(entity => entity.Id == categoryEntity.SubCategoryId);
-
-                categoryEntity.CategoryName = primaryCategoryEntity.PrimaryCategoryName + " : " + subCategoryEntity.SubCategoryName;
-                
-                _categoryRepository.Add(categoryEntity);
-
-                if(await _categoryRepository.SaveChangesManagedAsync() == 0) {
-                    response.FillDataSource(
-                        categoryEntity,
-                        $"Category not saved!"
-                    );
-                    return response;
-                }
- 
+                SetCreatedBy(categoryEntity);
+                response = await _categoryRepository.CreateCategory<TResponse>(
+                    financialYear,
+                    treasuryCode,
+                    categoryEntity
+                );
             }
             catch (DbUpdateException ex) {
                 response.FillDataSource(
                         categoryEntity,
-                        $"ServiceException: {ex.InnerException?.Message}"
+                        $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                     );
-            }
-            finally {
-
             }
             return response;
         }
@@ -281,6 +249,6 @@ namespace CTS_BE.BAL.Services.Pension
                     dynamicListQueryParameters
                 );
         }
-    
+
     }
 }

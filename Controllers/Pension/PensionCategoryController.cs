@@ -23,13 +23,13 @@ namespace CTS_BE.Controllers.Pension
             _pensionCategoryService = pensionCategoryService;
         }
 
-        
+
         [HttpPost("primary-category")]
         [Tags("Pension: Category Master")]
         [OpenApi]
         public async Task<JsonAPIResponse<PensionPrimaryCategoryResponseDTO>> CreatePrimaryCategory(
-                PensionPrimaryCategoryEntryDTO pensionPrimaryCategoryEntryDTO
-            )
+            PensionPrimaryCategoryEntryDTO pensionPrimaryCategoryEntryDTO
+        )
         {
 
             JsonAPIResponse<PensionPrimaryCategoryResponseDTO> response = new(){
@@ -74,7 +74,7 @@ namespace CTS_BE.Controllers.Pension
                     Result = new()
                         {
                             Headers = new () {
-                            
+
                                 new() {
                                     Name = "Primary Category ID",
                                     DataType = "text",
@@ -125,8 +125,8 @@ namespace CTS_BE.Controllers.Pension
         [Tags("Pension: Category Master")]
         [OpenApi]
         public async Task<JsonAPIResponse<PensionSubCategoryResponseDTO>> CreateSubCategory(
-                PensionSubCategoryEntryDTO pensionSubCategoryEntryDTO
-            )
+            PensionSubCategoryEntryDTO pensionSubCategoryEntryDTO
+        )
         {
 
             JsonAPIResponse<PensionSubCategoryResponseDTO> response = new(){
@@ -171,7 +171,7 @@ namespace CTS_BE.Controllers.Pension
                     Result = new()
                         {
                             Headers = new () {
-                            
+
                                 new() {
                                     Name = "Sub Category ID",
                                     DataType = "text",
@@ -294,7 +294,7 @@ namespace CTS_BE.Controllers.Pension
                     Result = new()
                         {
                             Headers = new () {
-                            
+
                                 new() {
                                     Name = "Category ID",
                                     DataType = "text",
@@ -349,6 +349,6 @@ namespace CTS_BE.Controllers.Pension
             }
             return response;
         }
- 
+
     }
 }
