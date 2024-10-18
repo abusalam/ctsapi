@@ -13,7 +13,7 @@ namespace CTS_BE.DTOs
         [DataType(DataType.Date)]
         public DateOnly DateOnly { get; set; }
     }
-    
+
     public class PensionStatusDTO : BaseDTO {
         [Required]
         [EnumDataType(typeof(PensionStatusFlag))]
@@ -29,7 +29,7 @@ namespace CTS_BE.DTOs
         [Required]
         public int PpoId { get; set; }
     }
-    
+
     public class ManualPpoReceiptEntryDTO : BaseDTO {
 
         [Required]
@@ -66,7 +66,7 @@ namespace CTS_BE.DTOs
 
     public class ManualPpoReceiptResponseDTO : ManualPpoReceiptEntryDTO {
         public long Id { get; set; }
-        
+
         [StringLength(13)]
         public string TreasuryReceiptNo { get; set; } = null!;
     }
@@ -76,7 +76,7 @@ namespace CTS_BE.DTOs
 
         [StringLength(13)]
         public string TreasuryReceiptNo { get; set; } = null!;
-                
+
         [StringLength(100)]
         public required string PpoNo { get; set; } = null!;
 
@@ -105,7 +105,7 @@ namespace CTS_BE.DTOs
         [RegularExpression(@"[ELUVNRPGJKHW]", ErrorMessage = "{0} must be one of the following (E, L, U, V, N, R, P, G, J, K, H & W)")]
         /// <value>Property <c>PpoSubType</c> Must be one of the following (E, L, U, V, N, R, P, G, J, K, H, W).</value>
         public char PpoSubType { get; set; }
-        
+
         [Required]
         public long CategoryId { get; set; }
         public virtual long BankId { get; set; }
@@ -128,7 +128,7 @@ namespace CTS_BE.DTOs
         [Required]
         [StringLength(100)]
         public string PensionerName { get; set; } = null!;
-        
+
         [RegularExpression(@"[MF]", ErrorMessage = "{0} must be one of the following (M - Male; F - Female;)")]
         /// <value>Property <c>Gender</c> Must be one of the following (M - Male; F - Female;).</value>
         public char? Gender { get; set; }
@@ -165,19 +165,19 @@ namespace CTS_BE.DTOs
 
         [Required]
         public int BasicPensionAmount { get; set; }
-        
+
         [Required]
         public int? CommutedPensionAmount { get; set; }
 
         [DataType(DataType.Date)]
         public DateOnly? CommutedFromDate { get; set; }
-        
+
         [DataType(DataType.Date)]
         public DateOnly? CommutedUptoDate { get; set; }
 
         [Required]
         public int EnhancePensionAmount { get; set; }
-        
+
         [Required]
         public int ReducedPensionAmount { get ; set; }
 
@@ -237,7 +237,7 @@ namespace CTS_BE.DTOs
 
     public class PensionerListItemDTO : BaseDTO {
         public long Id { get; set; }
-        
+
         public int PpoId { get; set; }
 
         [StringLength(100)]
@@ -254,7 +254,7 @@ namespace CTS_BE.DTOs
         [DataType(DataType.Date)]
         [PastDateWithinYears(100)]
         public DateOnly DateOfRetirement { get; set; }
-        
+
         [DataType(DataType.Date)]
         [PastDateWithinYears(100)]
         public DateOnly DateOfCommencement { get; set; }
@@ -293,7 +293,7 @@ namespace CTS_BE.DTOs
     public partial class PensionCategoryEntryDTO : BaseDTO {
         [Required]
         public long PrimaryCategoryId { get; set; }
-        
+
         [Required]
         public long SubCategoryId { get; set; }
     }
@@ -522,12 +522,12 @@ namespace CTS_BE.DTOs
         [Required]
         public int PpoId { get; set; }
         // public long RateId { get; set; }
-        
+
         [Required]
         [DataType(DataType.Date)]
         [PastDateWithinYears(100, ErrorMessage = "Date of bill should be within 100 years from today")]
         public DateOnly FromDate { get; set; }
-        
+
         [Required]
         [DataType(DataType.Date)]
         public DateOnly ToDate { get; set; }
@@ -560,7 +560,7 @@ namespace CTS_BE.DTOs
 
     public partial class PpoBillListResponseDTO : BaseDTO {
         public long Id { get; set; }
-        
+
         [StringLength(50)]
         public string HoaId { get; set; } = null!;
         public int BillNo { get; set; }
@@ -652,15 +652,15 @@ namespace CTS_BE.DTOs
         public string PensionerName { get; set; } = null!;
         public string BankAcNo { get; set; } = null!;
         public int TotalPayableAmount { get {
-            return BasicPensionAmount 
-                + DearnessReliefAmount 
-                + MedicalReliefAmount 
-                - CommutedPensionAmount 
-                - OverdrawlAmount 
-                + DpPensionAmount 
-                + AdditionalPensionAmount 
-                + ArrearPensionAmount 
-                + InterimReliefAmount 
+            return BasicPensionAmount
+                + DearnessReliefAmount
+                + MedicalReliefAmount
+                - CommutedPensionAmount
+                - OverdrawlAmount
+                + DpPensionAmount
+                + AdditionalPensionAmount
+                + ArrearPensionAmount
+                + InterimReliefAmount
                 - ByTransferAmount;
             }
         }
@@ -697,5 +697,48 @@ namespace CTS_BE.DTOs
         public string BankBranchName { get; set; } = null!;
         public PensionCategoryResponseDTO? Category { get; set; }
         public BranchResponseDTO? Branch { get; set; }
+    }
+
+    public partial class PpoSanctionDetailsEntryDTO : BaseDTO {
+        [Required]
+        public int PpoId { get; set; }
+
+        [Required]
+        public long PensionerId { get; set; }
+
+        [Required]
+        public string EmployeeName { get; set; } = null!;
+
+        [Required]
+        public string SanctionAuthority { get; set; } = null!;
+
+        [Required]
+        public string SanctionNo { get; set; } = null!;
+
+        [Required]
+        public DateOnly SanctionDate { get; set; }
+        public DateOnly? EmployeeDob { get; set; }
+        public char? EmployeeGender { get; set; }
+        public DateOnly? EmployeeDateOfAppointment { get; set; }
+        public string? EmployeeOffice { get; set; }
+        public string? EmployeeDesignation { get; set; }
+        public int? EmployeeLastPay { get; set; }
+        public int? AverageEmolument { get; set; }
+        public string? EmployeeHrmsId { get; set; }
+        public string? IssuingAuthority { get; set; }
+        public string? IssuingLetterNo { get; set; }
+        public DateOnly? IssuingLetterDate { get; set; }
+        public int? QualifyingServiceGrossYears { get; set; }
+        public int? QualifyingServiceGrossMonths { get; set; }
+        public int? QualifyingServiceGrossDays { get; set; }
+        public int? QualifyingServiceNetYears { get; set; }
+        public int? QualifyingServiceNetMonths { get; set; }
+        public int? QualifyingServiceNetDays { get; set; }
+
+    }
+
+    public partial class PpoSanctionDetailsResponseDTO : PpoSanctionDetailsEntryDTO {
+        public long Id { get; set; }
+        public PensionerResponseDTO? Pensioner { get; set; }
     }
 }

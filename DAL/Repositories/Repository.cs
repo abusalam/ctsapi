@@ -7,7 +7,7 @@ using CTS_BE.Helper;
 using CTS_BE.DTOs;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 
-namespace CTS_BE.DAL
+namespace CTS_BE.DAL.Repositories
 {
     public abstract class Repository<T, Tcontext> : IRepository<T> where T : class where Tcontext : DbContext
     {

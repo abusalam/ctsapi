@@ -48,7 +48,7 @@ var builder = WebApplication.CreateBuilder(args);
 //Database Connection
 // builder.Services.AddDbContext<CTSDBContext>(options =>
 //     options.UseNpgsql(builder.Configuration.GetConnectionString("DBConnection"),
-//     //options => options.CommandTimeout(999)                   
+//     //options => options.CommandTimeout(999)
 //     options => options.EnableRetryOnFailure(10, TimeSpan.FromSeconds(5), null)
 // ), ServiceLifetime.Transient);
 
@@ -64,7 +64,7 @@ builder.Services.AddDbContext<PensionDbContext>(
     options => {
         options.UseNpgsql(
             builder.Configuration.GetConnectionString("DBConnection"),
-            //options => options.CommandTimeout(999)                   
+            //options => options.CommandTimeout(999)
             options => options.EnableRetryOnFailure(10, TimeSpan.FromSeconds(5), null)
         );
         options.UseNpgsql(dataSource);
@@ -112,7 +112,7 @@ catch(Exception ex) {
     Console.WriteLine($"RabbitMQ connection failed: {ex.GetType()} {ex.Message}");
     string jsonRabbitMqOptions = JsonConvert.SerializeObject(rabbitMqOptions);
     Console.WriteLine($"RabbitMQ Options: {jsonRabbitMqOptions}");
-    
+
     // Start RabbitMQ with default configurations
     builder.Services.AddSingleton(rabbitMqOptions);
     builder.Services.AddSingleton<MqAdapter, RabbitMqAdapter>();
@@ -133,6 +133,7 @@ builder.Services.AddTransient<IComponentRateRepository, ComponentRateRepository>
 builder.Services.AddTransient<IPpoComponentRevisionRepository, PpoComponentRevisionRepository>();
 builder.Services.AddTransient<IPpoBillRepository, PpoBillRepository>();
 builder.Services.AddTransient<IBankBranchRepository, BankBranchRepository>();
+builder.Services.AddTransient<IPpoSanctionDetailsRepository, PpoSanctionDetailsRepository>();
 
 
 // Pension Services
@@ -146,6 +147,7 @@ builder.Services.AddTransient<IComponentRateService, ComponentRateService>();
 builder.Services.AddTransient<IPpoComponentRevisionService, PpoComponentRevisionService>();
 builder.Services.AddTransient<IPpoBillService, PpoBillService>();
 builder.Services.AddTransient<IBankBranchService, BankBranchService>();
+builder.Services.AddScoped<IPpoSanctionDetailsService, PpoSanctionDetailsService>();
 // builder.Services.AddTransient<IPpoBillService, PpoBillService>();
 
 
@@ -246,7 +248,7 @@ builder.Services.AddTransient<IClaimService, ClaimService>();
 //    // x.FontFamilies = new string[] { "Marlboro" };
 //    x.DrawLines = 3;
 //    x.FontSize = 35;
-//    x.Width = 150;  
+//    x.Width = 150;
 //    x.Height = 50;
 //    x.NoiseRate = 500;
 //});

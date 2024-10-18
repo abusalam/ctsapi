@@ -11,11 +11,13 @@ namespace CTS_BE.Controllers.Pension
         ComponentRateEntryDTO,
         ManualPpoReceiptEntryDTO,
         PensionerEntryDTO,
+        PpoSanctionDetailsEntryDTO,
         PensionPrimaryCategoryEntryDTO,
         PensionSubCategoryEntryDTO,
         PensionBreakupEntryDTO,
     }
-    [Route("api/v1")]
+
+    [Route("api/v1/factory")]
     public class FactoryController : ApiBaseController
     {
         private readonly IDictionary<FactoryEntityEnum, BaseDTO> _factories;
@@ -28,13 +30,14 @@ namespace CTS_BE.Controllers.Pension
                 {FactoryEntityEnum.ComponentRateEntryDTO, new ComponentRateFactory().Create()},
                 {FactoryEntityEnum.ManualPpoReceiptEntryDTO, new PpoReceiptFactory().Create()},
                 {FactoryEntityEnum.PensionerEntryDTO, new PensionerFactory().Create()},
+                {FactoryEntityEnum.PpoSanctionDetailsEntryDTO, new PpoSanctionDetailsFactory().Create()},
                 {FactoryEntityEnum.PensionPrimaryCategoryEntryDTO, new PrimaryCategoryFactory().Create()},
                 {FactoryEntityEnum.PensionSubCategoryEntryDTO, new SubCategoryFactory().Create()},
                 {FactoryEntityEnum.PensionBreakupEntryDTO, new ComponentFactory().Create()}
             };
         }
 
-        [HttpGet("factory/{dtoName}")]
+        [HttpGet("{dtoName}")]
         [Tags("Pension: Factory")]
         [OpenApi]
         public async Task<JsonAPIResponse<object>> CreateFake(FactoryEntityEnum dtoName)

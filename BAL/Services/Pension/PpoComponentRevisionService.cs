@@ -1,13 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using CTS_BE.BAL.Interfaces.Pension;
 using CTS_BE.DAL.Entities.Pension;
 using CTS_BE.DAL.Interfaces.Pension;
-using CTS_BE.DTOs;
 using CTS_BE.Helper;
 using CTS_BE.Helper.Authentication;
 using Microsoft.EntityFrameworkCore;
@@ -62,7 +56,7 @@ namespace CTS_BE.BAL.Services.Pension
                 ppoComponentRevision.FillFrom(ppoComponentRevisionDTO);
 
                 PpoComponentRevision ppoComponentRevisionFound = await _ppoComponentRevisionRepository.GetSingleAysnc(
-                        entity => entity.ActiveFlag 
+                        entity => entity.ActiveFlag
                         // && entity.TreasuryCode == treasuryCode
                         && entity.PpoId == ppoComponentRevision.PpoId
                         && entity.RateId == ppoComponentRevision.RateId
@@ -78,9 +72,9 @@ namespace CTS_BE.BAL.Services.Pension
                     );
                     return response;
                 }
-                
+
                 Pensioner pensionerFound = await _pensionerDetailsRepository.GetSingleAysnc(
-                        entity => entity.ActiveFlag 
+                        entity => entity.ActiveFlag
                         && entity.TreasuryCode == treasuryCode
                         && entity.PpoId == ppoId
                     );
@@ -138,7 +132,7 @@ namespace CTS_BE.BAL.Services.Pension
                     ppoComponentRevision.FillFrom(ppoComponentRevisionDTO);
 
                     PpoComponentRevision ppoComponentRevisionFound = await _ppoComponentRevisionRepository.GetSingleAysnc(
-                            entity => entity.ActiveFlag 
+                            entity => entity.ActiveFlag
                             // && entity.TreasuryCode == treasuryCode
                             && entity.PpoId == ppoId
                             && entity.RateId == ppoComponentRevision.RateId
@@ -155,7 +149,7 @@ namespace CTS_BE.BAL.Services.Pension
                         continue;
                     }
                     Pensioner pensionerFound = await _pensionerDetailsRepository.GetSingleAysnc(
-                        entity => entity.ActiveFlag 
+                        entity => entity.ActiveFlag
                         && entity.TreasuryCode == treasuryCode
                         && entity.PpoId == ppoId
                     );
@@ -189,7 +183,7 @@ namespace CTS_BE.BAL.Services.Pension
                     );
             }
             finally {
-                //TODO: Implement DataSource Channel for List<TResponse> 
+                //TODO: Implement DataSource Channel for List<TResponse>
                 response = _mapper.Map<List<TResponse>>(ppoComponentRevisions);
             }
             return response;
@@ -210,7 +204,7 @@ namespace CTS_BE.BAL.Services.Pension
             try {
 
                 ppoComponentRevision = await _ppoComponentRevisionRepository.GetSingleAysnc(
-                        entity => entity.ActiveFlag 
+                        entity => entity.ActiveFlag
                         && entity.Id == revisionId
                     );
 
@@ -276,7 +270,7 @@ namespace CTS_BE.BAL.Services.Pension
             try {
 
                 ppoComponentRevision = await _ppoComponentRevisionRepository.GetSingleAysnc(
-                        entity => entity.ActiveFlag 
+                        entity => entity.ActiveFlag
                         && entity.Id == revisionId
                     );
 

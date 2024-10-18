@@ -1,6 +1,6 @@
 # Reference: https://learn.microsoft.com/en-us/aspnet/core/test/http-files?view=aspnetcore-8.0
 # VSCode Extension: https://marketplace.visualstudio.com/items?itemName=humao.rest-client
-# @PensionAPI_HostAddress = https://localhost:7249 
+# @PensionAPI_HostAddress = https://localhost:7249
 @PensionAPI_HostAddress = http://api.{{$dotenv PROJECT_BASE_URL}}
 @accessToken = eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhcHBsaWNhdGlvbiI6IntcIklkXCI6MyxcIk5hbWVcIjpcIkNUU1wiLFwiTGV2ZWxzXCI6W3tcIklkXCI6OCxcIk5hbWVcIjpcIlRyZWFzdXJ5XCIsXCJTY29wZVwiOltcIkRBQVwiXX1dLFwiUm9sZXNcIjpbe1wiSWRcIjoyNyxcIk5hbWVcIjpcImNsZXJrXCIsXCJQZXJtaXNzaW9uc1wiOltcImNhbi1yZWNlaXZlLWJpbGxcIl19XX0iLCJuYW1laWQiOiIzOSIsIm5hbWUiOiJDVFMgQ2xlcmsiLCJuYmYiOjE3MTc5OTY2OTksImV4cCI6MTcxODA4MzA5OSwiaWF0IjoxNzE3OTk2Njk5fQ.tLMRXKlXb2eyiE2ApSRgFgbX9EjvPbGNi1dgp_UpGadv-UitDdS4su2ZV6B4kp4Rf0TXjDQHTW7YvNkwciQVQg
 # {{Login.response.body.$.accessToken}}
@@ -17,7 +17,8 @@
 
 ### All List APIs
 # @name AllPatchAPIs
-GET {{PensionAPI_HostAddress}}/api/v1/manual-ppo/receipts
+GET {{PensionAPI_HostAddress}}/api/v1/factory/PpoSanctionDetailsEntryDTO
+# GET {{PensionAPI_HostAddress}}/api/v1/manual-ppo/receipts
 # PATCH {{PensionAPI_HostAddress}}/api/v1/pension/primary-category
 # PATCH {{PensionAPI_HostAddress}}/api/v1/pension/sub-category
 # PATCH {{PensionAPI_HostAddress}}/api/v1/pension/category
@@ -307,7 +308,7 @@ Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
-  "receiptId": {{PpoReceiptID}}, 
+  "receiptId": {{PpoReceiptID}},
   "ppoNo": "{{PpoNo}}",
   "ppoType": "P",
   "psaType": "A",
@@ -630,3 +631,66 @@ Authorization: Bearer {{accessToken}}
 
 
 
+
+
+
+### Create PPO Sanction Details
+# @name CreateSanctionDetails
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+POST {{PensionAPI_HostAddress}}/api/v1/ppo/sanction
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "ppoId": {{GeneratedPpoId}},
+  "pensionerId": {{PensionerId}},
+  "employeeName": "Subir Dey",
+  "sanctionAuthority": "DPPG",
+  "sanctionNo": "9876/DDPG/2024",
+  "sanctionDate": "2024-10-31"
+}
+
+
+
+
+
+
+
+
+### Collect Sanction Details
+@SanctionDetailsId = {{CreateSanctionDetails.response.body.result.id}}
+@PensionerId = {{CreatePPODetails.response.body.result.id}}
+
+
+### Update PPO Sanction Details
+# @name UpdateSanctionDetailsById
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+PUT {{PensionAPI_HostAddress}}/api/v1/ppo/sanction/{{SanctionDetailsId}}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "ppoId": {{GeneratedPpoId}},
+  "pensionerId": {{PensionerId}},
+  "employeeName": "Samir Roy",
+  "sanctionAuthority": "AGWB",
+  "sanctionNo": "7654/AGWB/2024",
+  "sanctionDate": "2024-10-01"
+}
+
+
+
+
+
+
+
+
+### Get PPO Sanction Details
+# @name GetSanctionDetailsById
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+GET {{PensionAPI_HostAddress}}/api/v1/ppo/sanction/{{SanctionDetailsId}}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
