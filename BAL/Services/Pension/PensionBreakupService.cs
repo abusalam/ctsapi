@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using CTS_BE.BAL.Interfaces.Pension;
 using CTS_BE.DAL.Entities.Pension;
@@ -93,6 +89,15 @@ namespace CTS_BE.BAL.Services.Pension
                     entity => _mapper.Map<TResponse>(entity),
                     dynamicListQueryParameters
                 );
+        }
+        public async Task<List<TResponse>> GetBreakups<TResponse>(
+            short financialYear,
+            string treasuryCode
+        )
+        {
+            return await _billBreakupRepository.GetBreakupsAsync(
+                entity => _mapper.Map<TResponse>(entity)
+            );
         }
     }
 }

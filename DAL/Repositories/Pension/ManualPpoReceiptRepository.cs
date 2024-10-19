@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Repositories.Pension
 {
-    public class ManualPpoReceiptRepository : 
+    public class ManualPpoReceiptRepository :
         Repository<PpoReceipt, PensionDbContext>,
         IManualPpoReceiptRepository
     {
@@ -46,6 +46,22 @@ namespace CTS_BE.DAL.Repositories.Pension
             return result;
         }
 
+        public async Task<List<T>> GetPpoReceiptsAsync<T>(
+            short financialYear,
+            string treasuryCode,
+            Expression<Func<PpoReceipt, T>> selectExpression
+        )
+        {
+            return await _context.PpoReceipts
+                .Where(
+                    entity => entity.ActiveFlag
+                    && entity.FinancialYear == financialYear
+                    && entity.TreasuryCode == treasuryCode
+                )
+                .Select(selectExpression)
+                .ToListAsync();
+        }
+
 
         public async Task<T> CreatePpoReceiptWithTreasuryReceiptNo<T>(
             short finYear,
@@ -71,12 +87,12 @@ namespace CTS_BE.DAL.Repositories.Pension
                     _context.Add(ppoReceiptSequence);
                 } else {
                     ppoReceiptSequence.NextSequenceValue++;
-                    _context.Update(ppoReceiptSequence);                   
+                    _context.Update(ppoReceiptSequence);
                 }
                 string paddedNextSequenceValue = $"{ppoReceiptSequence.NextSequenceValue}".PadLeft(6,'0');
                 ppoReceiptEntity.TreasuryReceiptNo = $"{treasuryCode}{finYear}{paddedNextSequenceValue}";
                 _context.PpoReceipts.Add(ppoReceiptEntity);
-                
+
                 if(_context.SaveChanges() == 0) {
                     result.FillDataSource(
                         ppoReceiptEntity,

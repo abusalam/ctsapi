@@ -1,13 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using CTS_BE.BAL.Interfaces.Pension;
 using CTS_BE.DTOs;
 using CTS_BE.Helper;
 using CTS_BE.Helper.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.Controllers.Pension
 {
@@ -113,9 +108,10 @@ namespace CTS_BE.Controllers.Pension
         [HttpPatch("receipts")]
         [Tags("Pension: Manual PPO Receipt")]
         [OpenApi]
+        [Obsolete("Use GetPpoReceipts instead")]
         public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<ListAllPpoReceiptsResponseDTO>>>> GetAllPpoReceipts(
             DynamicListQueryParameters dynamicListQueryParameters
-        ) 
+        )
         {
             JsonAPIResponse<DynamicListResult<IEnumerable<ListAllPpoReceiptsResponseDTO>>> response = new();
             try {
@@ -126,7 +122,7 @@ namespace CTS_BE.Controllers.Pension
                     Result = new()
                         {
                             Headers = new () {
-                            
+
                                 new() {
                                     Name = "Treasury Receipt No",
                                     DataType = "text",
@@ -168,6 +164,56 @@ namespace CTS_BE.Controllers.Pension
                                 dynamicListQueryParameters),
                             DataCount = _ppoReceiptService.DataCount()
                         },
+                    Message = $"All PPO Receipts Received Successfully!"
+
+                };
+            }
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
+            }
+            finally {
+                FillErrorMesageFromDataSource(response);
+            }
+            return response;
+        }
+
+        [HttpGet("receipts")]
+        [Tags("Pension: Manual PPO Receipt")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<TableResponseDTO<ListAllPpoReceiptsResponseDTO>>> GetPpoReceipts()
+        {
+            JsonAPIResponse<TableResponseDTO<ListAllPpoReceiptsResponseDTO>> response = new();
+            try {
+
+                response = new() {
+
+                    ApiResponseStatus = Enum.APIResponseStatus.Success,
+                    Result = new() {
+                        Headers = new () {
+
+                            new() {
+                                Name = "Treasury Receipt No",
+                                FieldName = "treasuryReceiptNo"
+                            },
+                            new() {
+                                Name = "PPO No",
+                                FieldName = "ppoNo"
+                            },
+                            new() {
+                                Name = "Name of Pensioner",
+                                FieldName = "pensionerName"
+                            },
+                            new() {
+                                Name = "Date of Receipt",
+                                FieldName = "receiptDate"
+                            }
+                        },
+                        Data = await _ppoReceiptService.GetPpoReceipts<ListAllPpoReceiptsResponseDTO>(
+                            GetCurrentFyYear(),
+                            GetTreasuryCode()
+                        )
+                    },
                     Message = $"All PPO Receipts Received Successfully!"
 
                 };
@@ -244,7 +290,7 @@ namespace CTS_BE.Controllers.Pension
         [HttpGet("receipts/unused")]
         [Tags("Pension: Manual PPO Receipt")]
         [OpenApi]
-        public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<ListAllPpoReceiptsResponseDTO>>>> GetAllUnusedPpoReceipts() 
+        public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<ListAllPpoReceiptsResponseDTO>>>> GetAllUnusedPpoReceipts()
         {
             JsonAPIResponse<DynamicListResult<IEnumerable<ListAllPpoReceiptsResponseDTO>>> response = new();
             try {
@@ -255,7 +301,7 @@ namespace CTS_BE.Controllers.Pension
                     Result = new()
                         {
                             Headers = new () {
-                            
+
                                 new() {
                                     Name = "Treasury Receipt No",
                                     DataType = "text",

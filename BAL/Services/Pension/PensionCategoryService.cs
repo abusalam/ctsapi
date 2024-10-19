@@ -95,6 +95,15 @@ namespace CTS_BE.BAL.Services.Pension
                 );
         }
 
+        public async Task<List<T>> GetPrimaryCategories<T>(
+            short financialYear,
+            string treasuryCode
+        )
+        {
+            return await _primaryCategoryRepository
+                .GetPrimaryCategoriesAsync<T>();
+        }
+
         public async Task<TResponse> CreatePensionSubCategory<TEntry, TResponse>(
             TEntry pensionSubCategoryEntryDTO,
             short financialYear,
@@ -146,7 +155,7 @@ namespace CTS_BE.BAL.Services.Pension
             return response;
         }
 
-       public async Task<IEnumerable<TResponse>> ListSubCategory<TResponse>(
+        public async Task<IEnumerable<TResponse>> ListSubCategory<TResponse>(
                 short financialYear,
                 string treasuryCode,
                 DynamicListQueryParameters dynamicListQueryParameters
@@ -159,6 +168,15 @@ namespace CTS_BE.BAL.Services.Pension
                     entity => _mapper.Map<TResponse>(entity),
                     dynamicListQueryParameters
                 );
+        }
+
+        public async Task<List<TResponse>> GetSubCategories<TResponse>(
+            short financialYear,
+            string treasuryCode
+        )
+        {
+            return await _subCategoryRepository
+                .GetSubCategoriesAsync<TResponse>();
         }
 
 
@@ -187,8 +205,15 @@ namespace CTS_BE.BAL.Services.Pension
             catch (DbUpdateException ex) {
                 response.FillDataSource(
                         categoryEntity,
-                        $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
+                        $"DbException: {ex.InnerException?.Message ?? ex.Message}"
                     );
+            }
+            catch (Exception ex) {
+                response.FillDataSource(
+                    categoryEntity,
+                    $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
+                );
+                return response;
             }
             return response;
         }
@@ -222,7 +247,7 @@ namespace CTS_BE.BAL.Services.Pension
             catch (DbUpdateException ex) {
                 PensionCategoryDTO.FillDataSource(
                     _mapper.Map<T>(pensionCategoryEntity),
-                    $"DbUpdateException: {ex.InnerException?.Message} {this.ToString()}"
+                    $"DbException: {ex.InnerException?.Message} {this.ToString()}"
                 );
                 return PensionCategoryDTO;
             }
@@ -235,11 +260,11 @@ namespace CTS_BE.BAL.Services.Pension
             }
         }
 
-       public async Task<IEnumerable<TResponse>> ListPensionCategory<TResponse>(
-                short financialYear,
-                string treasuryCode,
-                DynamicListQueryParameters dynamicListQueryParameters
-            )
+        public async Task<IEnumerable<TResponse>> ListPensionCategory<TResponse>(
+            short financialYear,
+            string treasuryCode,
+            DynamicListQueryParameters dynamicListQueryParameters
+        )
         {
             _dataCount = _categoryRepository.Count();
             return await _categoryRepository
@@ -248,6 +273,14 @@ namespace CTS_BE.BAL.Services.Pension
                     entity => _mapper.Map<TResponse>(entity),
                     dynamicListQueryParameters
                 );
+        }
+
+        public async Task<List<TResponse>> GetPensionCategories<TResponse>(
+            short financialYear,
+            string treasuryCode
+        )
+        {
+            return await _categoryRepository.GetPensionCategoriesAsync<TResponse>();
         }
 
     }

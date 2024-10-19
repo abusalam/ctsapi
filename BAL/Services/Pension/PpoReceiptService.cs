@@ -26,7 +26,7 @@ namespace CTS_BE.BAL.Services.Pension
             _claimService = claimService;
             _mapper = mapper;
             _userId = _claimService.GetUserId();
-            
+
         }
 
         public async Task<ManualPpoReceiptResponseDTO> GetPpoReceipt(string treasuryReceiptNo)
@@ -82,11 +82,11 @@ namespace CTS_BE.BAL.Services.Pension
                 manualPpoReceiptEntity.TreasuryCode = treasuryCode;
                 manualPpoReceiptEntity.FinancialYear = financialYear;
                 manualPpoReceiptEntity.PpoStatus = $"PPO Received";
-                SetCreatedBy(manualPpoReceiptEntity);              
+                SetCreatedBy(manualPpoReceiptEntity);
                 manualPpoReceiptDTOResponse = await _manualPpoReceiptRepository
                     .CreatePpoReceiptWithTreasuryReceiptNo<ManualPpoReceiptResponseDTO>(
                         financialYear,
-                        treasuryCode, 
+                        treasuryCode,
                         manualPpoReceiptEntity
                     );
             }
@@ -112,6 +112,18 @@ namespace CTS_BE.BAL.Services.Pension
                     entity => _mapper.Map<ListAllPpoReceiptsResponseDTO>(entity),
                     dynamicListQueryParameters
                 );
+        }
+
+        public async Task<List<T>> GetPpoReceipts<T>(
+            short financialYear,
+            string treasuryCode
+        )
+        {
+            return await _manualPpoReceiptRepository.GetPpoReceiptsAsync(
+                financialYear,
+                treasuryCode,
+                entity => _mapper.Map<T>(entity)
+            );
         }
 
 
@@ -141,11 +153,11 @@ namespace CTS_BE.BAL.Services.Pension
                 manualPpoReceiptEntity = await _manualPpoReceiptRepository.GetSingleAysnc(
                         entity => entity.TreasuryReceiptNo == treasuryReceiptNo
                         );
-                
-                if(manualPpoReceiptEntity is null) {  
+
+                if(manualPpoReceiptEntity is null) {
                     manualPpoReceiptDTOResponse.FillDataSource(manualPpoReceiptDTO, "Treasury Receipt No does not exist!");
                     return manualPpoReceiptDTOResponse;
-                }                  
+                }
                 manualPpoReceiptEntity.FillFrom(manualPpoReceiptDTO);
                 SetUpdatedBy(manualPpoReceiptEntity);
                 _manualPpoReceiptRepository.Update(manualPpoReceiptEntity);
@@ -153,7 +165,7 @@ namespace CTS_BE.BAL.Services.Pension
                     manualPpoReceiptDTOResponse.FillDataSource(manualPpoReceiptEntity, "Update Failed!");
                     return manualPpoReceiptDTOResponse;
                 }
-                
+
             }
             catch (DbUpdateException ex){
                 ManualPpoReceiptResponseDTO errorResponse = _mapper.Map<ManualPpoReceiptResponseDTO>(null);
@@ -175,11 +187,11 @@ namespace CTS_BE.BAL.Services.Pension
                         entity => entity.ActiveFlag
                         && entity.Id == receiptId
                     );
-                
-                if(manualPpoReceiptEntity is null) {  
+
+                if(manualPpoReceiptEntity is null) {
                     manualPpoReceiptDTOResponse.FillDataSource(manualPpoReceiptDTO, "Receipt does not exist! or has been deleted");
                     return manualPpoReceiptDTOResponse;
-                }                  
+                }
                 manualPpoReceiptEntity.FillFrom(manualPpoReceiptDTO);
                 SetUpdatedBy(manualPpoReceiptEntity);
                 _manualPpoReceiptRepository.Update(manualPpoReceiptEntity);
@@ -187,7 +199,7 @@ namespace CTS_BE.BAL.Services.Pension
                     manualPpoReceiptDTOResponse.FillDataSource(manualPpoReceiptEntity, "Update Failed!");
                     return manualPpoReceiptDTOResponse;
                 }
-                
+
             }
             catch (DbUpdateException ex){
                 ManualPpoReceiptResponseDTO errorResponse = _mapper.Map<ManualPpoReceiptResponseDTO>(null);

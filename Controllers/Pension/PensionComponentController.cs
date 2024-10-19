@@ -65,6 +65,7 @@ namespace CTS_BE.Controllers.Pension
         [HttpPatch("component")]
         [Tags("Pension: Component")]
         [OpenApi]
+        [Obsolete("Use GetComponents instead")]
         public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<PensionBreakupResponseDTO>>>> GetAllComponents(
             DynamicListQueryParameters dynamicListQueryParameters
         )
@@ -119,6 +120,59 @@ namespace CTS_BE.Controllers.Pension
                                 GetTreasuryCode(),
                                 dynamicListQueryParameters),
                             DataCount = _pensionBreakupService.DataCount()
+                        },
+                    Message = $"All Bill Breakups Received Successfully!"
+
+                };
+            }
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
+            }
+            finally {
+                FillErrorMesageFromDataSource(response);
+            }
+            return response;
+        }
+
+        [HttpGet("component")]
+        [Tags("Pension: Component")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<TableResponseDTO<PensionBreakupResponseDTO>>> GetComponents()
+        {
+            JsonAPIResponse<TableResponseDTO<PensionBreakupResponseDTO>> response = new();
+            try {
+
+                response = new() {
+
+                    ApiResponseStatus = Enum.APIResponseStatus.Success,
+                    Result = new()
+                        {
+                            Headers = new () {
+
+                                new() {
+                                    Name = "Bill Component ID",
+                                    FieldName = "id"
+
+                                },
+                                new() {
+                                    Name = "Component Name",
+                                    FieldName = "componentName"
+                                },
+                                new() {
+                                    Name = "Component Type",
+                                    FieldName = "componentType"
+                                },
+                                new() {
+                                    Name = "Relief Allowed",
+                                    FieldName = "reliefFlag"
+                                }
+
+                            },
+                            Data = await _pensionBreakupService.GetBreakups<PensionBreakupResponseDTO>(
+                                GetCurrentFyYear(),
+                                GetTreasuryCode()
+                            ),
                         },
                     Message = $"All Bill Breakups Received Successfully!"
 

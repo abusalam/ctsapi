@@ -58,12 +58,61 @@ namespace CTS_BE.Controllers.Pension
             return response;
         }
 
+        [HttpGet("primary-category")]
+        [Tags("Pension: Category Master")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<TableResponseDTO<PensionPrimaryCategoryResponseDTO>>> GetPrimaryCategories()
+        {
+            JsonAPIResponse<TableResponseDTO<PensionPrimaryCategoryResponseDTO>> response = new();
+            try {
+
+                response = new() {
+
+                    ApiResponseStatus = Enum.APIResponseStatus.Success,
+                    Result = new()
+                        {
+                            Headers = new () {
+
+                                new() {
+                                    Name = "Primary Category ID",
+                                    FieldName = "id"
+                                },
+                                new() {
+                                    Name = "Head of Account",
+                                    FieldName = "hoaId"
+                                },
+                                new() {
+                                    Name = "Primary Category Name",
+                                    FieldName = "primaryCategoryName"
+                                }
+
+                            },
+                            Data = await _pensionCategoryService.GetPrimaryCategories<PensionPrimaryCategoryResponseDTO>(
+                                GetCurrentFyYear(),
+                                GetTreasuryCode()
+                            ),
+                        },
+                    Message = $"All Primary Category Details Received Successfully!"
+
+                };
+            }
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
+            }
+            finally {
+                FillErrorMesageFromDataSource(response);
+            }
+            return response;
+        }
+
         [HttpPatch("primary-category")]
         [Tags("Pension: Category Master")]
         [OpenApi]
+        [Obsolete("Use GetPrimaryCategories instead")]
         public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<PensionPrimaryCategoryResponseDTO>>>> GetAllPrimaryCategories(
-                DynamicListQueryParameters dynamicListQueryParameters
-            )
+            DynamicListQueryParameters dynamicListQueryParameters
+        )
         {
             JsonAPIResponse<DynamicListResult<IEnumerable<PensionPrimaryCategoryResponseDTO>>> response = new();
             try {
@@ -158,9 +207,10 @@ namespace CTS_BE.Controllers.Pension
         [HttpPatch("sub-category")]
         [Tags("Pension: Category Master")]
         [OpenApi]
+        [Obsolete("Use GetSubCategories instead")]
         public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<PensionSubCategoryResponseDTO>>>> GetAllSubCategories(
-                DynamicListQueryParameters dynamicListQueryParameters
-            )
+            DynamicListQueryParameters dynamicListQueryParameters
+        )
         {
             JsonAPIResponse<DynamicListResult<IEnumerable<PensionSubCategoryResponseDTO>>> response = new();
             try {
@@ -195,6 +245,50 @@ namespace CTS_BE.Controllers.Pension
                                 GetTreasuryCode(),
                                 dynamicListQueryParameters),
                             DataCount = _pensionCategoryService.DataCount()
+                        },
+                    Message = $"All Sub Category Details Received Successfully!"
+
+                };
+            }
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
+            }
+            finally {
+                FillErrorMesageFromDataSource(response);
+            }
+            return response;
+        }
+
+        [HttpGet("sub-category")]
+        [Tags("Pension: Category Master")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<TableResponseDTO<PensionSubCategoryResponseDTO>>> GetSubCategories()
+        {
+            JsonAPIResponse<TableResponseDTO<PensionSubCategoryResponseDTO>> response = new();
+            try {
+
+                response = new() {
+
+                    ApiResponseStatus = Enum.APIResponseStatus.Success,
+                    Result = new()
+                        {
+                            Headers = new () {
+
+                                new() {
+                                    Name = "Sub Category ID",
+                                    FieldName = "id"
+                                },
+                                new() {
+                                    Name = "Sub Category Name",
+                                    FieldName = "subCategoryName"
+                                }
+
+                            },
+                            Data = await _pensionCategoryService.GetSubCategories<PensionSubCategoryResponseDTO>(
+                                GetCurrentFyYear(),
+                                GetTreasuryCode()
+                            )
                         },
                     Message = $"All Sub Category Details Received Successfully!"
 
@@ -281,9 +375,10 @@ namespace CTS_BE.Controllers.Pension
         [HttpPatch("category")]
         [Tags("Pension: Category Master")]
         [OpenApi]
+        [Obsolete("Use GetCategories instead")]
         public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<PensionCategoryListDTO>>>> GetAllCategories(
-                DynamicListQueryParameters dynamicListQueryParameters
-            )
+            DynamicListQueryParameters dynamicListQueryParameters
+        )
         {
             JsonAPIResponse<DynamicListResult<IEnumerable<PensionCategoryListDTO>>> response = new();
             try {
@@ -335,6 +430,59 @@ namespace CTS_BE.Controllers.Pension
                                 GetTreasuryCode(),
                                 dynamicListQueryParameters),
                             DataCount = _pensionCategoryService.DataCount()
+                        },
+                    Message = $"All PPO Details Received Successfully!"
+
+                };
+            }
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
+            }
+            finally {
+                FillErrorMesageFromDataSource(response);
+            }
+            return response;
+        }
+
+        [HttpGet("category")]
+        [Tags("Pension: Category Master")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<TableResponseDTO<PensionCategoryListDTO>>> GetCategories()
+        {
+            JsonAPIResponse<TableResponseDTO<PensionCategoryListDTO>> response = new();
+            try {
+
+                response = new() {
+
+                    ApiResponseStatus = Enum.APIResponseStatus.Success,
+                    Result = new()
+                        {
+                            Headers = new () {
+
+                                new() {
+                                    Name = "Category ID",
+                                    FieldName = "id"
+
+                                },
+                                new() {
+                                    Name = "Primary Category ID",
+                                    FieldName = "primaryCategoryId"
+                                },
+                                new() {
+                                    Name = "Sub Category ID",
+                                    FieldName = "subCategoryId"
+                                },
+                                new() {
+                                    Name = "Category Name",
+                                    FieldName = "categoryName"
+                                }
+
+                            },
+                            Data = await _pensionCategoryService.GetPensionCategories<PensionCategoryListDTO>(
+                                GetCurrentFyYear(),
+                                GetTreasuryCode()
+                            )
                         },
                     Message = $"All PPO Details Received Successfully!"
 

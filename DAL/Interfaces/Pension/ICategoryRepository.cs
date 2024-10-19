@@ -4,6 +4,7 @@ namespace CTS_BE.DAL.Interfaces.Pension
 {
     public interface ICategoryRepository : IRepository<Category>
     {
+        public Task<List<T>> GetPensionCategoriesAsync<T>();
         public Task<T> CreateCategory<T>(
             short finYear,
             string treasuryCode,

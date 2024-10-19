@@ -16,7 +16,11 @@ namespace CTS_BE.DAL.Interfaces.Pension
             string treasuryCode,
             Expression<Func<PpoReceipt, ListAllPpoReceiptsResponseDTO>> selectExpression
         );
-
+        public Task<List<T>> GetPpoReceiptsAsync<T>(
+            short financialYear,
+            string treasuryCode,
+            Expression<Func<PpoReceipt, T>> selectExpression
+        );
         public Task<T> CreatePpoReceiptWithTreasuryReceiptNo<T>(
             short finYear,
             string treasuryCode,

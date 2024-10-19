@@ -8,6 +8,6 @@ namespace CTS_BE.DAL.Interfaces.Pension
 {
     public interface ISubCategoryRepository : IRepository<SubCategory>
     {
-        
+        public Task<List<T>> GetSubCategoriesAsync<T>();
     }
 }

@@ -129,6 +129,7 @@ namespace CTS_BE.Controllers.Pension
         [HttpPatch("details")]
         [Tags("Pension: PPO Details")]
         [OpenApi]
+        [Obsolete("Use GetPensioners instead")]
         public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<PensionerListItemDTO>>>> GetAllPensioners(
             DynamicListQueryParameters dynamicListQueryParameters
         )
@@ -142,7 +143,7 @@ namespace CTS_BE.Controllers.Pension
                     Result = new()
                         {
                             Headers = new () {
-                            
+
                                 new() {
                                     Name = "PPO ID",
                                     DataType = "text",
@@ -214,6 +215,67 @@ namespace CTS_BE.Controllers.Pension
             return response;
         }
 
+        [HttpGet("details")]
+        [Tags("Pension: PPO Details")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<TableResponseDTO<PensionerListItemDTO>>> GetPensioners()
+        {
+            JsonAPIResponse<TableResponseDTO<PensionerListItemDTO>> response = new();
+            try {
+
+                response = new() {
+
+                    ApiResponseStatus = Enum.APIResponseStatus.Success,
+                    Result = new()
+                        {
+                            Headers = new () {
+
+                                new() {
+                                    Name = "PPO ID",
+                                    FieldName = "ppoId"
+
+                                },
+                                new() {
+                                    Name = "Name of Pensioner",
+                                    FieldName = "pensionerName"
+                                },
+                                new() {
+                                    Name = "Mobile",
+                                    FieldName = "mobileNumber"
+                                },
+                                new() {
+                                    Name = "Date of Birth",
+                                    FieldName = "dateOfBirth"
+                                },
+                                new() {
+                                    Name = "Date of Retirement",
+                                    FieldName = "dateOfRetirement"
+                                },
+                                new() {
+                                    Name = "PPO No",
+                                    FieldName = "ppoNo"
+                                }
+
+                            },
+                            Data = await _pensionerDetailsService.GetPensioners<PensionerListItemDTO>(
+                                GetCurrentFyYear(),
+                                GetTreasuryCode()
+                            )
+                        },
+                    Message = $"All PPO Details Received Successfully!"
+
+                };
+            }
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
+            }
+            finally {
+                FillErrorMesageFromDataSource(response);
+            }
+            return response;
+        }
+
         [HttpGet("details/not-approved")]
         [Tags("Pension: PPO Details")]
         [OpenApi]
@@ -228,7 +290,7 @@ namespace CTS_BE.Controllers.Pension
                     Result = new()
                         {
                             Headers = new () {
-                            
+
                                 new() {
                                     Name = "PPO ID",
                                     DataType = "text",
@@ -299,6 +361,6 @@ namespace CTS_BE.Controllers.Pension
             }
             return response;
         }
-    
+
     }
 }

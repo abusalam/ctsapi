@@ -19,6 +19,15 @@ namespace CTS_BE.DAL.Repositories.Pension
             _context = context;
             _mapper = mapper;
         }
+        public async Task<List<T>> GetPensionCategoriesAsync<T>()
+        {
+            return await _context.Categories
+                .Where(
+                    entity => entity.ActiveFlag
+                )
+                .Select(entity => _mapper.Map<T>(entity))
+                .ToListAsync();
+        }
 
         public async Task<Category?> GetCategoryById(
             long categoryId,
@@ -100,10 +109,17 @@ namespace CTS_BE.DAL.Repositories.Pension
                 }
                 response = _mapper.Map<T>(categoryEntity);
             }
+            catch (DbUpdateException ex) {
+                response.FillDataSource(
+                    categoryEntity,
+                    $"DbException: {ex.InnerException?.Message ?? ex.Message}"
+                );
+                return response;
+            }
             catch (Exception ex) {
                 response.FillDataSource(
                     categoryEntity,
-                    ex.InnerException?.Message ?? ex.Message
+                    $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
                 );
                 return response;
             }

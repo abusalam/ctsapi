@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 using CTS_BE.DAL.Entities.Pension;
 using CTS_BE.DTOs;
 
@@ -16,13 +12,18 @@ namespace CTS_BE.DAL.Interfaces.Pension
             Expression<Func<Pensioner, PensionerResponseDTO>> selectExpression
         );
 
+        public Task<List<T>> GetPensionerListAsync<T>(
+            short financialYear,
+            string treasuryCode,
+            Expression<Func<Pensioner, T>> selectExpression
+        );
         public Task<T?> GetPensionerDetailsByPpoIdAsync<T>(
             int ppoId,
             short financialYear,
             string treasuryCode,
             Expression<Func<Pensioner, T>> selectExpression
         );
-        
+
         public Task<IEnumerable<PensionerListItemDTO>> GetAllNotApprovedPensionerDetailsAsync(
             short financialYear,
             string treasuryCode,

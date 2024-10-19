@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 using CTS_BE.DAL.Entities.Pension;
 using CTS_BE.DAL.Interfaces.Pension;
 using CTS_BE.DTOs;
@@ -36,6 +32,23 @@ namespace CTS_BE.DAL.Repositories.Pension
                 .ToListAsync();
 
             return pensioners;
+        }
+
+        public async Task<List<T>> GetPensionerListAsync<T>(
+            short financialYear,
+            string treasuryCode,
+            Expression<Func<Pensioner, T>> selectExpression
+        )
+        {
+            return await _context.Pensioners
+                .Where(
+                    entity => entity.ActiveFlag
+                    && entity.TreasuryCode == treasuryCode
+                )
+                .Include(entity => entity.Category)
+                .Include(entity => entity.Receipt)
+                .Select(selectExpression)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<PensionerListItemDTO>> GetAllNotApprovedPensionerDetailsAsync(

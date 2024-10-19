@@ -17,16 +17,14 @@
 
 ### All List APIs
 # @name AllPatchAPIs
-GET {{PensionAPI_HostAddress}}/api/v1/factory/PpoSanctionDetailsEntryDTO
+# GET {{PensionAPI_HostAddress}}/api/v1/factory/PpoSanctionDetailsEntryDTO
 # GET {{PensionAPI_HostAddress}}/api/v1/manual-ppo/receipts
-# PATCH {{PensionAPI_HostAddress}}/api/v1/pension/primary-category
-# PATCH {{PensionAPI_HostAddress}}/api/v1/pension/sub-category
-# PATCH {{PensionAPI_HostAddress}}/api/v1/pension/category
-# PATCH {{PensionAPI_HostAddress}}/api/v1/pension/component
-# PATCH {{PensionAPI_HostAddress}}/api/v1/pension/component-rate
-# PATCH {{PensionAPI_HostAddress}}/api/v1/ppo/details
-# PATCH {{PensionAPI_HostAddress}}/api/v1/ppo/bank-accounts
-# POST {{PensionAPI_HostAddress}}/api/v1/echo
+# GET {{PensionAPI_HostAddress}}/api/v1/pension/primary-category
+# GET {{PensionAPI_HostAddress}}/api/v1/pension/sub-category
+# GET {{PensionAPI_HostAddress}}/api/v1/pension/category
+# GET {{PensionAPI_HostAddress}}/api/v1/pension/component
+# GET {{PensionAPI_HostAddress}}/api/v1/ppo/details
+POST {{PensionAPI_HostAddress}}/api/v1/echo
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
