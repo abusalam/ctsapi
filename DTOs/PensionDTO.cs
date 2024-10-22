@@ -232,6 +232,7 @@ namespace CTS_BE.DTOs
         public PensionCategoryResponseDTO? Category { get; set; }
         public ManualPpoReceiptResponseDTO? Receipt { get; set; }
         public BranchResponseDTO? Branch { get; set; }
+        public List<PpoSanctionDetailsResponseDTO>? PpoSanctionDetails { get; set; }
         public override long BankId => Branch != null ? Branch.Bank != null ? Branch.Bank.Id : 0 : 0;
     }
 
@@ -739,6 +740,6 @@ namespace CTS_BE.DTOs
 
     public partial class PpoSanctionDetailsResponseDTO : PpoSanctionDetailsEntryDTO {
         public long Id { get; set; }
-        public PensionerResponseDTO? Pensioner { get; set; }
+        // public PensionerResponseDTO? Pensioner { get; set; }
     }
 }
