@@ -41,17 +41,23 @@ public partial class UploadedFile
     public int? UpdatedBy { get; set; }
 
     [Column("active_flag")]
-    public bool? ActiveFlag { get; set; }
+    public bool ActiveFlag { get; set; }
+
+    [InverseProperty("EppoFile")]
+    public virtual ICollection<EppoReceipt> EppoReceiptEppoFiles { get; set; } = new List<EppoReceipt>();
+
+    [InverseProperty("PhotoFile")]
+    public virtual ICollection<EppoReceipt> EppoReceiptPhotoFiles { get; set; } = new List<EppoReceipt>();
+
+    [InverseProperty("SignatureFile")]
+    public virtual ICollection<EppoReceipt> EppoReceiptSignatureFiles { get; set; } = new List<EppoReceipt>();
+
+    [InverseProperty("EppoFile")]
+    public virtual ICollection<EppoRevision> EppoRevisions { get; set; } = new List<EppoRevision>();
 
     [InverseProperty("PhotoFile")]
     public virtual ICollection<Nominee> NomineePhotoFiles { get; set; } = new List<Nominee>();
 
     [InverseProperty("SignatureFile")]
     public virtual ICollection<Nominee> NomineeSignatureFiles { get; set; } = new List<Nominee>();
-
-    [InverseProperty("PhotoFile")]
-    public virtual ICollection<Pensioner> PensionerPhotoFiles { get; set; } = new List<Pensioner>();
-
-    [InverseProperty("SignatureFile")]
-    public virtual ICollection<Pensioner> PensionerSignatureFiles { get; set; } = new List<Pensioner>();
 }

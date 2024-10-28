@@ -138,12 +138,6 @@ public partial class Pensioner
     [MaxLength(1)]
     public char Religion { get; set; }
 
-    [Column("photo_file_id")]
-    public long? PhotoFileId { get; set; }
-
-    [Column("signature_file_id")]
-    public long? SignatureFileId { get; set; }
-
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime? CreatedAt { get; set; }
 
@@ -173,10 +167,6 @@ public partial class Pensioner
     [InverseProperty("Pensioner")]
     public virtual ICollection<Nominee> Nominees { get; set; } = new List<Nominee>();
 
-    [ForeignKey("PhotoFileId")]
-    [InverseProperty("PensionerPhotoFiles")]
-    public virtual UploadedFile? PhotoFile { get; set; }
-
     [InverseProperty("Pensioner")]
     public virtual ICollection<PpoBill> PpoBills { get; set; } = new List<PpoBill>();
 
@@ -192,8 +182,4 @@ public partial class Pensioner
     [ForeignKey("ReceiptId")]
     [InverseProperty("Pensioners")]
     public virtual PpoReceipt Receipt { get; set; } = null!;
-
-    [ForeignKey("SignatureFileId")]
-    [InverseProperty("PensionerSignatureFiles")]
-    public virtual UploadedFile? SignatureFile { get; set; }
 }

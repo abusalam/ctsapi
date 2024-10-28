@@ -10,7 +10,6 @@ namespace CTS_BE.DAL.Entities.Pension;
 /// PensionModuleSchema v1
 /// </summary>
 [Table("nominees", Schema = "cts_pension")]
-[Index("PpoId", "TreasuryCode", Name = "nominees_ppo_id_treasury_code_key", IsUnique = true)]
 public partial class Nominee
 {
     [Key]
@@ -84,7 +83,7 @@ public partial class Nominee
     public int? UpdatedBy { get; set; }
 
     [Column("active_flag")]
-    public bool? ActiveFlag { get; set; }
+    public bool ActiveFlag { get; set; }
 
     [ForeignKey("PensionerId")]
     [InverseProperty("Nominees")]

@@ -10,7 +10,6 @@ namespace CTS_BE.DAL.Entities.Pension;
 /// PensionModuleSchema v1
 /// </summary>
 [Table("life_certificates", Schema = "cts_pension")]
-[Index("PpoId", "TreasuryCode", Name = "life_certificates_ppo_id_treasury_code_key", IsUnique = true)]
 public partial class LifeCertificate
 {
     [Key]
@@ -66,7 +65,7 @@ public partial class LifeCertificate
     public int? UpdatedBy { get; set; }
 
     [Column("active_flag")]
-    public bool? ActiveFlag { get; set; }
+    public bool ActiveFlag { get; set; }
 
     [ForeignKey("PensionerId")]
     [InverseProperty("LifeCertificates")]

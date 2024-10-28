@@ -32,6 +32,10 @@ public partial class PensionDbContext : DbContext
 
     public virtual DbSet<DmlHistory> DmlHistories { get; set; }
 
+    public virtual DbSet<EppoReceipt> EppoReceipts { get; set; }
+
+    public virtual DbSet<EppoRevision> EppoRevisions { get; set; }
+
     public virtual DbSet<LifeCertificate> LifeCertificates { get; set; }
 
     public virtual DbSet<Nominee> Nominees { get; set; }
@@ -172,13 +176,38 @@ public partial class PensionDbContext : DbContext
             entity.Property(e => e.UpdatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
         });
 
+        modelBuilder.Entity<EppoReceipt>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("eppo_receipts_pkey");
+
+            entity.ToTable("eppo_receipts", "cts_pension", tb => tb.HasComment("PensionModuleSchema v1"));
+
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            entity.HasOne(d => d.EppoFile).WithMany(p => p.EppoReceiptEppoFiles).HasConstraintName("eppo_receipts_eppo_file_id_fkey");
+
+            entity.HasOne(d => d.PhotoFile).WithMany(p => p.EppoReceiptPhotoFiles).HasConstraintName("eppo_receipts_photo_file_id_fkey");
+
+            entity.HasOne(d => d.SignatureFile).WithMany(p => p.EppoReceiptSignatureFiles).HasConstraintName("eppo_receipts_signature_file_id_fkey");
+        });
+
+        modelBuilder.Entity<EppoRevision>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("eppo_revisions_pkey");
+
+            entity.ToTable("eppo_revisions", "cts_pension", tb => tb.HasComment("PensionModuleSchema v1"));
+
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            entity.HasOne(d => d.EppoFile).WithMany(p => p.EppoRevisions).HasConstraintName("eppo_revisions_eppo_file_id_fkey");
+        });
+
         modelBuilder.Entity<LifeCertificate>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("life_certificates_pkey");
 
             entity.ToTable("life_certificates", "cts_pension", tb => tb.HasComment("PensionModuleSchema v1"));
 
-            entity.Property(e => e.ActiveFlag).HasDefaultValueSql("true");
             entity.Property(e => e.CertificateFlag).HasDefaultValueSql("false");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
 
@@ -193,7 +222,6 @@ public partial class PensionDbContext : DbContext
 
             entity.ToTable("nominees", "cts_pension", tb => tb.HasComment("PensionModuleSchema v1"));
 
-            entity.Property(e => e.ActiveFlag).HasDefaultValueSql("true");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
 
             entity.HasOne(d => d.Pensioner).WithMany(p => p.Nominees)
@@ -225,13 +253,9 @@ public partial class PensionDbContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("pensioners_category_id_fkey");
 
-            entity.HasOne(d => d.PhotoFile).WithMany(p => p.PensionerPhotoFiles).HasConstraintName("pensioners_photo_file_id_fkey");
-
             entity.HasOne(d => d.Receipt).WithMany(p => p.Pensioners)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("pensioners_receipt_id_fkey");
-
-            entity.HasOne(d => d.SignatureFile).WithMany(p => p.PensionerSignatureFiles).HasConstraintName("pensioners_signature_file_id_fkey");
         });
 
         modelBuilder.Entity<PpoBill>(entity =>
@@ -300,7 +324,6 @@ public partial class PensionDbContext : DbContext
 
             entity.ToTable("ppo_id_sequences", "cts_pension", tb => tb.HasComment("PensionModuleSchema v1"));
 
-            entity.Property(e => e.ActiveFlag).HasDefaultValueSql("true");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
         });
 
@@ -319,7 +342,6 @@ public partial class PensionDbContext : DbContext
 
             entity.ToTable("ppo_receipt_sequences", "cts_pension", tb => tb.HasComment("PensionModuleSchema v1"));
 
-            entity.Property(e => e.ActiveFlag).HasDefaultValueSql("true");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
         });
 
@@ -374,7 +396,6 @@ public partial class PensionDbContext : DbContext
 
             entity.ToTable("uploaded_files", "cts_pension", tb => tb.HasComment("PensionModuleSchema v1"));
 
-            entity.Property(e => e.ActiveFlag).HasDefaultValueSql("true");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
         });
 
