@@ -17,4 +17,7 @@ public partial class PpoStatusFlag
     [Column("status_flag")]
     public PensionStatusFlag StatusFlag { get; set; }
 
+    [Column("reason_flag")]
+    public PensionStatusReassonFlag ReasonFlag { get; set; }
+
 }

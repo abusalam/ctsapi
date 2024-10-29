@@ -3,11 +3,19 @@ namespace CTS_BE.PensionEnum
     // [Flags]
     public enum PensionStatusFlag
     {
-        PpoSuspended,
-        PpoRunning,
         PpoApproved,
-        PpoBankAccountApproved,
         FirstPensionBillApproved,
+        PpoRunning,
+        PpoSuspended,
+        PpoClosed,
+    }
+
+    public enum PensionStatusReassonFlag
+    {
+        Others,
+        LifeCertificateSubmitted,
+        LifeCertificateNotSubmitted,
+        Death,
     }
 
     /// <summary>

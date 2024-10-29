@@ -32,8 +32,18 @@ public partial class PpoStatusFlag
     // [Column("status_flag")]
     // public int StatusFlag { get; set; }
 
+    // [Column("reason_flag")]
+    // public int? ReasonFlag { get; set; }
+
     [Column("status_wef")]
     public DateOnly StatusWef { get; set; }
+
+    [Column("status_upto")]
+    public DateOnly? StatusUpto { get; set; }
+
+    [Column("reason_remark")]
+    [StringLength(500)]
+    public string? ReasonRemark { get; set; }
 
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime? CreatedAt { get; set; }

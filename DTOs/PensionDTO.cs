@@ -19,10 +19,15 @@ namespace CTS_BE.DTOs
         [EnumDataType(typeof(PensionStatusFlag))]
         public PensionStatusFlag StatusFlag {get; set; }
         // public int StatusFlag {get; set; }
+        public PensionStatusReassonFlag ReasonFlag { get; set; }
 
         [Required]
         [DataType(DataType.Date)]
         public DateOnly StatusWef { get; set; }
+
+        [DataType(DataType.Date)]
+        public DateOnly? StatusUpto { get; set; }
+        public string? ReasonRemark { get; set; }
     }
 
     public class PensionStatusEntryDTO : PensionStatusDTO {
