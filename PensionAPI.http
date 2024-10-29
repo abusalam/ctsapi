@@ -701,3 +701,110 @@ Content-Type: application/json
 GET {{PensionAPI_HostAddress}}/api/v1/ppo/first-bill-print/ppos
 Accept: application/json
 Authorization: Bearer {{accessToken}}
+
+
+
+
+
+
+
+### Register Nominee Details
+# @name RegisterNomineeDetails
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+POST {{PensionAPI_HostAddress}}/api/v1/ppo/nominee
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "ppoId": {{GeneratedPpoId}},
+  "serialNo": 1,
+  "nomineeName": "Eileen Bartoletti",
+  "relation": "W",
+  "dateOfBirth": "1980-08-21",
+  "dateOfDeath": null,
+  "nomineeType": "0",
+  "nomineePriority": 1,
+  "nomineeShare": 40,
+  "familyPension": true,
+  "refused": false,
+  "nomineeActive": true,
+  "handicapped": false,
+  "identificationMark": "None",
+  "bankAcNo": "0204102717963203",
+  "branchId": 3
+}
+
+
+
+
+
+
+
+
+
+### Capture Nominee ID
+@NomineeId = {{RegisterNomineeDetails.response.body.result.id}}
+
+
+
+
+
+
+
+
+
+### Update Nominee Details
+# @name UpdateNomineeDetails
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+PUT {{PensionAPI_HostAddress}}/api/v1/ppo/nominee/{{NomineeId}}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "ppoId": {{GeneratedPpoId}},
+  "serialNo": 1,
+  "nomineeName": "Eileen Bartoletti",
+  "relation": "W",
+  "dateOfBirth": "1980-08-21",
+  "dateOfDeath": null,
+  "nomineeType": "0",
+  "nomineePriority": 1,
+  "nomineeShare": 50,
+  "familyPension": true,
+  "refused": false,
+  "nomineeActive": true,
+  "handicapped": false,
+  "identificationMark": "None",
+  "bankAcNo": "0204102717963203",
+  "branchId": 3
+}
+
+
+
+
+
+
+
+
+
+### Get Nominee Details By Nominee Id
+# @name GetNomineeDetailsById
+GET {{PensionAPI_HostAddress}}/api/v1/ppo/nominee/{{NomineeId}}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+
+
+
+
+
+
+
+
+### Get Nominees By PPO Id
+# @name GetNomineesByPpoId
+GET {{PensionAPI_HostAddress}}/api/v1/ppo/{{GeneratedPpoId}}/nominees
+Accept: application/json
+Authorization: Bearer {{accessToken}}

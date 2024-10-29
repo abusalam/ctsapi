@@ -15,6 +15,7 @@ namespace CTS_BE.Controllers.Pension
         PensionPrimaryCategoryEntryDTO,
         PensionSubCategoryEntryDTO,
         PensionBreakupEntryDTO,
+        NomineeEntryDTO,
     }
 
     [Route("api/v1/factory")]
@@ -33,7 +34,8 @@ namespace CTS_BE.Controllers.Pension
                 {FactoryEntityEnum.PpoSanctionDetailsEntryDTO, new PpoSanctionDetailsFactory().Create()},
                 {FactoryEntityEnum.PensionPrimaryCategoryEntryDTO, new PrimaryCategoryFactory().Create()},
                 {FactoryEntityEnum.PensionSubCategoryEntryDTO, new SubCategoryFactory().Create()},
-                {FactoryEntityEnum.PensionBreakupEntryDTO, new ComponentFactory().Create()}
+                {FactoryEntityEnum.PensionBreakupEntryDTO, new ComponentFactory().Create()},
+                {FactoryEntityEnum.NomineeEntryDTO, new NomineeFactory().Create()},
             };
         }
 
