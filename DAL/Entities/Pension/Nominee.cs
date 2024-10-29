@@ -23,6 +23,18 @@ public partial class Nominee
     [StringLength(3)]
     public string TreasuryCode { get; set; } = null!;
 
+    [Column("family_pension")]
+    public bool? FamilyPension { get; set; }
+
+    [Column("refused")]
+    public bool? Refused { get; set; }
+
+    [Column("nominee_active")]
+    public bool? NomineeActive { get; set; }
+
+    [Column("serial_no")]
+    public int SerialNo { get; set; }
+
     [Column("pensioner_id")]
     public long PensionerId { get; set; }
 
@@ -33,42 +45,39 @@ public partial class Nominee
     [StringLength(100)]
     public string NomineeName { get; set; } = null!;
 
+    [Column("relation")]
+    [MaxLength(1)]
+    public char Relation { get; set; }
+
     [Column("date_of_birth")]
     public DateOnly DateOfBirth { get; set; }
 
-    [Column("gender")]
+    [Column("date_of_death")]
+    public DateOnly? DateOfDeath { get; set; }
+
+    [Column("nominee_type")]
     [MaxLength(1)]
-    public char? Gender { get; set; }
+    public char? NomineeType { get; set; }
 
-    [Column("mobile_number")]
-    [StringLength(10)]
-    public string? MobileNumber { get; set; }
+    [Column("nominee_priority")]
+    public int? NomineePriority { get; set; }
 
-    [Column("email_id")]
-    [StringLength(100)]
-    public string? EmailId { get; set; }
+    [Column("nominee_share")]
+    public int? NomineeShare { get; set; }
 
-    [Column("nominee_address")]
-    [StringLength(500)]
-    public string? NomineeAddress { get; set; }
+    [Column("bank_ac_no")]
+    [StringLength(30)]
+    public string? BankAcNo { get; set; }
+
+    [Column("branch_id")]
+    public long? BranchId { get; set; }
 
     [Column("identification_mark")]
     [StringLength(100)]
     public string? IdentificationMark { get; set; }
 
-    [Column("pan_no")]
-    [StringLength(10)]
-    public string? PanNo { get; set; }
-
-    [Column("aadhaar_no")]
-    [StringLength(12)]
-    public string? AadhaarNo { get; set; }
-
-    [Column("photo_file_id")]
-    public long? PhotoFileId { get; set; }
-
-    [Column("signature_file_id")]
-    public long? SignatureFileId { get; set; }
+    [Column("handicapped")]
+    public bool? Handicapped { get; set; }
 
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime? CreatedAt { get; set; }
@@ -85,15 +94,11 @@ public partial class Nominee
     [Column("active_flag")]
     public bool ActiveFlag { get; set; }
 
+    [ForeignKey("BranchId")]
+    [InverseProperty("Nominees")]
+    public virtual Branch? Branch { get; set; }
+
     [ForeignKey("PensionerId")]
     [InverseProperty("Nominees")]
     public virtual Pensioner Pensioner { get; set; } = null!;
-
-    [ForeignKey("PhotoFileId")]
-    [InverseProperty("NomineePhotoFiles")]
-    public virtual UploadedFile? PhotoFile { get; set; }
-
-    [ForeignKey("SignatureFileId")]
-    [InverseProperty("NomineeSignatureFiles")]
-    public virtual UploadedFile? SignatureFile { get; set; }
 }

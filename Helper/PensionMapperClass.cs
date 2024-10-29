@@ -55,6 +55,9 @@ namespace CTS_BE.Helper
             CreateMap<PpoSanctionDetail, PpoSanctionDetailsResponseDTO>().ReverseMap();
             CreateMap<PpoSanctionDetail, PpoSanctionDetailsEntryDTO>().ReverseMap();
             CreateMap<PpoSanctionDetailsEntryDTO, PpoSanctionDetailsResponseDTO>().ReverseMap();
+            CreateMap<Nominee, NomineeResponseDTO>().ReverseMap();
+            CreateMap<Nominee, NomineeEntryDTO>().ReverseMap();
+            CreateMap<NomineeEntryDTO, NomineeResponseDTO>().ReverseMap();
         }
     }
 }

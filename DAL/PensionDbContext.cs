@@ -224,13 +224,11 @@ public partial class PensionDbContext : DbContext
 
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
 
+            entity.HasOne(d => d.Branch).WithMany(p => p.Nominees).HasConstraintName("nominees_branch_id_fkey");
+
             entity.HasOne(d => d.Pensioner).WithMany(p => p.Nominees)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("nominees_pensioner_id_fkey");
-
-            entity.HasOne(d => d.PhotoFile).WithMany(p => p.NomineePhotoFiles).HasConstraintName("nominees_photo_file_id_fkey");
-
-            entity.HasOne(d => d.SignatureFile).WithMany(p => p.NomineeSignatureFiles).HasConstraintName("nominees_signature_file_id_fkey");
         });
 
         modelBuilder.Entity<Pensioner>(entity =>

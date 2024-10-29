@@ -62,5 +62,8 @@ public partial class Branch
     public virtual ICollection<Bill> Bills { get; set; } = new List<Bill>();
 
     [InverseProperty("Branch")]
+    public virtual ICollection<Nominee> Nominees { get; set; } = new List<Nominee>();
+
+    [InverseProperty("Branch")]
     public virtual ICollection<Pensioner> Pensioners { get; set; } = new List<Pensioner>();
 }

@@ -747,4 +747,46 @@ namespace CTS_BE.DTOs
         public long Id { get; set; }
         // public PensionerResponseDTO? Pensioner { get; set; }
     }
+
+    public partial class NomineeEntryDTO : BaseDTO {
+        [Required]
+        public int PpoId { get; set; }
+
+        [Required]
+        public int SerialNo { get; set; }
+
+        [Required]
+        public string NomineeName { get; set; } = null!;
+
+        [Required]
+        [RegularExpression(@"[FMHWSDBTEIACO]", ErrorMessage = "{0} must be one of the following (F - Father; M - Mother; H - Husband; W - Wife; S - Son; D - Daughter; B - Brother; T - Sister; E - Self; I - Brother(Minor); A - Sister(Unmarried); C - Sister(Widowed); O - Other;)")]
+        public char Relation { get; set; }
+
+        [Required]
+        public DateOnly DateOfBirth { get; set; }
+        public DateOnly? DateOfDeath { get; set; }
+        public char? NomineeType { get; set; }
+        public int? NomineePriority { get; set; }
+        public int? NomineeShare { get; set; }
+        public bool? FamilyPension { get; set; }
+        public bool? Refused { get; set; }
+        public bool? NomineeActive { get; set; }
+        public bool Handicapped { get; set; }
+        public string? IdentificationMark { get; set; }
+        public string? BankAcNo { get; set; }
+        public virtual long BankId { get; set; }
+        public long? BranchId { get; set; }
+    }
+
+    public partial class NomineeResponseDTO : NomineeEntryDTO {
+        public long Id { get; set; }
+        public BranchResponseDTO? Branch { get; set; }
+        public override long BankId => Branch != null ? Branch.BankId : 0;
+    }
+
+    public partial class NomineeListResponseDTO : BaseDTO {
+        public int NomineeCount { get { return Nominees?.Count ?? 0;} }
+        public List<NomineeResponseDTO>? Nominees { get; set; }
+    }
+
 }
