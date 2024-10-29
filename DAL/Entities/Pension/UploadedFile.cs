@@ -25,8 +25,11 @@ public partial class UploadedFile
     public string FileName { get; set; } = null!;
 
     [Column("file_mime_type")]
-    [StringLength(500)]
+    [StringLength(100)]
     public string FileMimeType { get; set; } = null!;
+
+    [Column("contents")]
+    public byte[] Contents { get; set; } = null!;
 
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime? CreatedAt { get; set; }

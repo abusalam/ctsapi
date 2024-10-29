@@ -15,26 +15,26 @@ namespace CTS_BE.DAL.Interfaces
 
         Task<ICollection<TResult>> GetSelectedColumnAsync<TResult>(Expression<Func<T, TResult>> selectExpression);
         Task<ICollection<TResult>> GetSelectedColumnByConditionAsync<TResult>(Expression<Func<T, bool>> filterExpression, Expression<Func<T, TResult>> selectExpression);
-        Task<ICollection<TResult>> GetSelectedColumnByConditionAsync<TResult>(
-            Expression<Func<T, bool>> filterExpression,
-            Expression<Func<T, TResult>> selectExpression,
-            int pageIndex = 0,
-            int pageSize = 10,
-            List<FilterParameter> dynamicFilters = null,
-            string orderByField = null,
-            string orderByOrder = null);
+        // Task<ICollection<TResult>> GetSelectedColumnByConditionAsync<TResult>(
+        //     Expression<Func<T, bool>> filterExpression,
+        //     Expression<Func<T, TResult>> selectExpression,
+        //     int pageIndex = 0,
+        //     int pageSize = 10,
+        //     List<FilterParameter> dynamicFilters = null,
+        //     string orderByField = null,
+        //     string orderByOrder = null);
         public Task<ICollection<TResult>> GetSelectedColumnByConditionAsync<TResult>(
             Expression<Func<T, bool>> filterExpression,
             Expression<Func<T, TResult>> selectExpression,
             DynamicListQueryParameters dynamicListQueryParameters
         );
-        public Task<TResult> GetSingleSelectedColumnByConditionAsync<TResult>(Expression<Func<T, bool>> filterExpression,Expression<Func<T, TResult>> selectExpression);
+        // public Task<TResult> GetSingleSelectedColumnByConditionAsync<TResult>(Expression<Func<T, bool>> filterExpression,Expression<Func<T, TResult>> selectExpression);
 
-        Task<Dictionary<TKey, List<TResult>>> GetSelectedColumnGroupByConditionAsync<TKey, TResult>(Expression<Func<T, bool>> filterExpression,Expression<Func<T, TKey>> groupByKeySelector,Expression<Func<T, TResult>> selectExpression);
+        // Task<Dictionary<TKey, List<TResult>>> GetSelectedColumnGroupByConditionAsync<TKey, TResult>(Expression<Func<T, bool>> filterExpression,Expression<Func<T, TKey>> groupByKeySelector,Expression<Func<T, TResult>> selectExpression);
         T GetSingle(Expression<Func<T, bool>> condition);
 
         Task<T> GetSingleAysnc(Expression<Func<T, bool>> condition);
-        int CountWithCondition(Expression<Func<T, bool>> condition, List<FilterParameter> dynamicFilters = null);
+        // int CountWithCondition(Expression<Func<T, bool>> condition, List<FilterParameter> dynamicFilters = null);
         int CountWithCondition(Expression<Func<T, bool>> condition);
         Task<int> CountWithConditionAsync(Expression<Func<T, bool>> condition);
         int Count();

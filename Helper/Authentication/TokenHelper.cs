@@ -19,15 +19,15 @@ namespace CTS_BE.Helper.Authentication
     {
         private readonly IConfiguration _Configuration;
         private readonly ILogger<TokenHelper> _logger;
-        private readonly string authSecretKey;
-        private readonly string ActiveLifeTimeWindowinMint;
+        private readonly string authSecretKey = "";
+        private readonly string ActiveLifeTimeWindowinMint = "";
         private readonly ITokencache _tokencache;
         public TokenHelper(ILogger<TokenHelper> logger, IConfiguration Configuration, ITokencache tokencache)
         {
             _logger = logger;
             _Configuration = Configuration;
-            authSecretKey = _Configuration.GetValue<string>("Auth:SecretKey");
-            ActiveLifeTimeWindowinMint = _Configuration.GetValue<string>("Auth:ActiveLifeTimeWindowinMint");
+            authSecretKey = _Configuration.GetValue<string>("Auth:SecretKey") ?? "";
+            ActiveLifeTimeWindowinMint = _Configuration.GetValue<string>("Auth:ActiveLifeTimeWindowinMint") ?? "30";
             _tokencache = tokencache;
         }
         /*
@@ -96,7 +96,7 @@ namespace CTS_BE.Helper.Authentication
         /// <returns></returns>
         public SecurityToken ValidateToken(string token, out int LifetimeExpirtedFlag)
         {
-            SecurityToken validatedToken = null;
+            SecurityToken validatedToken = null!;
 
             try
             {
@@ -113,7 +113,7 @@ namespace CTS_BE.Helper.Authentication
                     LifetimeExpirtedFlag = 1;
                 //_logger.LogError(ex);
                 //IDX10223: Lifetime validation failed.
-                validatedToken = null;
+                validatedToken = null!;
             }
 
             return validatedToken;
@@ -146,7 +146,7 @@ namespace CTS_BE.Helper.Authentication
                 var cachedItem = _tokencache.GetItem(token);/* just to increase time to leave time in cache*/
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var authToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
-                return new AuthClaimModel() { RefreshedAccessToken = string.Empty, claims = authToken.Claims.ToList<Claim>() };
+                return new AuthClaimModel() { RefreshedAccessToken = string.Empty, Claims = authToken.Claims.ToList<Claim>() };
             }
             else if (LifetimeExpirtedFlag == 2)
             {

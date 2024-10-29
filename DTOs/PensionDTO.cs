@@ -96,6 +96,121 @@ namespace CTS_BE.DTOs
         public required DateOnly DateOfCommencement { get; set; }
     }
 
+    public partial class FileEntryDTO : BaseDTO {
+
+        public string FileName { get; set; } = null!;
+        public byte[] Contents { get; set; } = null!;
+    }
+
+    public partial class FileResponseDTO : FileEntryDTO {
+        public long Id { get; set; }
+        public string FilePath { get; set; } = null!;
+        public string FileMimeType { get; set; } = null!;
+    }
+
+    public partial class EPpoReceiptEntryDTO : BaseDTO {
+
+        [Required]
+        public string PpoNo { get; set; } = null!;
+
+        [Required]
+        public string PensionApplnNo { get; set; } = null!;
+
+        [Required]
+        public char FreshRevisionFlag { get; set; }
+
+        [Required]
+        public char PpoTypeCode { get; set; }
+
+        [Required]
+        public string? IssuingLetterNo { get; set; }
+
+        [Required]
+        public DateOnly? IssuingLetterDate { get; set; }
+
+        [Required]
+        public int PenCatId { get; set; }
+
+        [Required]
+        public string SanctionAuthority { get; set; } = null!;
+
+        [Required]
+        public string SanctionNo { get; set; } = null!;
+
+        [Required]
+        public DateOnly SanctionDate { get; set; }
+
+        [Required]
+        public char ProvisionalPensionStatus { get; set; }
+
+        [Required]
+        public string PensionerName { get; set; } = null!;
+
+        [Required]
+        public char Religion { get; set; }
+        public string? PensionerAddress { get; set; }
+        public string? MobileNumber { get; set; }
+        public string? AadhaarNo { get; set; }
+
+        [Required]
+        public DateOnly DateOfBirth { get; set; }
+
+        [Required]
+        public DateOnly DateOfRetirement { get; set; }
+        public DateOnly? DateOfDeath { get; set; }
+        public int? QualifyingServiceGrossYears { get; set; }
+        public int? QualifyingServiceGrossMonths { get; set; }
+        public int? QualifyingServiceGrossDays { get; set; }
+        public int? EmployeeLastPay { get; set; }
+        public int? EmployeeLastPayNotional { get; set; }
+
+        [Required]
+        public int CommutedPensionAmount { get; set; }
+        public EPpoEFPEntryDTO Efp { get; set; } = null!;
+        public EPpoNFPEntryDTO Nfp { get; set; } = null!;
+        public NomineeListResponseDTO? Nominees { get; set; }
+        public FileEntryDTO? PhotoFile { get; set; }
+        public FileEntryDTO? SignatureFile { get; set; }
+        public FileEntryDTO? EPpoFile { get; set; }
+    }
+
+    public partial class EPpoEFPEntryDTO : BaseDTO {
+        public short Ropa { get; set; }
+        public int EfpAmount { get; set; }
+        public DateOnly EfpFromDate { get; set; }
+        public DateOnly EfpUpToDate { get; set; }
+    }
+
+    public partial class EPpoNFPEntryDTO : BaseDTO {
+        public short Ropa { get; set; }
+        public int NfpAmount { get; set; }
+        public DateOnly NfpFromDate { get; set; }
+        public DateOnly NfpUpToDate { get; set; }
+    }
+
+    public partial class EPpoReceiptResponseDTO : EPpoReceiptEntryDTO {
+        public long Id { get; set; }
+    }
+
+    public partial class EPpoReceiptRevisionEntryDTO : BaseDTO {
+
+    }
+
+    public partial class EPpoReceiptRevisionResponseDTO : EPpoReceiptRevisionEntryDTO {
+
+    }
+
+    public partial class EPpoReceiptWithdrawlEntryDTO : BaseDTO {
+
+    }
+    public partial class EPpoReceiptWithdrawlResponseDTO : EPpoReceiptWithdrawlEntryDTO {
+
+    }
+
+    public partial class EPpoReceiptPpoIdResponseDTO : BaseDTO {
+
+    }
+
     public class PensionerEntryDTO : BaseDTO {
         [Required]
         [StringLength(100)]
@@ -766,7 +881,16 @@ namespace CTS_BE.DTOs
         [Required]
         public DateOnly DateOfBirth { get; set; }
         public DateOnly? DateOfDeath { get; set; }
+
+        [Required]
+        [RegularExpression(@"[056]", ErrorMessage = "{0} must be one of the following (0 - Family; 5 - LTA; 6 - Death Gratuity;)")]
         public char? NomineeType { get; set; }
+
+        [Required]
+        [RegularExpression(@"[AM]", ErrorMessage = "{0} must be one of the following (A - Adult; M - Minor;)")]
+        public char? NomineeAdultMinor { get; set; }
+
+        [RegularExpression(@"[12345]", ErrorMessage = "{0} must be one of the following (1 - First; 2 - Second; 3 - Third; 4 - Fourth; 5 - Fifth;)")]
         public int? NomineePriority { get; set; }
         public int? NomineeShare { get; set; }
         public bool? FamilyPension { get; set; }
