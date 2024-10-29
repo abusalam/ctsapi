@@ -692,3 +692,12 @@ GET {{PensionAPI_HostAddress}}/api/v1/ppo/sanction/{{SanctionDetailsId}}
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
+
+
+
+
+### Get Ppo List for First Bill Print
+# @name GetAllPposForFirstBillPrint
+GET {{PensionAPI_HostAddress}}/api/v1/ppo/first-bill-print/ppos
+Accept: application/json
+Authorization: Bearer {{accessToken}}

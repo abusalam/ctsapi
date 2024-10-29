@@ -36,10 +36,10 @@ namespace CTS_BE.Controllers.Pension
         [HttpGet("first-bill/ppos")]
         [Tags("Pension: First Bill")]
         [OpenApi]
-        public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<PensionerListItemDTO>>>> GetAllPposForFirstBill()
+        public async Task<JsonAPIResponse<TableResponseDTO<PensionerListItemDTO>>> GetAllPposForFirstBill()
         {
 
-            JsonAPIResponse<DynamicListResult<IEnumerable<PensionerListItemDTO>>> response = new(){
+            JsonAPIResponse<TableResponseDTO<PensionerListItemDTO>> response = new(){
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = $"PPO List for first bill received sucessfully!"
             };
@@ -83,8 +83,71 @@ namespace CTS_BE.Controllers.Pension
                             FieldName = "dateOfCommencement",
                         }
                     },
-                    Data = ppoList.PpoList,
-                    DataCount = ppoList.PpoList.Count
+                    Data = ppoList.PpoList
+                };
+            }
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
+            }
+            finally {
+                FillErrorMesageFromDataSource(response);
+            }
+
+            return response;
+        }
+
+        [HttpGet("first-bill-print/ppos")]
+        [Tags("Pension: First Bill")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<TableResponseDTO<PensionerListItemDTO>>> GetPposForFirstBillPrint()
+        {
+
+            JsonAPIResponse<TableResponseDTO<PensionerListItemDTO>> response = new(){
+                ApiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = $"PPO List for first bill received sucessfully!"
+            };
+            try {
+                var ppoList = await _ppoBillService.GetAllPposForFirstBillPrint<PpoListResponseDTO>(
+                    GetCurrentFyYear(),
+                    GetTreasuryCode()
+                );
+                response.Result = new(){
+                    Headers = new(){
+                        new(){
+                            Name = "PPO ID",
+                            FieldName = "ppoId",
+                        },
+                        new(){
+                            Name = "PPO Number",
+                            FieldName = "ppoNo",
+                        },
+                        new(){
+                            Name = "Pensioner Name",
+                            FieldName = "pensionerName",
+                        },
+                        new(){
+                            Name = "Mobile",
+                            FieldName = "mobileNumber",
+                        },
+                        new(){
+                            Name = "Date of Birth",
+                            FieldName = "dateOfBirth",
+                        },
+                        new(){
+                            Name = "Date of Commencement",
+                            FieldName = "dateOfCommencement",
+                        },
+                        new(){
+                            Name = "Date of Retirement",
+                            FieldName = "dateOfRetirement",
+                        },
+                        new(){
+                            Name = "Date of Commencement",
+                            FieldName = "dateOfCommencement",
+                        }
+                    },
+                    Data = ppoList.PpoList
                 };
             }
             catch(Exception ex) {

@@ -106,7 +106,7 @@ namespace CTS_BE.BAL.Services.Pension
                         regularBill.Category = "" + regularBill.PpoBills[0].Pensioner?.Category?.PrimaryCategory.PrimaryCategoryName;
                         regularBill.PreparedBy = GetUserName();
                         regularBill.PreparedOn = DateOnly.FromDateTime(DateTime.Today);
-                        
+
                         regularBill.PpoBills.ForEach(
                             ppoBill => {
                                 ppoBill.PpoNo = ppoBill.Pensioner?.PpoNo ?? "";
@@ -118,7 +118,7 @@ namespace CTS_BE.BAL.Services.Pension
                                     billBreakup => {
                                         switch (billBreakup.Revision?.Rate?.Breakup?.ComponentName) {
                                             case "BASIC PENSION":
-                                            ppoBill.BasicPensionAmount = (int) billBreakup.BreakupAmount; 
+                                            ppoBill.BasicPensionAmount = (int) billBreakup.BreakupAmount;
                                             break;
                                             case "DEARNESS RELIEF":
                                             ppoBill.DearnessReliefAmount = (int) billBreakup.BreakupAmount;
@@ -127,7 +127,7 @@ namespace CTS_BE.BAL.Services.Pension
                                             ppoBill.MedicalReliefAmount = (int) billBreakup.BreakupAmount;
                                             break;
                                             // case "AMOUNT COMMUTED":
-                                            // ppoBill.CommutedPensionAmount = (int) billBreakup.BreakupAmount; 
+                                            // ppoBill.CommutedPensionAmount = (int) billBreakup.BreakupAmount;
                                             // break;
                                         }
                                     }
@@ -141,7 +141,7 @@ namespace CTS_BE.BAL.Services.Pension
                         regularBill.ByTransferAmount = regularBill.PpoBills.Sum(bill => bill.ByTransferAmount);
                         regularBill.NetAmount = regularBill.PpoBills.Sum(bill => bill.TotalPayableAmount);
                         regularBill.AmountInWords = PensionCalculator.InWords(regularBill.NetAmount).Titleize() + " Only.";
-                        
+
                         regularBill.Branch = null;
                     }
                 );
@@ -275,6 +275,69 @@ namespace CTS_BE.BAL.Services.Pension
             return _mapper.Map<T>(ppoListResponseDTO);
         }
 
+        public async Task<T> GetAllPposForFirstBillPrint<T>(
+            short financialYear,
+            string treasuryCode
+        ) where T : BaseDTO
+        {
+
+            PpoListResponseDTO ppoListResponseDTO = new();
+
+            try {
+
+                List<Pensioner>? ppoList = await _pensionDbContext.Pensioners
+                .Where(
+                    entity => entity.ActiveFlag
+                    && entity.TreasuryCode == treasuryCode
+                    && entity.PpoStatusFlags.Any(
+                        entity => entity.ActiveFlag
+                        && entity.StatusFlag == PensionStatusFlag.PpoApproved
+                    )
+                    && entity.PpoBills.Count > 0
+                )
+                .Include(
+                    entity => entity.PpoStatusFlags
+                    .Where(
+                        entity => entity.ActiveFlag
+                    )
+                )
+                .Include(
+                    entity => entity.PpoBills
+                    .Where(
+                        entity => entity.ActiveFlag
+                        && entity.BillType == BillType.FirstBill
+                    )
+                )
+                // .Select(
+                //     entity => new {
+                //         entity.Id,
+                //         entity.PpoId,
+                //         entity.PpoNo,
+                //         entity.PensionerName,
+                //         entity.MobileNumber,
+                //         entity.DateOfBirth,
+                //         entity.DateOfRetirement,
+                //         entity.DateOfCommencement
+                //     }
+                // )
+                .AsSplitQuery()
+                .ToListAsync();
+
+
+                ppoListResponseDTO.PpoList = _mapper.Map<List<PensionerListItemDTO>>(ppoList);
+            }
+            catch (Exception ex) {
+                T? ppoBillResponseDTO = _mapper.Map<T>(ppoListResponseDTO);
+                ppoBillResponseDTO.FillDataSource(
+                    ppoBillResponseDTO,
+                    $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
+                );
+                return ppoBillResponseDTO;
+            }
+
+            return _mapper.Map<T>(ppoListResponseDTO);
+        }
+
         public async Task<T> SavePpoBill<T>(
             PensionerFirstBillResponseDTO ppoBillDTO,
             short financialYear,
@@ -321,7 +384,7 @@ namespace CTS_BE.BAL.Services.Pension
                     );
                     return ppoBillResponseDTO;
                 }
-                if(ppoBillDTO.BillType == BillType.RegularBill) {   
+                if(ppoBillDTO.BillType == BillType.RegularBill) {
                     PpoBill? ppoFirstBill = await _pensionDbContext.PpoBills
                         .Where(
                             entity => entity.ActiveFlag
@@ -371,7 +434,7 @@ namespace CTS_BE.BAL.Services.Pension
                         BranchId = ppoBillDTO.BranchId,
                         BillNo = await _ppoBillRepository.GetNextBillNo(financialYear, treasuryCode)
                     };
-                
+
                 if(ppoBillDTO.BillType == BillType.RegularBill) {
 
                     billEntity =  await _pensionDbContext.Bills

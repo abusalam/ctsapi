@@ -9,6 +9,11 @@ namespace CTS_BE.BAL.Interfaces.Pension
             string treasuryCode
         ) where T : BaseDTO;
 
+        public Task<T> GetAllPposForFirstBillPrint<T>(
+            short financialYear,
+            string treasuryCode
+        ) where T : BaseDTO;
+
         public Task<T> GetAllPposForBillGeneration<T>(
             short year,
             short month,
@@ -24,7 +29,7 @@ namespace CTS_BE.BAL.Interfaces.Pension
             long? categoryId = null,
             long? bankId = null
         );
-        
+
         public Task<T> SavePpoBill<T>(
             PensionerFirstBillResponseDTO firstBill,
             short financialYear,
