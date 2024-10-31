@@ -54,10 +54,4 @@ public partial class UploadedFile
 
     [InverseProperty("EppoFile")]
     public virtual ICollection<EppoRevision> EppoRevisions { get; set; } = new List<EppoRevision>();
-
-    [InverseProperty("PhotoFile")]
-    public virtual ICollection<Nominee> NomineePhotoFiles { get; set; } = new List<Nominee>();
-
-    [InverseProperty("SignatureFile")]
-    public virtual ICollection<Nominee> NomineeSignatureFiles { get; set; } = new List<Nominee>();
 }
