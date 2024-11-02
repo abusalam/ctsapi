@@ -38,7 +38,8 @@ namespace CTS_BE.BAL.Services.Pension
             short financialYear,
             string treasuryCode,
             long? categoryId = null,
-            long? branchId = null
+            long? bankId = null,
+            long[]? branchIds = null
         )
         {
             RegularBillListResponseDTO billListResponseDTO = new();
@@ -52,6 +53,8 @@ namespace CTS_BE.BAL.Services.Pension
                     && entity.ToDate == new DateOnly(year, month, DateTime.DaysInMonth(year, month))
                     && entity.TreasuryCode == treasuryCode
                     && entity.FinancialYear == financialYear
+                    && (bankId == null || entity.Branch.Bank.Id == bankId)
+                    && (branchIds == null || branchIds.Length == 0 || branchIds.Contains(entity.BranchId))
                 )
                 .Include(
                     entity => entity.Branch
@@ -64,7 +67,6 @@ namespace CTS_BE.BAL.Services.Pension
                         entity => entity.ActiveFlag
                         && entity.BillType == BillType.RegularBill
                         && entity.TreasuryCode == treasuryCode
-                        && (branchId == null || entity.Pensioner.BranchId == branchId)
                         && (categoryId == null || entity.Pensioner.Category.Id == categoryId)
                     )
                 )
@@ -96,7 +98,12 @@ namespace CTS_BE.BAL.Services.Pension
                 .ToListAsync();
 
 
-                billListResponseDTO.RegularBills = _mapper.Map<List<RegularBillResponseDTO>>(bills);
+                billListResponseDTO.RegularBills = _mapper.Map<List<RegularBillResponseDTO>>(bills
+                    .Where(
+                        entity => entity.PpoBills.Count > 0
+                    )
+                );
+
                 billListResponseDTO.RegularBills.ForEach(
                     regularBill => {
                         regularBill.TreasuryName = "Malda - I";

@@ -589,6 +589,24 @@ Authorization: Bearer {{accessToken}}
 
 
 
+
+
+
+
+### Get List of Regular Bills All Category & Specific List of Branches
+# @name GetAllRegularBillsByBankBranchList
+GET {{PensionAPI_HostAddress}}/api/v1/ppo/pension-bill/{{$datetime "YYYY"}}/{{$datetime "MM"}}/regular-bills?id=2&id=4
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+
+
+
+
+
+
+
+
 ### Get Ppo List for First Bill Generation
 # @name GetAllPposForFirstBill
 GET {{PensionAPI_HostAddress}}/api/v1/ppo/first-bill/ppos

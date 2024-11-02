@@ -391,7 +391,8 @@ namespace CTS_BE.Controllers.Pension
             short year,
             short month,
             long? categoryId = null,
-            long? bankId = null
+            long? bankId = null,
+            [FromQuery] long[]? id = null
         )
         {
 
@@ -406,7 +407,8 @@ namespace CTS_BE.Controllers.Pension
                     GetCurrentFyYear(),
                     GetTreasuryCode(),
                     categoryId,
-                    bankId
+                    bankId,
+                    id
                 );
             }
             catch(Exception ex) {

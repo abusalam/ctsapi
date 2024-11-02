@@ -27,7 +27,8 @@ namespace CTS_BE.BAL.Interfaces.Pension
             short financialYear,
             string treasuryCode,
             long? categoryId = null,
-            long? bankId = null
+            long? bankId = null,
+            long[]? branchIds = null
         );
 
         public Task<T> SavePpoBill<T>(
