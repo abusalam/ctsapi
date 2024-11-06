@@ -27,9 +27,11 @@ namespace CTS_BE.DAL.Repositories.Pension
         )
         {
             return await _context.Nominees
-                .Where(x => x.PpoId == ppoId
-                    && x.TreasuryCode == treasuryCode)
-                .Include(x => x.Branch)
+                .Where(entity => entity.ActiveFlag
+                    && entity.PpoId == ppoId
+                    && entity.TreasuryCode == treasuryCode
+                )
+                .Include(entity => entity.Branch)
                 .Select(selectExpression)
                 .ToListAsync();
         }
@@ -83,6 +85,41 @@ namespace CTS_BE.DAL.Repositories.Pension
                     response.FillDataSource(
                         nomineeEntity,
                         "Failed to save data. Please try again after sometime."
+                    );
+                    return response;
+                }
+                return _mapper.Map<T>(nomineeEntity);
+            }
+            catch (DbUpdateException ex) {
+                response.FillDataSource(
+                    nomineeEntity,
+                    $"DbException: {ex.InnerException?.Message ?? ex.Message}"
+                );
+                return response;
+            }
+            catch (Exception ex) {
+                response.FillDataSource(
+                    nomineeEntity,
+                    $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
+                );
+                return response;
+            }
+        }
+
+        public async Task<T> DeleteNomineeDetails<T>(
+            Nominee nomineeEntity,
+            string treasuryCode
+        )
+        {
+
+            T? response = _mapper.Map<T>(nomineeEntity);
+            try {
+                nomineeEntity.TreasuryCode = treasuryCode;
+                _context.Nominees.Update(nomineeEntity);
+                if(await _context.SaveChangesAsync() == 0) {
+                    response.FillDataSource(
+                        nomineeEntity,
+                        "Failed to delete data. Please try again after sometime."
                     );
                     return response;
                 }

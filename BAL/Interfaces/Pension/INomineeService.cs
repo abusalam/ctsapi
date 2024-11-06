@@ -19,6 +19,10 @@ namespace CTS_BE.BAL.Interfaces.Pension
             short financialYear,
             string treasuryCode
         );
+        public Task<T> DeleteNomineeDetailsById<T>(
+            long nomineeId,
+            string treasuryCode
+        );
         public Task<T> GetNomineeDetailsByNomineeId<T>(
             long nomineeId,
             string treasuryCode

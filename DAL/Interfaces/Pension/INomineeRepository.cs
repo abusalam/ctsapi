@@ -18,6 +18,10 @@ namespace CTS_BE.DAL.Interfaces.Pension
             Nominee nominee,
             string treasuryCode
         );
+        public Task<T> DeleteNomineeDetails<T>(
+            Nominee nominee,
+            string treasuryCode
+        );
         public Task<T?> GetNomineeDetailsByIdAsync<T>(
             long nomineeId,
             string treasuryCode,

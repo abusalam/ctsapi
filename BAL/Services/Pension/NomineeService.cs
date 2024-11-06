@@ -49,7 +49,7 @@ namespace CTS_BE.BAL.Services.Pension
                 {
                     response.FillDataSource(
                         nomineeList,
-                        "No Nominees found. Please check PPO Id. and try again."
+                        "No Nominees has been registered yet."
                     );
                 }
                 return response;
@@ -252,11 +252,59 @@ namespace CTS_BE.BAL.Services.Pension
             catch (Exception ex) {
                 response.FillDataSource(
                     new Nominee(),
-                    $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
+                    $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );
                 return response;
             }
         }
 
+        public async Task<T> DeleteNomineeDetailsById<T>(long nomineeId, string treasuryCode)
+        {
+            T? response =  _mapper.Map<T>(new NomineeEntryDTO());
+            Nominee? nomineeDetails = new();
+
+            try
+            {
+
+                nomineeDetails = await _nomineeRepository.GetNomineeDetailsByIdAsync(
+                    nomineeId,
+                    treasuryCode,
+                    entity => _mapper.Map<Nominee>(entity)
+                );
+
+                if (nomineeDetails is null)
+                {
+                    response.FillDataSource(
+                        nomineeDetails,
+                        "Nominee details does not exist. Please check Id. and try again."
+                    );
+                    return response;
+                }
+
+                nomineeDetails.ActiveFlag = false;
+                SetUpdatedBy(nomineeDetails);
+
+                return await _nomineeRepository.DeleteNomineeDetails<T>(
+                    nomineeDetails,
+                    treasuryCode
+                );
+            }
+            catch (DbUpdateException ex)
+            {
+                response.FillDataSource(
+                        nomineeDetails,
+                        $"DbException: {ex.InnerException?.Message ?? ex.Message}"
+                    );
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.FillDataSource(
+                        nomineeDetails,
+                        $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
+                    );
+                return response;
+            }
+        }
     }
 }
