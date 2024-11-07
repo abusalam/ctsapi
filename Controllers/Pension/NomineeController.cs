@@ -71,6 +71,10 @@ namespace CTS_BE.Controllers.Pension
                             FieldName = "serialNo",
                         },
                         new (){
+                            Name = "Nominee Name",
+                            FieldName = "nomineeName",
+                        },
+                        new (){
                             Name = "Relation",
                             FieldName = "relation",
                         },
