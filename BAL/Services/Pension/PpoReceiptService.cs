@@ -127,18 +127,16 @@ namespace CTS_BE.BAL.Services.Pension
         }
 
 
-        public async Task<IEnumerable<ListAllPpoReceiptsResponseDTO>> GetAllUnusedPpoReceipts(
+        public async Task<List<T>> GetAllUnusedPpoReceipts<T>(
             short financialYear,
             string treasuryCode
         )
         {
-            var manualPpoReceipts = await _manualPpoReceiptRepository.GetAllUnusedPpoReceipts(
+            return await _manualPpoReceiptRepository.GetAllUnusedPpoReceipts(
                 financialYear,
                 treasuryCode,
-                entity => _mapper.Map<ListAllPpoReceiptsResponseDTO>(entity)
+                entity => _mapper.Map<T>(entity)
             );
-            _dataCount = manualPpoReceipts.Count;
-            return manualPpoReceipts;
         }
 
 

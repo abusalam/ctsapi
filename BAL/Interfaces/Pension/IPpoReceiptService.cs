@@ -20,7 +20,7 @@ namespace CTS_BE.BAL.Interfaces.Pension
             short financialYear,
             string treasuryCode
         );
-        public Task<IEnumerable<ListAllPpoReceiptsResponseDTO>> GetAllUnusedPpoReceipts(
+        public Task<List<T>> GetAllUnusedPpoReceipts<T>(
             short financialYear,
             string treasuryCode
         );

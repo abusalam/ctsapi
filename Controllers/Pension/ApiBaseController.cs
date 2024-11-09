@@ -33,7 +33,7 @@ namespace CTS_BE.Controllers.Pension
             return CURRENT_FINANCIAL_YEAR;
         }
         protected void FillErrorMesageFromDataSource<T>(JsonAPIResponse<T> response) where T : BaseDTO
-        {            
+        {
             if(response.Result?.DataSource != null) {
                 response.Message = ((dynamic)response.Result.DataSource).Message;
                 response.ApiResponseStatus = Enum.APIResponseStatus.Error;
@@ -42,7 +42,7 @@ namespace CTS_BE.Controllers.Pension
 
         protected void FillException<T>(JsonAPIResponse<T> response, Exception exception) where T : BaseDTO
         {
-            response.Message = exception.ToString(); //exception?.InnerException?.Message ?? exception?.Message;
+            response.Message = exception?.InnerException?.Message ?? exception?.Message;
             response.ApiResponseStatus = Enum.APIResponseStatus.Error;
             response.Result = null;
         }

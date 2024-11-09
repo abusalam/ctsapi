@@ -23,13 +23,13 @@ namespace CTS_BE.DAL.Repositories.Pension
             _context = context;
         }
 
-        public async Task<List<ListAllPpoReceiptsResponseDTO>> GetAllUnusedPpoReceipts(
+        public async Task<List<T>> GetAllUnusedPpoReceipts<T>(
             short financialYear,
             string treasuryCode,
-            Expression<Func<PpoReceipt, ListAllPpoReceiptsResponseDTO>> selectExpression
+            Expression<Func<PpoReceipt, T>> selectExpression
         )
         {
-            List<ListAllPpoReceiptsResponseDTO>? result = await _context.PpoReceipts
+            return await _context.PpoReceipts
                 .Where(
                     entity => entity.ActiveFlag
                     && entity.FinancialYear == financialYear
@@ -39,7 +39,6 @@ namespace CTS_BE.DAL.Repositories.Pension
                 .Where(entity => entity.Pensioners.Count == 0)
                 .Select(selectExpression)
                 .ToListAsync();
-            return result;
         }
 
         public async Task<List<T>> GetPpoReceiptsAsync<T>(

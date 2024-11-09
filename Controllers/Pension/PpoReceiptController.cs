@@ -290,9 +290,9 @@ namespace CTS_BE.Controllers.Pension
         [HttpGet("receipts/unused")]
         [Tags("Pension: Manual PPO Receipt")]
         [OpenApi]
-        public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<ListAllPpoReceiptsResponseDTO>>>> GetAllUnusedPpoReceipts()
+        public async Task<JsonAPIResponse<TableResponseDTO<ManualPpoReceiptResponseDTO>>> GetAllUnusedPpoReceipts()
         {
-            JsonAPIResponse<DynamicListResult<IEnumerable<ListAllPpoReceiptsResponseDTO>>> response = new();
+            JsonAPIResponse<TableResponseDTO<ManualPpoReceiptResponseDTO>> response = new();
             try {
 
                 response = new() {
@@ -304,52 +304,35 @@ namespace CTS_BE.Controllers.Pension
 
                                 new() {
                                     Name = "Treasury Receipt No",
-                                    DataType = "text",
                                     FieldName = "treasuryReceiptNo",
-                                    FilterField = "treasuryReceiptNo",
-                                    IsFilterable = true,
-                                    IsSortable = true,
 
                                 },
                                 new() {
                                     Name = "PPO No",
-                                    DataType = "text",
                                     FieldName = "ppoNo",
-                                    FilterField = "ppoNo",
-                                    IsFilterable = true,
-                                    IsSortable = true,
                                 },
                                 new() {
                                     Name = "Name of Pensioner",
-                                    DataType = "text",
                                     FieldName = "pensionerName",
-                                    FilterField = "pensionerName",
-                                    IsFilterable = true,
-                                    IsSortable = true,
+                                },
+                                new() {
+                                    Name = "Mobile Number",
+                                    FieldName = "mobileNumber",
                                 },
                                 new() {
                                     Name = "Date of Receipt",
-                                    DataType = "text",
                                     FieldName = "receiptDate",
-                                    FilterField = "receiptDate",
-                                    IsFilterable = true,
-                                    IsSortable = true,
                                 },
                                 new() {
                                     Name = "Date of Commencement",
-                                    DataType = "text",
                                     FieldName = "dateOfCommencement",
-                                    FilterField = "DateOfCommencement",
-                                    IsFilterable = true,
-                                    IsSortable = true,
                                 }
 
                             },
-                            Data = await _ppoReceiptService.GetAllUnusedPpoReceipts(
-                                    GetCurrentFyYear(),
-                                    GetTreasuryCode()
-                                ),
-                            DataCount = _ppoReceiptService.DataCount()
+                            Data = await _ppoReceiptService.GetAllUnusedPpoReceipts<ManualPpoReceiptResponseDTO>(
+                                GetCurrentFyYear(),
+                                GetTreasuryCode()
+                            ),
                         },
                     Message = $"All Unused PPO Receipts Received Successfully!"
 
