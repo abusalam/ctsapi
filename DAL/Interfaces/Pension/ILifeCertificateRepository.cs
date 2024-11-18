@@ -1,0 +1,22 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
+using CTS_BE.DAL.Entities.Pension;
+
+namespace CTS_BE.DAL.Interfaces.Pension
+{
+    public interface ILifeCertificateRepository : IRepository<LifeCertificate>
+    {
+        public Task<T> CreateLifeCertificate<T>(
+            LifeCertificate lifeCertificate,
+            string treasuryCode
+        );
+        public Task<List<T>?> GetLifeCertificateByPpoIdAsync<T>(
+            int ppoId,
+            string treasuryCode,
+            Expression<Func<LifeCertificate, T>> selectExpression
+        );
+    }
+}

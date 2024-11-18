@@ -58,6 +58,9 @@ namespace CTS_BE.Helper
             CreateMap<Nominee, NomineeResponseDTO>().ReverseMap();
             CreateMap<Nominee, NomineeEntryDTO>().ReverseMap();
             CreateMap<NomineeEntryDTO, NomineeResponseDTO>().ReverseMap();
+            CreateMap<LifeCertificate, LifeCertificateResponseDTO>().ReverseMap();
+            CreateMap<LifeCertificate, LifeCertificateEntryDTO>().ReverseMap();
+            CreateMap<LifeCertificateEntryDTO, LifeCertificateResponseDTO>().ReverseMap();
         }
     }
 }

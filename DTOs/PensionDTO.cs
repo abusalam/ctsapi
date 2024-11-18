@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using CTS_BE.DTOs.Validators;
 using System.Dynamic;
 using CTS_BE.PensionEnum;
+using CTS_BE.DAL.Entities.Pension;
 
 namespace CTS_BE.DTOs
 {
@@ -787,6 +788,35 @@ namespace CTS_BE.DTOs
     public partial class NomineeListResponseDTO : BaseDTO {
         public int NomineeCount { get { return Nominees?.Count ?? 0;} }
         public List<NomineeResponseDTO>? Nominees { get; set; }
+    }
+
+    public partial class LifeCertificateEntryDTO : BaseDTO {
+        [Required]
+        public int FinancialYear { get; set; }
+        [Required]
+        public int PpoId { get; set; }
+
+        [Required]
+        public string PpoNo { get; set; } = null!;
+
+        [Required]
+        public string BankAcNo { get; set; } = null!;
+        [Required]
+        public string IfscCode { get; set; } = null!;
+        [Required]
+        public string AccountHolderName { get; set; } = null!;
+        [Required]
+        public string MobileNumber { get; set; } = null!;
+        public bool? CertificateFlag { get; set; }
+    }
+
+    public partial class LifeCertificateResponseDTO : LifeCertificateEntryDTO {
+        public long Id { get; set; }
+    }
+
+    public partial class LifeCertificateListResponseDTO : BaseDTO {
+        public int LifeCertificateCount { get { return LifeCertificates?.Count ?? 0;} }
+        public List<LifeCertificateResponseDTO>? LifeCertificates { get; set; }
     }
 
 }
