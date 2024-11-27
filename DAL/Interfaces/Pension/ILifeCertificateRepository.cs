@@ -13,10 +13,14 @@ namespace CTS_BE.DAL.Interfaces.Pension
             LifeCertificate lifeCertificate,
             string treasuryCode
         );
-        public Task<List<T>?> GetLifeCertificateByPpoIdAsync<T>(
-            int ppoId,
+        public Task<T?> GetLifeCertificateByPpoIdAsync<T>(
+            long ppoId,
             string treasuryCode,
             Expression<Func<LifeCertificate, T>> selectExpression
+        );
+        public Task<T> UpdateLifeCertificateByPpoId<T>(
+            LifeCertificate lifeCertificate,
+            string treasuryCode
         );
     }
 }

@@ -808,10 +808,14 @@ namespace CTS_BE.DTOs
         [Required]
         public string MobileNumber { get; set; } = null!;
         public bool? CertificateFlag { get; set; }
+        public virtual long BankId { get; set; }
+        public long? BranchId { get; set; }
     }
 
     public partial class LifeCertificateResponseDTO : LifeCertificateEntryDTO {
         public long Id { get; set; }
+        public BranchResponseDTO? Branch { get; set; }
+        public override long BankId => Branch != null ? Branch.BankId : 0;
     }
 
     public partial class LifeCertificateListResponseDTO : BaseDTO {
