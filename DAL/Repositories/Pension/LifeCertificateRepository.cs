@@ -24,19 +24,19 @@ namespace CTS_BE.DAL.Repositories.Pension
             _context = context;
         }
 
-        public async Task<List<T>?> GetLifeCertificateByPpoIdAsync<T>(
-            int ppoId,
+        public async Task<T?> GetLifeCertificateByPpoIdAsync<T>(
+            long ppoId,
             string treasuryCode,
             Expression<Func<LifeCertificate, T>> selectExpression
         )
         {
             return await _context.LifeCertificates
-                .Where(entity => entity.ActiveFlag
-                    && entity.PpoId == ppoId
-                    && entity.TreasuryCode == treasuryCode
+                .Where(
+                    x => x.PpoId == ppoId
+                    && x.TreasuryCode == treasuryCode
                 )
                 .Select(selectExpression)
-                .ToListAsync();
+                .FirstOrDefaultAsync();
         }
 
         public async Task<T> CreateLifeCertificate<T>(
@@ -68,6 +68,62 @@ namespace CTS_BE.DAL.Repositories.Pension
             catch (Exception ex) {
                 response.FillDataSource(
                     lifeCertificate,
+                    $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
+                );
+                return response;
+            }
+        }
+        public async Task<T> UpdateLifeCertificateByPpoId<T>(
+            LifeCertificate lifeCertificateDetailEntity,
+            string treasuryCode
+        )
+        {
+            T? response = _mapper.Map<T>(lifeCertificateDetailEntity);
+            try 
+            {
+                // First, retrieve the existing entity
+                var existingEntity = await _context.LifeCertificates
+                    .FirstOrDefaultAsync(x => x.PpoId == lifeCertificateDetailEntity.PpoId 
+                                            && x.TreasuryCode == treasuryCode);
+
+                if (existingEntity == null)
+                {
+                    response.FillDataSource(
+                        lifeCertificateDetailEntity,
+                        "Life Certificate not found for update."
+                    );
+                    return response;
+                }
+
+                // Update the properties of the existing entity
+                _context.Entry(existingEntity).CurrentValues.SetValues(lifeCertificateDetailEntity);
+                
+                // Or alternatively, manually update specific properties:
+                // existingEntity.AccountHolderName = lifeCertificateDetailEntity.AccountHolderName;
+                // ... update other properties as needed
+
+                if (await _context.SaveChangesAsync() == 0) 
+                {
+                    response.FillDataSource(
+                        lifeCertificateDetailEntity,
+                        "Failed to save data. Please try again after sometime."
+                    );
+                    return response;
+                }
+                return _mapper.Map<T>(existingEntity);
+            }
+            catch (DbUpdateException ex) 
+            {
+                response.FillDataSource(
+                    lifeCertificateDetailEntity,
+                    $"DbException: {ex.InnerException?.Message ?? ex.Message}"
+                );
+                return response;
+            }
+            catch (Exception ex) 
+            {
+                response.FillDataSource(
+                    lifeCertificateDetailEntity,
                     $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
                 );
                 return response;

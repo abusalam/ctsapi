@@ -24,50 +24,23 @@ namespace CTS_BE.Controllers.Pension
             _lifeCertificateService = lifeCertificateService;
         }
 
-        [Route("api/v1/ppo/{ppoId}/lifecertificate")]
-        [HttpGet]
+        [HttpGet("lifecertificate/{ppoId}")]
         [Tags("Pension: Life Certificate")]
         [OpenApi]
-        public async Task<JsonAPIResponse<TableResponseDTO<LifeCertificateResponseDTO>>> GetLifeCertificateByPpoId(
+        public async Task<JsonAPIResponse<LifeCertificateResponseDTO>> GetLifeCertificateByPpoId(
             int ppoId
         )
         {
-            JsonAPIResponse<TableResponseDTO<LifeCertificateResponseDTO>> response = new(){
+
+            JsonAPIResponse<LifeCertificateResponseDTO> response = new(){
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = $"PPO Life Certificate received sucessfully!"
             };
             try {
-                LifeCertificateListResponseDTO? lifeCertificateList = await _lifeCertificateService.GetLifeCertificateByPpoId(
+                response.Result = await _lifeCertificateService.GetLifeCertificateByPpoId<LifeCertificateResponseDTO>(
                     ppoId,
                     GetTreasuryCode()
                 );
-
-                response.Result = new () {
-                    Headers = new (){
-                        new (){
-                            Name = "PPO ID",
-                            FieldName = "ppoId",
-                        },
-                        new (){
-                            Name = "PPO No",
-                            FieldName = "ppoNo",
-                        },
-                        new (){
-                            Name = "Name of Pensioner",
-                            FieldName = "pensionerName",
-                        },
-                        new (){
-                            Name = "Account Number",
-                            FieldName = "bankAcNo",
-                        },
-                        new (){
-                            Name = "Mobile Number",
-                            FieldName = "mobileNumber",
-                        }
-                    },
-                    Data = lifeCertificateList.LifeCertificates ?? new (),
-                    DataSource = lifeCertificateList.DataSource
-                };
             }
             catch(Exception ex) {
                 FillException(response, ex);
@@ -95,6 +68,38 @@ namespace CTS_BE.Controllers.Pension
             };
             try {
                 response.Result = await _lifeCertificateService.CreateLifeCertificate<LifeCertificateResponseDTO>(
+                    lifeCertificateEntryDTO,
+                    GetCurrentFyYear(),
+                    GetTreasuryCode()
+                );
+            }
+            catch(Exception ex) {
+                FillException(response, ex);
+                return response;
+            }
+            finally {
+                FillErrorMesageFromDataSource(response);
+            }
+
+            return response;
+        }
+
+        [HttpPut("lifecertificate/{ppoId}")]
+        [Tags("Pension: Life Certificate")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<LifeCertificateResponseDTO>> UpdateLifeCertificateByPpoId(
+            long ppoId,
+            LifeCertificateEntryDTO lifeCertificateEntryDTO
+        )
+        {
+
+            JsonAPIResponse<LifeCertificateResponseDTO> response = new(){
+                ApiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = $"PPO Life Certificate updated sucessfully!"
+            };
+            try {
+                response.Result = await _lifeCertificateService.UpdateLifeCertificateByPpoId<LifeCertificateResponseDTO>(
+                    ppoId,
                     lifeCertificateEntryDTO,
                     GetCurrentFyYear(),
                     GetTreasuryCode()
