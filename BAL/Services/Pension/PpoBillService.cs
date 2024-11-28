@@ -527,6 +527,8 @@ namespace CTS_BE.BAL.Services.Pension
                     treasuryCode,
                     ppoId
                 );
+                ppoBillResponseDTO.TreasuryName = "Malda - I";
+                ppoBillResponseDTO.AmountInWords = PensionCalculator.InWords(ppoBillResponseDTO.NetAmount);
                 ppoBillResponseDTO.PreparedBy = GetUserName();
                 ppoBillResponseDTO.PreparedOn = DateOnly.FromDateTime(DateTime.Now);
                 return ppoBillResponseDTO;

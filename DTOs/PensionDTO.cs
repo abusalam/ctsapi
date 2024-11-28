@@ -505,6 +505,7 @@ namespace CTS_BE.DTOs
         public long Id { get; set; }
         public long PensionerId { get; set; }
         public string BankBranchName { get; set; } = null!;
+        public string TreasuryName { get; set; } = null!;
 
         [DataType(DataType.Date)]
         public DateOnly FromDate { get; set; }
@@ -514,6 +515,7 @@ namespace CTS_BE.DTOs
         public int GrossAmount { get; set; }
         public int ByTransferAmount { get; set; }
         public int NetAmount { get; set; }
+        public string AmountInWords { get; set; } = null!;
         public virtual List<PpoBillBreakupEntryDTO> Breakups { get; set; } = null!;
         public long DrawnAmount { get; set; } = 0;
         public string? TreasuryVoucherNo { get; set; }
