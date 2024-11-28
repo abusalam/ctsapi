@@ -82,16 +82,16 @@ namespace CTS_BE.Controllers.Pension
         [HttpGet("{ppoNo}/receipt")]
         [Tags("Pension: e-PPO Receipt")]
         [OpenApi]
-        public async Task<JsonAPIResponse<EPpoReceiptPpoIdResponseDTO>> GetPpoIdForEPpoReceipt(
+        public async Task<JsonAPIResponse<EPpoReceiptResponseDTO>> GetPpoIdForEPpoReceipt(
             string ppoNo
         )
         {
-            JsonAPIResponse<EPpoReceiptPpoIdResponseDTO> response = new(){
+            JsonAPIResponse<EPpoReceiptResponseDTO> response = new(){
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = $"ePPO Receipt Details received sucessfully!"
             };
             try {
-                response.Result = await _ppoReceiptService.GetPpoIdByPpoNo<EPpoReceiptPpoIdResponseDTO>(
+                response.Result = await _ppoReceiptService.GetPpoIdByPpoNo<EPpoReceiptResponseDTO>(
                     ppoNo,
                     GetTreasuryCode(),
                     GetCurrentFyYear()

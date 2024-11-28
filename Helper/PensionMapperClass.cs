@@ -64,6 +64,14 @@ namespace CTS_BE.Helper
             CreateMap<UploadedFile, FileEntryDTO>().ReverseMap();
             CreateMap<UploadedFile, FileResponseDTO>().ReverseMap();
             CreateMap<FileResponseDTO, FileEntryDTO>().ReverseMap();
+            CreateMap<EPpoReceiptEntryDTO, EppoReceipt>().ReverseMap();
+            CreateMap<EppoReceipt, EPpoReceiptResponseDTO>().ReverseMap();
+            CreateMap<EPpoReceiptRevisionEntryDTO, EppoRevision>().ReverseMap();
+            CreateMap<EppoRevision, EPpoReceiptRevisionResponseDTO>().ReverseMap();
+            CreateMap<EPpoReceiptWithdrawlEntryDTO, EppoReceipt>().ReverseMap();
+            CreateMap<EppoReceipt, EPpoReceiptWithdrawlResponseDTO>().ReverseMap();
+            CreateMap<EPpoReceiptWithdrawlEntryDTO, EPpoReceiptWithdrawlResponseDTO>().ReverseMap();
+            CreateMap<EppoReceipt, EPpoReceiptPpoIdResponseDTO>().ReverseMap();
         }
     }
 }

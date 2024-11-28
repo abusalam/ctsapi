@@ -137,6 +137,7 @@ builder.Services.AddTransient<IBankBranchRepository, BankBranchRepository>();
 builder.Services.AddTransient<IPpoSanctionDetailsRepository, PpoSanctionDetailsRepository>();
 builder.Services.AddTransient<INomineeRepository, NomineeRepository>();
 builder.Services.AddTransient<ILifeCertificateRepository, LifeCertificateRepository>();
+builder.Services.AddTransient<IEPpoReceiptRepository, EPpoReceiptRepository>();
 
 
 // Pension Services
@@ -154,6 +155,7 @@ builder.Services.AddTransient<IBankBranchService, BankBranchService>();
 builder.Services.AddScoped<IPpoSanctionDetailsService, PpoSanctionDetailsService>();
 builder.Services.AddScoped<INomineeService, NomineeService>();
 builder.Services.AddScoped<ILifeCertificateService, LifeCertificateService>();
+builder.Services.AddScoped<IEPpoReceiptService, EPpoReceiptService>();
 // builder.Services.AddTransient<IPpoBillService, PpoBillService>();
 
 

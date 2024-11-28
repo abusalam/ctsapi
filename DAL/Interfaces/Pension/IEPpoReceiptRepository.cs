@@ -23,6 +23,8 @@ namespace CTS_BE.DAL.Interfaces.Pension
             EppoReceipt entity,
             string treasuryCode,
             short financialYear,
+            string reason,
+            string flag,
             Expression<Func<EppoReceipt, T>> selectExpression
         );
         public Task<T> GetEPpoReceiptByApplicationNo<T>(

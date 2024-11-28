@@ -109,6 +109,7 @@ namespace CTS_BE.DTOs
     }
 
     public partial class EPpoReceiptEntryDTO : BaseDTO {
+        public int? PpoId { get; set; }
 
         [Required]
         public string PpoNo { get; set; } = null!;
@@ -190,25 +191,74 @@ namespace CTS_BE.DTOs
 
     public partial class EPpoReceiptResponseDTO : EPpoReceiptEntryDTO {
         public long Id { get; set; }
+        public string ApplicationNo { get; set; }
+        public string Status { get; set; }
+        public string ErrorCode { get; set; }
     }
 
     public partial class EPpoReceiptRevisionEntryDTO : BaseDTO {
+        [Required]
+        public string PpoNo { get; set; } = null!;
 
+        [Required]
+        public string PensionApplnNo { get; set; } = null!;
+
+        [Required]
+        public string TreasuryCode { get; set; } = null!;
+
+        public int? PpoId { get; set; }
+
+        public string? IssuingLetterNo { get; set; }
+
+        public DateOnly? IssuingLetterDate { get; set; }
+
+        [Required]
+        public char FreshRevisionFlag { get; set; }  
+
+        [Required]
+        public char PpoTypeCode { get; set; }
+
+        [Required]
+        public char PpoSubType { get; set; }
+
+        [Required]
+        public int PenCatId { get; set; }
+
+        public int? EmployeeLastPay { get; set; }
+
+        public int? EmployeeLastPayNotional { get; set; }
+
+        [Required]
+        public int CommutedPensionAmount { get; set; }
+
+        public long? EppoFileId { get; set; }
+
+        public FileEntryDTO? EPpoFile { get; set; }
     }
 
     public partial class EPpoReceiptRevisionResponseDTO : EPpoReceiptRevisionEntryDTO {
-
+        public string Status { get; set; }
+        public string ErrorCode { get; set; }
     }
 
     public partial class EPpoReceiptWithdrawlEntryDTO : BaseDTO {
-
+        public string Reason { get; set; }
+        public string Flag { get; set; } 
+        public string ApplicationNo { get; set; }
     }
     public partial class EPpoReceiptWithdrawlResponseDTO : EPpoReceiptWithdrawlEntryDTO {
-
+        public string ApplicationNo { get; set; }
+        public string Status { get; set; }
+        public string ErrorCode { get; set; }
     }
 
     public partial class EPpoReceiptPpoIdResponseDTO : BaseDTO {
-
+        public string PpoNo { get; set; }
+        public string Status { get; set; }
+        public string PenName { get; set; }
+        public string PpoType { get; set; }
+        public string PpoId { get; set; }
+        public string IntTreasuryCode { get; set; }
     }
 
     public class PensionerEntryDTO : BaseDTO {
