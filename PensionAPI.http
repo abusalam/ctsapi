@@ -1078,3 +1078,22 @@ Content-Type: application/json
   }
 }
 
+### Get ePPO Receipt By PpoNo
+# @name GetEppoReceiptByPpoNo
+GET {{PensionAPI_HostAddress}}/api/v1/e-ppo/{{ppoNo}}/receipt
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+### Update ePPO Receipt
+# @name UpdateEppoReceiptByPension_Appln_No
+PUT {{PensionAPI_HostAddress}}/api/v1/e-ppo/{{pension_appln_no}}/receipt
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "reason": "test withdrawal",
+  "flag": "F",
+  "application_no": "12011790149"
+}
+

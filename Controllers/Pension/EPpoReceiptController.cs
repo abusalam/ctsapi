@@ -2,6 +2,7 @@ using CTS_BE.BAL.Interfaces.Pension;
 using CTS_BE.DTOs;
 using CTS_BE.Helper;
 using CTS_BE.Helper.Authentication;
+using CTS_BE.PensionEnum;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CTS_BE.Controllers.Pension
@@ -28,15 +29,17 @@ namespace CTS_BE.Controllers.Pension
         {
 
             JsonAPIResponse<EPpoReceiptEntryDTO> response = new(){
-                ApiResponseStatus = Enum.APIResponseStatus.Success,
-                Message = $"ePPO Receipt saved sucessfully!"
             };
             try {
-                response.Result = await _ppoReceiptService.CreateEPpoReceipt<EPpoReceiptEntryDTO>(
-                    ePpoReceiptEntryDTO,
-                    GetTreasuryCode(),
-                    GetCurrentFyYear()
-                );
+                response = new(){
+                    ApiResponseStatus = Enum.APIResponseStatus.Success,
+                    Result = await _ppoReceiptService.CreateEPpoReceipt<EPpoReceiptEntryDTO>(
+                        ePpoReceiptEntryDTO,
+                        GetTreasuryCode(),
+                        GetCurrentFyYear()
+                    ),
+                    Message = $"ePPO Receipt saved sucessfully!"
+                };
             }
             catch(Exception ex) {
                 FillException(response, ex);
@@ -45,7 +48,6 @@ namespace CTS_BE.Controllers.Pension
             finally {
                 FillErrorMesageFromDataSource(response);
             }
-
             return response;
         }
 
@@ -108,32 +110,43 @@ namespace CTS_BE.Controllers.Pension
             return response;
         }
 
-        [HttpPut("{applicationNo}/receipt")]
+        [HttpPut("{pension_appln_no}/update")]
         [Tags("Pension: e-PPO Receipt")]
         [OpenApi]
-        public async Task<JsonAPIResponse<EPpoReceiptWithdrawlResponseDTO>> WithdrawEPpoReceipt(
-            string applicationNo,
+        public async Task<JsonAPIResponse<EPpoReceiptWithdrawlResponseDTO>> UpdateEPpoReceipt(
             EPpoReceiptWithdrawlEntryDTO ePpoReceiptWithdrawlEntryDTO
         )
         {
-
-            JsonAPIResponse<EPpoReceiptWithdrawlResponseDTO> response = new(){
+            JsonAPIResponse<EPpoReceiptWithdrawlResponseDTO> response = new()
+            {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
-                Message = $"ePPO Receipt withdrawn sucessfully!"
+                Message = $"ePPO Receipt updated successfully!"
             };
-            try {
-                response.Result = await _ppoReceiptService.RegisterEPpoReceiptWithdrawal<EPpoReceiptWithdrawlResponseDTO>(
-                    applicationNo,
-                    ePpoReceiptWithdrawlEntryDTO,
-                    GetTreasuryCode(),
-                    GetCurrentFyYear()
-                );
+
+            // Validate the flag value
+            if (ePpoReceiptWithdrawlEntryDTO.Flag != "F" && 
+                ePpoReceiptWithdrawlEntryDTO.Flag != "P" && 
+                ePpoReceiptWithdrawlEntryDTO.Flag != "R")
+            {
+                response.ApiResponseStatus = Enum.APIResponseStatus.Error;
+                response.Message = "Invalid flag value. It must be either 'F', 'P', or 'R'.";
+                return response;
             }
-            catch(Exception ex) {
+
+            try {
+            response.Result = await _ppoReceiptService.RegisterEPpoReceiptWithdrawal<EPpoReceiptWithdrawlResponseDTO>(
+                ePpoReceiptWithdrawlEntryDTO.ApplicationNo,
+                ePpoReceiptWithdrawlEntryDTO,
+                GetTreasuryCode(),
+                GetCurrentFyYear());
+            }
+            catch (Exception ex)
+            {
                 FillException(response, ex);
                 return response;
             }
-            finally {
+            finally
+            {
                 FillErrorMesageFromDataSource(response);
             }
 

@@ -190,9 +190,13 @@ namespace CTS_BE.DTOs
     }
 
     public partial class EPpoReceiptResponseDTO : EPpoReceiptEntryDTO {
+        [Required]
         public long Id { get; set; }
-        public string ApplicationNo { get; set; }
+        [Required]
+        public string PensionApplnNo { get; set; }
+        [Required]
         public string Status { get; set; }
+        [Required]
         public string ErrorCode { get; set; }
     }
 

@@ -59,15 +59,15 @@ namespace CTS_BE.DAL.Repositories.Pension
             return response;
         }
 
-        public async Task<T> GetEPpoReceiptByApplicationNo<T>(
-            string applicationNo,
+        public async Task<T> GetEPpoReceiptByPension_Appln_No<T>(
+            string pension_appln_no,
             string treasuryCode,
             short financialYear,
             Expression<Func<EppoReceipt, T>> selectExpression)
         {
             var query = _context.EppoReceipts
                 .Where(e => 
-                    e.PensionApplnNo == applicationNo && 
+                    e.PensionApplnNo == pension_appln_no && 
                     e.TreasuryCode == treasuryCode && 
                     e.FinancialYear == financialYear);
 
@@ -135,7 +135,7 @@ namespace CTS_BE.DAL.Repositories.Pension
         }
 
         public async Task<T> WithdrawEPpoReceipt<T>(
-            string applicationNo,
+            string pension_appln_no,
             EppoReceipt entity,
             string treasuryCode,
             short financialYear,
@@ -152,46 +152,49 @@ namespace CTS_BE.DAL.Repositories.Pension
                 
                 if (await _context.SaveChangesAsync() == 0)
                 {
-                    return (T)(object)new EPpoReceiptWithdrawlResponseDTO
+                    var withdrawalResponse1 = new EPpoReceiptWithdrawlResponseDTO
                     {
-                        ApplicationNo = applicationNo,
+                        ApplicationNo = pension_appln_no,
                         Status = "F",
                         ErrorCode = "Failed to withdraw PPO receipt. Please try again.",
                         Reason = reason,    
                         Flag = flag  
                     };
+                    return _mapper.Map<T>(withdrawalResponse1);
                 }
-                
-                return (T)(object)new EPpoReceiptWithdrawlResponseDTO
-                {
-                    ApplicationNo = applicationNo,
-                    Status = "E",  
-                    ErrorCode = "-1", 
-                    Reason = reason,    
-                    Flag = flag 
-                };
+                var withdrawalResponse = new EPpoReceiptWithdrawlResponseDTO
+                    {
+                        ApplicationNo = pension_appln_no,
+                        Status = "E",  
+                        ErrorCode = "-1", 
+                        Reason = reason,    
+                        Flag = flag 
+                    };
+                    return _mapper.Map<T>(withdrawalResponse);
             }
             catch (DbUpdateException ex)
             {
-                return (T)(object)new EPpoReceiptWithdrawlResponseDTO
-                {
-                    ApplicationNo = applicationNo,
-                    Status = "F",
-                    ErrorCode = $"DbException: {ex.InnerException?.Message ?? ex.Message}",
-                    Reason = reason,    
-                    Flag = flag 
-                };
+                var withdrawalResponse = new EPpoReceiptWithdrawlResponseDTO
+                    {
+                        ApplicationNo = pension_appln_no,
+                        Status = "F",
+                        ErrorCode = $"DbException: {ex.InnerException?.Message ?? ex.Message}",
+                        Reason = reason,    
+                        Flag = flag 
+                    };
+                    return _mapper.Map<T>(withdrawalResponse);
             }
             catch (Exception ex)
             {
-                return (T)(object)new EPpoReceiptWithdrawlResponseDTO
-                {
-                    ApplicationNo = applicationNo,
-                    Status = "F",
-                    ErrorCode = $"ServiceException: {ex.InnerException?.Message ?? ex.Message}",
-                    Reason = reason,   
-                    Flag = flag 
-                };
+                var withdrawalResponse = new EPpoReceiptWithdrawlResponseDTO
+                    {
+                        ApplicationNo = pension_appln_no,
+                        Status = "F",
+                        ErrorCode = $"ServiceException: {ex.InnerException?.Message ?? ex.Message}",
+                        Reason = reason,   
+                        Flag = flag 
+                    };
+                    return _mapper.Map<T>(withdrawalResponse);
             }
         }
     }

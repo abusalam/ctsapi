@@ -64,7 +64,7 @@ namespace CTS_BE.BAL.Services.Pension
             short financialYear)
         {
             EppoRevision eppoRevision = _mapper.Map<EppoRevision>(ePpoReceiptRevisionEntryDTO);
-            T response = default;
+            T response = _mapper.Map<T>(ePpoReceiptRevisionEntryDTO);
 
             try 
             {
@@ -91,15 +91,15 @@ namespace CTS_BE.BAL.Services.Pension
             return response;
         }
 
-        public async Task<T> GetEPpoReceiptByApplicationNo<T>(
-            string applicationNo, 
+        public async Task<T> GetEPpoReceiptByPension_Appln_No<T>(
+            string pension_appln_no, 
             string treasuryCode, 
             short financialYear)
         {
             try 
             {
-                return await _ePpoReceiptRepository.GetEPpoReceiptByApplicationNo<T>(
-                    applicationNo,
+                return await _ePpoReceiptRepository.GetEPpoReceiptByPension_Appln_No<T>(
+                    pension_appln_no,
                     treasuryCode,
                     financialYear,
                     entity => _mapper.Map<T>(entity)
@@ -107,7 +107,7 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
-                return _mapper.Map<T>(new { Status = "F", ApplicationNo = applicationNo, ErrorCode = ex.Message });
+                return _mapper.Map<T>(new { Status = "F", ApplicationNo = pension_appln_no, ErrorCode = ex.Message });
             }
         }
 
@@ -132,19 +132,17 @@ namespace CTS_BE.BAL.Services.Pension
         }
 
         public async Task<T> RegisterEPpoReceiptWithdrawal<T>(
-            string applicationNo,
+            string pension_appln_no,
             EPpoReceiptWithdrawlEntryDTO ePpoReceiptWithdrawlEntryDTO,
             string treasuryCode,
             short financialYear)
         {
-            EppoReceipt eppoReceipt = await _context.EppoReceipts
-                .FirstOrDefaultAsync(e => e.PensionApplnNo == applicationNo);
-
+            EppoReceipt? eppoReceipt = await _context.EppoReceipts.FirstOrDefaultAsync(e => e.PensionApplnNo == pension_appln_no);
             if (eppoReceipt == null)
             {
                 return _mapper.Map<T>(new 
                 {
-                    ApplicationNo = applicationNo,
+                    ApplicationNo = pension_appln_no,
                     Status = "F",
                     ErrorCode = "Application not found",
                     Reason = ePpoReceiptWithdrawlEntryDTO.Reason,
@@ -155,7 +153,7 @@ namespace CTS_BE.BAL.Services.Pension
             try 
             {
                 return await _ePpoReceiptRepository.WithdrawEPpoReceipt<T>(
-                    applicationNo,
+                    pension_appln_no,
                     eppoReceipt,
                     treasuryCode,
                     financialYear,
@@ -163,7 +161,7 @@ namespace CTS_BE.BAL.Services.Pension
                     ePpoReceiptWithdrawlEntryDTO.Flag,  
                     entity => _mapper.Map<T>(new 
                     {
-                        ApplicationNo = applicationNo,
+                        ApplicationNo = pension_appln_no,
                         Status = "S",
                         ErrorCode = (string)null,
                         Reason = ePpoReceiptWithdrawlEntryDTO.Reason,
@@ -175,7 +173,7 @@ namespace CTS_BE.BAL.Services.Pension
             {
                 return _mapper.Map<T>(new 
                 {
-                    ApplicationNo = applicationNo,
+                    ApplicationNo = pension_appln_no,
                     Status = "F",
                     ErrorCode = ex.Message,
                     Reason = ePpoReceiptWithdrawlEntryDTO.Reason,

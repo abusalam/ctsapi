@@ -19,7 +19,7 @@ namespace CTS_BE.DAL.Interfaces.Pension
             Expression<Func<EppoReceipt, T>> selectExpression
         );
         public Task<T> WithdrawEPpoReceipt<T>(
-            string applicationNo,
+            string pension_appln_no,
             EppoReceipt entity,
             string treasuryCode,
             short financialYear,
@@ -27,8 +27,8 @@ namespace CTS_BE.DAL.Interfaces.Pension
             string flag,
             Expression<Func<EppoReceipt, T>> selectExpression
         );
-        public Task<T> GetEPpoReceiptByApplicationNo<T>(
-            string applicationNo,
+        public Task<T> GetEPpoReceiptByPension_Appln_No<T>(
+            string pension_appln_no,
             string treasuryCode,
             short financialYear,
             Expression<Func<EppoReceipt, T>> selectExpression

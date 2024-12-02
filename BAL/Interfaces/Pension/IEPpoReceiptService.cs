@@ -15,13 +15,13 @@ namespace CTS_BE.BAL.Interfaces.Pension
             short financialYear
         );
         public Task<T> RegisterEPpoReceiptWithdrawal<T>(
-            string applicationNo,
+            string pension_appln_no,
             EPpoReceiptWithdrawlEntryDTO ePpoReceiptWithdrawlEntryDTO,
             string treasuryCode,
             short financialYear
         );
-        public Task<T> GetEPpoReceiptByApplicationNo<T>(
-            string applicationNo,
+        public Task<T> GetEPpoReceiptByPension_Appln_No<T>(
+            string pension_appln_no,
             string treasuryCode,
             short financialYear
         );
