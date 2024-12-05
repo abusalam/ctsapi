@@ -208,8 +208,9 @@ public partial class PensionDbContext : DbContext
 
             entity.ToTable("life_certificates", "cts_pension", tb => tb.HasComment("PensionModuleSchema v1"));
 
-            entity.Property(e => e.CertificateFlag).HasDefaultValueSql("false");
+            entity.Property(e => e.CertificateSubmitted).HasDefaultValueSql("false");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.DigitalMode).HasDefaultValueSql("false");
 
             entity.HasOne(d => d.Pensioner).WithMany(p => p.LifeCertificates)
                 .OnDelete(DeleteBehavior.ClientSetNull)

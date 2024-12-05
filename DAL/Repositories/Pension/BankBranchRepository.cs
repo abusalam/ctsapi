@@ -81,7 +81,7 @@ namespace CTS_BE.DAL.Repositories.Pension
             .Include(entity => entity.Branch)
             .ThenInclude(entity => entity.Bank)
             .Select(entity => entity.Branch.Bank.BankName + " - " + entity.Branch.BranchName)
-            .FirstOrDefaultAsync() ?? "";
+            .FirstOrDefaultAsync() ?? "Not Found";
             return bankBranchName;
         }
     }

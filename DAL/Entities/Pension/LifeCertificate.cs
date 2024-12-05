@@ -29,28 +29,11 @@ public partial class LifeCertificate
     [Column("ppo_id")]
     public int PpoId { get; set; }
 
-    [Column("ppo_no")]
-    [StringLength(100)]
-    public string PpoNo { get; set; } = null!;
+    [Column("digital_mode")]
+    public bool? DigitalMode { get; set; }
 
-    [Column("bank_ac_no")]
-    [StringLength(16)]
-    public string BankAcNo { get; set; } = null!;
-
-    [Column("ifsc_code")]
-    [StringLength(11)]
-    public string IfscCode { get; set; } = null!;
-
-    [Column("account_holder_name")]
-    [StringLength(100)]
-    public string AccountHolderName { get; set; } = null!;
-
-    [Column("mobile_number")]
-    [StringLength(10)]
-    public string MobileNumber { get; set; } = null!;
-
-    [Column("certificate_flag")]
-    public bool? CertificateFlag { get; set; }
+    [Column("certificate_submitted")]
+    public bool? CertificateSubmitted { get; set; }
 
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime? CreatedAt { get; set; }

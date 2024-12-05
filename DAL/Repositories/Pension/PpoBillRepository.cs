@@ -37,7 +37,7 @@ namespace CTS_BE.DAL.Repositories.Pension
                     entity => entity.BillNo
                 )
                 .FirstOrDefaultAsync();
-            
+
             return nextBillNo + 1;
         }
 
@@ -78,6 +78,7 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             //Eager loading
             _pensionDbContext.PpoBills
+                .Include(entity => entity.Bill)
                 .Include(entity => entity.PpoBillBreakups)
                 .ThenInclude(entity => entity.Revision)
                 .ThenInclude(entity => entity.Rate)
@@ -159,7 +160,7 @@ namespace CTS_BE.DAL.Repositories.Pension
                 .FirstOrDefaultAsync();
             return ppoBill;
         }
-    
+
         private PpoComponentRevision GetPpoComponentRevision(
             PpoComponentRevision revision,
             long pensionerId,
@@ -169,7 +170,7 @@ namespace CTS_BE.DAL.Repositories.Pension
         {
             PpoComponentRevision? ppoComponentRevisionFound = _pensionDbContext.PpoComponentRevisions
                 .Where(
-                    entity => entity.ActiveFlag 
+                    entity => entity.ActiveFlag
                     // && entity.TreasuryCode == treasuryCode
                     && entity.PpoId == ppoId
                     && entity.RateId == revision.RateId
@@ -246,13 +247,13 @@ namespace CTS_BE.DAL.Repositories.Pension
                     entity.FinancialYear = financialYear;
                     entity.CreatedAt = DateTime.Now;
                     entity.CreatedBy = ppoBillEntity.CreatedBy;
-                    entity.BreakupAmount = ppoBillEntity.BillType == BillType.RegularBill ? entity.Revision.AmountPerMonth 
+                    entity.BreakupAmount = ppoBillEntity.BillType == BillType.RegularBill ? entity.Revision.AmountPerMonth
                     : entity.BreakupAmount;
                 }
             );
             ppoBillEntity.GrossAmount = ppoBillEntity.PpoBillBreakups.Sum(entity => entity.BreakupAmount);
             ppoBillEntity.NetAmount = ppoBillEntity.GrossAmount - ppoBillEntity.BytransferAmount;
-            
+
             // ppoBillEntity.BillNo = await GetNextBillNo(financialYear, treasuryCode);
             await _pensionDbContext.PpoBills.AddAsync(ppoBillEntity);
             if(await _pensionDbContext.SaveChangesAsync() == 0) {

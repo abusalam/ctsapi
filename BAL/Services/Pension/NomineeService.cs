@@ -188,6 +188,7 @@ namespace CTS_BE.BAL.Services.Pension
                 }
 
                 nomineeEntity.FillFrom(nomineeEntryDTO);
+                nomineeEntity.Id = nomineeId;
                 nomineeEntity.PensionerId = nomineeDetails.PensionerId;
                 nomineeEntity.TreasuryCode = nomineeDetails.TreasuryCode;
                 nomineeEntity.PpoId = nomineeDetails.PpoId;

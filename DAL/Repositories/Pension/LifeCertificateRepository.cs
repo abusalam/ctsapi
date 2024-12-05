@@ -39,6 +39,22 @@ namespace CTS_BE.DAL.Repositories.Pension
                 .FirstOrDefaultAsync();
         }
 
+        public async Task<List<Pensioner>> GetPensionersWithLifeCertificatesByBranchId(
+            long branchId,
+            short financialYear,
+            string treasuryCode
+        )
+        {
+            return await _context.Pensioners
+                .Include(p => p.LifeCertificates)
+                .Where(p =>
+                    p.Branch.Id == branchId &&
+                    p.TreasuryCode == treasuryCode &&
+                    p.FinancialYear == financialYear
+                )
+                .ToListAsync();
+        }
+
         public async Task<T> CreateLifeCertificate<T>(
             LifeCertificate lifeCertificate,
             string treasuryCode
@@ -48,6 +64,7 @@ namespace CTS_BE.DAL.Repositories.Pension
             T? response = _mapper.Map<T>(lifeCertificate);
             try {
                 lifeCertificate.TreasuryCode = treasuryCode;
+                lifeCertificate.DigitalMode = false;
                 _context.LifeCertificates.Add(lifeCertificate);
                 if(await _context.SaveChangesAsync() == 0) {
                     response.FillDataSource(
@@ -79,11 +96,11 @@ namespace CTS_BE.DAL.Repositories.Pension
         )
         {
             T? response = _mapper.Map<T>(lifeCertificateDetailEntity);
-            try 
+            try
             {
                 // First, retrieve the existing entity
                 var existingEntity = await _context.LifeCertificates
-                    .FirstOrDefaultAsync(x => x.PpoId == lifeCertificateDetailEntity.PpoId 
+                    .FirstOrDefaultAsync(x => x.PpoId == lifeCertificateDetailEntity.PpoId
                                             && x.TreasuryCode == treasuryCode);
 
                 if (existingEntity == null)
@@ -97,12 +114,12 @@ namespace CTS_BE.DAL.Repositories.Pension
 
                 // Update the properties of the existing entity
                 _context.Entry(existingEntity).CurrentValues.SetValues(lifeCertificateDetailEntity);
-                
+
                 // Or alternatively, manually update specific properties:
                 // existingEntity.AccountHolderName = lifeCertificateDetailEntity.AccountHolderName;
                 // ... update other properties as needed
 
-                if (await _context.SaveChangesAsync() == 0) 
+                if (await _context.SaveChangesAsync() == 0)
                 {
                     response.FillDataSource(
                         lifeCertificateDetailEntity,
@@ -112,7 +129,7 @@ namespace CTS_BE.DAL.Repositories.Pension
                 }
                 return _mapper.Map<T>(existingEntity);
             }
-            catch (DbUpdateException ex) 
+            catch (DbUpdateException ex)
             {
                 response.FillDataSource(
                     lifeCertificateDetailEntity,
@@ -120,7 +137,7 @@ namespace CTS_BE.DAL.Repositories.Pension
                 );
                 return response;
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 response.FillDataSource(
                     lifeCertificateDetailEntity,

@@ -188,7 +188,7 @@ Content-Type: application/json
 {
   "PpoId": {{GeneratedPpoId}},
   "billType": "F",
-  "toDate": "2024-10-01"
+  "toDate": "2024-12-05"
 }
 
 
@@ -666,6 +666,86 @@ Content-Type: application/json
   "sanctionNo": "9876/DDPG/2024",
   "sanctionDate": "2024-10-31"
 }
+
+
+
+
+
+
+
+
+
+### Submit Life Certificate
+# @name SubmitLifeCertificate
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+POST {{PensionAPI_HostAddress}}/api/v1/lifecertificate
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "ppoId": {{GeneratedPpoId}},
+  "financialYear": {{$datetime "YYYY"}},
+  "certificateSubmitted": true
+}
+
+
+
+
+
+
+
+
+
+### Get Life Certificate
+# @name GetLifeCertificateByPpoId
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+GET {{PensionAPI_HostAddress}}/api/v1/lifecertificate/ppo/{{GeneratedPpoId}}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+
+
+
+
+
+
+
+
+### Update Life Certificate
+# @name UpdateLifeCertificate
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+PUT {{PensionAPI_HostAddress}}/api/v1/lifecertificate/ppo/{{GeneratedPpoId}}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "financialYear": {{$datetime "YYYY"}},
+  "certificateSubmitted": false
+}
+
+
+
+
+
+
+
+
+
+### Set Bank Branch
+@BranchId = 1
+
+
+### List of Life Certificates
+# @name GetLifeCertificatesByBranchId
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+GET {{PensionAPI_HostAddress}}/api/v1/lifecertificate/branch/{{BranchId}}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
 
 
 
