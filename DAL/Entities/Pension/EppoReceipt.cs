@@ -125,10 +125,6 @@ public partial class EppoReceipt
     [StringLength(500)]
     public string? WithdrawReason { get; set; }
 
-    [Column("ppo_status")]
-    [StringLength(100)]
-    public string PpoStatus { get; set; } = null!;
-
     [Column("photo_file_id")]
     public long? PhotoFileId { get; set; }
 

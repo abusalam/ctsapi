@@ -144,6 +144,9 @@ namespace CTS_BE.DTOs
         [PastDateWithinYears(100)]
         public DateOnly DateOfBirth { get; set; }
 
+        [DataType(DataType.Date)]
+        public DateOnly? DateOfDeath { get; set; }
+
         [StringLength(10)]
         [RegularExpression(@"^[6-9]\d{9}$", ErrorMessage = "Invalid Mobile Number")]
         public string? MobileNumber { get; set; }
@@ -409,6 +412,7 @@ namespace CTS_BE.DTOs
     public partial class InitiateFirstPensionBillResponseDTO : PensionerFirstBillResponseDTO {
         public long PensionerId { get {return this.Pensioner?.Id ?? 0;} }
         public PensionerResponseDTO? Pensioner { get; set; } = null!;
+        public string BankBranchName { get { return this.Pensioner?.Branch?.Bank?.BankName + " - " + this.Pensioner?.Branch?.BranchName;} }
     }
 
     public partial class PpoPaymentListItemDTO : BaseDTO {
@@ -509,6 +513,7 @@ namespace CTS_BE.DTOs
 
         [DataType(DataType.Date)]
         public DateOnly FromDate { get; set; }
+        public DateOnly ToDate { get; set; }
         public char BillType { get; set; }
         public int BillNo { get; set; }
         public DateOnly BillDate { get; set; }
@@ -795,34 +800,32 @@ namespace CTS_BE.DTOs
     public partial class LifeCertificateEntryDTO : BaseDTO {
         [Required]
         public int FinancialYear { get; set; }
+
         [Required]
         public int PpoId { get; set; }
 
         [Required]
-        public string PpoNo { get; set; } = null!;
-
-        [Required]
-        public string BankAcNo { get; set; } = null!;
-        [Required]
-        public string IfscCode { get; set; } = null!;
-        [Required]
-        public string AccountHolderName { get; set; } = null!;
-        [Required]
-        public string MobileNumber { get; set; } = null!;
-        public bool? CertificateFlag { get; set; }
-        public virtual long BankId { get; set; }
-        public long? BranchId { get; set; }
+        public bool? CertificateSubmitted { get; set; }
     }
 
     public partial class LifeCertificateResponseDTO : LifeCertificateEntryDTO {
         public long Id { get; set; }
-        public BranchResponseDTO? Branch { get; set; }
-        public override long BankId => Branch != null ? Branch.BankId : 0;
+    }
+
+    public partial class LifeCertificateDetailsResponseDTO : BaseDTO {
+        public long Id { get; set; }
+        public int PpoId { get; set; }
+        public string PpoNo { get; set; } = null!;
+        public string PensionerName { get; set; } = null!;
+        public string BankAcNo { get; set; } = null!;
+        public string MobileNumber { get; set; } = null!;
+        public bool DigitalMode { get; set; }
+        public bool CertificateSubmitted { get; set; }
     }
 
     public partial class LifeCertificateListResponseDTO : BaseDTO {
         public int LifeCertificateCount { get { return LifeCertificates?.Count ?? 0;} }
-        public List<LifeCertificateResponseDTO>? LifeCertificates { get; set; }
+        public List<LifeCertificateDetailsResponseDTO>? LifeCertificates { get; set; }
     }
 
 }

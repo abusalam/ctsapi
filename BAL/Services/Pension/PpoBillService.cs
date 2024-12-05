@@ -364,7 +364,7 @@ namespace CTS_BE.BAL.Services.Pension
                     )
                     .FirstOrDefaultAsync();
 
-                if(ppoApprovedFlag == null)
+                if (ppoApprovedFlag == null)
                 {
                     ppoBillResponseDTO = _mapper.Map<T>(new PpoBill());
                     ppoBillResponseDTO.FillDataSource(
@@ -383,7 +383,7 @@ namespace CTS_BE.BAL.Services.Pension
                         && entity.TreasuryCode == treasuryCode
                     )
                     .FirstOrDefaultAsync();
-                if(ppoBill != null) {
+                if (ppoBill != null) {
                     ppoBillResponseDTO = _mapper.Map<T>(ppoBill);
                     ppoBillResponseDTO.FillDataSource(
                         ppoBill,
@@ -391,7 +391,7 @@ namespace CTS_BE.BAL.Services.Pension
                     );
                     return ppoBillResponseDTO;
                 }
-                if(ppoBillDTO.BillType == BillType.RegularBill) {
+                if (ppoBillDTO.BillType == BillType.RegularBill) {
                     PpoBill? ppoFirstBill = await _pensionDbContext.PpoBills
                         .Where(
                             entity => entity.ActiveFlag
@@ -400,7 +400,7 @@ namespace CTS_BE.BAL.Services.Pension
                             && entity.TreasuryCode == treasuryCode
                         )
                         .FirstOrDefaultAsync();
-                    if(ppoFirstBill == null) {
+                    if (ppoFirstBill == null) {
                         ppoBillResponseDTO = _mapper.Map<T>(new PpoBill());
                         ppoBillResponseDTO.FillDataSource(
                             ppoFirstBill,
@@ -442,7 +442,7 @@ namespace CTS_BE.BAL.Services.Pension
                         BillNo = await _ppoBillRepository.GetNextBillNo(financialYear, treasuryCode)
                     };
 
-                if(ppoBillDTO.BillType == BillType.RegularBill) {
+                if (ppoBillDTO.BillType == BillType.RegularBill) {
 
                     billEntity =  await _pensionDbContext.Bills
                     .Where(
@@ -486,14 +486,14 @@ namespace CTS_BE.BAL.Services.Pension
             catch (DbUpdateException ex) {
                 ppoBillResponseDTO.FillDataSource(
                     _mapper.Map<T>(ppoBillEntity),
-                    $"DbUpdateException: {ex.InnerException?.Message} {this.ToString()}"
+                    $"DbUpdateException: {ex.InnerException?.Message ?? ex.Message}"
                 );
                 return ppoBillResponseDTO;
             }
             catch (Exception ex) {
                 ppoBillResponseDTO.FillDataSource(
                     _mapper.Map<T>(ppoBillEntity),
-                    $"ServiceException: {ex.InnerException?.Message ?? ex.Message} {this.ToString()}"
+                    $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );
                 return ppoBillResponseDTO;
             }
@@ -506,16 +506,16 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
-            PpoBill? ppoBillEntity = new ();
-            PpoBillResponseDTO ppoBillResponseDTO = _mapper.Map<PpoBillResponseDTO>(ppoBillEntity);
+            PpoBill? ppoBillEntity = new();
+            PpoBillResponseDTO ppoBillResponseDTO = new ();
             try {
-
                 ppoBillEntity = await _ppoBillRepository.GetPpoFirstBillByPpoId(
                     ppoId,
                     financialYear,
                     treasuryCode
                 );
-                if(ppoBillEntity == null) {
+
+                if (ppoBillEntity == null) {
                     ppoBillResponseDTO.FillDataSource(
                         ppoBillEntity,
                         "Bill not found! Please add bill first or check PPO id."
@@ -523,27 +523,33 @@ namespace CTS_BE.BAL.Services.Pension
                     return ppoBillResponseDTO;
                 }
                 ppoBillResponseDTO = _mapper.Map<PpoBillResponseDTO>(ppoBillEntity);
+
                 ppoBillResponseDTO.BankBranchName = await _bankBranchRepository.GetBankBranchNameByPpoId(
                     treasuryCode,
                     ppoId
                 );
+                ppoBillResponseDTO.BillNo = ppoBillEntity.Bill.BillNo;
+                ppoBillResponseDTO.BillDate = ppoBillEntity.Bill.BillDate;
+                ppoBillResponseDTO.FromDate = ppoBillEntity.Bill.FromDate;
+                ppoBillResponseDTO.ToDate = ppoBillEntity.Bill.ToDate;
                 ppoBillResponseDTO.TreasuryName = "Malda - I";
                 ppoBillResponseDTO.AmountInWords = PensionCalculator.InWords(ppoBillResponseDTO.NetAmount);
                 ppoBillResponseDTO.PreparedBy = GetUserName();
                 ppoBillResponseDTO.PreparedOn = DateOnly.FromDateTime(DateTime.Now);
+
                 return ppoBillResponseDTO;
             }
             catch (DbUpdateException ex) {
                 ppoBillResponseDTO.FillDataSource(
-                    _mapper.Map<PpoBillResponseDTO>(ppoBillEntity),
-                    $"DbUpdateException: {ex.InnerException?.Message} {this.ToString()}"
+                    ppoBillEntity,
+                    $"DbUpdateException: {ex.InnerException?.Message ?? ex.Message}"
                 );
                 return ppoBillResponseDTO;
             }
             catch (Exception ex) {
                 ppoBillResponseDTO.FillDataSource(
-                    _mapper.Map<PpoBillResponseDTO>(ppoBillEntity),
-                    $"ServiceException: {ex.InnerException?.Message ?? ex.Message} {this.ToString()}"
+                    ppoBillEntity,
+                    $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );
                 return ppoBillResponseDTO;
             }

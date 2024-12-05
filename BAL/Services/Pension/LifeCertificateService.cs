@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using CTS_BE.BAL.Interfaces.Pension;
 using CTS_BE.DAL.Entities.Pension;
@@ -76,14 +72,80 @@ namespace CTS_BE.BAL.Services.Pension
             }
         }
 
+        public async Task<LifeCertificateListResponseDTO> GetLifeCertificatesByBranchId(
+            long branchId,
+            short financialYear,
+            string treasuryCode
+        )
+        {
+            LifeCertificateListResponseDTO response = new();
+            List<Pensioner>? pensioners = null;
+            List<LifeCertificateDetailsResponseDTO>? lifeCertificates = new();
+            try
+            {
+                // Validate branch exists
+                var branch = await _bankBranchRepository.GetBranchById(treasuryCode, branchId);
+                if (branch is null)
+                {
+                    response.FillDataSource(
+                        branchId,
+                        $"Branch not found. Please check branch Id: {branchId} and try again."
+                    );
+                    return response;
+                }
+
+                // Get pensioners with life certificates
+                pensioners = await _lifeCertificateRepository.GetPensionersWithLifeCertificatesByBranchId(
+                    branchId,
+                    financialYear,
+                    treasuryCode
+                );
+
+                // Map pensioners to life certificate response DTOs
+                pensioners.ForEach(p => {
+                        LifeCertificate? lc = null;
+                        if (p.LifeCertificates.Count > 0)
+                        {
+                            lc = p.LifeCertificates.Where(
+                                l => l.TreasuryCode == treasuryCode
+                                && l.FinancialYear == financialYear
+                                ).First();
+                        }
+                        lifeCertificates.Add(new LifeCertificateDetailsResponseDTO
+                                {
+                                    PpoId = p.PpoId,
+                                    PensionerName = p.PensionerName,
+                                    PpoNo = p.PpoNo,
+                                    BankAcNo = p.BankAcNo,
+                                    MobileNumber = p.MobileNumber ?? "--",
+                                    Id = lc?.Id ?? 0,
+                                    DigitalMode = lc?.DigitalMode ?? false,
+                                    CertificateSubmitted = lc?.CertificateSubmitted ?? false,
+                                }
+                            );
+                        }
+                    );
+                response.LifeCertificates = lifeCertificates;
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.FillDataSource(
+                    pensioners,
+                    $"ServiceException: {ex.InnerException?.Message ?? ex.Message} {ex.StackTrace}"
+                );
+                return response;
+            }
+        }
+
         public async Task<T> CreateLifeCertificate<T>(
             LifeCertificateEntryDTO lifeCertificateEntryDTO,
             short financialYear,
             string treasuryCode
         )
         {
-            LifeCertificate lifeCertificateEntity = new();
-            T? response = _mapper.Map<T>(lifeCertificateEntryDTO);
+            LifeCertificate lifeCertificateEntity = _mapper.Map<LifeCertificate>(lifeCertificateEntryDTO);
+            T? response = _mapper.Map<T>(lifeCertificateEntity);
             try
             {
                 Pensioner? pensioner = await _pensionerDetailsRepository.GetPensionerDetailsByPpoIdAsync(
@@ -102,6 +164,20 @@ namespace CTS_BE.BAL.Services.Pension
                     return response;
                 }
 
+                LifeCertificate? lc = await _lifeCertificateRepository.GetLifeCertificateByPpoIdAsync(
+                    lifeCertificateEntryDTO.PpoId,
+                    treasuryCode,
+                    entity => _mapper.Map<LifeCertificate>(entity)
+                );
+
+                if (lc is not null)
+                {
+                    response.FillDataSource(
+                        lc,
+                        "Life Certificate already exists for this Pensioner. Please check PPO Id. and try again."
+                    );
+                    return response;
+                }
                 lifeCertificateEntity.FillFrom(lifeCertificateEntryDTO);
                 lifeCertificateEntity.TreasuryCode = treasuryCode;
                 lifeCertificateEntity.PensionerId = pensioner.Id;
@@ -130,34 +206,50 @@ namespace CTS_BE.BAL.Services.Pension
         }
 
         public async Task<T> UpdateLifeCertificateByPpoId<T>(
-            long ppoId,
+            int ppoId,
             LifeCertificateEntryDTO lifeCertificateEntryDTO,
             short financialYear,
             string treasuryCode
         )
         {
-            T? response =  _mapper.Map<T>(lifeCertificateEntryDTO);
-            LifeCertificate lifeCertificateEntity = new();
+            LifeCertificate? lifeCertificateEntity = new();
+            T? response =  _mapper.Map<T>(lifeCertificateEntity);
 
             try
             {
 
-                LifeCertificate? lifeCertificateDetails = await _lifeCertificateRepository.GetLifeCertificateByPpoIdAsync(
+                lifeCertificateEntity = await _lifeCertificateRepository.GetLifeCertificateByPpoIdAsync(
                     ppoId,
                     treasuryCode,
                     entity => _mapper.Map<LifeCertificate>(entity)
                 );
 
-                if (lifeCertificateDetails is null)
+                if (lifeCertificateEntity is null)
                 {
                     response.FillDataSource(
-                        lifeCertificateDetails,
+                        lifeCertificateEntity,
                         " Life Certificate does not exist. Please check PPO Id. and try again."
                     );
                     return response;
                 }
 
-                long branchId = lifeCertificateEntryDTO.BranchId ?? 0;
+                Pensioner? pensioner = await _pensionerDetailsRepository.GetPensionerDetailsByPpoIdAsync(
+                    ppoId,
+                    financialYear,
+                    treasuryCode,
+                    entity => _mapper.Map<Pensioner>(entity)
+                );
+
+                if (pensioner is null)
+                {
+                    response.FillDataSource(
+                        pensioner,
+                        "Pensioner not found. Please check PPO Id. and try again."
+                    );
+                    return response;
+                }
+
+                long branchId = pensioner.Branch.Id;
                 if (branchId > 0)
                 {
                     Branch? branch = await _bankBranchRepository.GetBranchById(
@@ -175,10 +267,7 @@ namespace CTS_BE.BAL.Services.Pension
                 }
 
                 lifeCertificateEntity.FillFrom(lifeCertificateEntryDTO);
-                lifeCertificateEntity.Id = lifeCertificateDetails.Id;
-                lifeCertificateEntity.PensionerId = lifeCertificateDetails.PensionerId;
-                lifeCertificateEntity.TreasuryCode = lifeCertificateDetails.TreasuryCode;
-                lifeCertificateEntity.PpoId = lifeCertificateDetails.PpoId;
+                lifeCertificateEntity.PpoId = ppoId;
                 SetUpdatedBy(lifeCertificateEntity);
 
                 return await _lifeCertificateRepository.UpdateLifeCertificateByPpoId<T>(

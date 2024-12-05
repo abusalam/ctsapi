@@ -59,6 +59,10 @@ public partial class Nominee
     [MaxLength(1)]
     public char? NomineeType { get; set; }
 
+    [Column("nominee_adult_minor")]
+    [MaxLength(1)]
+    public char? NomineeAdultMinor { get; set; }
+
     [Column("nominee_priority")]
     public int? NomineePriority { get; set; }
 

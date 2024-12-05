@@ -66,6 +66,12 @@ namespace CTS_BE.BAL.Services.Pension
             }
 
             pensionDbContext.Entry(pensioner)
+                .Reference(entity => entity.Branch)
+                .Load();
+            pensionDbContext.Entry(pensioner.Branch)
+                .Reference(entity => entity.Bank)
+                .Load();
+            pensionDbContext.Entry(pensioner)
                 .Reference(entity => entity.Category)
                 .Load();
             pensionDbContext.Entry(pensioner.Category)

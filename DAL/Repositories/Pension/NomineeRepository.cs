@@ -31,7 +31,8 @@ namespace CTS_BE.DAL.Repositories.Pension
                     && entity.PpoId == ppoId
                     && entity.TreasuryCode == treasuryCode
                 )
-                .Include(entity => entity.Branch)
+                .Include(nominee => nominee.Branch)
+                .ThenInclude(branch => branch == null ? null : branch.Bank)
                 .Select(selectExpression)
                 .ToListAsync();
         }
@@ -152,7 +153,8 @@ namespace CTS_BE.DAL.Repositories.Pension
                     x => x.Id == nomineeId
                     && x.TreasuryCode == treasuryCode
                 )
-                .Include(x => x.Branch)
+                .Include(nominee => nominee.Branch)
+                .ThenInclude(branch => branch == null ? null : branch.Bank)
                 .Select(selectExpression)
                 .FirstOrDefaultAsync();
         }
