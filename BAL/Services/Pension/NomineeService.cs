@@ -149,22 +149,22 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
-            T? response =  _mapper.Map<T>(nomineeEntryDTO);
-            Nominee nomineeEntity = new();
+            Nominee? nomineeEntity = new();
+            T? response =  _mapper.Map<T>(nomineeEntity);
 
             try
             {
 
-                Nominee? nomineeDetails = await _nomineeRepository.GetNomineeDetailsByIdAsync(
+                nomineeEntity = await _nomineeRepository.GetNomineeDetailsByIdAsync(
                     nomineeId,
                     treasuryCode,
                     entity => _mapper.Map<Nominee>(entity)
                 );
 
-                if (nomineeDetails is null)
+                if (nomineeEntity is null)
                 {
                     response.FillDataSource(
-                        nomineeDetails,
+                        nomineeEntity,
                         "Nominee details does not exist. Please check Id. and try again."
                     );
                     return response;
@@ -188,10 +188,6 @@ namespace CTS_BE.BAL.Services.Pension
                 }
 
                 nomineeEntity.FillFrom(nomineeEntryDTO);
-                nomineeEntity.Id = nomineeId;
-                nomineeEntity.PensionerId = nomineeDetails.PensionerId;
-                nomineeEntity.TreasuryCode = nomineeDetails.TreasuryCode;
-                nomineeEntity.PpoId = nomineeDetails.PpoId;
                 SetUpdatedBy(nomineeEntity);
 
                 return await _nomineeRepository.UpdateNomineeDetails<T>(
