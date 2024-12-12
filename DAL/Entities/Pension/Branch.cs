@@ -16,10 +16,6 @@ public partial class Branch
     [Column("id")]
     public long Id { get; set; }
 
-    [Column("treasury_code")]
-    [StringLength(3)]
-    public string TreasuryCode { get; set; } = null!;
-
     [Column("bank_id")]
     public long BankId { get; set; }
 
@@ -35,9 +31,21 @@ public partial class Branch
     [StringLength(11)]
     public string IfscCode { get; set; } = null!;
 
-    [Column("micr_code")]
-    [StringLength(11)]
-    public string MicrCode { get; set; } = null!;
+    [Column("district_name")]
+    [StringLength(500)]
+    public string DistrictName { get; set; } = null!;
+
+    [Column("city_name")]
+    [StringLength(100)]
+    public string CityName { get; set; } = null!;
+
+    [Column("state_name")]
+    [StringLength(100)]
+    public string StateName { get; set; } = null!;
+
+    [Column("phone_no")]
+    [StringLength(100)]
+    public string PhoneNo { get; set; } = null!;
 
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime? CreatedAt { get; set; }

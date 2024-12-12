@@ -17,10 +17,6 @@ public partial class Bank
     [Column("id")]
     public long Id { get; set; }
 
-    [Column("treasury_code")]
-    [StringLength(3)]
-    public string TreasuryCode { get; set; } = null!;
-
     [Column("bank_name")]
     [StringLength(100)]
     public string BankName { get; set; } = null!;

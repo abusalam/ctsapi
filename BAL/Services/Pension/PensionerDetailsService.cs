@@ -65,7 +65,6 @@ namespace CTS_BE.BAL.Services.Pension
                     .Where(
                         entity => entity.ActiveFlag
                         && entity.Id == pensionerEntryDTO.BranchId
-                        && entity.TreasuryCode == treasuryCode
                     )
                     .Include(entity => entity.Bank)
                     .FirstOrDefaultAsync();

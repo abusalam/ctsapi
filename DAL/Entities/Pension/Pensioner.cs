@@ -138,6 +138,66 @@ public partial class Pensioner
     [MaxLength(1)]
     public char Religion { get; set; }
 
+    [Column("efp_amount")]
+    public int? EfpAmount { get; set; }
+
+    [Column("efp_wef_date")]
+    public DateOnly? EfpWefDate { get; set; }
+
+    [Column("efp_upto_date")]
+    public DateOnly? EfpUptoDate { get; set; }
+
+    [Column("nfp_amount")]
+    public int? NfpAmount { get; set; }
+
+    [Column("nfp_wef_date")]
+    public DateOnly? NfpWefDate { get; set; }
+
+    [Column("notional_pension_amount")]
+    public int? NotionalPensionAmount { get; set; }
+
+    [Column("notional_wef_date")]
+    public DateOnly? NotionalWefDate { get; set; }
+
+    [Column("gpf_tpf_no")]
+    [StringLength(100)]
+    public string? GpfTpfNo { get; set; }
+
+    [Column("pensioner_status")]
+    [StringLength(100)]
+    public string? PensionerStatus { get; set; }
+
+    [Column("first_pension_generated")]
+    public bool? FirstPensionGenerated { get; set; }
+
+    [Column("health_scheme")]
+    public bool? HealthScheme { get; set; }
+
+    [Column("employed_pensioner")]
+    public bool? EmployedPensioner { get; set; }
+
+    [Column("re_employed_pensioner")]
+    public bool? ReEmployedPensioner { get; set; }
+
+    [Column("double_pension")]
+    public bool? DoublePension { get; set; }
+
+    [Column("adhoc_pension")]
+    public bool? AdhocPension { get; set; }
+
+    [Column("provisional_pension")]
+    public bool? ProvisionalPension { get; set; }
+
+    [Column("interim_allowance")]
+    public bool? InterimAllowance { get; set; }
+
+    [Column("shared_pension")]
+    public bool? SharedPension { get; set; }
+
+    [Column("remarks")]
+    [StringLength(500)]
+    public string? Remarks { get; set; }
+
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime? CreatedAt { get; set; }
 

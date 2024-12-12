@@ -16,6 +16,8 @@ public partial class PensionDbContext : DbContext
     {
     }
 
+    public virtual DbSet<AccountHead> AccountHeads { get; set; }
+
     public virtual DbSet<Bank> Banks { get; set; }
 
     public virtual DbSet<Bill> Bills { get; set; }
@@ -62,6 +64,8 @@ public partial class PensionDbContext : DbContext
 
     public virtual DbSet<SubCategory> SubCategories { get; set; }
 
+    public virtual DbSet<Treasury> Treasuries { get; set; }
+
     public virtual DbSet<UploadedFile> UploadedFiles { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -69,6 +73,15 @@ public partial class PensionDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<AccountHead>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("account_heads_pkey");
+
+            entity.ToTable("account_heads", "cts_pension", tb => tb.HasComment("PensionModuleSchema v1"));
+
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+        });
+
         modelBuilder.Entity<Bank>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("banks_pkey");
@@ -238,11 +251,20 @@ public partial class PensionDbContext : DbContext
 
             entity.ToTable("pensioners", "cts_pension", tb => tb.HasComment("PensionModuleSchema v1"));
 
+            entity.Property(e => e.AdhocPension).HasDefaultValueSql("false");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.DoublePension).HasDefaultValueSql("false");
+            entity.Property(e => e.EmployedPensioner).HasDefaultValueSql("false");
+            entity.Property(e => e.FirstPensionGenerated).HasDefaultValueSql("false");
             entity.Property(e => e.Gender).HasComment("M - Male; F - Female;");
+            entity.Property(e => e.HealthScheme).HasDefaultValueSql("false");
+            entity.Property(e => e.InterimAllowance).HasDefaultValueSql("false");
             entity.Property(e => e.PpoSubType).HasComment("E - Employed; L - Widow Daughter; U - Unmarried Daughter; V - Divorced Daughter; N - Minor Son; R - Minor Daughter; P - Handicapped Son; G - Handicapped Daughter; J - Dependent Father; K - Dependent Mother; H - Husband; W - Wife;");
             entity.Property(e => e.PpoType).HasComment("P - Pension; F - Family Pension; C - CPF;");
+            entity.Property(e => e.ProvisionalPension).HasDefaultValueSql("false");
+            entity.Property(e => e.ReEmployedPensioner).HasDefaultValueSql("false");
             entity.Property(e => e.Religion).HasComment("H - Hindu; M - Muslim; O - Other;");
+            entity.Property(e => e.SharedPension).HasDefaultValueSql("false");
 
             entity.HasOne(d => d.Branch).WithMany(p => p.Pensioners)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -385,6 +407,15 @@ public partial class PensionDbContext : DbContext
             entity.HasKey(e => e.Id).HasName("sub_categories_pkey");
 
             entity.ToTable("sub_categories", "cts_pension", tb => tb.HasComment("PensionModuleSchema v1"));
+
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+        });
+
+        modelBuilder.Entity<Treasury>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("treasuries_pkey");
+
+            entity.ToTable("treasuries", "cts_pension", tb => tb.HasComment("PensionModuleSchema v1"));
 
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
         });

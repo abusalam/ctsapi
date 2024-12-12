@@ -20,7 +20,6 @@ namespace CTS_BE.DAL.Repositories.Pension
             .Where(
                 entity => entity.ActiveFlag
                 && entity.Id == bankId
-                && entity.TreasuryCode == treasuryCode
             )
             .FirstOrDefaultAsync();
         }
@@ -31,7 +30,6 @@ namespace CTS_BE.DAL.Repositories.Pension
             .Where(
                 entity => entity.ActiveFlag
                 && entity.Id == branchId
-                && entity.TreasuryCode == treasuryCode
             )
             .Include(entity => entity.Bank)
             .FirstOrDefaultAsync();
@@ -42,7 +40,6 @@ namespace CTS_BE.DAL.Repositories.Pension
             return await _context.Banks
             .Where(
                 entity => entity.ActiveFlag
-                && entity.TreasuryCode == treasuryCode
             )
             .ToListAsync();
         }
@@ -53,7 +50,6 @@ namespace CTS_BE.DAL.Repositories.Pension
             .Where(
                 entity => entity.ActiveFlag
                 && entity.BankId == bankId
-                && entity.TreasuryCode == treasuryCode
             )
             .Include(entity => entity.Bank)
             .ToListAsync();
@@ -63,7 +59,6 @@ namespace CTS_BE.DAL.Repositories.Pension
         {
             var bankBranchName = await _context.Branches.Where(
                 entity => entity.Id == branchId
-                && entity.TreasuryCode == treasuryCode
             )
             .Include(entity => entity.Bank)
             .Select(entity => entity.Bank.BankName + " - " + entity.BranchName)
