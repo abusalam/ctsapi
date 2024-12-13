@@ -142,7 +142,7 @@ namespace CTS_BE.BAL.Services.Pension
                 response.Pensioner = _mapper.Map<PensionerResponseDTO>(pensioner);
                 response.PensionerPayments = ppoPayments;
                 response.GrossAmount = response.PensionerPayments.ToList().Sum(entity => entity.DueAmount);
-                response.NetAmount = response.PensionerPayments.ToList().Sum(entity => entity.NetAmount);
+                response.NetAmount = response.PensionerPayments.Where(entity => entity.ComponentName != "AMOUNT COMMUTED").Sum(entity => entity.DueAmount);
             } else {
                 response.PpoBillBreakups = ppoBillBreakups;
                 response.GrossAmount = response.PpoBillBreakups.ToList().Sum(entity => entity.DueAmount);
