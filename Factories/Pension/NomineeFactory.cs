@@ -21,6 +21,7 @@ namespace CTS_BE.Factories.Pension
                 .RuleFor(d => d.NomineeName, f => f.Person.FullName)
                 .RuleFor(d => d.Refused, f => f.PickRandom(true, false))
                 .RuleFor(d => d.FamilyPension, f => f.PickRandom(true, false))
+                .RuleFor(d => d.NomineeAdultMinor, f => f.PickRandom('A', 'M'))
                 .RuleFor(d => d.NomineeActive, f => f.PickRandom(true, false))
                 .RuleFor(
                     d => d.DateOfBirth,
