@@ -31,9 +31,9 @@ namespace CTS_BE.Adapters
     public class RabbitMqAdapter : MqAdapter
     {
         // public event EventHandler<MqDeliverEventArgs> DeliveryHandler;
-        private readonly IConnection _connection;
+        private readonly IConnection _connection = null!;
         private string _queueName;
-        private readonly IModel _channel;
+        private readonly IModel _channel = null!;
 
         public RabbitMqAdapter(RabbitMqOptions rabbitMqOptions)
         {
@@ -49,7 +49,7 @@ namespace CTS_BE.Adapters
                 Console.WriteLine($"Failed to connect to rabbitmq: {e.Message}");
             }
         }
-        
+
         private void SetupQueue(string queueName) {
             if(_channel == null) {
                 throw new Exception($"Failed to setup queue: {queueName} via RabbitMqAdapter");
@@ -93,8 +93,8 @@ namespace CTS_BE.Adapters
                 _channel.BasicAck(msgData.DeliveryTag, false);
                 Console.WriteLine($" [x] Received {receivedMessage}");
             }
-            return (receivedMessage != string.Empty) 
-                ? $"Received {receivedMessage} via RabbitMqAdapter" 
+            return (receivedMessage != string.Empty)
+                ? $"Received {receivedMessage} via RabbitMqAdapter"
                 : "Queue is empty";
         }
 
@@ -104,7 +104,7 @@ namespace CTS_BE.Adapters
             CancellationToken cancellationToken
         )
         {
-            SetupQueue(_queueName);        
+            SetupQueue(_queueName);
             string consumerTag = string.Empty;
             if(_channel.ConsumerCount(queueName) == 0) {
                 EventingBasicConsumer consumer = new (_channel);
@@ -151,7 +151,7 @@ namespace CTS_BE.Adapters
             CancellationToken cancellationToken
         )
         {
-            SetupQueue(_queueName);             
+            SetupQueue(_queueName);
             string consumerTag = string.Empty;
             if(_channel.ConsumerCount(queueName) == 0) {
                 AsyncEventingBasicConsumer consumer = new AsyncEventingBasicConsumer(_channel);

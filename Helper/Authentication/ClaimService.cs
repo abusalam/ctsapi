@@ -14,7 +14,7 @@ namespace CTS_BE.Helper.Authentication
             logedinUserClaims = (AuthClaimModel)_contextAccessor.HttpContext.Items["userclaimmodel"];
             if (logedinUserClaims != null)
             {
-                _applications = logedinUserClaims.claims.Where(claims => claims.Type == "application").Select(claim => JsonConvert.DeserializeObject<ClaimModel.Application>(claim.Value))
+                _applications = logedinUserClaims.Claims.Where(claims => claims.Type == "application").Select(claim => JsonConvert.DeserializeObject<ClaimModel.Application>(claim.Value))
                     .ToList();
             }
 
@@ -91,11 +91,11 @@ namespace CTS_BE.Helper.Authentication
         }
         public int GetUserId()
         {
-            return logedinUserClaims.claims.Where(claims => claims.Type == "nameid").Select(claim => int.Parse(claim.Value)).FirstOrDefault();
+            return logedinUserClaims.Claims.Where(claims => claims.Type == "nameid").Select(claim => int.Parse(claim.Value)).FirstOrDefault();
         }
         public string GetUserName()
         {
-            return logedinUserClaims.claims.Where(claims => claims.Type == "name").Select(claim => claim.Value).FirstOrDefault();
+            return logedinUserClaims.Claims.Where(claims => claims.Type == "name").Select(claim => claim.Value).FirstOrDefault();
         }
         public List<string> GetPermissions()
         {

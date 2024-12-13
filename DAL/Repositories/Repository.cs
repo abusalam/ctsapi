@@ -123,60 +123,60 @@ namespace CTS_BE.DAL.Repositories
             var result = await query.Select(selectExpression).Skip(pageIndex * pageSize).Take(pageSize).ToListAsync();
             return result;
         }
-        public async Task<ICollection<TResult>> GetSelectedColumnByConditionAsync<TResult>(
-            Expression<Func<T, bool>> filterExpression,
-            Expression<Func<T, TResult>> selectExpression,
-            int pageIndex = 0,
-            int pageSize = 10,
-            List<FilterParameter> dynamicFilters = null,
-            string orderByField = null,
-            string orderByOrder = null
-        )
-        {
-            IQueryable<T> query = this.CTSDbContext.Set<T>().Where(filterExpression);
+        // public async Task<ICollection<TResult>> GetSelectedColumnByConditionAsync<TResult>(
+        //     Expression<Func<T, bool>> filterExpression,
+        //     Expression<Func<T, TResult>> selectExpression,
+        //     int pageIndex = 0,
+        //     int pageSize = 10,
+        //     List<FilterParameter> dynamicFilters = null,
+        //     string orderByField = null,
+        //     string orderByOrder = null
+        // )
+        // {
+        //     IQueryable<T> query = this.CTSDbContext.Set<T>().Where(filterExpression);
 
-            if (dynamicFilters != null && dynamicFilters.Any())
-            {
-                foreach (var filter in dynamicFilters)
-                {
-                    var dynimicFilterExpression = ExpressionHelper.GetFilterExpression<T>(filter.Field, filter.Value, filter.Operator);
-                    query = query.Where(dynimicFilterExpression);
-                }
-            }
-            // Dynamic order by expression
-            if (!string.IsNullOrWhiteSpace(orderByField))
-            {
-                var parameter = Expression.Parameter(typeof(T), "x");
-                var property = Expression.Property(parameter, orderByField);
-                var lambda = Expression.Lambda<Func<T, object>>(Expression.Convert(property, typeof(object)), parameter);
+        //     if (dynamicFilters != null && dynamicFilters.Any())
+        //     {
+        //         foreach (var filter in dynamicFilters)
+        //         {
+        //             var dynimicFilterExpression = ExpressionHelper.GetFilterExpression<T>(filter.Field, filter.Value, filter.Operator);
+        //             query = query.Where(dynimicFilterExpression);
+        //         }
+        //     }
+        //     // Dynamic order by expression
+        //     if (!string.IsNullOrWhiteSpace(orderByField))
+        //     {
+        //         var parameter = Expression.Parameter(typeof(T), "x");
+        //         var property = Expression.Property(parameter, orderByField);
+        //         var lambda = Expression.Lambda<Func<T, object>>(Expression.Convert(property, typeof(object)), parameter);
 
-                if (orderByOrder == "ASC")
-                {
-                    query = query.OrderBy(lambda);
-                }
-                else
-                {
-                    query = query.OrderByDescending(lambda);
-                }
-            }
-            var result = await query.Select(selectExpression).Skip(pageIndex * pageSize).Take(pageSize).ToListAsync();
-            return result;
-        }
-        public async Task<Dictionary<TKey, List<TResult>>> GetSelectedColumnGroupByConditionAsync<TKey, TResult>(
-            Expression<Func<T, bool>> filterExpression,
-            Expression<Func<T, TKey>> groupByKeySelector,
-            Expression<Func<T, TResult>> selectExpression)
-        {
-            var data = await this.CTSDbContext.Set<T>()
-            .Where(filterExpression)
-            .ToListAsync();
-            var groupedResult = data
-                .GroupBy(groupByKeySelector.Compile())
-                .ToDictionary(group => group.Key, group => group.Select(selectExpression.Compile()).ToList());
+        //         if (orderByOrder == "ASC")
+        //         {
+        //             query = query.OrderBy(lambda);
+        //         }
+        //         else
+        //         {
+        //             query = query.OrderByDescending(lambda);
+        //         }
+        //     }
+        //     var result = await query.Select(selectExpression).Skip(pageIndex * pageSize).Take(pageSize).ToListAsync();
+        //     return result;
+        // }
+        // public async Task<Dictionary<TKey, List<TResult>>> GetSelectedColumnGroupByConditionAsync<TKey, TResult>(
+        //     Expression<Func<T, bool>> filterExpression,
+        //     Expression<Func<T, TKey>> groupByKeySelector,
+        //     Expression<Func<T, TResult>> selectExpression)
+        // {
+        //     var data = await this.CTSDbContext.Set<T>()
+        //     .Where(filterExpression)
+        //     .ToListAsync();
+        //     var groupedResult = data
+        //         .GroupBy(groupByKeySelector.Compile())
+        //         .ToDictionary(group => group.Key, group => group.Select(selectExpression.Compile()).ToList());
 
-            return groupedResult;
+        //     return groupedResult;
 
-        }
+        // }
         public async Task<TResult> GetSingleSelectedColumnByConditionAsync<TResult>(
        Expression<Func<T, bool>> filterExpression,
        Expression<Func<T, TResult>> selectExpression)
@@ -199,21 +199,21 @@ namespace CTS_BE.DAL.Repositories
 
             return retValue;
         }
-        public int CountWithCondition(Expression<Func<T, bool>> condition, List<FilterParameter> dynamicFilters = null)
-        {
-            IQueryable<T> query = this.CTSDbContext.Set<T>();
+        // public int CountWithCondition(Expression<Func<T, bool>> condition, List<FilterParameter> dynamicFilters = null)
+        // {
+        //     IQueryable<T> query = this.CTSDbContext.Set<T>();
 
-            if (dynamicFilters != null && dynamicFilters.Any())
-            {
-                foreach (var filter in dynamicFilters)
-                {
-                    var dynimicFilterExpression = ExpressionHelper.GetFilterExpression<T>(filter.Field, filter.Value, filter.Operator);
-                    query = query.Where(dynimicFilterExpression);
-                }
-            }
-            //var result = query.Select(selectExpression).ToListAsync();
-            return query.Count(condition);
-        }
+        //     if (dynamicFilters != null && dynamicFilters.Any())
+        //     {
+        //         foreach (var filter in dynamicFilters)
+        //         {
+        //             var dynimicFilterExpression = ExpressionHelper.GetFilterExpression<T>(filter.Field, filter.Value, filter.Operator);
+        //             query = query.Where(dynimicFilterExpression);
+        //         }
+        //     }
+        //     //var result = query.Select(selectExpression).ToListAsync();
+        //     return query.Count(condition);
+        // }
         public int CountWithCondition(Expression<Func<T, bool>> condition)
         {
             IQueryable<T> query = this.CTSDbContext.Set<T>();

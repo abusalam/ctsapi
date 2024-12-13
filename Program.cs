@@ -121,6 +121,7 @@ catch(Exception ex) {
 
 
 //Pension Repositories
+builder.Services.AddTransient<IFileStorageRepository, FileStorageRepository>();
 builder.Services.AddTransient<IManualPpoReceiptRepository, ManualPpoReceiptRepository>();
 builder.Services.AddTransient<IPensionStatusRepository, PensionStatusRepository>();
 builder.Services.AddTransient<IPensionerDetailsRepository, PensionerDetailsRepository>();
@@ -136,9 +137,11 @@ builder.Services.AddTransient<IBankBranchRepository, BankBranchRepository>();
 builder.Services.AddTransient<IPpoSanctionDetailsRepository, PpoSanctionDetailsRepository>();
 builder.Services.AddTransient<INomineeRepository, NomineeRepository>();
 builder.Services.AddTransient<ILifeCertificateRepository, LifeCertificateRepository>();
+builder.Services.AddTransient<IEPpoReceiptRepository, EPpoReceiptRepository>();
 
 
 // Pension Services
+builder.Services.AddTransient<IFileStorageService, FileStorageService>();
 builder.Services.AddTransient<IPpoReceiptService, PpoReceiptService>();
 builder.Services.AddTransient<IPensionStatusService, PensionStatusService>();
 builder.Services.AddTransient<IPensionerDetailsService, PensionerDetailsService>();
@@ -152,6 +155,7 @@ builder.Services.AddTransient<IBankBranchService, BankBranchService>();
 builder.Services.AddScoped<IPpoSanctionDetailsService, PpoSanctionDetailsService>();
 builder.Services.AddScoped<INomineeService, NomineeService>();
 builder.Services.AddScoped<ILifeCertificateService, LifeCertificateService>();
+builder.Services.AddScoped<IEPpoReceiptService, EPpoReceiptService>();
 // builder.Services.AddTransient<IPpoBillService, PpoBillService>();
 
 
@@ -260,6 +264,7 @@ builder.Services.AddControllers()
     .AddJsonOptions(
         options => {
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            // options.JsonSerializerOptions.Converters.Add(new JsonStringDateOnlyConverter("yyyy-MM-dd"));
             // options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
         }
     );
@@ -269,6 +274,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "CTS-BE", Version = "v1" });
+    c.MapType<DateOnly>(() => new OpenApiSchema { Type = "string", Format = "date-only" });
 
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     {

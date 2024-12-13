@@ -61,6 +61,21 @@ namespace CTS_BE.Helper
             CreateMap<NomineeEntryDTO, NomineeResponseDTO>().ReverseMap();
             CreateMap<LifeCertificate, LifeCertificateResponseDTO>().ReverseMap();
             CreateMap<LifeCertificate, LifeCertificateEntryDTO>().ReverseMap();
+            CreateMap<UploadedFile, FileEntryDTO>().ReverseMap();
+            CreateMap<UploadedFile, FileResponseDTO>().ReverseMap();
+            CreateMap<FileResponseDTO, FileEntryDTO>().ReverseMap();
+            CreateMap<EPpoReceiptEntryDTO, EppoReceipt>().ReverseMap();
+            CreateMap<EppoReceipt, EPpoReceiptResponseDTO>().ReverseMap();
+            CreateMap<EPpoReceiptRevisionEntryDTO, EppoRevision>().ReverseMap();
+            CreateMap<EPpoReceiptRevisionEntryDTO, EPpoReceiptRevisionResponseDTO>().ReverseMap();
+            CreateMap<EppoRevision, EPpoReceiptRevisionResponseDTO>().ReverseMap();
+            CreateMap<EPpoReceiptWithdrawlEntryDTO, EppoReceipt>().ReverseMap();
+            CreateMap<EppoReceipt, EPpoReceiptWithdrawlResponseDTO>().ReverseMap();
+            CreateMap<EPpoReceiptWithdrawlEntryDTO, EPpoReceiptWithdrawlResponseDTO>().ReverseMap();
+            CreateMap<EppoReceipt, EPpoReceiptPpoIdResponseDTO>().ReverseMap();
+            CreateMap<EppoReceipt, EPpoReceiptDetailDTO>().ReverseMap();
+            CreateMap<EppoReceipt, EPpoReceiptListDTO>().ReverseMap();
+
         }
     }
 }

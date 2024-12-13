@@ -1,0 +1,65 @@
+name: DotNet CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: Build DotNet
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dotnet-version: [ '6.x', '7.x', '8.x' ]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+          # cache: true
+      - name: Install dependencies & Build DotNet
+        run: |
+          dotnet restore
+          dotnet build
+  test:
+    name: Test DotNet
+    needs: [build]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dotnet-version: [ '6.x', '7.x', '8.x' ]
+
+    steps:
+      - name: Add hosts to /etc/hosts
+        run: |
+          sudo echo "127.0.0.1 postgres" | sudo tee -a /etc/hosts
+
+      - name: Clone & Setup BackendDB
+        run: |
+          git clone https://github.com/abusalam/IFMS-CTS.git ~/ifms-cts
+          cd ~/ifms-cts
+          git submodule update --init --recursive
+          cp .env.docker .env
+          sudo curl -SL https://github.com/docker/compose/releases/download/v2.29.1/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
+          sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker-compose up -d postgres
+
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+          # cache: true
+      - name: Run Tests
+        run: |
+          cd ~/ifms-cts/dotnet
+          dotnet test --logger trx --results-directory "TestResults-${{ matrix.dotnet-version }}"
+      - name: Upload dotnet test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: dotnet-results-${{ matrix.dotnet-version }}
+          path: ~/ifms-cts/dotnet/TestResults-${{ matrix.dotnet-version }}
+          # Use always() to always run this step to publish test results when there are test failures
+        if: ${{ always() }}

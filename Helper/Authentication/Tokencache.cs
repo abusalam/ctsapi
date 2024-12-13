@@ -20,8 +20,8 @@ namespace CTS_BE.Helper.Authentication
         {
             _logger = logger;
             _Configuration = Configuration;
-            TokenCachEvictionTimeinMint = int.Parse(_Configuration.GetValue<string>("Auth:TokenCachEvictionTimeinMint"));
-            TokenCacheMaxItemCount = int.Parse(_Configuration.GetValue<string>("Auth:TokenCacheMaxItemCount"));
+            TokenCachEvictionTimeinMint = int.Parse(_Configuration.GetValue<string>("Auth:TokenCachEvictionTimeinMint") ?? "30");
+            TokenCacheMaxItemCount = int.Parse(_Configuration.GetValue<string>("Auth:TokenCacheMaxItemCount") ?? "1000");
         }
         //private Tokencache()
         //{
@@ -44,7 +44,7 @@ namespace CTS_BE.Helper.Authentication
                     orderList.Remove(toRemove);
                 }
                 orderList.Add(token);
-                tokenChachedItems.lastUsed = DateTime.UtcNow;
+                tokenChachedItems.LastUsed = DateTime.UtcNow;
                 valuePairs[token] = tokenChachedItems;
             }
         }
@@ -64,7 +64,7 @@ namespace CTS_BE.Helper.Authentication
                 orderList.Add(tempCachekey);
 
                 var cachedItem = valuePairs[token];
-                cachedItem.lastUsed = DateTime.UtcNow;
+                cachedItem.LastUsed = DateTime.UtcNow;
                 valuePairs[token] = cachedItem;
                 return cachedItem;
             }
@@ -94,7 +94,7 @@ namespace CTS_BE.Helper.Authentication
             {
                 foreach (var item in valuePairs)
                 {
-                    TimeSpan span = DateTime.UtcNow.Subtract(item.Value.lastUsed);
+                    TimeSpan span = DateTime.UtcNow.Subtract(item.Value.LastUsed);
                     if (span.TotalMinutes >= TokenCachEvictionTimeinMint)
                     {
                         var tempCachekey = orderList.FirstOrDefault(x => x == item.Key);
@@ -120,7 +120,7 @@ namespace CTS_BE.Helper.Authentication
                 {
                     try
                     {
-                        existingUserId = item.Value.userClaimModel.UserId;
+                        existingUserId = item.Value.UserClaimModel.UserId ?? string.Empty;
                     }
                     catch
                     {
@@ -146,11 +146,11 @@ namespace CTS_BE.Helper.Authentication
 
     public class TokenChachedItems
     {
-        public DateTime tokenValidTo { get; set; }
+        public DateTime TokenValidTo { get; set; }
 
-        public UserClaimModel userClaimModel { get; set; }
+        public UserClaimModel UserClaimModel { get; set; } = null!;
 
-        public DateTime lastUsed { get; set; }
+        public DateTime LastUsed { get; set; }
 
     }
 }
