@@ -187,6 +187,27 @@ namespace CTS_BE.DTOs
         [Required]
         public int EnhancePensionAmount { get; set; }
 
+        public int? EfpAmount { get; set; }
+        public DateOnly? EfpWefDate { get; set; }
+        public DateOnly? EfpUptoDate { get; set; }
+        public int? NfpAmount { get; set; }
+        public DateOnly? NfpWefDate { get; set; }
+        public int? NotionalPensionAmount { get; set; }
+        public DateOnly? NotionalWefDate { get; set; }
+
+        [StringLength(100)]
+        public string? GpfTpfNo { get; set; }
+        public bool? HealthScheme { get; set; }
+        public bool? EmployedPensioner { get; set; }
+        public bool? ReEmployedPensioner { get; set; }
+        public bool? DoublePension { get; set; }
+        public bool? AdhocPension { get; set; }
+        public bool? ProvisionalPension { get; set; }
+        public bool? InterimAllowance { get; set; }
+        public bool? SharedPension { get; set; }
+
+        [StringLength(500)]
+        public string? Remarks { get; set; }
         [Required]
         public int ReducedPensionAmount { get ; set; }
 
@@ -203,9 +224,16 @@ namespace CTS_BE.DTOs
         public List<BankResponseDTO> Banks { get; set; } = null!;
     }
 
+    public class BranchListItemResponseDTO : BaseDTO {
+        public long Id { get; set; }
+        public string BranchName { get; set; } = null!;
+        public string IfscCode { get; set; } = null!;
+    }
+
     public class BranchListResponseDTO : BaseDTO {
         public int BranchCount { get {return Branches.Count;} }
-        public List<BranchResponseDTO> Branches { get; set; } = null!;
+         public BankResponseDTO? Bank { get; set; }
+        public List<BranchListItemResponseDTO> Branches { get; set; } = null!;
     }
 
     public class BankResponseDTO : BaseDTO {
@@ -226,11 +254,10 @@ namespace CTS_BE.DTOs
         public string BranchName { get; set; } = null!;
         public string BranchAddress { get; set; } = null!;
         public string IfscCode { get; set; } = null!;
-        public string MicrCode { get; set; } = null!;
-        public string City { get; set; } = null!;
-        public string District { get; set; } = null!;
-        public string State { get; set; } = null!;
-        public string Pincode { get; set; } = null!;
+        public string CityName { get; set; } = null!;
+        public string DistrictName { get; set; } = null!;
+        public string StateName { get; set; } = null!;
+        public string PhoneNo { get; set; } = null!;
     }
 
 
@@ -243,6 +270,8 @@ namespace CTS_BE.DTOs
         public BranchResponseDTO? Branch { get; set; }
         public List<PpoSanctionDetailsResponseDTO>? PpoSanctionDetails { get; set; }
         public override long BankId => Branch != null ? Branch.Bank != null ? Branch.Bank.Id : 0 : 0;
+        public string? PensionerStatus { get; set; }
+        public bool? FirstPensionGenerated { get; set; }
     }
 
     public class PensionerListItemDTO : BaseDTO {

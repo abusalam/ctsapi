@@ -74,7 +74,8 @@ namespace CTS_BE.BAL.Services.Pension
             List<Branch>? branchEntityList = new();
             try{
                 branchEntityList = await _bankBranchRepository.GetBranchesByBankId(treasuryCode, bankId);
-                branchListResponseDTO.Branches = _mapper.Map<List<BranchResponseDTO>>(branchEntityList);
+                branchListResponseDTO.Branches = _mapper.Map<List<BranchListItemResponseDTO>>(branchEntityList);
+                branchListResponseDTO.Bank = _mapper.Map<BankResponseDTO>(branchEntityList.FirstOrDefault()?.Bank);
             }
             catch (Exception ex) {
                 branchListResponseDTO.FillDataSource(

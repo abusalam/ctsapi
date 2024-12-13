@@ -51,6 +51,7 @@ namespace CTS_BE.Helper
             CreateMap<PpoRegularBillDetailsDTO, PpoBill>().ReverseMap();
             CreateMap<Bill, RegularBillResponseDTO>().ReverseMap();
             CreateMap<Branch, BranchResponseDTO>().ReverseMap();
+            CreateMap<Branch, BranchListItemResponseDTO>().ReverseMap();
             CreateMap<Bank, BankResponseDTO>().ReverseMap();
             CreateMap<PpoSanctionDetail, PpoSanctionDetailsResponseDTO>().ReverseMap();
             CreateMap<PpoSanctionDetail, PpoSanctionDetailsEntryDTO>().ReverseMap();
