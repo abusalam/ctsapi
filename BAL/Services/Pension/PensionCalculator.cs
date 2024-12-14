@@ -27,7 +27,7 @@ namespace CTS_BE.BAL.Services.Pension
             List<PpoPaymentListItemDTO>? ppoPayments = new();
             DateOnly calculatedPeriodStartDate = toDate;
             long prevBreakupId = 0;
-                            
+
             componentRates.OrderBy(entity => entity.BreakupId)
                 .ThenByDescending(entity => entity.EffectiveFromDate)
                 .ToList().ForEach(componentRate => {
@@ -65,7 +65,7 @@ namespace CTS_BE.BAL.Services.Pension
                                 CalculateEffectiveRate(
                                         componentRates.ToList(),
                                         componentRate.Breakup.Id,
-                                        calculatedPeriodStartDate      
+                                        calculatedPeriodStartDate
                                     ),
                                 baseAmount
                             ),
@@ -107,7 +107,7 @@ namespace CTS_BE.BAL.Services.Pension
 
 
         /// <summary>
-        /// Calculates the base amount for a given component, based on its name. 
+        /// Calculates the base amount for a given component, based on its name.
         /// If the component name is "AMOUNT COMMUTED", the base amount is the commuted pension amount, otherwise it is the basic pension amount.
         /// </summary>
         /// <param name="componentName">The name of the component.</param>
@@ -124,7 +124,7 @@ namespace CTS_BE.BAL.Services.Pension
             return rateType switch {
                 BreakupRateType.Percentage => (int) basicPensionAmount,
                 BreakupRateType.Amount => componentName switch {
-                    "AMOUNT COMMUTED" => (int) commutedPensionAmount * -1,
+                    "AMOUNT COMMUTED" => (int) commutedPensionAmount,
                     _ => (int) basicPensionAmount
                 },
                 _ => (int) basicPensionAmount
@@ -333,50 +333,50 @@ namespace CTS_BE.BAL.Services.Pension
                 );
         }
 
-        public static string InWords(long number)   
-        {  
-            if (number == 0) return "ZERO";  
-            if (number < 0) return "minus " + InWords(Math.Abs(number));  
-            string words = "";  
-            if ((number / 1000000) > 0)   
-            {  
-                words += InWords(number / 100000) + " LAKH ";  
-                number %= 1000000;  
-            }  
-            if ((number / 1000) > 0)   
-            {  
-                words += InWords(number / 1000) + " THOUSAND ";  
-                number %= 1000;  
-            }  
-            if ((number / 100) > 0)   
-            {  
-                words += InWords(number / 100) + " HUNDRED ";  
-                number %= 100;  
-            }  
-            //if ((number / 10) > 0)  
-            //{  
-            // words += ConvertNumbertoWords(number / 10) + " RUPEES ";  
-            // number %= 10;  
-            //}  
-            if (number > 0)   
-            {  
-                if (words != "") words += "AND ";  
-                var unitsMap = new[]   
-                {  
-                    "ZERO", "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT", "NINE", "TEN", "ELEVEN", "TWELVE", "THIRTEEN", "FOURTEEN", "FIFTEEN", "SIXTEEN", "SEVENTEEN", "EIGHTEEN", "NINETEEN"  
-                };  
-                var tensMap = new[]   
-                {  
-                    "ZERO", "TEN", "TWENTY", "THIRTY", "FORTY", "FIFTY", "SIXTY", "SEVENTY", "EIGHTY", "NINETY"  
-                };  
-                if (number < 20) words += unitsMap[number];  
-                else   
-                {  
-                    words += tensMap[number / 10];  
-                    if ((number % 10) > 0) words += " " + unitsMap[number % 10];  
-                }  
-            }  
-            return words;  
+        public static string InWords(long number)
+        {
+            if (number == 0) return "ZERO";
+            if (number < 0) return "minus " + InWords(Math.Abs(number));
+            string words = "";
+            if ((number / 1000000) > 0)
+            {
+                words += InWords(number / 100000) + " LAKH ";
+                number %= 1000000;
+            }
+            if ((number / 1000) > 0)
+            {
+                words += InWords(number / 1000) + " THOUSAND ";
+                number %= 1000;
+            }
+            if ((number / 100) > 0)
+            {
+                words += InWords(number / 100) + " HUNDRED ";
+                number %= 100;
+            }
+            //if ((number / 10) > 0)
+            //{
+            // words += ConvertNumbertoWords(number / 10) + " RUPEES ";
+            // number %= 10;
+            //}
+            if (number > 0)
+            {
+                if (words != "") words += "AND ";
+                var unitsMap = new[]
+                {
+                    "ZERO", "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT", "NINE", "TEN", "ELEVEN", "TWELVE", "THIRTEEN", "FOURTEEN", "FIFTEEN", "SIXTEEN", "SEVENTEEN", "EIGHTEEN", "NINETEEN"
+                };
+                var tensMap = new[]
+                {
+                    "ZERO", "TEN", "TWENTY", "THIRTY", "FORTY", "FIFTY", "SIXTY", "SEVENTY", "EIGHTY", "NINETY"
+                };
+                if (number < 20) words += unitsMap[number];
+                else
+                {
+                    words += tensMap[number / 10];
+                    if ((number % 10) > 0) words += " " + unitsMap[number % 10];
+                }
+            }
+            return words;
         }
     }
 }
