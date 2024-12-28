@@ -43,5 +43,12 @@
   "git.openRepositoryInParentFolders": "never",
   "diffEditor.ignoreTrimWhitespace": false,
   "playwright.reuseBrowser": true,
-  "files.trimTrailingWhitespace": true
+  "files.trimTrailingWhitespace": true,
+  "javascript.format.placeOpenBraceOnNewLineForControlBlocks": true,
+  "javascript.format.placeOpenBraceOnNewLineForFunctions": true,
+  "typescript.format.placeOpenBraceOnNewLineForControlBlocks": true,
+  "typescript.format.placeOpenBraceOnNewLineForFunctions": true,
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
+  "editor.formatOnType": true
 }
