@@ -1,7 +1,9 @@
 using System.Linq.Expressions;
+using AutoMapper;
 using CTS_BE.DAL.Entities.Pension;
 using CTS_BE.DAL.Interfaces.Pension;
 using CTS_BE.DTOs;
+using CTS_BE.Helper;
 using CTS_BE.PensionEnum;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,9 +12,14 @@ namespace CTS_BE.DAL.Repositories.Pension
     public class PensionerDetailsRepository : Repository<Pensioner, PensionDbContext>, IPensionerDetailsRepository
     {
         private readonly PensionDbContext _context;
-        public PensionerDetailsRepository(PensionDbContext context) : base(context)
+        private readonly IMapper _mapper;
+        public PensionerDetailsRepository(
+            PensionDbContext context,
+            IMapper mapper
+        ) : base(context)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<IEnumerable<PensionerResponseDTO>> GetAllPensionerDetailsAsync(
@@ -90,13 +97,51 @@ namespace CTS_BE.DAL.Repositories.Pension
                     && entity.TreasuryCode == treasuryCode
                 )
                 .Include(entity => entity.Category)
+                .ThenInclude(entity => entity.PrimaryCategory)
+                .Include(entity => entity.Category)
+                .ThenInclude(entity => entity.SubCategory)
                 .Include(entity => entity.Receipt)
                 .Include(entity => entity.Branch)
                 .ThenInclude(entity => entity.Bank)
                 .Include(entity => entity.PpoSanctionDetails)
+                .Include(entity => entity.PpoStatusFlags)
                 .Select(selectExpression)
                 .FirstOrDefaultAsync();
             return pensioner;
+        }
+
+        public async Task<T> UpdatePensionerDetails<T>(
+            Pensioner pensionerEntity,
+            string treasuryCode
+        )
+        {
+            T? response = _mapper.Map<T>(pensionerEntity);
+            try {
+                pensionerEntity.TreasuryCode = treasuryCode;
+                _context.Pensioners.Update(pensionerEntity);
+                if(await _context.SaveChangesAsync() == 0) {
+                    response.FillDataSource(
+                        pensionerEntity,
+                        "Failed to save data. Please try again after sometime."
+                    );
+                    return response;
+                }
+                return _mapper.Map<T>(pensionerEntity);
+            }
+            catch (DbUpdateException ex) {
+                response.FillDataSource(
+                    pensionerEntity,
+                    $"DbException: {ex.InnerException?.Message ?? ex.Message}"
+                );
+                return response;
+            }
+            catch (Exception ex) {
+                response.FillDataSource(
+                    pensionerEntity,
+                    $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
+                );
+                return response;
+            }
         }
     }
 }

@@ -7,6 +7,7 @@ using CTS_BE.DTOs;
 using CTS_BE.Helper;
 using CTS_BE.Helper.Authentication;
 using Microsoft.EntityFrameworkCore;
+using CTS_BE.PensionEnum;
 
 namespace CTS_BE.BAL.Services.Pension
 {
@@ -26,11 +27,11 @@ namespace CTS_BE.BAL.Services.Pension
             IMapper mapper) : base(claimService)
         {
             _pensionerDetailsRepository = pensionerDetailsRepository;
-            _pensionDbContext           = (PensionDbContext) _pensionerDetailsRepository.GetDbContext();
-            _ppoIdSequenceRepository    = ppoIdSequenceRepository;
-            _claimService               = claimService;
-            _mapper                     = mapper;
-            _userId                     = claimService.GetUserId();
+            _pensionDbContext = (PensionDbContext)_pensionerDetailsRepository.GetDbContext();
+            _ppoIdSequenceRepository = ppoIdSequenceRepository;
+            _claimService = claimService;
+            _mapper = mapper;
+            _userId = claimService.GetUserId();
         }
 
         public async Task<PensionerResponseDTO> CreatePensioner(
@@ -39,11 +40,13 @@ namespace CTS_BE.BAL.Services.Pension
                 string treasuryCode
             )
         {
-            Pensioner pensionerEntity = new() {
+            Pensioner pensionerEntity = new()
+            {
                 PpoId = 0
             };
             PensionerResponseDTO pensionerResponseDTO = _mapper.Map<PensionerResponseDTO>(pensionerEntity);
-            try {
+            try
+            {
 
                 Category? category = await _pensionDbContext.Categories
                     .Where(
@@ -52,7 +55,8 @@ namespace CTS_BE.BAL.Services.Pension
                     )
                     .Include(entity => entity.PrimaryCategory)
                     .FirstOrDefaultAsync();
-                if(category == null){
+                if (category == null)
+                {
                     PensionerResponseDTO errResponse = _mapper.Map<PensionerResponseDTO>(pensionerEntryDTO);
                     errResponse.FillDataSource(
                         category,
@@ -68,7 +72,8 @@ namespace CTS_BE.BAL.Services.Pension
                     )
                     .Include(entity => entity.Bank)
                     .FirstOrDefaultAsync();
-                if(branch == null){
+                if (branch == null)
+                {
                     PensionerResponseDTO errResponse = _mapper.Map<PensionerResponseDTO>(pensionerEntryDTO);
                     errResponse.FillDataSource(
                         branch,
@@ -80,7 +85,8 @@ namespace CTS_BE.BAL.Services.Pension
                 PpoReceipt? ppoReceipt = await _pensionDbContext.PpoReceipts
                     .Where(entity => entity.PpoNo == pensionerEntryDTO.PpoNo)
                     .FirstOrDefaultAsync();
-                if(ppoReceipt==null){
+                if (ppoReceipt == null)
+                {
                     PensionerResponseDTO errResponse = _mapper.Map<PensionerResponseDTO>(pensionerEntryDTO);
                     errResponse.FillDataSource(
                         ppoReceipt,
@@ -89,7 +95,8 @@ namespace CTS_BE.BAL.Services.Pension
                     return errResponse;
                 }
                 pensionerEntity = _mapper.Map<Pensioner>(pensionerEntryDTO);
-                if(pensionerEntity.DateOfCommencement != ppoReceipt.DateOfCommencement) {
+                if (pensionerEntity.DateOfCommencement != ppoReceipt.DateOfCommencement)
+                {
                     PensionerResponseDTO errResponse = _mapper.Map<PensionerResponseDTO>(pensionerEntryDTO);
                     errResponse.FillDataSource(
                         ppoReceipt,
@@ -104,18 +111,24 @@ namespace CTS_BE.BAL.Services.Pension
                 pensionerEntity.FinancialYear = financialYear;
                 pensionerEntity.TreasuryCode = treasuryCode;
 
-                if(pensionerEntity.PpoId > 0) {
+                if (pensionerEntity.PpoId > 0)
+                {
                     SetCreatedBy(pensionerEntity);
                     ppoReceipt.Pensioners.Add(pensionerEntity);
-                    if(await _pensionDbContext.SaveChangesAsync() == 0) {
+                    if (await _pensionDbContext.SaveChangesAsync() == 0)
+                    {
                         pensionerEntity.PpoId = 0;
                     }
                 }
             }
-            finally {
-                if(pensionerEntity.PpoId == 0) {
+            finally
+            {
+                if (pensionerEntity.PpoId == 0)
+                {
                     pensionerResponseDTO = _mapper.Map<PensionerResponseDTO>(pensionerEntryDTO);
-                } else {
+                }
+                else
+                {
                     pensionerResponseDTO = _mapper.Map<PensionerResponseDTO>(pensionerEntity);
                 }
             }
@@ -124,30 +137,61 @@ namespace CTS_BE.BAL.Services.Pension
 
         public async Task<T> GetPensioner<T>(int ppoId, short financialYear, string treasuryCode)
         {
-            Pensioner pensionerEntity = new() {
+            Pensioner pensionerEntity = new()
+            {
                 PpoId = 0
             };
             T pensionerResponseDTO = _mapper.Map<T>(pensionerEntity);
-            try {
+            try
+            {
                 Pensioner? pensioner = await _pensionerDetailsRepository.GetPensionerDetailsByPpoIdAsync(
-                        ppoId,
-                        financialYear,
-                        treasuryCode,
-                        entity => _mapper.Map<Pensioner>(entity)
-                    );
+                    ppoId,
+                    financialYear,
+                    treasuryCode,
+                    entity => entity
+                );
 
-                if(pensioner == null) {
+                if (pensioner == null)
+                {
                     pensionerResponseDTO.FillDataSource(
                         pensioner,
-                        "Pensioner not found. Please check PPO Id. and try again."
+                        "Pensioner not found. Please check PPO Id and try again."
                     );
                     return pensionerResponseDTO;
                 }
-                pensionerResponseDTO = _mapper.Map<T>(pensioner);
-            }
-            finally {
 
+                pensionerResponseDTO = _mapper.Map<T>(pensioner);
+
+                if (pensionerResponseDTO is PensionerResponseDTO response)
+                {
+                    PpoStatusFlag? latestStatus = pensioner.PpoStatusFlags
+                        .Where(f => f.ActiveFlag)
+                        .OrderByDescending(f => f.CreatedAt)
+                        .FirstOrDefault();
+
+                    if (latestStatus != null)
+                    {
+                        response.PensionerStatus = latestStatus.StatusFlag.ToString();
+                    }
+                    else
+                    {
+                        response.PensionerStatus = "PPO Created";
+                    }
+
+                    response.FirstPensionGenerated = pensioner.PpoStatusFlags
+                        .Any(f => f.ActiveFlag
+                            && f.StatusFlag == PensionStatusFlag.FirstPensionBillApproved
+                        );
+                }
             }
+            catch (Exception ex)
+            {
+                pensionerResponseDTO.FillDataSource(
+                    pensionerEntity,
+                    ex.Message
+                );
+            }
+
             return pensionerResponseDTO;
         }
 
@@ -158,36 +202,75 @@ namespace CTS_BE.BAL.Services.Pension
                 string treasuryCode
             )
         {
-            Pensioner pensionerEntity  = new() {
-                    PpoId = 0
-                };
-            PensionerResponseDTO pensionerResponseDTO;
-            try {
+            Pensioner? pensionerEntity = new()
+            {
+                PpoId = 0
+            };
+            PensionerResponseDTO response = new();
+            try
+            {
 
-                pensionerEntity = await _pensionerDetailsRepository.GetSingleAysnc(
-                        entity => entity.ActiveFlag
-                        && entity.PpoId == ppoId
-                        && entity.TreasuryCode == treasuryCode
+                pensionerEntity = await _pensionerDetailsRepository.GetPensionerDetailsByPpoIdAsync(
+                        ppoId,
+                        financialYear,
+                        treasuryCode,
+                        selectExpression: entity => entity
                     );
+
+                if (pensionerEntity is null)
+                {
+                    response.FillDataSource(
+                        pensionerEntity,
+                        "Pensioner not found. Please check PPO Id. and try again."
+                    );
+                    return response;
+                }
 
                 pensionerEntity.FillFrom(pensionerEntryDTO);
 
-                if(pensionerEntity.PpoId > 0) {
-                    SetUpdatedBy(pensionerEntity);
-                    _pensionerDetailsRepository.Update(pensionerEntity);
-                    if(await _pensionerDetailsRepository.SaveChangesManagedAsync() == 0) {
-                        pensionerEntity.PpoId = 0;
-                    }
-                } else {
-                    pensionerEntity = new() {
-                        PpoId = 0
-                    };
+                SetUpdatedBy(pensionerEntity);
+                response = await _pensionerDetailsRepository.UpdatePensionerDetails<PensionerResponseDTO>(
+                    pensionerEntity,
+                    treasuryCode
+                );
+
+                PpoStatusFlag? latestStatus = pensionerEntity?.PpoStatusFlags
+                    .Where(f => f.ActiveFlag)
+                    .OrderByDescending(f => f.CreatedAt)
+                    .FirstOrDefault();
+
+                if (latestStatus != null)
+                {
+                    response.PensionerStatus = latestStatus.StatusFlag.ToString();
                 }
+                else
+                {
+                    response.PensionerStatus = "PPO Created";
+                }
+
+                response.FirstPensionGenerated = pensionerEntity?.PpoStatusFlags
+                    .Any(f => f.ActiveFlag
+                        && f.StatusFlag == PensionStatusFlag.FirstPensionBillApproved
+                    );
+
+                return response;
             }
-            finally {
-                pensionerResponseDTO = _mapper.Map<PensionerResponseDTO>(pensionerEntity);
+            catch (DbUpdateException ex)
+            {
+                response.FillDataSource(
+                        pensionerEntity,
+                        $"DbException: {ex.InnerException?.Message ?? ex.Message}"
+                    );
+                return response;
             }
-            return pensionerResponseDTO;
+            catch (Exception ex)
+            {
+                response.FillDataSource(
+                        pensionerEntity,
+                        $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
+                    );
+                return response;
+            }
         }
 
         public async Task<IEnumerable<PensionerListItemDTO>> GetAllPensioners(
@@ -233,8 +316,9 @@ namespace CTS_BE.BAL.Services.Pension
             return pensioners;
         }
 
-        public int Add(int a, int b) {
-            return a+b;
+        public int Add(int a, int b)
+        {
+            return a + b;
         }
     }
 }

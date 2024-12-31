@@ -2,6 +2,7 @@ using CTS_BE.BAL.Interfaces.Pension;
 using CTS_BE.DTOs;
 using CTS_BE.Helper;
 using CTS_BE.Helper.Authentication;
+using CTS_BE.PensionEnum;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CTS_BE.Controllers.Pension
@@ -10,13 +11,16 @@ namespace CTS_BE.Controllers.Pension
     public class PpoDetailsController : ApiBaseController
     {
         private readonly IPensionerDetailsService _pensionerDetailsService;
+        private readonly IPensionStatusService _pensionStatusService;
 
         public PpoDetailsController(
                 IPensionerDetailsService pensionerDetailsService,
+                IPensionStatusService pensionStatusService,
                 IClaimService claimService
             ) : base(claimService)
         {
             _pensionerDetailsService = pensionerDetailsService;
+            _pensionStatusService = pensionStatusService;
 
         }
 
@@ -28,25 +32,30 @@ namespace CTS_BE.Controllers.Pension
             )
         {
 
-            JsonAPIResponse<PensionerResponseDTO> response = new(){
+            JsonAPIResponse<PensionerResponseDTO> response = new()
+            {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = $"PPO Details saved sucessfully!",
-                Result = new(){
+                Result = new()
+                {
                     PpoId = 0
                 }
             };
-            try {
+            try
+            {
                 response.Result = await _pensionerDetailsService.CreatePensioner(
                     pensionerEntryDTO,
                     GetCurrentFyYear(),
                     GetTreasuryCode()
                 );
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 FillException(response, ex);
                 return response;
             }
-            finally {
+            finally
+            {
                 FillErrorMesageFromDataSource(response);
             }
 
@@ -62,14 +71,17 @@ namespace CTS_BE.Controllers.Pension
             )
         {
 
-            JsonAPIResponse<PensionerResponseDTO> response = new(){
+            JsonAPIResponse<PensionerResponseDTO> response = new()
+            {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = $"PPO Details saved sucessfully!",
-                Result = new(){
+                Result = new()
+                {
                     PpoId = 0
                 }
             };
-            try {
+            try
+            {
                 response.Result = await _pensionerDetailsService.UpdatePensioner(
                     ppoId,
                     pensionerEntryDTO,
@@ -77,11 +89,13 @@ namespace CTS_BE.Controllers.Pension
                     GetTreasuryCode()
                 );
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 FillException(response, ex);
                 return response;
             }
-            finally {
+            finally
+            {
                 FillErrorMesageFromDataSource(response);
             }
 
@@ -91,30 +105,33 @@ namespace CTS_BE.Controllers.Pension
         [HttpGet("{ppoId}/details")]
         [Tags("Pension: PPO Details")]
         [OpenApi]
-        public async Task<JsonAPIResponse<PensionerResponseDTO>> GetPensionerByPpoId(
-            int ppoId
-        )
+        public async Task<JsonAPIResponse<PensionerResponseDTO>> GetPensionerByPpoId(int ppoId)
         {
-
-            JsonAPIResponse<PensionerResponseDTO> response = new(){
+            JsonAPIResponse<PensionerResponseDTO> response = new()
+            {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
-                Message = $"PPO Details received sucessfully!",
-                Result = new(){
+                Message = $"PPO Details received successfully!",
+                Result = new()
+                {
                     PpoId = 0
                 }
             };
-            try {
+
+            try
+            {
                 response.Result = await _pensionerDetailsService.GetPensioner<PensionerResponseDTO>(
                     ppoId,
                     GetCurrentFyYear(),
                     GetTreasuryCode()
                 );
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 FillException(response, ex);
                 return response;
             }
-            finally {
+            finally
+            {
                 FillErrorMesageFromDataSource(response);
             }
 
@@ -130,14 +147,16 @@ namespace CTS_BE.Controllers.Pension
         )
         {
             JsonAPIResponse<DynamicListResult<IEnumerable<PensionerListItemDTO>>> response = new();
-            try {
+            try
+            {
 
-                response = new() {
+                response = new()
+                {
 
                     ApiResponseStatus = Enum.APIResponseStatus.Success,
                     Result = new()
-                        {
-                            Headers = new () {
+                    {
+                        Headers = new() {
 
                                 new() {
                                     Name = "PPO ID",
@@ -190,21 +209,23 @@ namespace CTS_BE.Controllers.Pension
                                 }
 
                             },
-                            Data = await _pensionerDetailsService.GetAllPensioners(
+                        Data = await _pensionerDetailsService.GetAllPensioners(
                                 GetCurrentFyYear(),
                                 GetTreasuryCode(),
                                 dynamicListQueryParameters),
-                            DataCount = _pensionerDetailsService.DataCount()
-                        },
+                        DataCount = _pensionerDetailsService.DataCount()
+                    },
                     Message = $"All PPO Details Received Successfully!"
 
                 };
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 FillException(response, ex);
                 return response;
             }
-            finally {
+            finally
+            {
                 FillErrorMesageFromDataSource(response);
             }
             return response;
@@ -216,14 +237,16 @@ namespace CTS_BE.Controllers.Pension
         public async Task<JsonAPIResponse<TableResponseDTO<PensionerListItemDTO>>> GetPensioners()
         {
             JsonAPIResponse<TableResponseDTO<PensionerListItemDTO>> response = new();
-            try {
+            try
+            {
 
-                response = new() {
+                response = new()
+                {
 
                     ApiResponseStatus = Enum.APIResponseStatus.Success,
                     Result = new()
-                        {
-                            Headers = new () {
+                    {
+                        Headers = new() {
 
                                 new() {
                                     Name = "PPO ID",
@@ -252,20 +275,22 @@ namespace CTS_BE.Controllers.Pension
                                 }
 
                             },
-                            Data = await _pensionerDetailsService.GetPensioners<PensionerListItemDTO>(
+                        Data = await _pensionerDetailsService.GetPensioners<PensionerListItemDTO>(
                                 GetCurrentFyYear(),
                                 GetTreasuryCode()
                             )
-                        },
+                    },
                     Message = $"All PPO Details Received Successfully!"
 
                 };
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 FillException(response, ex);
                 return response;
             }
-            finally {
+            finally
+            {
                 FillErrorMesageFromDataSource(response);
             }
             return response;
@@ -277,14 +302,16 @@ namespace CTS_BE.Controllers.Pension
         public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<PensionerListItemDTO>>>> GetAllNotApprovedPensioners()
         {
             JsonAPIResponse<DynamicListResult<IEnumerable<PensionerListItemDTO>>> response = new();
-            try {
+            try
+            {
 
-                response = new() {
+                response = new()
+                {
 
                     ApiResponseStatus = Enum.APIResponseStatus.Success,
                     Result = new()
-                        {
-                            Headers = new () {
+                    {
+                        Headers = new() {
 
                                 new() {
                                     Name = "PPO ID",
@@ -337,21 +364,23 @@ namespace CTS_BE.Controllers.Pension
                                 }
 
                             },
-                            Data = await _pensionerDetailsService.GetAllNonApprovedPensioners(
+                        Data = await _pensionerDetailsService.GetAllNonApprovedPensioners(
                                 GetCurrentFyYear(),
                                 GetTreasuryCode()
                             ),
-                            DataCount = _pensionerDetailsService.DataCount()
-                        },
+                        DataCount = _pensionerDetailsService.DataCount()
+                    },
                     Message = $"All Not Approved PPO Details Received Successfully!"
 
                 };
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 FillException(response, ex);
                 return response;
             }
-            finally {
+            finally
+            {
                 FillErrorMesageFromDataSource(response);
             }
             return response;
