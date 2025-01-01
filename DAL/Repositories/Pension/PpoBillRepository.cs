@@ -73,7 +73,8 @@ namespace CTS_BE.DAL.Repositories.Pension
                 )
                 .FirstOrDefaultAsync();
 
-            if(ppoBill == null) {
+            if (ppoBill == null)
+            {
                 return null;
             }
             //Eager loading
@@ -109,6 +110,9 @@ namespace CTS_BE.DAL.Repositories.Pension
                 .Load();
             _pensionDbContext.Entry(ppoBill.Pensioner.Category)
                 .Reference(entity => entity.PrimaryCategory)
+                .Load();
+            _pensionDbContext.Entry(ppoBill.Pensioner.Category.PrimaryCategory)
+                .Reference(entity => entity.AccountHead)
                 .Load();
             _pensionDbContext.Entry(ppoBill.Pensioner)
                 .Reference(entity => entity.Receipt)
@@ -179,7 +183,7 @@ namespace CTS_BE.DAL.Repositories.Pension
                 .FirstOrDefault();
 
 
-            if(ppoComponentRevisionFound != null)
+            if (ppoComponentRevisionFound != null)
             {
                 revision = ppoComponentRevisionFound;
                 return revision;
@@ -207,7 +211,8 @@ namespace CTS_BE.DAL.Repositories.Pension
                     && entity.TreasuryCode == treasuryCode
                 )
                 .FirstOrDefaultAsync();
-            if(pensioner == null) {
+            if (pensioner == null)
+            {
                 ppoBillResponseDTO.FillDataSource(
                     pensioner,
                     "Pensioner not found!"
@@ -215,8 +220,10 @@ namespace CTS_BE.DAL.Repositories.Pension
                 return ppoBillResponseDTO;
             }
 
-            if(ppoBillEntity.BillType == BillType.FirstBill) {
-                pensioner.PpoStatusFlags.Add(new PpoStatusFlag() {
+            if (ppoBillEntity.BillType == BillType.FirstBill)
+            {
+                pensioner.PpoStatusFlags.Add(new PpoStatusFlag()
+                {
                     ActiveFlag = true,
                     TreasuryCode = treasuryCode,
                     FinancialYear = financialYear,
@@ -234,7 +241,8 @@ namespace CTS_BE.DAL.Repositories.Pension
             ppoBillEntity.FinancialYear = financialYear;
             ppoBillEntity.TreasuryCode = treasuryCode;
             ppoBillEntity.PpoBillBreakups.ToList().ForEach(
-                entity => {
+                entity =>
+                {
                     entity.ActiveFlag = true;
                     entity.Revision = GetPpoComponentRevision(
                         entity.Revision,
@@ -256,7 +264,8 @@ namespace CTS_BE.DAL.Repositories.Pension
 
             // ppoBillEntity.BillNo = await GetNextBillNo(financialYear, treasuryCode);
             await _pensionDbContext.PpoBills.AddAsync(ppoBillEntity);
-            if(await _pensionDbContext.SaveChangesAsync() == 0) {
+            if (await _pensionDbContext.SaveChangesAsync() == 0)
+            {
                 ppoBillResponseDTO.FillDataSource(
                     ppoBillEntity,
                     "Pension bill not saved!"
@@ -274,7 +283,8 @@ namespace CTS_BE.DAL.Repositories.Pension
                 .Load();
 
             ppoBillEntity.PpoBillBreakups.ToList().ForEach(
-                entity => {
+                entity =>
+                {
                     _pensionDbContext.Entry(entity)
                         .Reference(entity => entity.Revision)
                         .Load();

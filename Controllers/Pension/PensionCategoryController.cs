@@ -32,14 +32,17 @@ namespace CTS_BE.Controllers.Pension
         )
         {
 
-            JsonAPIResponse<PensionPrimaryCategoryResponseDTO> response = new(){
+            JsonAPIResponse<PensionPrimaryCategoryResponseDTO> response = new()
+            {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = $"PrimaryCategory saved sucessfully!",
-                Result = new(){
+                Result = new()
+                {
                     Id = 0
                 }
             };
-            try {
+            try
+            {
                 response.Result = await _pensionCategoryService
                     .CreatePensionPrimaryCategory<PensionPrimaryCategoryEntryDTO, PensionPrimaryCategoryResponseDTO>(
                         pensionPrimaryCategoryEntryDTO,
@@ -47,11 +50,13 @@ namespace CTS_BE.Controllers.Pension
                         GetTreasuryCode()
                     );
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 FillException(response, ex);
                 return response;
             }
-            finally {
+            finally
+            {
                 FillErrorMesageFromDataSource(response);
             }
 
@@ -64,14 +69,16 @@ namespace CTS_BE.Controllers.Pension
         public async Task<JsonAPIResponse<TableResponseDTO<PensionPrimaryCategoryResponseDTO>>> GetPrimaryCategories()
         {
             JsonAPIResponse<TableResponseDTO<PensionPrimaryCategoryResponseDTO>> response = new();
-            try {
+            try
+            {
 
-                response = new() {
+                response = new()
+                {
 
                     ApiResponseStatus = Enum.APIResponseStatus.Success,
                     Result = new()
-                        {
-                            Headers = new () {
+                    {
+                        Headers = new() {
 
                                 new() {
                                     Name = "Primary Category ID",
@@ -79,7 +86,7 @@ namespace CTS_BE.Controllers.Pension
                                 },
                                 new() {
                                     Name = "Head of Account",
-                                    FieldName = "hoaId"
+                                    FieldName = "headDetails"
                                 },
                                 new() {
                                     Name = "Primary Category Name",
@@ -87,20 +94,22 @@ namespace CTS_BE.Controllers.Pension
                                 }
 
                             },
-                            Data = await _pensionCategoryService.GetPrimaryCategories<PensionPrimaryCategoryResponseDTO>(
+                        Data = await _pensionCategoryService.GetPrimaryCategories(
                                 GetCurrentFyYear(),
                                 GetTreasuryCode()
                             ),
-                        },
+                    },
                     Message = $"All Primary Category Details Received Successfully!"
 
                 };
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 FillException(response, ex);
                 return response;
             }
-            finally {
+            finally
+            {
                 FillErrorMesageFromDataSource(response);
             }
             return response;
@@ -115,14 +124,16 @@ namespace CTS_BE.Controllers.Pension
         )
         {
             JsonAPIResponse<DynamicListResult<IEnumerable<PensionPrimaryCategoryResponseDTO>>> response = new();
-            try {
+            try
+            {
 
-                response = new() {
+                response = new()
+                {
 
                     ApiResponseStatus = Enum.APIResponseStatus.Success,
                     Result = new()
-                        {
-                            Headers = new () {
+                    {
+                        Headers = new() {
 
                                 new() {
                                     Name = "Primary Category ID",
@@ -150,21 +161,23 @@ namespace CTS_BE.Controllers.Pension
                                 }
 
                             },
-                            Data = await _pensionCategoryService.ListPrimaryCategory<PensionPrimaryCategoryResponseDTO>(
+                        Data = await _pensionCategoryService.ListPrimaryCategory<PensionPrimaryCategoryResponseDTO>(
                                 GetCurrentFyYear(),
                                 GetTreasuryCode(),
                                 dynamicListQueryParameters),
-                            DataCount = _pensionCategoryService.DataCount()
-                        },
+                        DataCount = _pensionCategoryService.DataCount()
+                    },
                     Message = $"All Primary Category Details Received Successfully!"
 
                 };
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 FillException(response, ex);
                 return response;
             }
-            finally {
+            finally
+            {
                 FillErrorMesageFromDataSource(response);
             }
             return response;
@@ -178,14 +191,17 @@ namespace CTS_BE.Controllers.Pension
         )
         {
 
-            JsonAPIResponse<PensionSubCategoryResponseDTO> response = new(){
+            JsonAPIResponse<PensionSubCategoryResponseDTO> response = new()
+            {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = $"SubCategory saved sucessfully!",
-                Result = new(){
+                Result = new()
+                {
                     Id = 0
                 }
             };
-            try {
+            try
+            {
                 response.Result = await _pensionCategoryService
                     .CreatePensionSubCategory<PensionSubCategoryEntryDTO, PensionSubCategoryResponseDTO>(
                         pensionSubCategoryEntryDTO,
@@ -193,11 +209,13 @@ namespace CTS_BE.Controllers.Pension
                         GetTreasuryCode()
                     );
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 FillException(response, ex);
                 return response;
             }
-            finally {
+            finally
+            {
                 FillErrorMesageFromDataSource(response);
             }
 
@@ -213,14 +231,16 @@ namespace CTS_BE.Controllers.Pension
         )
         {
             JsonAPIResponse<DynamicListResult<IEnumerable<PensionSubCategoryResponseDTO>>> response = new();
-            try {
+            try
+            {
 
-                response = new() {
+                response = new()
+                {
 
                     ApiResponseStatus = Enum.APIResponseStatus.Success,
                     Result = new()
-                        {
-                            Headers = new () {
+                    {
+                        Headers = new() {
 
                                 new() {
                                     Name = "Sub Category ID",
@@ -240,21 +260,23 @@ namespace CTS_BE.Controllers.Pension
                                 }
 
                             },
-                            Data = await _pensionCategoryService.ListSubCategory<PensionSubCategoryResponseDTO>(
+                        Data = await _pensionCategoryService.ListSubCategory<PensionSubCategoryResponseDTO>(
                                 GetCurrentFyYear(),
                                 GetTreasuryCode(),
                                 dynamicListQueryParameters),
-                            DataCount = _pensionCategoryService.DataCount()
-                        },
+                        DataCount = _pensionCategoryService.DataCount()
+                    },
                     Message = $"All Sub Category Details Received Successfully!"
 
                 };
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 FillException(response, ex);
                 return response;
             }
-            finally {
+            finally
+            {
                 FillErrorMesageFromDataSource(response);
             }
             return response;
@@ -266,14 +288,16 @@ namespace CTS_BE.Controllers.Pension
         public async Task<JsonAPIResponse<TableResponseDTO<PensionSubCategoryResponseDTO>>> GetSubCategories()
         {
             JsonAPIResponse<TableResponseDTO<PensionSubCategoryResponseDTO>> response = new();
-            try {
+            try
+            {
 
-                response = new() {
+                response = new()
+                {
 
                     ApiResponseStatus = Enum.APIResponseStatus.Success,
                     Result = new()
-                        {
-                            Headers = new () {
+                    {
+                        Headers = new() {
 
                                 new() {
                                     Name = "Sub Category ID",
@@ -285,20 +309,22 @@ namespace CTS_BE.Controllers.Pension
                                 }
 
                             },
-                            Data = await _pensionCategoryService.GetSubCategories<PensionSubCategoryResponseDTO>(
+                        Data = await _pensionCategoryService.GetSubCategories<PensionSubCategoryResponseDTO>(
                                 GetCurrentFyYear(),
                                 GetTreasuryCode()
                             )
-                        },
+                    },
                     Message = $"All Sub Category Details Received Successfully!"
 
                 };
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 FillException(response, ex);
                 return response;
             }
-            finally {
+            finally
+            {
                 FillErrorMesageFromDataSource(response);
             }
             return response;
@@ -312,14 +338,17 @@ namespace CTS_BE.Controllers.Pension
             )
         {
 
-            JsonAPIResponse<PensionCategoryResponseDTO> response = new(){
+            JsonAPIResponse<PensionCategoryResponseDTO> response = new()
+            {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = $"Category saved sucessfully!",
-                Result = new(){
+                Result = new()
+                {
                     Id = 0
                 }
             };
-            try {
+            try
+            {
                 response.Result = await _pensionCategoryService
                     .CreatePensionCategory<PensionCategoryEntryDTO, PensionCategoryResponseDTO>(
                         pensionCategoryEntryDTO,
@@ -327,11 +356,13 @@ namespace CTS_BE.Controllers.Pension
                         GetTreasuryCode()
                     );
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 FillException(response, ex);
                 return response;
             }
-            finally {
+            finally
+            {
                 FillErrorMesageFromDataSource(response);
             }
 
@@ -346,14 +377,17 @@ namespace CTS_BE.Controllers.Pension
         )
         {
 
-            JsonAPIResponse<PensionCategoryResponseDTO> response = new(){
+            JsonAPIResponse<PensionCategoryResponseDTO> response = new()
+            {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = $"Category received successfully!",
-                Result = new(){
+                Result = new()
+                {
                     Id = 0
                 }
             };
-            try {
+            try
+            {
                 response.Result = await _pensionCategoryService
                     .GetPensionCategoryById<PensionCategoryResponseDTO>(
                         categoryId,
@@ -361,11 +395,13 @@ namespace CTS_BE.Controllers.Pension
                         GetTreasuryCode()
                     );
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 FillException(response, ex);
                 return response;
             }
-            finally {
+            finally
+            {
                 FillErrorMesageFromDataSource(response);
             }
 
@@ -381,14 +417,16 @@ namespace CTS_BE.Controllers.Pension
         )
         {
             JsonAPIResponse<DynamicListResult<IEnumerable<PensionCategoryListDTO>>> response = new();
-            try {
+            try
+            {
 
-                response = new() {
+                response = new()
+                {
 
                     ApiResponseStatus = Enum.APIResponseStatus.Success,
                     Result = new()
-                        {
-                            Headers = new () {
+                    {
+                        Headers = new() {
 
                                 new() {
                                     Name = "Category ID",
@@ -425,21 +463,23 @@ namespace CTS_BE.Controllers.Pension
                                 }
 
                             },
-                            Data = await _pensionCategoryService.ListPensionCategory<PensionCategoryListDTO>(
+                        Data = await _pensionCategoryService.ListPensionCategory<PensionCategoryListDTO>(
                                 GetCurrentFyYear(),
                                 GetTreasuryCode(),
                                 dynamicListQueryParameters),
-                            DataCount = _pensionCategoryService.DataCount()
-                        },
+                        DataCount = _pensionCategoryService.DataCount()
+                    },
                     Message = $"All PPO Details Received Successfully!"
 
                 };
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 FillException(response, ex);
                 return response;
             }
-            finally {
+            finally
+            {
                 FillErrorMesageFromDataSource(response);
             }
             return response;
@@ -451,14 +491,16 @@ namespace CTS_BE.Controllers.Pension
         public async Task<JsonAPIResponse<TableResponseDTO<PensionCategoryListDTO>>> GetCategories()
         {
             JsonAPIResponse<TableResponseDTO<PensionCategoryListDTO>> response = new();
-            try {
+            try
+            {
 
-                response = new() {
+                response = new()
+                {
 
                     ApiResponseStatus = Enum.APIResponseStatus.Success,
                     Result = new()
-                        {
-                            Headers = new () {
+                    {
+                        Headers = new() {
 
                                 new() {
                                     Name = "Category ID",
@@ -479,20 +521,74 @@ namespace CTS_BE.Controllers.Pension
                                 }
 
                             },
-                            Data = await _pensionCategoryService.GetPensionCategories<PensionCategoryListDTO>(
+                        Data = await _pensionCategoryService.GetPensionCategories<PensionCategoryListDTO>(
                                 GetCurrentFyYear(),
                                 GetTreasuryCode()
                             )
-                        },
+                    },
                     Message = $"All PPO Details Received Successfully!"
 
                 };
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 FillException(response, ex);
                 return response;
             }
-            finally {
+            finally
+            {
+                FillErrorMesageFromDataSource(response);
+            }
+            return response;
+        }
+
+        [HttpGet("account-heads")]
+        [Tags("Pension: Category Master")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<TableResponseDTO<AccountHeadListItemResponseDTO>>> GetAccountHeads()
+        {
+            JsonAPIResponse<TableResponseDTO<AccountHeadListItemResponseDTO>> response = new();
+            try
+            {
+
+                response = new()
+                {
+
+                    ApiResponseStatus = Enum.APIResponseStatus.Success,
+                    Result = new()
+                    {
+                        Headers = new() {
+
+                                new() {
+                                    Name = "ID",
+                                    FieldName = "id"
+                                },
+                                new() {
+                                    Name = "Head of Account",
+                                    FieldName = "headDetails"
+                                },
+                                new() {
+                                    Name = "Head Description",
+                                    FieldName = "headDescription"
+                                }
+
+                            },
+                        Data = await _pensionCategoryService.GetListOfAccountHeads<AccountHeadListItemResponseDTO>(
+                                GetCurrentFyYear(),
+                                GetTreasuryCode()
+                            ),
+                    },
+                    Message = $"All Head Details Received Successfully!"
+
+                };
+            }
+            catch (Exception ex)
+            {
+                FillException(response, ex);
+                return response;
+            }
+            finally
+            {
                 FillErrorMesageFromDataSource(response);
             }
             return response;

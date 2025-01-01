@@ -35,19 +35,22 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
-            PrimaryCategory primaryCategoryEntity = new() {
+            PrimaryCategory primaryCategoryEntity = new()
+            {
                 Id = 0
             };
             TResponse? response = _mapper.Map<TResponse>(primaryCategoryEntity);
 
-            try {
+            try
+            {
                 primaryCategoryEntity.FillFrom(pensionPrimaryCategoryEntryDTO);
 
                 var primaryCategory = await _primaryCategoryRepository.GetSingleAysnc(
                         entity => entity.ActiveFlag
                         && entity.PrimaryCategoryName == primaryCategoryEntity.PrimaryCategoryName
                     );
-                if (primaryCategory != null) {
+                if (primaryCategory != null)
+                {
                     response.FillDataSource(
                         primaryCategoryEntity,
                         $"Primary Category already exists!"
@@ -60,7 +63,8 @@ namespace CTS_BE.BAL.Services.Pension
 
                 _primaryCategoryRepository.Add(primaryCategoryEntity);
 
-                if(await _primaryCategoryRepository.SaveChangesManagedAsync() == 0) {
+                if (await _primaryCategoryRepository.SaveChangesManagedAsync() == 0)
+                {
                     response.FillDataSource(
                         primaryCategoryEntity,
                         $"Primary Category not saved!"
@@ -68,14 +72,17 @@ namespace CTS_BE.BAL.Services.Pension
                     return response;
                 }
             }
-            catch (DbUpdateException ex) {
+            catch (DbUpdateException ex)
+            {
                 response.FillDataSource(
                         primaryCategoryEntity,
                         $"ServiceException: {ex.InnerException?.Message}"
                     );
             }
-            finally {
-                response.FillFrom(primaryCategoryEntity);
+            finally
+            {
+                PrimaryCategory? primaryCategory = await _primaryCategoryRepository.GetPrimaryCategoryWithAccountHeadAsync(primaryCategoryEntity.Id);
+                response = _mapper.Map<TResponse>(primaryCategory);
             }
             return response;
         }
@@ -95,13 +102,12 @@ namespace CTS_BE.BAL.Services.Pension
                 );
         }
 
-        public async Task<List<T>> GetPrimaryCategories<T>(
+        public async Task<List<PensionPrimaryCategoryResponseDTO>> GetPrimaryCategories(
             short financialYear,
             string treasuryCode
         )
         {
-            return await _primaryCategoryRepository
-                .GetPrimaryCategoriesAsync<T>();
+            return await _primaryCategoryRepository.GetPrimaryCategoriesAsync();
         }
 
         public async Task<TResponse> CreatePensionSubCategory<TEntry, TResponse>(
@@ -110,19 +116,22 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
-            SubCategory subCategoryEntity = new() {
+            SubCategory subCategoryEntity = new()
+            {
                 Id = 0
             };
             TResponse? response = _mapper.Map<TResponse>(subCategoryEntity);
 
-            try {
+            try
+            {
                 subCategoryEntity.FillFrom(pensionSubCategoryEntryDTO);
 
                 var subCategory = await _subCategoryRepository.GetSingleAysnc(
                         entity => entity.ActiveFlag
                         && entity.SubCategoryName == subCategoryEntity.SubCategoryName
                     );
-                if (subCategory != null) {
+                if (subCategory != null)
+                {
                     response.FillDataSource(
                         subCategoryEntity,
                         $"Sub Category already exists!"
@@ -135,7 +144,8 @@ namespace CTS_BE.BAL.Services.Pension
 
                 _subCategoryRepository.Add(subCategoryEntity);
 
-                if(await _subCategoryRepository.SaveChangesManagedAsync() == 0) {
+                if (await _subCategoryRepository.SaveChangesManagedAsync() == 0)
+                {
                     response.FillDataSource(
                         subCategoryEntity,
                         $"Sub Category not saved!"
@@ -143,13 +153,15 @@ namespace CTS_BE.BAL.Services.Pension
                     return response;
                 }
             }
-            catch (DbUpdateException ex) {
+            catch (DbUpdateException ex)
+            {
                 response.FillDataSource(
                         subCategoryEntity,
                         $"ServiceException: {ex.InnerException?.Message}"
                     );
             }
-            finally {
+            finally
+            {
                 response.FillFrom(subCategoryEntity);
             }
             return response;
@@ -186,12 +198,14 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
-            Category categoryEntity = new() {
+            Category categoryEntity = new()
+            {
                 Id = 0
             };
             TResponse? response = _mapper.Map<TResponse>(categoryEntity);
 
-            try {
+            try
+            {
                 categoryEntity.FillFrom(pensionCategoryEntryDTO);
                 categoryEntity.ActiveFlag = true;
                 categoryEntity.CreatedAt = DateTime.Now;
@@ -202,13 +216,15 @@ namespace CTS_BE.BAL.Services.Pension
                     categoryEntity
                 );
             }
-            catch (DbUpdateException ex) {
+            catch (DbUpdateException ex)
+            {
                 response.FillDataSource(
                         categoryEntity,
                         $"DbException: {ex.InnerException?.Message ?? ex.Message}"
                     );
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 response.FillDataSource(
                     categoryEntity,
                     $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
@@ -225,16 +241,18 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
-            Category? pensionCategoryEntity = new ();
+            Category? pensionCategoryEntity = new();
             T PensionCategoryDTO = _mapper.Map<T>(pensionCategoryEntity);
-            try {
+            try
+            {
 
                 pensionCategoryEntity = await _categoryRepository.GetCategoryById(
                     categoryId,
                     financialYear,
                     treasuryCode
                 );
-                if(pensionCategoryEntity == null) {
+                if (pensionCategoryEntity == null)
+                {
                     PensionCategoryDTO.FillDataSource(
                         pensionCategoryEntity,
                         $"Category not found! Please check category id: {categoryId}"
@@ -244,14 +262,16 @@ namespace CTS_BE.BAL.Services.Pension
                 PensionCategoryDTO = _mapper.Map<T>(pensionCategoryEntity);
                 return PensionCategoryDTO;
             }
-            catch (DbUpdateException ex) {
+            catch (DbUpdateException ex)
+            {
                 PensionCategoryDTO.FillDataSource(
                     _mapper.Map<T>(pensionCategoryEntity),
                     $"DbException: {ex.InnerException?.Message} {this.ToString()}"
                 );
                 return PensionCategoryDTO;
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 PensionCategoryDTO.FillDataSource(
                     _mapper.Map<T>(pensionCategoryEntity),
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message} {this.ToString()}"
@@ -281,6 +301,14 @@ namespace CTS_BE.BAL.Services.Pension
         )
         {
             return await _categoryRepository.GetPensionCategoriesAsync<TResponse>();
+        }
+
+        public async Task<List<AccountHeadListItemResponseDTO>> GetListOfAccountHeads<T>(
+            short financialYear,
+            string treasuryCode
+        )
+        {
+            return await _primaryCategoryRepository.GetAccountHeadsAsync(financialYear, treasuryCode);
         }
 
     }

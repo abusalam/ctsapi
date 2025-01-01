@@ -1,4 +1,5 @@
 using Bogus;
+using CTS_BE.DAL;
 using CTS_BE.DTOs;
 
 namespace CTS_BE.Factories.Pension
@@ -7,10 +8,11 @@ namespace CTS_BE.Factories.Pension
     {
         public PrimaryCategoryFactory()
         {
+
             _faker = new Faker<PensionPrimaryCategoryEntryDTO>()
                 .RuleFor(
-                    x => x.HoaId,
-                    f => f.Random.Replace("#### - ## - ### - ## - ### - ? - ## - ##")
+                    x => x.AccountHeadId,
+                    f => f.PickRandom(197256, 69552)
                 )
                 .RuleFor(
                     x => x.PrimaryCategoryName,

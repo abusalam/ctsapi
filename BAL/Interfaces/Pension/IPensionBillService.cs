@@ -14,5 +14,12 @@ namespace CTS_BE.BAL.Interfaces.Pension
             short financialYear,
             string treasuryCode
         ) where T : PensionerFirstBillResponseDTO;
+
+        public Task<T> SavePensionBill<T>(
+            InitiateFirstPensionBillDTO initiateFirstPensionBillDTO,
+            char billType,
+            short financialYear,
+            string treasuryCode
+        ) where T : PensionerFirstBillResponseDTO;
     }
 }

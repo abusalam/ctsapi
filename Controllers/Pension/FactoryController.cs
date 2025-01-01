@@ -51,7 +51,7 @@ namespace CTS_BE.Controllers.Pension
                 Result = null
             };
 
-            if(!_factories.ContainsKey(dtoName))
+            if (!_factories.ContainsKey(dtoName))
             {
                 response.ApiResponseStatus = Enum.APIResponseStatus.Error;
                 response.Result = _factories.Keys.ToList();

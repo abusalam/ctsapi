@@ -79,4 +79,10 @@ public partial class AccountHead
 
     [Column("active_flag")]
     public bool ActiveFlag { get; set; }
+
+    [InverseProperty("AccountHead")]
+    public virtual ICollection<Bill> Bills { get; set; } = new List<Bill>();
+
+    [InverseProperty("AccountHead")]
+    public virtual ICollection<PrimaryCategory> PrimaryCategories { get; set; } = new List<PrimaryCategory>();
 }

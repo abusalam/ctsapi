@@ -6,19 +6,22 @@ using CTS_BE.DAL.Entities.Pension;
 
 namespace CTS_BE.DTOs
 {
-    public class BaseDTO {
+    public class BaseDTO
+    {
         public ExpandoObject? DataSource { get; set; }
     }
 
-    public class DateOnlyDTO {
+    public class DateOnlyDTO
+    {
         [DataType(DataType.Date)]
         public DateOnly DateOnly { get; set; }
     }
 
-    public class PensionStatusDTO : BaseDTO {
+    public class PensionStatusDTO : BaseDTO
+    {
         [Required]
         [EnumDataType(typeof(PensionStatusFlag))]
-        public PensionStatusFlag StatusFlag {get; set; }
+        public PensionStatusFlag StatusFlag { get; set; }
         // public int StatusFlag {get; set; }
         public PensionStatusReassonFlag ReasonFlag { get; set; }
 
@@ -31,12 +34,14 @@ namespace CTS_BE.DTOs
         public string? ReasonRemark { get; set; }
     }
 
-    public class PensionStatusEntryDTO : PensionStatusDTO {
+    public class PensionStatusEntryDTO : PensionStatusDTO
+    {
         [Required]
         public int PpoId { get; set; }
     }
 
-    public class ManualPpoReceiptEntryDTO : BaseDTO {
+    public class ManualPpoReceiptEntryDTO : BaseDTO
+    {
 
         [Required]
         [StringLength(100)]
@@ -70,14 +75,16 @@ namespace CTS_BE.DTOs
     }
 
 
-    public class ManualPpoReceiptResponseDTO : ManualPpoReceiptEntryDTO {
+    public class ManualPpoReceiptResponseDTO : ManualPpoReceiptEntryDTO
+    {
         public long Id { get; set; }
 
         [StringLength(13)]
         public string TreasuryReceiptNo { get; set; } = null!;
     }
 
-    public class ListAllPpoReceiptsResponseDTO {
+    public class ListAllPpoReceiptsResponseDTO
+    {
         public long Id { get; set; }
 
         [StringLength(13)]
@@ -96,19 +103,22 @@ namespace CTS_BE.DTOs
         public required DateOnly DateOfCommencement { get; set; }
     }
 
-    public partial class FileEntryDTO : BaseDTO {
+    public partial class FileEntryDTO : BaseDTO
+    {
 
         public string FileName { get; set; } = null!;
         public byte[] Contents { get; set; } = null!;
     }
 
-    public partial class FileResponseDTO : FileEntryDTO {
+    public partial class FileResponseDTO : FileEntryDTO
+    {
         public long Id { get; set; }
         public string FilePath { get; set; } = null!;
         public string FileMimeType { get; set; } = null!;
     }
 
-    public partial class EPpoReceiptEntryDTO : BaseDTO {
+    public partial class EPpoReceiptEntryDTO : BaseDTO
+    {
 
         [Required]
         public string PpoNo { get; set; } = null!;
@@ -174,35 +184,41 @@ namespace CTS_BE.DTOs
         public FileEntryDTO? EPpoFile { get; set; }
     }
 
-    public partial class EPpoReceiptDetailDTO : EPpoReceiptEntryDTO {
+    public partial class EPpoReceiptDetailDTO : EPpoReceiptEntryDTO
+    {
         public long Id { get; set; }
     }
 
-    public partial class EPpoReceiptListDTO : BaseDTO {
-        public int EPpoReceiptCount { get { return EPpoReceipts?.Count ?? 0;} }
+    public partial class EPpoReceiptListDTO : BaseDTO
+    {
+        public int EPpoReceiptCount { get { return EPpoReceipts?.Count ?? 0; } }
         public List<EPpoReceiptDetailDTO>? EPpoReceipts { get; set; }
     }
 
-    public partial class EPpoEFPEntryDTO : BaseDTO {
+    public partial class EPpoEFPEntryDTO : BaseDTO
+    {
         public short Ropa { get; set; }
         public int EfpAmount { get; set; }
         public DateOnly EfpFromDate { get; set; }
         public DateOnly EfpUpToDate { get; set; }
     }
 
-    public partial class EPpoNFPEntryDTO : BaseDTO {
+    public partial class EPpoNFPEntryDTO : BaseDTO
+    {
         public short Ropa { get; set; }
         public int NfpAmount { get; set; }
         public DateOnly NfpFromDate { get; set; }
         public DateOnly NfpUpToDate { get; set; }
     }
 
-    public partial class EPpoReceiptResponseDTO : BaseDTO {
+    public partial class EPpoReceiptResponseDTO : BaseDTO
+    {
         public long Id { get; set; }
         public string PensionApplnNo { get; set; } = null!;
     }
 
-    public partial class EPpoReceiptRevisionEntryDTO : BaseDTO {
+    public partial class EPpoReceiptRevisionEntryDTO : BaseDTO
+    {
         [Required]
         public string PpoNo { get; set; } = null!;
 
@@ -242,12 +258,14 @@ namespace CTS_BE.DTOs
         public FileEntryDTO? EPpoFile { get; set; }
     }
 
-    public partial class EPpoReceiptRevisionResponseDTO : BaseDTO {
+    public partial class EPpoReceiptRevisionResponseDTO : BaseDTO
+    {
         public long Id { get; set; }
         public string PensionApplnNo { get; set; } = null!;
     }
 
-    public partial class EPpoReceiptWithdrawlEntryDTO : BaseDTO {
+    public partial class EPpoReceiptWithdrawlEntryDTO : BaseDTO
+    {
         [Required]
         public string PensionApplnNo { get; set; } = null!;
 
@@ -257,7 +275,8 @@ namespace CTS_BE.DTOs
         [Required]
         public string? WithdrawReason { get; set; }
     }
-    public partial class EPpoReceiptWithdrawlResponseDTO : BaseDTO {
+    public partial class EPpoReceiptWithdrawlResponseDTO : BaseDTO
+    {
         public long Id { get; set; }
         public string PensionApplnNo { get; set; } = null!;
         public string PensionerName { get; set; } = null!;
@@ -266,7 +285,8 @@ namespace CTS_BE.DTOs
         public string TreasuryCode { get; set; } = null!;
     }
 
-    public partial class EPpoReceiptPpoIdResponseDTO : BaseDTO {
+    public partial class EPpoReceiptPpoIdResponseDTO : BaseDTO
+    {
         public long Id { get; set; }
         public string PensionApplnNo { get; set; } = null!;
         public string PpoNo { get; set; } = null!;
@@ -276,7 +296,8 @@ namespace CTS_BE.DTOs
         public string TreasuryCode { get; set; } = null!;
     }
 
-    public class PensionerEntryDTO : BaseDTO {
+    public class PensionerEntryDTO : BaseDTO
+    {
         [Required]
         [StringLength(100)]
         public string PpoNo { get; set; } = null!;
@@ -389,7 +410,7 @@ namespace CTS_BE.DTOs
         [StringLength(500)]
         public string? Remarks { get; set; }
         [Required]
-        public int ReducedPensionAmount { get ; set; }
+        public int ReducedPensionAmount { get; set; }
 
         /// <summary>
         /// Must be one of the following (H, M, O)
@@ -399,35 +420,41 @@ namespace CTS_BE.DTOs
         public char Religion { get; set; }
     }
 
-    public class BankListResponseDTO : BaseDTO {
-        public int BankCount { get {return Banks.Count;} }
+    public class BankListResponseDTO : BaseDTO
+    {
+        public int BankCount { get { return Banks.Count; } }
         public List<BankResponseDTO> Banks { get; set; } = null!;
     }
 
-    public class BranchListItemResponseDTO : BaseDTO {
+    public class BranchListItemResponseDTO : BaseDTO
+    {
         public long Id { get; set; }
         public string BranchName { get; set; } = null!;
         public string IfscCode { get; set; } = null!;
     }
 
-    public class BranchListResponseDTO : BaseDTO {
-        public int BranchCount { get {return Branches.Count;} }
-         public BankResponseDTO? Bank { get; set; }
+    public class BranchListResponseDTO : BaseDTO
+    {
+        public int BranchCount { get { return Branches.Count; } }
+        public BankResponseDTO? Bank { get; set; }
         public List<BranchListItemResponseDTO> Branches { get; set; } = null!;
     }
 
-    public class BankResponseDTO : BaseDTO {
+    public class BankResponseDTO : BaseDTO
+    {
         public long Id { get; set; }
         public string BankName { get; set; } = null!;
     }
 
-    public class BankBranchNameResponseDTO : BaseDTO {
+    public class BankBranchNameResponseDTO : BaseDTO
+    {
         public long BankId { get; set; }
         public long BranchId { get; set; }
         public string BankBranchName { get; set; } = null!;
     }
 
-    public class BranchResponseDTO : BaseDTO {
+    public class BranchResponseDTO : BaseDTO
+    {
         public long Id { get; set; }
         public long BankId { get; set; }
         public BankResponseDTO? Bank { get; set; }
@@ -442,7 +469,8 @@ namespace CTS_BE.DTOs
 
 
 
-    public class PensionerResponseDTO : PensionerEntryDTO {
+    public class PensionerResponseDTO : PensionerEntryDTO
+    {
         public long Id { get; set; }
         public int PpoId { get; set; }
         public PensionCategoryResponseDTO? Category { get; set; }
@@ -454,7 +482,8 @@ namespace CTS_BE.DTOs
         public bool? FirstPensionGenerated { get; set; }
     }
 
-    public class PensionerListItemDTO : BaseDTO {
+    public class PensionerListItemDTO : BaseDTO
+    {
         public long Id { get; set; }
 
         public int PpoId { get; set; }
@@ -482,34 +511,58 @@ namespace CTS_BE.DTOs
         public string PpoNo { get; set; } = null!;
     }
 
-    public partial class PensionPrimaryCategoryEntryDTO : BaseDTO {
-        /// <summary>
-        /// Head of Account: 2071 - 01 - 109 - 00 - 001 - V - 04 - 00
-        /// </summary>
+    public class AccountHeadResponseDTO : BaseDTO
+    {
+        public long Id { get; set; }
+        public string? MajorHead { get; set; }
+        public string? SubmajorHead { get; set; }
+        public string? MinorHead { get; set; }
+        public string? PlanStatus { get; set; }
+        public string? SchemeHead { get; set; }
+        public string? DetailHead { get; set; }
+        public string? SubdetailHead { get; set; }
+        public char? VotedCharged { get; set; }
+    }
+
+    public class AccountHeadListItemResponseDTO : BaseDTO
+    {
+        public long Id { get; set; }
+        public string? HeadDetails { get; set; }
+        public string? HeadDescription { get; set; }
+    }
+
+    public partial class PensionPrimaryCategoryEntryDTO : BaseDTO
+    {
         [Required]
-        [StringLength(50)]
-        public string HoaId { get; set; } = null!;
+        public long AccountHeadId { get; set; }
 
         [Required]
         [StringLength(100)]
         public string PrimaryCategoryName { get; set; } = null!;
     }
 
-    public partial class PensionPrimaryCategoryResponseDTO : PensionPrimaryCategoryEntryDTO {
+    public partial class PensionPrimaryCategoryResponseDTO : PensionPrimaryCategoryEntryDTO
+    {
         public long Id { get; set; }
+        public string? HeadDetails { get => $"{AccountHead?.MajorHead}-{AccountHead?.SubmajorHead}-{AccountHead?.MinorHead}-{AccountHead?.PlanStatus}-{AccountHead?.SchemeHead}-{AccountHead?.VotedCharged}-{AccountHead?.DetailHead}-{AccountHead?.SubdetailHead}"; }
+        public AccountHeadResponseDTO? AccountHead { get; set; }
+
     }
 
-    public partial class PensionSubCategoryEntryDTO : BaseDTO {
+    public partial class PensionSubCategoryEntryDTO : BaseDTO
+    {
         [Required]
         [StringLength(100)]
         public string SubCategoryName { get; set; } = null!;
     }
 
-    public partial class PensionSubCategoryResponseDTO : PensionSubCategoryEntryDTO {
+    public partial class PensionSubCategoryResponseDTO : PensionSubCategoryEntryDTO
+    {
         public long Id { get; set; }
     }
 
-    public partial class PensionCategoryEntryDTO : BaseDTO {
+    public partial class PensionCategoryEntryDTO : BaseDTO
+    {
         [Required]
         public long PrimaryCategoryId { get; set; }
 
@@ -517,7 +570,8 @@ namespace CTS_BE.DTOs
         public long SubCategoryId { get; set; }
     }
 
-    public partial class PensionCategoryResponseDTO : PensionCategoryEntryDTO {
+    public partial class PensionCategoryResponseDTO : PensionCategoryEntryDTO
+    {
         public long Id { get; set; }
         public string CategoryName { get; set; } = null!;
         public PensionPrimaryCategoryResponseDTO PrimaryCategory { get; set; } = null!;
@@ -525,14 +579,16 @@ namespace CTS_BE.DTOs
         public List<ComponentRateResponseDTO>? ComponentRates { get; set; }
     }
 
-    public class PensionCategoryListDTO : BaseDTO {
+    public class PensionCategoryListDTO : BaseDTO
+    {
         public long Id { get; set; }
         public long PrimaryCategoryId { get; set; }
         public long SubCategoryId { get; set; }
         public string CategoryName { get; set; } = null!;
     }
 
-    public partial class PensionBreakupEntryDTO : BaseDTO {
+    public partial class PensionBreakupEntryDTO : BaseDTO
+    {
         [Required]
         [StringLength(100)]
         public string ComponentName { get; set; } = null!;
@@ -551,11 +607,13 @@ namespace CTS_BE.DTOs
         public bool ReliefFlag { get; set; }
     }
 
-    public partial class PensionBreakupResponseDTO : PensionBreakupEntryDTO {
+    public partial class PensionBreakupResponseDTO : PensionBreakupEntryDTO
+    {
         public long Id { get; set; }
     }
 
-    public partial class ComponentRateEntryDTO : BaseDTO {
+    public partial class ComponentRateEntryDTO : BaseDTO
+    {
         [Required]
         public long CategoryId { get; set; }
         [Required]
@@ -575,16 +633,18 @@ namespace CTS_BE.DTOs
         public char RateType { get; set; }
     }
 
-    public partial class ComponentRateResponseDTO : ComponentRateEntryDTO {
+    public partial class ComponentRateResponseDTO : ComponentRateEntryDTO
+    {
         public long Id { get; set; }
-        public string ComponentName { get {return Breakup?.Id + "-" + Breakup?.ComponentName;} }
-        public string ComponentRate { get {return RateType == BreakupRateType.Amount ? "₹" + RateAmount : "" + RateAmount + "%";}}
-        public string ComponentType { get {return Breakup?.ComponentType == BreakupComponentType.Payment ? "Payment" : "Deduction";}}
-        public string WithEffectFrom { get {return EffectiveFromDate.ToString("dd-MM-yyyy");} }
+        public string ComponentName { get { return Breakup?.Id + "-" + Breakup?.ComponentName; } }
+        public string ComponentRate { get { return RateType == BreakupRateType.Amount ? "₹" + RateAmount : "" + RateAmount + "%"; } }
+        public string ComponentType { get { return Breakup?.ComponentType == BreakupComponentType.Payment ? "Payment" : "Deduction"; } }
+        public string WithEffectFrom { get { return EffectiveFromDate.ToString("dd-MM-yyyy"); } }
         public PensionBreakupResponseDTO? Breakup { get; set; }
     }
 
-    public partial class InitiateFirstPensionBillDTO : BaseDTO {
+    public partial class InitiateFirstPensionBillDTO : BaseDTO
+    {
         [Required]
         public virtual int PpoId { get; set; }
 
@@ -593,7 +653,8 @@ namespace CTS_BE.DTOs
         public virtual DateOnly ToDate { get; set; }
     }
 
-    public partial class PensionerFirstBillResponseDTO : InitiateFirstPensionBillDTO {
+    public partial class PensionerFirstBillResponseDTO : InitiateFirstPensionBillDTO
+    {
         public long Id { get; set; }
         // public override int PpoId { get {return this.Pensioner.PpoId;} }
         public DateOnly FromDate { get; set; }
@@ -606,7 +667,7 @@ namespace CTS_BE.DTOs
         // public List<PpoComponentRevisionResponseDTO>? PpoComponentRevisions { get; set; }
         public DateOnly BillGeneratedUptoDate { get; set; }
         // public long BillId { get; set; }
-        public override DateOnly ToDate { get {return this.BillGeneratedUptoDate;} }
+        public override DateOnly ToDate { get { return this.BillGeneratedUptoDate; } }
         public DateOnly BillDate { get; set; }
         public string TreasuryVoucherNo { get; set; } = null!;
         public long TreasuryVoucherId { get; set; }
@@ -618,13 +679,15 @@ namespace CTS_BE.DTOs
         public DateOnly PreparedOn { get; set; }
     }
 
-    public partial class InitiateFirstPensionBillResponseDTO : PensionerFirstBillResponseDTO {
-        public long PensionerId { get {return this.Pensioner?.Id ?? 0;} }
+    public partial class InitiateFirstPensionBillResponseDTO : PensionerFirstBillResponseDTO
+    {
+        public long PensionerId { get { return this.Pensioner?.Id ?? 0; } }
         public PensionerResponseDTO? Pensioner { get; set; } = null!;
-        public string BankBranchName { get { return this.Pensioner?.Branch?.Bank?.BankName + " - " + this.Pensioner?.Branch?.BranchName;} }
+        public string BankBranchName { get { return this.Pensioner?.Branch?.Bank?.BankName + " - " + this.Pensioner?.Branch?.BranchName; } }
     }
 
-    public partial class PpoPaymentListItemDTO : BaseDTO {
+    public partial class PpoPaymentListItemDTO : BaseDTO
+    {
         // public int PpoId { get; set; }
         // public long BillId { get; set; }
         public DateOnly FromDate { get; set; }
@@ -649,7 +712,8 @@ namespace CTS_BE.DTOs
         public int NetAmount { get; set; }
     }
 
-    public partial class PpoComponentRevisionEntryDTO : BaseDTO {
+    public partial class PpoComponentRevisionEntryDTO : BaseDTO
+    {
 
         [Required]
         public long RateId { get; set; }
@@ -668,7 +732,8 @@ namespace CTS_BE.DTOs
         public int AmountPerMonth { get; set; }
     }
 
-    public partial class PpoComponentRevisionResponseDTO : PpoComponentRevisionEntryDTO {
+    public partial class PpoComponentRevisionResponseDTO : PpoComponentRevisionEntryDTO
+    {
         public long Id { get; set; }
 
         /// <summary>
@@ -680,7 +745,8 @@ namespace CTS_BE.DTOs
         public ComponentRateResponseDTO? Rate { get; set; }
     }
 
-    public partial class PpoComponentRevisionUpdateDTO : BaseDTO {
+    public partial class PpoComponentRevisionUpdateDTO : BaseDTO
+    {
 
         /// <summary>
         /// From date is the Date of Commencement of pension of the pensioner
@@ -696,7 +762,8 @@ namespace CTS_BE.DTOs
         public int AmountPerMonth { get; set; }
     }
 
-    public partial class PpoBillEntryDTO : BaseDTO {
+    public partial class PpoBillEntryDTO : BaseDTO
+    {
         [Required]
         public int PpoId { get; set; }
 
@@ -714,7 +781,8 @@ namespace CTS_BE.DTOs
 
     }
 
-    public partial class PpoBillResponseDTO : BaseDTO {
+    public partial class PpoBillResponseDTO : BaseDTO
+    {
         public long Id { get; set; }
         public long PensionerId { get; set; }
         public string BankBranchName { get; set; } = null!;
@@ -740,7 +808,8 @@ namespace CTS_BE.DTOs
         public DateOnly PreparedOn { get; set; }
     }
 
-    public partial class PpoBillBreakupEntryDTO : BaseDTO {
+    public partial class PpoBillBreakupEntryDTO : BaseDTO
+    {
         // public long BillId { get; set; }
         [Required]
         public int PpoId { get; set; }
@@ -757,14 +826,15 @@ namespace CTS_BE.DTOs
 
         [Required]
         public int BreakupAmount { get; set; }
-        public int DueAmount { get {return this.BreakupAmount;} set {this.BreakupAmount = value;} }
+        public int DueAmount { get { return this.BreakupAmount; } set { this.BreakupAmount = value; } }
         public int DrawnAmount { get; set; } = 0;
-        public int NetAmount { get {return this.BreakupAmount - this.DrawnAmount;} }
+        public int NetAmount { get { return this.BreakupAmount - this.DrawnAmount; } }
     }
 
-    public partial class PpoBillBreakupResponseDTO : PpoBillBreakupEntryDTO {
+    public partial class PpoBillBreakupResponseDTO : PpoBillBreakupEntryDTO
+    {
         public long Id { get; set; }
-        public long RevisionId { get {return this.Revision?.Id ?? 0;} }
+        public long RevisionId { get { return this.Revision?.Id ?? 0; } }
         public PpoComponentRevisionResponseDTO Revision { get; set; } = null!;
         public string ComponentName { get; set; } = null!;
         public char ComponentType { get; set; }
@@ -772,20 +842,23 @@ namespace CTS_BE.DTOs
         public int BaseAmount { get; set; }
     }
 
-    public partial class PpoComponentRevisionListEntryDTO : BaseDTO {
+    public partial class PpoComponentRevisionListEntryDTO : BaseDTO
+    {
         public List<PpoComponentRevisionEntryDTO>? Revisions { get; set; }
     }
 
-    public partial class PpoListResponseDTO : BaseDTO {
+    public partial class PpoListResponseDTO : BaseDTO
+    {
         public List<PensionerListItemDTO> PpoList { get; set; } = null!;
-        public int PpoCount { get { return this.PpoList?.Count ?? 0;} }
+        public int PpoCount { get { return this.PpoList?.Count ?? 0; } }
     }
 
-    public partial class PpoBillListResponseDTO : BaseDTO {
+    public partial class PpoBillListResponseDTO : BaseDTO
+    {
         public long Id { get; set; }
 
         [StringLength(50)]
-        public string HoaId { get; set; } = null!;
+        public long AccountHeadId { get; set; }
         public int BillNo { get; set; }
         public DateOnly BillDate { get; set; }
 
@@ -804,10 +877,11 @@ namespace CTS_BE.DTOs
         public DateOnly PreparedOn { get; set; }
     }
 
-    public partial class BillResponseDTO : BaseDTO {
+    public partial class BillResponseDTO : BaseDTO
+    {
         public long Id { get; set; }
         public string FinancialYear { get; set; } = null!;
-        public string HoaId { get; set; } = null!;
+        public long AccountHeadId { get; set; }
         public int BillNo { get; set; }
         public DateOnly BillDate { get; set; }
         public string TreasuryVoucherNo { get; set; } = null!;
@@ -815,7 +889,7 @@ namespace CTS_BE.DTOs
         public DateOnly FromDate { get; set; }
         public DateOnly ToDate { get; set; }
         public List<PpoBillResponseDTO> PpoBills { get; set; } = null!;
-        public long PpoBillCount { get { return this.PpoBills?.Count ?? 0;} }
+        public long PpoBillCount { get { return this.PpoBills?.Count ?? 0; } }
         public int GrossAmount { get; set; }
         public int ByTransferAmount { get; set; }
         public int NetAmount { get; set; }
@@ -823,26 +897,30 @@ namespace CTS_BE.DTOs
         public DateOnly PreparedOn { get; set; }
     }
 
-    public partial class BillListResponseDTO : BaseDTO {
+    public partial class BillListResponseDTO : BaseDTO
+    {
         public List<BillResponseDTO> Bills { get; set; } = null!;
-        public long BillCount { get { return this.Bills?.Count ?? 0;} }
+        public long BillCount { get { return this.Bills?.Count ?? 0; } }
         public string PreparedBy { get; set; } = null!;
         public DateOnly PreparedOn { get; set; }
     }
 
-    public partial class PpoBillSaveResponseDTO : BaseDTO {
+    public partial class PpoBillSaveResponseDTO : BaseDTO
+    {
         public long Id { get; set; }
         public int PpoId { get; set; }
         public DateOnly BillDate { get; set; }
         public char BillType { get; set; }
     }
 
-    public partial class RegularBillListResponseDTO : BaseDTO {
-        public long RegularBillCount { get { return this.RegularBills?.Count ?? 0;} }
+    public partial class RegularBillListResponseDTO : BaseDTO
+    {
+        public long RegularBillCount { get { return this.RegularBills?.Count ?? 0; } }
         public List<RegularBillResponseDTO>? RegularBills { get; set; }
     }
 
-    public partial class RegularBillResponseDTO : BaseDTO {
+    public partial class RegularBillResponseDTO : BaseDTO
+    {
         public long Id { get; set; }
         public string TreasuryName { get; set; } = null!;
         public string Month { get; set; } = null!;
@@ -851,40 +929,45 @@ namespace CTS_BE.DTOs
         public DateOnly ToDate { get; set; }
         public string BankBranchName { get; set; } = null!;
         public string Category { get; set; } = null!;
-        public string HoaId { get; set; } = null!;
+        public long AccountHeadId { get; set; }
+        public string? CategoryDescription { get; set; }
         public int BillNo { get; set; }
         public DateOnly BillDate { get; set; }
         public string TreasuryVoucherNo { get; set; } = null!;
         public DateOnly TreasuryVoucherDate { get; set; }
         public int GrossAmount { get; set; }
         public int NetAmount { get; set; }
-        public int AccountHeadwiseAmount { get {return NetAmount;} }
-        public int PayAmount { get {return NetAmount;} }
+        public int AccountHeadwiseAmount { get { return NetAmount; } }
+        public int PayAmount { get { return NetAmount; } }
         public string AmountInWords { get; set; } = null!;
         public int ByTransferAmount { get; set; }
         public BranchResponseDTO? Branch { get; set; }
-        public long PpoBillCount { get { return this.PpoBills?.Count ?? 0;} }
+        public long PpoBillCount { get { return this.PpoBills?.Count ?? 0; } }
         public List<PpoRegularBillDetailsDTO> PpoBills { get; set; } = null!;
         public string PreparedBy { get; set; } = null!;
         public DateOnly PreparedOn { get; set; }
     }
 
-    public partial class PpoRegularBillDetailsDTO : BaseDTO {
+    public partial class PpoRegularBillDetailsDTO : BaseDTO
+    {
         public int PpoId { get; set; }
         public string PpoNo { get; set; } = null!;
         public string PensionerName { get; set; } = null!;
         public string BankAcNo { get; set; } = null!;
-        public int TotalPayableAmount { get {
-            return BasicPensionAmount
-                + DearnessReliefAmount
-                + MedicalReliefAmount
-                - CommutedPensionAmount
-                - OverdrawlAmount
-                + DpPensionAmount
-                + AdditionalPensionAmount
-                + ArrearPensionAmount
-                + InterimReliefAmount
-                - ByTransferAmount;
+        public int TotalPayableAmount
+        {
+            get
+            {
+                return BasicPensionAmount
+                    + DearnessReliefAmount
+                    + MedicalReliefAmount
+                    - CommutedPensionAmount
+                    - OverdrawlAmount
+                    + DpPensionAmount
+                    + AdditionalPensionAmount
+                    + ArrearPensionAmount
+                    + InterimReliefAmount
+                    - ByTransferAmount;
             }
         }
         public int BasicPensionAmount { get; set; }
@@ -901,18 +984,21 @@ namespace CTS_BE.DTOs
         public PensionerResponseDTO? Pensioner { get; set; }
     }
 
-    public partial class TableResponseDTO<T> : BaseDTO {
+    public partial class TableResponseDTO<T> : BaseDTO
+    {
         public List<TableHeader> Headers { get; set; } = null!;
         public List<T> Data { get; set; } = null!;
-        public int DataCount { get{return this.Data.Count;}}
+        public int DataCount { get { return this.Data.Count; } }
     }
 
-    public partial class TableHeader : BaseDTO {
+    public partial class TableHeader : BaseDTO
+    {
         public string Name { get; set; } = null!;
         public string FieldName { get; set; } = null!;
     }
 
-    public partial class PpoComponentRevisionPpoListItemDTO : BaseDTO {
+    public partial class PpoComponentRevisionPpoListItemDTO : BaseDTO
+    {
         public int PpoId { get; set; }
         public string PpoNo { get; set; } = null!;
         public string PensionerName { get; set; } = null!;
@@ -922,7 +1008,8 @@ namespace CTS_BE.DTOs
         public BranchResponseDTO? Branch { get; set; }
     }
 
-    public partial class PpoSanctionDetailsEntryDTO : BaseDTO {
+    public partial class PpoSanctionDetailsEntryDTO : BaseDTO
+    {
         [Required]
         public int PpoId { get; set; }
 
@@ -960,12 +1047,14 @@ namespace CTS_BE.DTOs
 
     }
 
-    public partial class PpoSanctionDetailsResponseDTO : PpoSanctionDetailsEntryDTO {
+    public partial class PpoSanctionDetailsResponseDTO : PpoSanctionDetailsEntryDTO
+    {
         public long Id { get; set; }
         // public PensionerResponseDTO? Pensioner { get; set; }
     }
 
-    public partial class NomineeEntryDTO : BaseDTO {
+    public partial class NomineeEntryDTO : BaseDTO
+    {
         [Required]
         public int PpoId { get; set; }
 
@@ -1004,18 +1093,21 @@ namespace CTS_BE.DTOs
         public long? BranchId { get; set; }
     }
 
-    public partial class NomineeResponseDTO : NomineeEntryDTO {
+    public partial class NomineeResponseDTO : NomineeEntryDTO
+    {
         public long Id { get; set; }
         public BranchResponseDTO? Branch { get; set; }
         public override long BankId => Branch != null ? Branch.BankId : 0;
     }
 
-    public partial class NomineeListResponseDTO : BaseDTO {
-        public int NomineeCount { get { return Nominees?.Count ?? 0;} }
+    public partial class NomineeListResponseDTO : BaseDTO
+    {
+        public int NomineeCount { get { return Nominees?.Count ?? 0; } }
         public List<NomineeResponseDTO>? Nominees { get; set; }
     }
 
-    public partial class LifeCertificateEntryDTO : BaseDTO {
+    public partial class LifeCertificateEntryDTO : BaseDTO
+    {
         [Required]
         public int FinancialYear { get; set; }
 
@@ -1026,11 +1118,13 @@ namespace CTS_BE.DTOs
         public bool? CertificateSubmitted { get; set; }
     }
 
-    public partial class LifeCertificateResponseDTO : LifeCertificateEntryDTO {
+    public partial class LifeCertificateResponseDTO : LifeCertificateEntryDTO
+    {
         public long Id { get; set; }
     }
 
-    public partial class LifeCertificateDetailsResponseDTO : BaseDTO {
+    public partial class LifeCertificateDetailsResponseDTO : BaseDTO
+    {
         public long Id { get; set; }
         public int PpoId { get; set; }
         public string PpoNo { get; set; } = null!;
@@ -1041,8 +1135,9 @@ namespace CTS_BE.DTOs
         public bool CertificateSubmitted { get; set; }
     }
 
-    public partial class LifeCertificateListResponseDTO : BaseDTO {
-        public int LifeCertificateCount { get { return LifeCertificates?.Count ?? 0;} }
+    public partial class LifeCertificateListResponseDTO : BaseDTO
+    {
+        public int LifeCertificateCount { get { return LifeCertificates?.Count ?? 0; } }
         public List<LifeCertificateDetailsResponseDTO>? LifeCertificates { get; set; }
     }
 

@@ -2,6 +2,8 @@ using AutoMapper;
 using CTS_BE.DAL.Entities.Pension;
 using CTS_BE.DAL.Interfaces.Pension;
 using Microsoft.EntityFrameworkCore;
+using CTS_BE.DTOs;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace CTS_BE.DAL.Repositories.Pension
 {
@@ -22,14 +24,51 @@ namespace CTS_BE.DAL.Repositories.Pension
             _mapper = mapper;
         }
 
-        public async Task<List<T>> GetPrimaryCategoriesAsync<T>()
+        public async Task<List<PensionPrimaryCategoryResponseDTO>> GetPrimaryCategoriesAsync()
         {
             return await _context.PrimaryCategories
-                .Where(
-                    entity => entity.ActiveFlag
-                )
-                .Select(entity => _mapper.Map<T>(entity))
+                .Where(entity => entity.ActiveFlag)
+                .Select(entity => new PensionPrimaryCategoryResponseDTO
+                {
+                    Id = entity.Id,
+                    AccountHeadId = entity.AccountHeadId,
+                    PrimaryCategoryName = entity.PrimaryCategoryName,
+                    AccountHead = new AccountHeadResponseDTO
+                    {
+                        Id = entity.AccountHead.Id,
+                        MajorHead = entity.AccountHead.MajorHead,
+                        SubmajorHead = entity.AccountHead.SubmajorHead,
+                        MinorHead = entity.AccountHead.MinorHead,
+                        PlanStatus = entity.AccountHead.PlanStatus,
+                        SchemeHead = entity.AccountHead.SchemeHead,
+                        DetailHead = entity.AccountHead.DetailHead,
+                        SubdetailHead = entity.AccountHead.SubdetailHead,
+                        VotedCharged = entity.AccountHead.VotedCharged
+                    }
+                })
                 .ToListAsync();
         }
+
+        public async Task<List<AccountHeadListItemResponseDTO>> GetAccountHeadsAsync(short financialYear, string treasuryCode)
+        {
+            return await _context.AccountHeads
+                .Where(ah => ah.ActiveFlag)
+                .Select(ah => new AccountHeadListItemResponseDTO
+                {
+                    Id = ah.Id,
+                    HeadDetails = $"{ah.MajorHead}-{ah.SubmajorHead}-{ah.MinorHead}-{ah.PlanStatus}-{ah.SchemeHead}-{ah.VotedCharged}-{ah.DetailHead}-{ah.SubdetailHead}"
+                })
+                .ToListAsync();
+        }
+
+        public async Task<PrimaryCategory?> GetPrimaryCategoryWithAccountHeadAsync(long id)
+        {
+            var primaryCategory = await _context.PrimaryCategories
+                .Include(pc => pc.AccountHead)
+                .FirstOrDefaultAsync(pc => pc.Id == id && pc.ActiveFlag);
+
+            return primaryCategory;
+        }
+
     }
 }

@@ -23,9 +23,8 @@ public partial class Bill
     [StringLength(3)]
     public string TreasuryCode { get; set; } = null!;
 
-    [Column("hoa_id")]
-    [StringLength(50)]
-    public string HoaId { get; set; } = null!;
+    [Column("account_head_id")]
+    public long AccountHeadId { get; set; }
 
     [Column("branch_id")]
     public long BranchId { get; set; }
@@ -72,6 +71,10 @@ public partial class Bill
 
     [Column("active_flag")]
     public bool ActiveFlag { get; set; }
+
+    [ForeignKey("AccountHeadId")]
+    [InverseProperty("Bills")]
+    public virtual AccountHead AccountHead { get; set; } = null!;
 
     [ForeignKey("BranchId")]
     [InverseProperty("Bills")]

@@ -9,23 +9,40 @@ namespace CTS_BE.DAL.Entities.Pension;
 /// <summary>
 /// PensionModuleSchema v1
 /// </summary>
-[Table("primary_categories", Schema = "cts_pension")]
-[Index("PrimaryCategoryName", Name = "primary_categories_primary_category_name_key", IsUnique = true)]
-public partial class PrimaryCategory
+[Table("classifications", Schema = "cts_pension")]
+[Index("ClassificationName", Name = "classifications_classification_name_key", IsUnique = true)]
+public partial class Classification
 {
     [Key]
     [Column("id")]
     public long Id { get; set; }
 
-    /// <summary>
-    /// Head of Account: 2071 - 01 - 109 - 00 - 001 - V - 04 - 00
-    /// </summary>
+    [Column("classification_name")]
+    [StringLength(100)]
+    public string ClassificationName { get; set; } = null!;
+
     [Column("account_head_id")]
     public long AccountHeadId { get; set; }
 
-    [Column("primary_category_name")]
-    [StringLength(100)]
-    public string PrimaryCategoryName { get; set; } = null!;
+    /// <summary>
+    /// [PDM]
+    /// </summary>
+    [Column("due_draw_flag")]
+    [MaxLength(1)]
+    public char DueDrawFlag { get; set; }
+
+    /// <summary>
+    /// [PDO]
+    /// </summary>
+    [Column("classification_flag")]
+    [MaxLength(1)]
+    public char ClassificationFlag { get; set; }
+
+    /// <summary>
+    /// [Y/N]
+    /// </summary>
+    [Column("commuted_value_pension")]
+    public bool CommutedValuePension { get; set; }
 
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime? CreatedAt { get; set; }
@@ -43,9 +60,9 @@ public partial class PrimaryCategory
     public bool ActiveFlag { get; set; }
 
     [ForeignKey("AccountHeadId")]
-    [InverseProperty("PrimaryCategories")]
+    [InverseProperty("Classifications")]
     public virtual AccountHead AccountHead { get; set; } = null!;
 
-    [InverseProperty("PrimaryCategory")]
-    public virtual ICollection<Category> Categories { get; set; } = new List<Category>();
+    [InverseProperty("Classification")]
+    public virtual ICollection<EppoAmount> EppoAmounts { get; set; } = new List<EppoAmount>();
 }

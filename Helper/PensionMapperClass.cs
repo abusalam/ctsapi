@@ -75,6 +75,7 @@ namespace CTS_BE.Helper
             CreateMap<EppoReceipt, EPpoReceiptPpoIdResponseDTO>().ReverseMap();
             CreateMap<EppoReceipt, EPpoReceiptDetailDTO>().ReverseMap();
             CreateMap<EppoReceipt, EPpoReceiptListDTO>().ReverseMap();
+            CreateMap<AccountHead, AccountHeadResponseDTO>().ReverseMap();
 
         }
     }

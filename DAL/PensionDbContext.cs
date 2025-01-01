@@ -99,6 +99,10 @@ public partial class PensionDbContext : DbContext
 
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
 
+            entity.HasOne(d => d.AccountHead).WithMany(p => p.Bills)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("bills_account_head_id_fkey");
+
             entity.HasOne(d => d.Branch).WithMany(p => p.Bills)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("bills_branch_id_fkey");
@@ -398,8 +402,12 @@ public partial class PensionDbContext : DbContext
 
             entity.ToTable("primary_categories", "cts_pension", tb => tb.HasComment("PensionModuleSchema v1"));
 
+            entity.Property(e => e.AccountHeadId).HasComment("Head of Account: 2071 - 01 - 109 - 00 - 001 - V - 04 - 00");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
-            entity.Property(e => e.HoaId).HasComment("Head of Account: 2071 - 01 - 109 - 00 - 001 - V - 04 - 00");
+
+            entity.HasOne(d => d.AccountHead).WithMany(p => p.PrimaryCategories)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("primary_categories_account_head_id_fkey");
         });
 
         modelBuilder.Entity<SubCategory>(entity =>
