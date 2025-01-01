@@ -55,7 +55,7 @@ namespace CTS_BE.Factories.Pension
                 .RuleFor(d => d.CommutedPensionAmount, f => f.Random.Number(10, 50) * 100)
                 .RuleFor(d => d.PensionerAddress, f => f.Address.FullAddress())
                 .RuleFor(d => d.Religion, f => f.PickRandom('H','M','O'))
-                .RuleFor(d => d.Remarks, f => f.Random.Words(50))
+                .RuleFor(d => d.Remarks, f => f.Random.Words(5))
                 .RuleFor(
                     d => d.AccountHolderName,
                     (f, d) => d.PensionerName
