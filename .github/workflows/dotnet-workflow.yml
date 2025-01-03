@@ -3,63 +3,82 @@ name: DotNet CI
 on: [push, pull_request]
 
 jobs:
-  build:
-    name: Build DotNet
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        dotnet-version: [ '6.x', '7.x', '8.x' ]
+  database:
+    name: Setup Database
+    runs-on: ubuntu-24.04
 
     steps:
-      - name: Checkout repository
+      - name: Checkout IFMS-CTS repository for branch selection
+        uses: actions/checkout@v4
+        with:
+          repository: 'abusalam/IFMS-CTS'
+
+      - name: Select Branch of IFMS-CTS repository
+        id: selected-branch
+        run: |
+          if [[ -n $(git ls-remote --heads origin ${{ github.head.ref || github.ref }}) ]]; then
+            echo "branch-name=${{ github.head.ref || github.ref }}" >> $GITHUB_OUTPUT
+          fi
+
+    outputs:
+      branch-name: ${{ steps.selected-branch.outputs.branch-name }}
+
+  build:
+    name: Build DotNet
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout DotNet repository
         uses: actions/checkout@v4
 
       - name: Setup dotnet
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: ${{ matrix.dotnet-version }}
+          dotnet-version: '8.x'
           # cache: true
       - name: Install dependencies & Build DotNet
         run: |
+          git show --oneline -s
           dotnet restore
           dotnet build
+
   test:
     name: Test DotNet
-    needs: [build]
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        dotnet-version: [ '6.x', '7.x', '8.x' ]
+    needs: [build, database]
+    runs-on: ubuntu-24.04
 
     steps:
-      - name: Add hosts to /etc/hosts
-        run: |
-          sudo echo "127.0.0.1 postgres" | sudo tee -a /etc/hosts
+      - name: Checkout IFMS-CTS repository
+        uses: actions/checkout@v4
+        with:
+          repository: 'abusalam/IFMS-CTS'
+          ref: ${{ needs.database.outputs.branch-name }}
+          submodules: 'recursive'
 
-      - name: Clone & Setup BackendDB
+      - name: Start Backend Database Server
         run: |
-          git clone https://github.com/abusalam/IFMS-CTS.git ~/ifms-cts
-          cd ~/ifms-cts
-          git submodule update --init --recursive
           cp .env.docker .env
+          sudo echo "127.0.0.1 postgres" | sudo tee -a /etc/hosts
           sudo curl -SL https://github.com/docker/compose/releases/download/v2.29.1/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
           sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
           docker-compose up -d postgres
 
-      - name: Setup dotnet
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ matrix.dotnet-version }}
-          # cache: true
-      - name: Run Tests
+      - name: Run xUnit Tests
         run: |
-          cd ~/ifms-cts/dotnet
-          dotnet test --logger trx --results-directory "TestResults-${{ matrix.dotnet-version }}"
+          echo "IFMS-CTS Branch: ${{ needs.database.outputs.branch-name }}"
+          git show --oneline -s
+          cd dotnet/CTS-BE
+          git pull origin ${{ github.head.ref || github.ref }}
+          echo "dotnet/CTS-BE Branch: ${{ github.head.ref || github.ref }}"
+          git show --oneline -s
+          cd ..
+          dotnet test --logger trx --results-directory "TestResults-8.x"
+
       - name: Upload dotnet test results
         uses: actions/upload-artifact@v4
         with:
-          name: dotnet-results-${{ matrix.dotnet-version }}
-          path: ~/ifms-cts/dotnet/TestResults-${{ matrix.dotnet-version }}
+          name: dotnet-results-8.x
+          path: dotnet/TestResults-8.x
           # Use always() to always run this step to publish test results when there are test failures
         if: ${{ always() }}
