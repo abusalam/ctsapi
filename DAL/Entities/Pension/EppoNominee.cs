@@ -16,13 +16,6 @@ public partial class EppoNominee
     [Column("id")]
     public long Id { get; set; }
 
-    [Column("financial_year")]
-    public int FinancialYear { get; set; }
-
-    [Column("treasury_code")]
-    [StringLength(3)]
-    public string TreasuryCode { get; set; } = null!;
-
     /// <summary>
     /// P - Pensioner; F - Family; D - Dependent;
     /// </summary>

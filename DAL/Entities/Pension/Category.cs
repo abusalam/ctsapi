@@ -49,6 +49,9 @@ public partial class Category
     public virtual ICollection<ComponentRate> ComponentRates { get; set; } = new List<ComponentRate>();
 
     [InverseProperty("Category")]
+    public virtual ICollection<EppoAmount> EppoAmounts { get; set; } = new List<EppoAmount>();
+
+    [InverseProperty("Category")]
     public virtual ICollection<Pensioner> Pensioners { get; set; } = new List<Pensioner>();
 
     [ForeignKey("PrimaryCategoryId")]

@@ -3,7 +3,6 @@ using CTS_BE.DAL.Entities.Pension;
 using CTS_BE.DAL.Interfaces.Pension;
 using Microsoft.EntityFrameworkCore;
 using CTS_BE.DTOs;
-using SixLabors.ImageSharp.PixelFormats;
 
 namespace CTS_BE.DAL.Repositories.Pension
 {

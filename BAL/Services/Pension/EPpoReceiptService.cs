@@ -10,27 +10,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.BAL.Services.Pension
 {
-    public class EPpoReceiptService : BaseService, IEPpoReceiptService
+    public class EPpoReceiptService(
+        IEPpoReceiptRepository ePpoReceiptRepository,
+        IMapper mapper,
+        IClaimService claimService
+        ) : BaseService(claimService), IEPpoReceiptService
     {
-        private readonly IEPpoReceiptRepository _ePpoReceiptRepository;
-        private readonly IMapper _mapper;
-        private readonly PensionDbContext _context;
-        public EPpoReceiptService(
-            IEPpoReceiptRepository ePpoReceiptRepository,
-            IMapper mapper,
-            IClaimService claimService,
-            PensionDbContext context
-        ) : base(claimService)
-        {
-            _ePpoReceiptRepository = ePpoReceiptRepository;
-            _mapper = mapper;
-            _context = context;
-        }
+        private readonly IEPpoReceiptRepository _ePpoReceiptRepository = ePpoReceiptRepository;
+        private readonly IMapper _mapper = mapper;
 
         public async Task<T> CreateEPpoReceipt<T>(
             EPpoReceiptEntryDTO ePpoReceiptEntryDTO,
             string treasuryCode,
-            short financialYear)
+            short financialYear
+        )
         {
             EppoReceipt eppoReceipt = _mapper.Map<EppoReceipt>(ePpoReceiptEntryDTO);
             T response = _mapper.Map<T>(eppoReceipt);
@@ -47,13 +40,12 @@ namespace CTS_BE.BAL.Services.Pension
                     entity => _mapper.Map<T>(entity)
                 );
             }
-            catch (DbUpdateException ex)
-            {
-                response.FillDataSource(eppoReceipt, $"DbException: {ex.InnerException?.Message ?? ex.Message}");
-            }
             catch (Exception ex)
             {
-                response.FillDataSource(eppoReceipt, $"ServiceException: {ex.InnerException?.Message ?? ex.Message}");
+                response.FillDataSource(
+                    eppoReceipt,
+                    $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
+                );
             }
             return response;
         }
@@ -61,7 +53,8 @@ namespace CTS_BE.BAL.Services.Pension
         public async Task<T> CreateEPpoReceiptRevision<T>(
             EPpoReceiptRevisionEntryDTO ePpoReceiptRevisionEntryDTO,
             string treasuryCode,
-            short financialYear)
+            short financialYear
+        )
         {
             EppoRevision eppoRevision = _mapper.Map<EppoRevision>(ePpoReceiptRevisionEntryDTO);
             T response = _mapper.Map<T>(eppoRevision);
@@ -79,22 +72,21 @@ namespace CTS_BE.BAL.Services.Pension
                     entity => _mapper.Map<T>(entity)
                 );
             }
-            catch (DbUpdateException ex)
-            {
-                response.FillDataSource(eppoRevision, $"DbException: {ex.InnerException?.Message ?? ex.Message}");
-            }
             catch (Exception ex)
             {
-                response.FillDataSource(eppoRevision, $"ServiceException: {ex.InnerException?.Message ?? ex.Message}");
+                response.FillDataSource(
+                    eppoRevision,
+                    $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
+                );
             }
-
             return response;
         }
 
         public async Task<T> GetEPpoReceiptById<T>(
             long receiptId,
             string treasuryCode,
-            short financialYear)
+            short financialYear
+        )
         {
             T? response = default(T);
             try
@@ -118,21 +110,12 @@ namespace CTS_BE.BAL.Services.Pension
                 response = _mapper.Map<T>(eppoReceipt);
                 return response;
             }
-            catch (DbUpdateException ex)
-            {
-                response = _mapper.Map<T>(new EPpoReceiptDetailDTO());
-                response.FillDataSource(
-                    new EppoReceipt(),
-                    $"DbException: {ex.InnerException?.Message ?? ex.Message}"
-                );
-                return response;
-            }
             catch (Exception ex)
             {
                 response = _mapper.Map<T>(new EPpoReceiptDetailDTO());
                 response.FillDataSource(
                     new EppoReceipt(),
-                    $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
+                    $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );
                 return response;
             }
@@ -141,9 +124,11 @@ namespace CTS_BE.BAL.Services.Pension
         public async Task<T> GetEPpoReceiptByPensionApplnNo<T>(
             string pensionApplnNo,
             string treasuryCode,
-            short financialYear)
+            short financialYear
+        )
         {
-            T? response = _mapper.Map<T>(new EppoReceipt() {
+            T? response = _mapper.Map<T>(new EppoReceipt()
+            {
                 PensionApplnNo = pensionApplnNo
             });
             try
@@ -166,18 +151,11 @@ namespace CTS_BE.BAL.Services.Pension
                 response = _mapper.Map<T>(eppoReceipt);
                 return response;
             }
-            catch (DbUpdateException ex)
+            catch (Exception ex)
             {
                 response.FillDataSource(
                     new EppoReceipt(),
-                    $"DbException: {ex.InnerException?.Message ?? ex.Message}"
-                );
-                return response;
-            }
-            catch (Exception ex) {
-                response.FillDataSource(
-                    new EppoReceipt(),
-                    $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
+                    $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );
                 return response;
             }
@@ -185,7 +163,8 @@ namespace CTS_BE.BAL.Services.Pension
 
         public async Task<List<T>> GetUnusedEPpoReceipts<T>(
             string treasuryCode,
-            short financialYear)
+            short financialYear
+        )
         {
             return await _ePpoReceiptRepository.GetUnusedEPpoReceipts(
                 treasuryCode,
@@ -193,14 +172,16 @@ namespace CTS_BE.BAL.Services.Pension
                 entity => _mapper.Map<T>(entity)
             );
         }
+
         public async Task<T> RegisterEPpoReceiptWithdrawal<T>(
             string pensionApplnNo,
             EPpoReceiptWithdrawlEntryDTO ePpoReceiptWithdrawlEntryDTO,
             string treasuryCode,
-            short financialYear)
+            short financialYear
+        )
         {
-            T? response =  _mapper.Map<T>(ePpoReceiptWithdrawlEntryDTO);
-            EppoReceipt ? eppoReceipt = new();
+            T? response = _mapper.Map<T>(ePpoReceiptWithdrawlEntryDTO);
+            EppoReceipt? eppoReceipt = new();
             try
             {
 
@@ -234,22 +215,12 @@ namespace CTS_BE.BAL.Services.Pension
                         PensionApplnNo = pensionApplnNo
                     })
                 );
-
-
-            }
-            catch (DbUpdateException ex)
-            {
-                response.FillDataSource(
-                        eppoReceipt,
-                        $"DbException: {ex.InnerException?.Message}"
-                    );
-                return response;
             }
             catch (Exception ex)
             {
                 response.FillDataSource(
                         eppoReceipt,
-                        $"ServiceException: {ex.InnerException?.Message}"
+                        $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                     );
                 return response;
             }

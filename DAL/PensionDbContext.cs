@@ -30,9 +30,15 @@ public partial class PensionDbContext : DbContext
 
     public virtual DbSet<Category> Categories { get; set; }
 
+    public virtual DbSet<Classification> Classifications { get; set; }
+
     public virtual DbSet<ComponentRate> ComponentRates { get; set; }
 
     public virtual DbSet<DmlHistory> DmlHistories { get; set; }
+
+    public virtual DbSet<EppoAmount> EppoAmounts { get; set; }
+
+    public virtual DbSet<EppoNominee> EppoNominees { get; set; }
 
     public virtual DbSet<EppoReceipt> EppoReceipts { get; set; }
 
@@ -164,6 +170,22 @@ public partial class PensionDbContext : DbContext
                 .HasConstraintName("categories_sub_category_id_fkey");
         });
 
+        modelBuilder.Entity<Classification>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("classifications_pkey");
+
+            entity.ToTable("classifications", "cts_pension", tb => tb.HasComment("PensionModuleSchema v1"));
+
+            entity.Property(e => e.ClassificationFlag).HasComment("[PD] P - Paid; D - Deducted;");
+            entity.Property(e => e.CommutedValuePension).HasComment("[Y/N]");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.DueDrawFlag).HasComment("[PD] P - Payment; D - Deduction;");
+
+            entity.HasOne(d => d.AccountHead).WithMany(p => p.Classifications)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("classifications_account_head_id_fkey");
+        });
+
         modelBuilder.Entity<ComponentRate>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("component_rates_pkey");
@@ -191,6 +213,42 @@ public partial class PensionDbContext : DbContext
             entity.ToTable("dml_history", "cts_pension", tb => tb.HasComment("PensionModuleSchema v1"));
 
             entity.Property(e => e.UpdatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+        });
+
+        modelBuilder.Entity<EppoAmount>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("eppo_amounts_pkey");
+
+            entity.ToTable("eppo_amounts", "cts_pension", tb => tb.HasComment("PensionModuleSchema v1"));
+
+            entity.Property(e => e.AmountType)
+                .IsFixedLength()
+                .HasComment("CLS - Classification; EFP - Enhanced Family Pension; BSC - Basic Pension; NFP - Normal Family Pension; BYT - By Transfer;");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            entity.HasOne(d => d.Category).WithMany(p => p.EppoAmounts).HasConstraintName("eppo_amounts_category_id_fkey");
+
+            entity.HasOne(d => d.Classification).WithMany(p => p.EppoAmounts).HasConstraintName("eppo_amounts_classification_id_fkey");
+
+            entity.HasOne(d => d.EppoReceipt).WithMany(p => p.EppoAmounts)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("eppo_amounts_eppo_receipt_id_fkey");
+        });
+
+        modelBuilder.Entity<EppoNominee>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("eppo_nominees_pkey");
+
+            entity.ToTable("eppo_nominees", "cts_pension", tb => tb.HasComment("PensionModuleSchema v1"));
+
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.NomineeAdultMinor).HasComment("A - Adult; M - Minor;");
+            entity.Property(e => e.NomineeType).HasComment("P - Pensioner; F - Family; D - Dependent;");
+            entity.Property(e => e.Relation).HasComment("[WEHSDOMRNAFKYCUITJBPVL] E - Employed; L - Widow Daughter; U - Unmarried Daughter; V - Divorced Daughter; N - Minor Son; R - Minor Daughter; P - Handicapped Son; G - Handicapped Daughter; J - Dependent Father; K - Dependent Mother; H - Husband; W - Wife;");
+
+            entity.HasOne(d => d.EppoReceipt).WithMany(p => p.EppoNominees)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("eppo_nominees_eppo_receipt_id_fkey");
         });
 
         modelBuilder.Entity<EppoReceipt>(entity =>
@@ -225,9 +283,9 @@ public partial class PensionDbContext : DbContext
 
             entity.ToTable("life_certificates", "cts_pension", tb => tb.HasComment("PensionModuleSchema v1"));
 
-            entity.Property(e => e.CertificateSubmitted).HasDefaultValueSql("false");
+            entity.Property(e => e.CertificateSubmitted).HasDefaultValue(false);
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
-            entity.Property(e => e.DigitalMode).HasDefaultValueSql("false");
+            entity.Property(e => e.DigitalMode).HasDefaultValue(false);
 
             entity.HasOne(d => d.Pensioner).WithMany(p => p.LifeCertificates)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -255,20 +313,20 @@ public partial class PensionDbContext : DbContext
 
             entity.ToTable("pensioners", "cts_pension", tb => tb.HasComment("PensionModuleSchema v1"));
 
-            entity.Property(e => e.AdhocPension).HasDefaultValueSql("false");
+            entity.Property(e => e.AdhocPension).HasDefaultValue(false);
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
-            entity.Property(e => e.DoublePension).HasDefaultValueSql("false");
-            entity.Property(e => e.EmployedPensioner).HasDefaultValueSql("false");
-            entity.Property(e => e.FirstPensionGenerated).HasDefaultValueSql("false");
+            entity.Property(e => e.DoublePension).HasDefaultValue(false);
+            entity.Property(e => e.EmployedPensioner).HasDefaultValue(false);
+            entity.Property(e => e.FirstPensionGenerated).HasDefaultValue(false);
             entity.Property(e => e.Gender).HasComment("M - Male; F - Female;");
-            entity.Property(e => e.HealthScheme).HasDefaultValueSql("false");
-            entity.Property(e => e.InterimAllowance).HasDefaultValueSql("false");
+            entity.Property(e => e.HealthScheme).HasDefaultValue(false);
+            entity.Property(e => e.InterimAllowance).HasDefaultValue(false);
             entity.Property(e => e.PpoSubType).HasComment("E - Employed; L - Widow Daughter; U - Unmarried Daughter; V - Divorced Daughter; N - Minor Son; R - Minor Daughter; P - Handicapped Son; G - Handicapped Daughter; J - Dependent Father; K - Dependent Mother; H - Husband; W - Wife;");
             entity.Property(e => e.PpoType).HasComment("P - Pension; F - Family Pension; C - CPF;");
-            entity.Property(e => e.ProvisionalPension).HasDefaultValueSql("false");
-            entity.Property(e => e.ReEmployedPensioner).HasDefaultValueSql("false");
+            entity.Property(e => e.ProvisionalPension).HasDefaultValue(false);
+            entity.Property(e => e.ReEmployedPensioner).HasDefaultValue(false);
             entity.Property(e => e.Religion).HasComment("H - Hindu; M - Muslim; O - Other;");
-            entity.Property(e => e.SharedPension).HasDefaultValueSql("false");
+            entity.Property(e => e.SharedPension).HasDefaultValue(false);
 
             entity.HasOne(d => d.Branch).WithMany(p => p.Pensioners)
                 .OnDelete(DeleteBehavior.ClientSetNull)

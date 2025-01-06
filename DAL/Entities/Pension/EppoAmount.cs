@@ -16,13 +16,6 @@ public partial class EppoAmount
     [Column("id")]
     public long Id { get; set; }
 
-    [Column("financial_year")]
-    public int FinancialYear { get; set; }
-
-    [Column("treasury_code")]
-    [StringLength(3)]
-    public string TreasuryCode { get; set; } = null!;
-
     /// <summary>
     /// CLS - Classification; EFP - Enhanced Family Pension; BSC - Basic Pension; NFP - Normal Family Pension; BYT - By Transfer;
     /// </summary>

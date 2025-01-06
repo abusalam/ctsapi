@@ -1,5 +1,4 @@
 using System.Text;
-using System.Text.Json;
 using CTS_BE.Events;
 using CTS_BE.Helper;
 using RabbitMQ.Client;

@@ -149,9 +149,15 @@ public partial class EppoReceipt
     [Column("active_flag")]
     public bool ActiveFlag { get; set; }
 
+    [InverseProperty("EppoReceipt")]
+    public virtual ICollection<EppoAmount> EppoAmounts { get; set; } = new List<EppoAmount>();
+
     [ForeignKey("EppoFileId")]
     [InverseProperty("EppoReceiptEppoFiles")]
     public virtual UploadedFile? EppoFile { get; set; }
+
+    [InverseProperty("EppoReceipt")]
+    public virtual ICollection<EppoNominee> EppoNominees { get; set; } = new List<EppoNominee>();
 
     [ForeignKey("PhotoFileId")]
     [InverseProperty("EppoReceiptPhotoFiles")]

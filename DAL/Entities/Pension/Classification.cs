@@ -25,14 +25,14 @@ public partial class Classification
     public long AccountHeadId { get; set; }
 
     /// <summary>
-    /// [PDM]
+    /// [PD] P - Payment; D - Deduction;
     /// </summary>
     [Column("due_draw_flag")]
     [MaxLength(1)]
     public char DueDrawFlag { get; set; }
 
     /// <summary>
-    /// [PDO]
+    /// [PD] P - Paid; D - Deducted;
     /// </summary>
     [Column("classification_flag")]
     [MaxLength(1)]

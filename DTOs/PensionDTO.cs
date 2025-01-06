@@ -2,7 +2,6 @@ using System.ComponentModel.DataAnnotations;
 using CTS_BE.DTOs.Validators;
 using System.Dynamic;
 using CTS_BE.PensionEnum;
-using CTS_BE.DAL.Entities.Pension;
 
 namespace CTS_BE.DTOs
 {
@@ -119,12 +118,14 @@ namespace CTS_BE.DTOs
 
     public partial class EPpoReceiptEntryDTO : BaseDTO
     {
-
         [Required]
         public string PpoNo { get; set; } = null!;
 
         [Required]
         public string PensionApplnNo { get; set; } = null!;
+
+        [Required]
+        public string TreasuryCode { get; set; } = null!;
 
         [Required]
         public char FreshRevisionFlag { get; set; }
@@ -173,12 +174,9 @@ namespace CTS_BE.DTOs
         public int? QualifyingServiceGrossDays { get; set; }
         public int? EmployeeLastPay { get; set; }
         public int? EmployeeLastPayNotional { get; set; }
-
-        [Required]
         public int CommutedPensionAmount { get; set; }
-        public EPpoEFPEntryDTO Efp { get; set; } = null!;
-        public EPpoNFPEntryDTO Nfp { get; set; } = null!;
-        public NomineeListResponseDTO? Nominees { get; set; }
+        public List<EPpoAmountEntryDTO> EppoAmounts { get; set; } = [];
+        public List<EPpoNomineeEntryDTO> EppoNominees { get; set; } = [];
         public FileEntryDTO? PhotoFile { get; set; }
         public FileEntryDTO? SignatureFile { get; set; }
         public FileEntryDTO? EPpoFile { get; set; }
@@ -193,22 +191,6 @@ namespace CTS_BE.DTOs
     {
         public int EPpoReceiptCount { get { return EPpoReceipts?.Count ?? 0; } }
         public List<EPpoReceiptDetailDTO>? EPpoReceipts { get; set; }
-    }
-
-    public partial class EPpoEFPEntryDTO : BaseDTO
-    {
-        public short Ropa { get; set; }
-        public int EfpAmount { get; set; }
-        public DateOnly EfpFromDate { get; set; }
-        public DateOnly EfpUpToDate { get; set; }
-    }
-
-    public partial class EPpoNFPEntryDTO : BaseDTO
-    {
-        public short Ropa { get; set; }
-        public int NfpAmount { get; set; }
-        public DateOnly NfpFromDate { get; set; }
-        public DateOnly NfpUpToDate { get; set; }
     }
 
     public partial class EPpoReceiptResponseDTO : BaseDTO
@@ -275,6 +257,7 @@ namespace CTS_BE.DTOs
         [Required]
         public string? WithdrawReason { get; set; }
     }
+
     public partial class EPpoReceiptWithdrawlResponseDTO : BaseDTO
     {
         public long Id { get; set; }
@@ -294,6 +277,50 @@ namespace CTS_BE.DTOs
         public char PpoTypeCode { get; set; }
         public int? PpoId { get; set; }
         public string TreasuryCode { get; set; } = null!;
+    }
+
+    public class EPpoAmountEntryDTO : BaseDTO
+    {
+        [Required]
+        [StringLength(3)]
+        [RegularExpression(@"^(CLS|EFP|BSC|NFP|BYT)$", ErrorMessage = "Amount type must be one of: CLS (Classification), EFP (Enhanced Family Pension), BSC (Basic Pension), NFP (Normal Family Pension), BYT (By Transfer)")]
+        public string AmountType { get; set; } = null!;
+        public long? ClassificationId { get; set; }
+        public DateOnly? FromDate { get; set; }
+        public DateOnly? ToDate { get; set; }
+        public int Amount { get; set; }
+        public bool Consolidated { get; set; }
+        public long? CategoryId { get; set; }
+    }
+
+    public class EPpoNomineeEntryDTO : BaseDTO
+    {
+        [Required]
+        [RegularExpression(@"^[PFD]$", ErrorMessage = "Nominee type must be: P (Pensioner), F (Family), or D (Dependent)")]
+        public char NomineeType { get; set; }
+
+        [Required]
+        [Range(1, 20)]
+        public int SerialNo { get; set; }
+
+        [Required]
+        [StringLength(100)]
+        public string NomineeName { get; set; } = null!;
+
+        [Required]
+        [DataType(DataType.Date)]
+        public DateOnly DateOfBirth { get; set; }
+
+        [Required]
+        [RegularExpression(@"^[WEHSDOMRNAFKYCUITJBPVL]$", ErrorMessage = "Relation must be one of: [WEHSDOMRNAFKYCUITJBPVL] E - Employed; L - Widow Daughter; U - Unmarried Daughter; V - Divorced Daughter; N - Minor Son; R - Minor Daughter; P - Handicapped Son; G - Handicapped Daughter; J - Dependent Father; K - Dependent Mother; H - Husband; W - Wife;")]
+        public char Relation { get; set; }
+
+        [Range(0, 100)]
+        public int? NomineeShare { get; set; }
+
+        [Required]
+        [RegularExpression(@"^[AM]$", ErrorMessage = "Must be one of: A (Adult) or M (Minor)")]
+        public char? NomineeAdultMinor { get; set; }
     }
 
     public class PensionerEntryDTO : BaseDTO

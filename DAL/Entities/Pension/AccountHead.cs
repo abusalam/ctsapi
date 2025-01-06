@@ -16,9 +16,8 @@ public partial class AccountHead
     [Column("id")]
     public long Id { get; set; }
 
-    [Column("dept_code")]
-    [StringLength(2)]
-    public string? DeptCode { get; set; }
+    [Column("financial_year")]
+    public int? FinancialYear { get; set; }
 
     [Column("demand_no")]
     [StringLength(2)]
@@ -56,15 +55,6 @@ public partial class AccountHead
     [MaxLength(1)]
     public char? VotedCharged { get; set; }
 
-    [Column("isactive")]
-    public bool? Isactive { get; set; }
-
-    [Column("activated_by")]
-    public int? ActivatedBy { get; set; }
-
-    [Column("financial_year")]
-    public int? FinancialYear { get; set; }
-
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime? CreatedAt { get; set; }
 
@@ -82,6 +72,9 @@ public partial class AccountHead
 
     [InverseProperty("AccountHead")]
     public virtual ICollection<Bill> Bills { get; set; } = new List<Bill>();
+
+    [InverseProperty("AccountHead")]
+    public virtual ICollection<Classification> Classifications { get; set; } = new List<Classification>();
 
     [InverseProperty("AccountHead")]
     public virtual ICollection<PrimaryCategory> PrimaryCategories { get; set; } = new List<PrimaryCategory>();
