@@ -29,7 +29,6 @@ namespace CTS_BE.BAL.Services.Pension
             T response = _mapper.Map<T>(eppoReceipt);
             try
             {
-                eppoReceipt.TreasuryCode = treasuryCode;
                 eppoReceipt.FinancialYear = financialYear;
                 SetCreatedBy(eppoReceipt);
 

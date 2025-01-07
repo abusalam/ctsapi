@@ -1015,41 +1015,50 @@ Content-Type: application/json
     {
       "amountType": "NFP",
       "fromDate": "2028-10-02",
-      "toDate": "",
       "amount": 10350
     },
     {
       "amountType": "CLS",
       "classificationId": 7,
       "amount": 710700
-    },
-    {
-      "amountType": "EFP",
-      "categoryId": 138,
-      "fromDate": "2020-05-05",
-      "toDate": "2033-01-31",
-      "amount": 710700,
-      "consolidated": true
     }
   ],
   "eppoNominees": [
     {
-      "nomineeType": "F",
       "serialNo": 1,
+      "nomineeType": "D",
       "nomineeName": "GOURI DAS",
       "dateOfBirth": "1985-11-27",
       "relation": "W",
-      "nomineeShare": 100,
+      "nomineeShare": 40,
       "nomineeAdultMinor": "A"
     },
     {
-      "nomineeType": "F",
       "serialNo": 2,
+      "nomineeType": "D",
       "nomineeName": "SUTAPA DAS",
       "dateOfBirth": "2009-01-02",
       "relation": "R",
-      "nomineeShare": 10,
+      "nomineeShare": 30,
       "nomineeAdultMinor": "M"
+    },
+    {
+      "serialNo": 3,
+      "nomineeType": "D",
+      "nomineeName": "SANTI DAS",
+      "dateOfBirth": "2010-10-22",
+      "relation": "R",
+      "nomineeShare": 30,
+      "nomineeAdultMinor": "M"
+    },
+    {
+      "serialNo": 4,
+      "nomineeType": "F",
+      "nomineeName": "GOURI DAS",
+      "dateOfBirth": "1985-11-27",
+      "relation": "W",
+      "nomineeShare": 30,
+      "nomineeAdultMinor": "A"
     }
   ],
   "photoFile": {

@@ -70,8 +70,20 @@ namespace CTS_BE.DAL.Repositories.Pension
             var response = _mapper.Map<T>(eppoReceiptEntity);
             try
             {
-                eppoReceiptEntity.TreasuryCode = treasuryCode;
                 eppoReceiptEntity.FinancialYear = financialYear;
+                EppoReceipt? eppoReceiptExists = await _context.EppoReceipts.FirstOrDefaultAsync(
+                    e => e.PensionApplnNo == eppoReceiptEntity.PensionApplnNo
+                );
+
+                if (eppoReceiptExists != null)
+                {
+                    response.FillDataSource(
+                        eppoReceiptExists,
+                        "eppoReceipt already exists for Pension Application No: " + eppoReceiptEntity.PensionApplnNo
+                    );
+                    return response;
+                }
+
                 FileExtensionContentTypeProvider provider = new();
                 if (eppoReceiptEntity.EppoFile != null)
                 {
@@ -112,7 +124,7 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             catch (Exception ex)
             {
-                response.FillDataSource(eppoReceiptEntity, $"ServiceException: {ex.InnerException?.Message ?? ex.Message}");
+                response.FillDataSource(eppoReceiptEntity, $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}");
             }
             return response;
         }
@@ -176,7 +188,7 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             catch (Exception ex)
             {
-                response.FillDataSource(entity, $"ServiceException: {ex.InnerException?.Message ?? ex.Message}");
+                response.FillDataSource(entity, $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}");
             }
 
             return response;
