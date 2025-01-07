@@ -33,7 +33,8 @@ dataSourceBuilder.MapEnum<PensionStatusFlag>();
 var dataSource = dataSourceBuilder.Build();
 
 builder.Services.AddDbContext<PensionDbContext>(
-    options => {
+    options =>
+    {
         options.UseNpgsql(
             builder.Configuration.GetConnectionString("DBConnection"),
             //options => options.CommandTimeout(999)
@@ -53,13 +54,16 @@ builder.Services.AddMvc(c =>
 
 builder.Services.AddSwaggerGen(c =>
 {
-    c.AddServer(new (){
+    c.AddServer(new()
+    {
         Url = "http://api.docker.test"
     });
-    c.AddServer(new (){
+    c.AddServer(new()
+    {
         Url = "https://localhost:7249"
     });
-    c.AddServer(new (){
+    c.AddServer(new()
+    {
         Url = "http://localhost:7249"
     });
     // Use method name as operationId
@@ -73,14 +77,16 @@ builder.Services.AddSwaggerGen(c =>
 // Add MessageQueue services to the container with specified configurations.
 RabbitMqOptions rabbitMqOptions = new();
 builder.Configuration.GetSection(RabbitMqOptions.RabbitMq).Bind(rabbitMqOptions);
-try {
+try
+{
     IMqService mqService = new MqService(
         new RabbitMqAdapter(rabbitMqOptions)
-        // new MockMqAdapter()
+    // new MockMqAdapter()
     );
     builder.Services.AddSingleton(mqService);
 }
-catch(Exception ex) {
+catch (Exception ex)
+{
     Console.WriteLine($"RabbitMQ connection failed: {ex.GetType()} {ex.Message}");
     string jsonRabbitMqOptions = JsonConvert.SerializeObject(rabbitMqOptions);
     Console.WriteLine($"RabbitMQ Options: {jsonRabbitMqOptions}");
@@ -110,6 +116,7 @@ builder.Services.AddTransient<IPpoSanctionDetailsRepository, PpoSanctionDetailsR
 builder.Services.AddTransient<INomineeRepository, NomineeRepository>();
 builder.Services.AddTransient<ILifeCertificateRepository, LifeCertificateRepository>();
 builder.Services.AddTransient<IEPpoReceiptRepository, EPpoReceiptRepository>();
+builder.Services.AddTransient<ITreasuryRepository, TreasuryRepository>();
 
 
 // Pension Services
@@ -141,7 +148,8 @@ builder.Services.AddTransient<IClaimService, ClaimService>();
 
 builder.Services.AddControllers()
     .AddJsonOptions(
-        options => {
+        options =>
+        {
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             // options.JsonSerializerOptions.Converters.Add(new JsonStringDateOnlyConverter("yyyy-MM-dd"));
             // options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;

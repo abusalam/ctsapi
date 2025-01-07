@@ -18,10 +18,12 @@ namespace CTS_BE.BAL.Services.Pension
         private readonly IMapper _mapper;
         private readonly IPpoBillRepository _ppoBillRepository;
         private readonly IBankBranchRepository _bankBranchRepository;
+        private readonly ITreasuryRepository _treasuryRepository;
         private readonly PensionDbContext _pensionDbContext;
         public PpoBillService(
             IPpoBillRepository ppoBillRepository,
             IBankBranchRepository bankBranchRepository,
+            ITreasuryRepository treasuryRepository,
             IMapper mapper,
             IClaimService claimService
         ) : base(claimService)
@@ -29,6 +31,7 @@ namespace CTS_BE.BAL.Services.Pension
             _mapper = mapper;
             _ppoBillRepository = ppoBillRepository;
             _bankBranchRepository = bankBranchRepository;
+            _treasuryRepository = treasuryRepository;
             _pensionDbContext = (PensionDbContext)this._ppoBillRepository.GetDbContext();
         }
 
@@ -44,130 +47,106 @@ namespace CTS_BE.BAL.Services.Pension
         {
             RegularBillListResponseDTO billListResponseDTO = new();
             List<Bill>? bills = null;
+            Dictionary<string, string>? treasuryNameCache = []; // Cache for treasury names
+
             try
             {
-
                 bills = await _pensionDbContext.Bills
-                .Where(
-                    entity => entity.ActiveFlag
-                    && entity.FromDate == new DateOnly(year, month, 1)
-                    && entity.ToDate == new DateOnly(year, month, DateTime.DaysInMonth(year, month))
-                    && entity.TreasuryCode == treasuryCode
-                    && entity.FinancialYear == financialYear
-                    && (bankId == null || entity.Branch.Bank.Id == bankId)
-                    && (branchIds == null || branchIds.Length == 0 || branchIds.Contains(entity.BranchId))
-                )
-                .Include(
-                    entity => entity.Branch
-                )
-                .ThenInclude(
-                    entity => entity.Bank
-                )
-                .Include(
-                    entity => entity.PpoBills.Where(
+                    .Where(
+                        entity => entity.ActiveFlag
+                        && entity.FromDate == new DateOnly(year, month, 1)
+                        && entity.ToDate == new DateOnly(year, month, DateTime.DaysInMonth(year, month))
+                        && entity.TreasuryCode == treasuryCode
+                        && entity.FinancialYear == financialYear
+                        && (bankId == null || entity.Branch.Bank.Id == bankId)
+                        && (branchIds == null || branchIds.Length == 0 || branchIds.Contains(entity.BranchId))
+                    )
+                    .Include(entity => entity.Branch)
+                    .ThenInclude(entity => entity.Bank)
+                    .Include(entity => entity.PpoBills.Where(
                         entity => entity.ActiveFlag
                         && entity.BillType == BillType.RegularBill
                         && entity.TreasuryCode == treasuryCode
                         && (categoryId == null || entity.Pensioner.Category.Id == categoryId)
-                    )
-                )
-                .ThenInclude(
-                    entity => entity.Pensioner
-                )
-                .ThenInclude(
-                    entity => entity.Category
-                )
-                .ThenInclude(
-                    entity => entity.PrimaryCategory
-                )
-                .ThenInclude(
-                    entity => entity.AccountHead
-                )
-                .Include(
-                    entity => entity.PpoBills
-                )
-                .ThenInclude(
-                    entity => entity.PpoBillBreakups
-                )
-                .ThenInclude(
-                    entity => entity.Revision
-                )
-                .ThenInclude(
-                    entity => entity.Rate
-                )
-                .ThenInclude(
-                    entity => entity.Breakup
-                )
-                .AsSplitQuery()
-                .ToListAsync();
-
+                    ))
+                    .ThenInclude(entity => entity.Pensioner)
+                    .ThenInclude(entity => entity.Category)
+                    .ThenInclude(entity => entity.PrimaryCategory)
+                    .ThenInclude(entity => entity.AccountHead)
+                    .Include(entity => entity.PpoBills)
+                    .ThenInclude(entity => entity.PpoBillBreakups)
+                    .ThenInclude(entity => entity.Revision)
+                    .ThenInclude(entity => entity.Rate)
+                    .ThenInclude(entity => entity.Breakup)
+                    .AsSplitQuery()
+                    .ToListAsync();
 
                 billListResponseDTO.RegularBills = _mapper.Map<List<RegularBillResponseDTO>>(bills
-                    .Where(
-                        entity => entity.PpoBills.Count > 0
-                    )
+                    .Where(entity => entity.PpoBills.Count > 0)
                 );
 
-                billListResponseDTO.RegularBills.ForEach(
-                    regularBill =>
+                foreach (var regularBill in billListResponseDTO.RegularBills)
+                {
+                    // Check if the treasury name is already cached
+                    if (!treasuryNameCache.TryGetValue(treasuryCode, out string? treasuryName))
                     {
-                        regularBill.TreasuryName = "Malda - I";
-                        regularBill.Month = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month);
-                        regularBill.Year = "" + year;
-                        regularBill.BankBranchName = regularBill.Branch?.Bank?.BankName + "-" + regularBill.Branch?.BranchName;
-                        regularBill.Category = "" + regularBill.PpoBills[0].Pensioner?.Category?.PrimaryCategory.PrimaryCategoryName;
-                        if (bills.FirstOrDefault()?.PpoBills.FirstOrDefault()?.Pensioner?.Category?.PrimaryCategory?.AccountHead != null)
-                        {
-                            var accountHead = bills.FirstOrDefault()?.PpoBills.FirstOrDefault()?.Pensioner?.Category?.PrimaryCategory?.AccountHead;
-                            regularBill.CategoryDescription =
-                                $"{accountHead.MajorHead}-{accountHead.SubmajorHead}-{accountHead.MinorHead}-" +
-                                $"{accountHead.PlanStatus}-{accountHead.SchemeHead}-{accountHead.VotedCharged}-" +
-                                $"{accountHead.DetailHead}-{accountHead.SubdetailHead}";
-                        }
-                        regularBill.PreparedBy = GetUserName();
-                        regularBill.PreparedOn = DateOnly.FromDateTime(DateTime.Today);
-
-                        regularBill.PpoBills.ForEach(
-                            ppoBill =>
-                            {
-                                ppoBill.PpoNo = ppoBill.Pensioner?.PpoNo ?? "";
-                                ppoBill.PensionerName = ppoBill.Pensioner?.PensionerName ?? "";
-                                ppoBill.BankAcNo = ppoBill.Pensioner?.BankAcNo ?? "";
-                                ppoBill.BasicPensionAmount = ppoBill.Pensioner?.BasicPensionAmount ?? 0;
-                                ppoBill.CommutedPensionAmount = ppoBill.Pensioner?.CommutedPensionAmount ?? 0;
-                                ppoBill.PpoBillBreakups.ForEach(
-                                    billBreakup =>
-                                    {
-                                        switch (billBreakup.Revision?.Rate?.Breakup?.ComponentName)
-                                        {
-                                            case "BASIC PENSION":
-                                                ppoBill.BasicPensionAmount = (int)billBreakup.BreakupAmount;
-                                                break;
-                                            case "DEARNESS RELIEF":
-                                                ppoBill.DearnessReliefAmount = (int)billBreakup.BreakupAmount;
-                                                break;
-                                            case "MEDICAL RELIEF":
-                                                ppoBill.MedicalReliefAmount = (int)billBreakup.BreakupAmount;
-                                                break;
-                                                // case "AMOUNT COMMUTED":
-                                                // ppoBill.CommutedPensionAmount = (int) billBreakup.BreakupAmount;
-                                                // break;
-                                        }
-                                    }
-                                );
-                                ppoBill.PpoBillBreakups = null!;
-                                ppoBill.Pensioner = null!;
-                            }
-                        );
-
-                        regularBill.GrossAmount = regularBill.PpoBills.Sum(bill => bill.TotalPayableAmount + bill.ByTransferAmount);
-                        regularBill.ByTransferAmount = regularBill.PpoBills.Sum(bill => bill.ByTransferAmount);
-                        regularBill.NetAmount = regularBill.PpoBills.Sum(bill => bill.TotalPayableAmount);
-                        regularBill.AmountInWords = PensionCalculator.InWords(regularBill.NetAmount).Titleize() + " Only.";
-
-                        regularBill.Branch = null;
+                        treasuryName = await _treasuryRepository.GetTreasuryNameAsync(treasuryCode);
+                        treasuryNameCache[treasuryCode] = treasuryName; // Cache the treasury name
                     }
-                );
+
+                    regularBill.TreasuryName = treasuryName;
+                    regularBill.TreasuryVoucherNo = treasuryCode + "-" + regularBill.BillNo;
+                    regularBill.TreasuryVoucherDate = regularBill.BillDate;
+                    regularBill.Month = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month);
+                    regularBill.Year = "" + year;
+                    regularBill.BankBranchName = regularBill.Branch?.Bank?.BankName + "-" + regularBill.Branch?.BranchName;
+                    regularBill.Category = "" + regularBill.PpoBills[0].Pensioner?.Category?.PrimaryCategory.PrimaryCategoryName;
+
+                    if (bills.FirstOrDefault()?.PpoBills.FirstOrDefault()?.Pensioner?.Category?.PrimaryCategory?.AccountHead != null)
+                    {
+                        var accountHead = bills.FirstOrDefault()?.PpoBills.FirstOrDefault()?.Pensioner?.Category?.PrimaryCategory?.AccountHead;
+                        regularBill.CategoryDescription =
+                            $"{accountHead?.MajorHead}-{accountHead?.SubmajorHead}-{accountHead?.MinorHead}-" +
+                            $"{accountHead?.PlanStatus}-{accountHead?.SchemeHead}-{accountHead?.VotedCharged}-" +
+                            $"{accountHead?.DetailHead}-{accountHead?.SubdetailHead}";
+                    }
+                    regularBill.PreparedBy = GetUserName();
+                    regularBill.PreparedOn = DateOnly.FromDateTime(DateTime.Today);
+
+                    foreach (var ppoBill in regularBill.PpoBills)
+                    {
+                        ppoBill.PpoNo = ppoBill.Pensioner?.PpoNo ?? "";
+                        ppoBill.PensionerName = ppoBill.Pensioner?.PensionerName ?? "";
+                        ppoBill.BankAcNo = ppoBill.Pensioner?.BankAcNo ?? "";
+                        ppoBill.BasicPensionAmount = ppoBill.Pensioner?.BasicPensionAmount ?? 0;
+                        ppoBill.CommutedPensionAmount = ppoBill.Pensioner?.CommutedPensionAmount ?? 0;
+
+                        foreach (var billBreakup in ppoBill.PpoBillBreakups)
+                        {
+                            switch (billBreakup.Revision?.Rate?.Breakup?.ComponentName)
+                            {
+                                case "BASIC PENSION":
+                                    ppoBill.BasicPensionAmount = (int)billBreakup.BreakupAmount;
+                                    break;
+                                case "DEARNESS RELIEF":
+                                    ppoBill.DearnessReliefAmount = (int)billBreakup.BreakupAmount;
+                                    break;
+                                case "MEDICAL RELIEF":
+                                    ppoBill.MedicalReliefAmount = (int)billBreakup.BreakupAmount;
+                                    break;
+                            }
+                        }
+                        ppoBill.PpoBillBreakups = null!;
+                        ppoBill.Pensioner = null!;
+                    }
+
+                    regularBill.GrossAmount = regularBill.PpoBills.Sum(bill => bill.TotalPayableAmount + bill.ByTransferAmount);
+                    regularBill.ByTransferAmount = regularBill.PpoBills.Sum(bill => bill.ByTransferAmount);
+                    regularBill.NetAmount = regularBill.PpoBills.Sum(bill => bill.TotalPayableAmount);
+                    regularBill.AmountInWords = PensionCalculator.InWords(regularBill.NetAmount).Titleize() + " Only.";
+
+                    regularBill.Branch = null;
+                }
             }
             catch (Exception ex)
             {
@@ -272,18 +251,6 @@ namespace CTS_BE.BAL.Services.Pension
                         && entity.BillType == BillType.FirstBill
                     )
                 )
-                // .Select(
-                //     entity => new {
-                //         entity.Id,
-                //         entity.PpoId,
-                //         entity.PpoNo,
-                //         entity.PensionerName,
-                //         entity.MobileNumber,
-                //         entity.DateOfBirth,
-                //         entity.DateOfRetirement,
-                //         entity.DateOfCommencement
-                //     }
-                // )
                 .AsSplitQuery()
                 .ToListAsync();
 
@@ -337,18 +304,6 @@ namespace CTS_BE.BAL.Services.Pension
                         && entity.BillType == BillType.FirstBill
                     )
                 )
-                // .Select(
-                //     entity => new {
-                //         entity.Id,
-                //         entity.PpoId,
-                //         entity.PpoNo,
-                //         entity.PensionerName,
-                //         entity.MobileNumber,
-                //         entity.DateOfBirth,
-                //         entity.DateOfRetirement,
-                //         entity.DateOfCommencement
-                //     }
-                // )
                 .AsSplitQuery()
                 .ToListAsync();
 
@@ -496,9 +451,6 @@ namespace CTS_BE.BAL.Services.Pension
                         AccountHeadId = hoaId,
                         BillNo = billEntity.BillNo
                     };
-                    // $"RegularBill ID: {billEntity.Id}".PrintOut();
-                    // $"RegularBill HoA: {billEntity.HoaId}".PrintOut();
-                    // $"RegularBill PensionerHoA: {hoaId}".PrintOut();
                 }
 
                 ppoBillEntity.Bill = billEntity;
@@ -508,16 +460,6 @@ namespace CTS_BE.BAL.Services.Pension
                         financialYear,
                         treasuryCode
                     );
-                // ppoBillResponseDTO.PreparedBy = GetUserName();
-                // ppoBillResponseDTO.PreparedOn = DateOnly.FromDateTime(DateTime.Now);
-            }
-            catch (DbUpdateException ex)
-            {
-                ppoBillResponseDTO.FillDataSource(
-                    _mapper.Map<T>(ppoBillEntity),
-                    $"DbUpdateException: {ex.InnerException?.Message ?? ex.Message}"
-                );
-                return ppoBillResponseDTO;
             }
             catch (Exception ex)
             {
@@ -564,19 +506,13 @@ namespace CTS_BE.BAL.Services.Pension
                 ppoBillResponseDTO.BillDate = ppoBillEntity.Bill.BillDate;
                 ppoBillResponseDTO.FromDate = ppoBillEntity.Bill.FromDate;
                 ppoBillResponseDTO.ToDate = ppoBillEntity.Bill.ToDate;
-                ppoBillResponseDTO.TreasuryName = "Malda - I";
+                ppoBillResponseDTO.TreasuryName = await _treasuryRepository.GetTreasuryNameAsync(treasuryCode);
+                ppoBillResponseDTO.TreasuryVoucherNo = treasuryCode + "-" + ppoBillEntity.Bill.BillNo;
+                ppoBillResponseDTO.TreasuryVoucherDate = ppoBillEntity.Bill.BillDate;
                 ppoBillResponseDTO.AmountInWords = PensionCalculator.InWords(ppoBillResponseDTO.NetAmount);
                 ppoBillResponseDTO.PreparedBy = GetUserName();
                 ppoBillResponseDTO.PreparedOn = DateOnly.FromDateTime(DateTime.Now);
 
-                return ppoBillResponseDTO;
-            }
-            catch (DbUpdateException ex)
-            {
-                ppoBillResponseDTO.FillDataSource(
-                    ppoBillEntity,
-                    $"DbUpdateException: {ex.InnerException?.Message ?? ex.Message}"
-                );
                 return ppoBillResponseDTO;
             }
             catch (Exception ex)
