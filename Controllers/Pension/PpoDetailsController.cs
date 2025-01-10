@@ -14,32 +14,28 @@ namespace CTS_BE.Controllers.Pension
         private readonly IPensionStatusService _pensionStatusService;
 
         public PpoDetailsController(
-                IPensionerDetailsService pensionerDetailsService,
-                IPensionStatusService pensionStatusService,
-                IClaimService claimService
-            ) : base(claimService)
+            IPensionerDetailsService pensionerDetailsService,
+            IPensionStatusService pensionStatusService,
+            IClaimService claimService
+        )
+            : base(claimService)
         {
             _pensionerDetailsService = pensionerDetailsService;
             _pensionStatusService = pensionStatusService;
-
         }
 
         [HttpPost("details")]
         [Tags("Pension: PPO Details")]
         [OpenApi]
         public async Task<JsonAPIResponse<PensionerResponseDTO>> CreatePensioner(
-                PensionerEntryDTO pensionerEntryDTO
-            )
+            PensionerEntryDTO pensionerEntryDTO
+        )
         {
-
             JsonAPIResponse<PensionerResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = $"PPO Details saved sucessfully!",
-                Result = new()
-                {
-                    PpoId = 0
-                }
+                Result = new() { PpoId = 0 },
             };
             try
             {
@@ -66,19 +62,15 @@ namespace CTS_BE.Controllers.Pension
         [Tags("Pension: PPO Details")]
         [OpenApi]
         public async Task<JsonAPIResponse<PensionerResponseDTO>> UpdatePensionerByPpoId(
-                int ppoId,
-                PensionerEntryDTO pensionerEntryDTO
-            )
+            int ppoId,
+            PensionerEntryDTO pensionerEntryDTO
+        )
         {
-
             JsonAPIResponse<PensionerResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = $"PPO Details saved sucessfully!",
-                Result = new()
-                {
-                    PpoId = 0
-                }
+                Result = new() { PpoId = 0 },
             };
             try
             {
@@ -111,10 +103,7 @@ namespace CTS_BE.Controllers.Pension
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = $"PPO Details received successfully!",
-                Result = new()
-                {
-                    PpoId = 0
-                }
+                Result = new() { PpoId = 0 },
             };
 
             try
@@ -142,81 +131,83 @@ namespace CTS_BE.Controllers.Pension
         [Tags("Pension: PPO Details")]
         [OpenApi]
         [Obsolete("Use GetPensioners instead")]
-        public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<PensionerListItemDTO>>>> GetAllPensioners(
-            DynamicListQueryParameters dynamicListQueryParameters
-        )
+        public async Task<
+            JsonAPIResponse<DynamicListResult<IEnumerable<PensionerListItemDTO>>>
+        > GetAllPensioners(DynamicListQueryParameters dynamicListQueryParameters)
         {
             JsonAPIResponse<DynamicListResult<IEnumerable<PensionerListItemDTO>>> response = new();
             try
             {
-
                 response = new()
                 {
-
                     ApiResponseStatus = Enum.APIResponseStatus.Success,
                     Result = new()
                     {
-                        Headers = new() {
-
-                                new() {
-                                    Name = "PPO ID",
-                                    DataType = "text",
-                                    FieldName = "ppoId",
-                                    FilterField = "ppoId",
-                                    IsFilterable = true,
-                                    IsSortable = true,
-
-                                },
-                                new() {
-                                    Name = "Name of Pensioner",
-                                    DataType = "text",
-                                    FieldName = "pensionerName",
-                                    FilterField = "pensionerName",
-                                    IsFilterable = true,
-                                    IsSortable = true,
-                                },
-                                new() {
-                                    Name = "Mobile",
-                                    DataType = "text",
-                                    FieldName = "mobileNumber",
-                                    FilterField = "mobileNumber",
-                                    IsFilterable = true,
-                                    IsSortable = true,
-                                },
-                                new() {
-                                    Name = "Date of Birth",
-                                    DataType = "text",
-                                    FieldName = "dateOfBirth",
-                                    FilterField = "dateOfBirth",
-                                    IsFilterable = true,
-                                    IsSortable = true,
-                                },
-                                new() {
-                                    Name = "Date of Retirement",
-                                    DataType = "text",
-                                    FieldName = "dateOfRetirement",
-                                    FilterField = "dateOfRetirement",
-                                    IsFilterable = true,
-                                    IsSortable = true,
-                                },
-                                new() {
-                                    Name = "PPO No",
-                                    DataType = "text",
-                                    FieldName = "ppoNo",
-                                    FilterField = "ppoNo",
-                                    IsFilterable = true,
-                                    IsSortable = true,
-                                }
-
+                        Headers = new()
+                        {
+                            new()
+                            {
+                                Name = "PPO ID",
+                                DataType = "text",
+                                FieldName = "ppoId",
+                                FilterField = "ppoId",
+                                IsFilterable = true,
+                                IsSortable = true,
                             },
+                            new()
+                            {
+                                Name = "Name of Pensioner",
+                                DataType = "text",
+                                FieldName = "pensionerName",
+                                FilterField = "pensionerName",
+                                IsFilterable = true,
+                                IsSortable = true,
+                            },
+                            new()
+                            {
+                                Name = "Mobile",
+                                DataType = "text",
+                                FieldName = "mobileNumber",
+                                FilterField = "mobileNumber",
+                                IsFilterable = true,
+                                IsSortable = true,
+                            },
+                            new()
+                            {
+                                Name = "Date of Birth",
+                                DataType = "text",
+                                FieldName = "dateOfBirth",
+                                FilterField = "dateOfBirth",
+                                IsFilterable = true,
+                                IsSortable = true,
+                            },
+                            new()
+                            {
+                                Name = "Date of Retirement",
+                                DataType = "text",
+                                FieldName = "dateOfRetirement",
+                                FilterField = "dateOfRetirement",
+                                IsFilterable = true,
+                                IsSortable = true,
+                            },
+                            new()
+                            {
+                                Name = "PPO No",
+                                DataType = "text",
+                                FieldName = "ppoNo",
+                                FilterField = "ppoNo",
+                                IsFilterable = true,
+                                IsSortable = true,
+                            },
+                        },
                         Data = await _pensionerDetailsService.GetAllPensioners(
-                                GetCurrentFyYear(),
-                                GetTreasuryCode(),
-                                dynamicListQueryParameters),
-                        DataCount = _pensionerDetailsService.DataCount()
+                            GetCurrentFyYear(),
+                            GetTreasuryCode(),
+                            dynamicListQueryParameters
+                        ),
+                        DataCount = _pensionerDetailsService.DataCount(),
                     },
-                    Message = $"All PPO Details Received Successfully!"
-
+                    Message = $"All PPO Details Received Successfully!",
                 };
             }
             catch (Exception ex)
@@ -239,49 +230,26 @@ namespace CTS_BE.Controllers.Pension
             JsonAPIResponse<TableResponseDTO<PensionerListItemDTO>> response = new();
             try
             {
-
                 response = new()
                 {
-
                     ApiResponseStatus = Enum.APIResponseStatus.Success,
                     Result = new()
                     {
-                        Headers = new() {
-
-                                new() {
-                                    Name = "PPO ID",
-                                    FieldName = "ppoId"
-
-                                },
-                                new() {
-                                    Name = "Name of Pensioner",
-                                    FieldName = "pensionerName"
-                                },
-                                new() {
-                                    Name = "Mobile",
-                                    FieldName = "mobileNumber"
-                                },
-                                new() {
-                                    Name = "Date of Birth",
-                                    FieldName = "dateOfBirth"
-                                },
-                                new() {
-                                    Name = "Date of Retirement",
-                                    FieldName = "dateOfRetirement"
-                                },
-                                new() {
-                                    Name = "PPO No",
-                                    FieldName = "ppoNo"
-                                }
-
-                            },
+                        Headers = new()
+                        {
+                            new() { Name = "PPO ID", FieldName = "ppoId" },
+                            new() { Name = "Name of Pensioner", FieldName = "pensionerName" },
+                            new() { Name = "Mobile", FieldName = "mobileNumber" },
+                            new() { Name = "Date of Birth", FieldName = "dateOfBirth" },
+                            new() { Name = "Date of Retirement", FieldName = "dateOfRetirement" },
+                            new() { Name = "PPO No", FieldName = "ppoNo" },
+                        },
                         Data = await _pensionerDetailsService.GetPensioners<PensionerListItemDTO>(
-                                GetCurrentFyYear(),
-                                GetTreasuryCode()
-                            )
+                            GetCurrentFyYear(),
+                            GetTreasuryCode()
+                        ),
                     },
-                    Message = $"All PPO Details Received Successfully!"
-
+                    Message = $"All PPO Details Received Successfully!",
                 };
             }
             catch (Exception ex)
@@ -299,79 +267,82 @@ namespace CTS_BE.Controllers.Pension
         [HttpGet("details/not-approved")]
         [Tags("Pension: PPO Details")]
         [OpenApi]
-        public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<PensionerListItemDTO>>>> GetAllNotApprovedPensioners()
+        public async Task<
+            JsonAPIResponse<DynamicListResult<IEnumerable<PensionerListItemDTO>>>
+        > GetAllNotApprovedPensioners()
         {
             JsonAPIResponse<DynamicListResult<IEnumerable<PensionerListItemDTO>>> response = new();
             try
             {
-
                 response = new()
                 {
-
                     ApiResponseStatus = Enum.APIResponseStatus.Success,
                     Result = new()
                     {
-                        Headers = new() {
-
-                                new() {
-                                    Name = "PPO ID",
-                                    DataType = "text",
-                                    FieldName = "ppoId",
-                                    FilterField = "ppoId",
-                                    IsFilterable = true,
-                                    IsSortable = true,
-
-                                },
-                                new() {
-                                    Name = "Name of Pensioner",
-                                    DataType = "text",
-                                    FieldName = "pensionerName",
-                                    FilterField = "pensionerName",
-                                    IsFilterable = true,
-                                    IsSortable = true,
-                                },
-                                new() {
-                                    Name = "Mobile",
-                                    DataType = "text",
-                                    FieldName = "mobileNumber",
-                                    FilterField = "mobileNumber",
-                                    IsFilterable = true,
-                                    IsSortable = true,
-                                },
-                                new() {
-                                    Name = "Date of Birth",
-                                    DataType = "text",
-                                    FieldName = "dateOfBirth",
-                                    FilterField = "dateOfBirth",
-                                    IsFilterable = true,
-                                    IsSortable = true,
-                                },
-                                new() {
-                                    Name = "Date of Retirement",
-                                    DataType = "text",
-                                    FieldName = "dateOfRetirement",
-                                    FilterField = "dateOfRetirement",
-                                    IsFilterable = true,
-                                    IsSortable = true,
-                                },
-                                new() {
-                                    Name = "PPO No",
-                                    DataType = "text",
-                                    FieldName = "ppoNo",
-                                    FilterField = "ppoNo",
-                                    IsFilterable = true,
-                                    IsSortable = true,
-                                }
-
+                        Headers = new()
+                        {
+                            new()
+                            {
+                                Name = "PPO ID",
+                                DataType = "text",
+                                FieldName = "ppoId",
+                                FilterField = "ppoId",
+                                IsFilterable = true,
+                                IsSortable = true,
                             },
+                            new()
+                            {
+                                Name = "Name of Pensioner",
+                                DataType = "text",
+                                FieldName = "pensionerName",
+                                FilterField = "pensionerName",
+                                IsFilterable = true,
+                                IsSortable = true,
+                            },
+                            new()
+                            {
+                                Name = "Mobile",
+                                DataType = "text",
+                                FieldName = "mobileNumber",
+                                FilterField = "mobileNumber",
+                                IsFilterable = true,
+                                IsSortable = true,
+                            },
+                            new()
+                            {
+                                Name = "Date of Birth",
+                                DataType = "text",
+                                FieldName = "dateOfBirth",
+                                FilterField = "dateOfBirth",
+                                IsFilterable = true,
+                                IsSortable = true,
+                            },
+                            new()
+                            {
+                                Name = "Date of Retirement",
+                                DataType = "text",
+                                FieldName = "dateOfRetirement",
+                                FilterField = "dateOfRetirement",
+                                IsFilterable = true,
+                                IsSortable = true,
+                            },
+                            new()
+                            {
+                                Name = "PPO No",
+                                DataType = "text",
+                                FieldName = "ppoNo",
+                                FilterField = "ppoNo",
+                                IsFilterable = true,
+                                IsSortable = true,
+                            },
+                        },
                         Data = await _pensionerDetailsService.GetAllNonApprovedPensioners(
-                                GetCurrentFyYear(),
-                                GetTreasuryCode()
-                            ),
-                        DataCount = _pensionerDetailsService.DataCount()
+                            GetCurrentFyYear(),
+                            GetTreasuryCode()
+                        ),
+                        DataCount = _pensionerDetailsService.DataCount(),
                     },
-                    Message = $"All Not Approved PPO Details Received Successfully!"
-
+                    Message = $"All Not Approved PPO Details Received Successfully!",
                 };
             }
             catch (Exception ex)
@@ -385,6 +356,5 @@ namespace CTS_BE.Controllers.Pension
             }
             return response;
         }
-
     }
 }

@@ -1,34 +1,34 @@
-using Microsoft.EntityFrameworkCore;
-using Npgsql;
-using CTS_BE.Adapters;
-using Newtonsoft.Json;
+using System.Collections;
 using System.Reflection;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using CTS_BE.PensionEnum;
+using System.Text.Json.Serialization;
+using CTS_BE.Adapters;
+using CTS_BE.BAL.Interfaces;
 using CTS_BE.BAL.Interfaces.Pension;
+using CTS_BE.BAL.Services;
 using CTS_BE.BAL.Services.Pension;
+using CTS_BE.DAL;
 using CTS_BE.DAL.Interfaces.Pension;
 using CTS_BE.DAL.Repositories.Pension;
-using CTS_BE.DAL;
-using CTS_BE.BAL.Services;
-using CTS_BE.BAL.Interfaces;
-using CTS_BE.Middlewares;
-using CTS_BE.Helper.Authentication;
-using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.SwaggerUI;
-using Microsoft.AspNetCore.Mvc;
 using CTS_BE.Enum;
 using CTS_BE.Helper;
-using System.Collections;
-using System.Text.Json.Serialization;
+using CTS_BE.Helper.Authentication;
+using CTS_BE.Middlewares;
+using CTS_BE.PensionEnum;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
+using Npgsql;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using Swashbuckle.AspNetCore.SwaggerUI;
 
 var builder = WebApplication.CreateBuilder(args);
 
 //Pension Database Connection
 // https://www.npgsql.org/efcore/mapping/enum.html?tabs=with-datasource
 var dataSourceBuilder = new NpgsqlDataSourceBuilder(
-        builder.Configuration.GetConnectionString("DBConnection")
-    );
+    builder.Configuration.GetConnectionString("DBConnection")
+);
 dataSourceBuilder.MapEnum<PensionStatusFlag>();
 var dataSource = dataSourceBuilder.Build();
 
@@ -46,33 +46,20 @@ builder.Services.AddDbContext<PensionDbContext>(
     ServiceLifetime.Transient
 );
 
-
 // Hide non OpenAPI Conventions from Swagger.
-builder.Services.AddMvc(c =>
-    c.Conventions.Add(new OpenApiConvention())
-);
+builder.Services.AddMvc(c => c.Conventions.Add(new OpenApiConvention()));
 
 builder.Services.AddSwaggerGen(c =>
 {
-    c.AddServer(new()
-    {
-        Url = "http://api.docker.test"
-    });
-    c.AddServer(new()
-    {
-        Url = "https://localhost:7249"
-    });
-    c.AddServer(new()
-    {
-        Url = "http://localhost:7249"
-    });
+    c.AddServer(new() { Url = "http://api.docker.test" });
+    c.AddServer(new() { Url = "https://localhost:7249" });
+    c.AddServer(new() { Url = "http://localhost:7249" });
     // Use method name as operationId
     c.CustomOperationIds(apiDesc =>
     {
         return apiDesc.TryGetMethodInfo(out MethodInfo methodInfo) ? methodInfo.Name : null;
     });
 });
-
 
 // Add MessageQueue services to the container with specified configurations.
 RabbitMqOptions rabbitMqOptions = new();
@@ -97,7 +84,6 @@ catch (Exception ex)
     builder.Services.AddSingleton<IMqService, MqService>();
 }
 
-
 //Pension Repositories
 builder.Services.AddTransient<IFileStorageRepository, FileStorageRepository>();
 builder.Services.AddTransient<IManualPpoReceiptRepository, ManualPpoReceiptRepository>();
@@ -118,7 +104,6 @@ builder.Services.AddTransient<ILifeCertificateRepository, LifeCertificateReposit
 builder.Services.AddTransient<IEPpoReceiptRepository, EPpoReceiptRepository>();
 builder.Services.AddTransient<ITreasuryRepository, TreasuryRepository>();
 
-
 // Pension Services
 builder.Services.AddTransient<IFileStorageService, FileStorageService>();
 builder.Services.AddTransient<IPpoReceiptService, PpoReceiptService>();
@@ -136,8 +121,6 @@ builder.Services.AddScoped<INomineeService, NomineeService>();
 builder.Services.AddScoped<ILifeCertificateService, LifeCertificateService>();
 builder.Services.AddScoped<IEPpoReceiptService, EPpoReceiptService>();
 
-
-
 //Automapper
 builder.Services.AddAutoMapper(typeof(Program));
 
@@ -146,59 +129,65 @@ builder.Services.AddSingleton<ITokencache, Tokencache>();
 
 builder.Services.AddTransient<IClaimService, ClaimService>();
 
-builder.Services.AddControllers()
-    .AddJsonOptions(
-        options =>
-        {
-            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-            // options.JsonSerializerOptions.Converters.Add(new JsonStringDateOnlyConverter("yyyy-MM-dd"));
-            // options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-        }
-    );
+builder
+    .Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        // options.JsonSerializerOptions.Converters.Add(new JsonStringDateOnlyConverter("yyyy-MM-dd"));
+        // options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+    });
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
 // builder.Services.AddSwaggerGen();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "CTS-BE", Version = "v1" });
     c.MapType<DateOnly>(() => new OpenApiSchema { Type = "string", Format = "date-only" });
 
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
-    {
-        Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer",
-        BearerFormat = "JWT",
-        In = ParameterLocation.Header,
-        Description = "JWT Authorization header using the Bearer scheme."
-
-    });
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
+    c.AddSecurityDefinition(
+        "Bearer",
+        new OpenApiSecurityScheme()
         {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            Array.Empty<string>()
+            Name = "Authorization",
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = "Bearer",
+            BearerFormat = "JWT",
+            In = ParameterLocation.Header,
+            Description = "JWT Authorization header using the Bearer scheme.",
         }
-    });
+    );
+    c.AddSecurityRequirement(
+        new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer",
+                    },
+                },
+                Array.Empty<string>()
+            },
+        }
+    );
 });
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.Configure<ApiBehaviorOptions>(config =>
 {
-
     config.InvalidModelStateResponseFactory = ctx => new BadRequestObjectResult(
         new JsonAPIResponse<IEnumerable>()
         {
             ApiResponseStatus = APIResponseStatus.Error,
             Result = ctx.ModelState.Values,
-            Message = "DTO validation error :: result field specifies error location." + ctx.ModelState.Values
+            Message =
+                "DTO validation error :: result field specifies error location."
+                + ctx.ModelState.Values,
         }
     );
 });

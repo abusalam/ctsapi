@@ -7,11 +7,10 @@ namespace CTS_BE.Factories.Pension
     {
         public SubCategoryFactory()
         {
-            _faker = new Faker<PensionSubCategoryEntryDTO>()
-                .RuleFor(
-                    x => x.SubCategoryName,
-                    f => f.Random.Word() + " " + f.Random.Replace("######")
-                );
+            _faker = new Faker<PensionSubCategoryEntryDTO>().RuleFor(
+                x => x.SubCategoryName,
+                f => f.Random.Word() + " " + f.Random.Replace("######")
+            );
         }
     }
 }

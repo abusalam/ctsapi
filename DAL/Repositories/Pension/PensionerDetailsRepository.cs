@@ -9,14 +9,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Repositories.Pension
 {
-    public class PensionerDetailsRepository : Repository<Pensioner, PensionDbContext>, IPensionerDetailsRepository
+    public class PensionerDetailsRepository
+        : Repository<Pensioner, PensionDbContext>,
+            IPensionerDetailsRepository
     {
         private readonly PensionDbContext _context;
         private readonly IMapper _mapper;
-        public PensionerDetailsRepository(
-            PensionDbContext context,
-            IMapper mapper
-        ) : base(context)
+
+        public PensionerDetailsRepository(PensionDbContext context, IMapper mapper)
+            : base(context)
         {
             _context = context;
             _mapper = mapper;
@@ -28,10 +29,9 @@ namespace CTS_BE.DAL.Repositories.Pension
             Expression<Func<Pensioner, PensionerResponseDTO>> selectExpression
         )
         {
-            var pensioners = await _context.Pensioners
-                .Where(
-                    entity => entity.ActiveFlag
-                    && entity.TreasuryCode == treasuryCode
+            var pensioners = await _context
+                .Pensioners.Where(entity =>
+                    entity.ActiveFlag && entity.TreasuryCode == treasuryCode
                 )
                 .Include(entity => entity.Category)
                 .Include(entity => entity.Receipt)
@@ -47,10 +47,9 @@ namespace CTS_BE.DAL.Repositories.Pension
             Expression<Func<Pensioner, T>> selectExpression
         )
         {
-            return await _context.Pensioners
-                .Where(
-                    entity => entity.ActiveFlag
-                    && entity.TreasuryCode == treasuryCode
+            return await _context
+                .Pensioners.Where(entity =>
+                    entity.ActiveFlag && entity.TreasuryCode == treasuryCode
                 )
                 .Include(entity => entity.Category)
                 .Include(entity => entity.Receipt)
@@ -64,17 +63,16 @@ namespace CTS_BE.DAL.Repositories.Pension
             Expression<Func<Pensioner, PensionerListItemDTO>> selectExpression
         )
         {
-            var pensioners = await _context.Pensioners
-                .Where(
-                    entity => entity.ActiveFlag
-                    && entity.TreasuryCode == treasuryCode
+            var pensioners = await _context
+                .Pensioners.Where(entity =>
+                    entity.ActiveFlag && entity.TreasuryCode == treasuryCode
                 )
                 .Include(entity => entity.Category)
                 .Include(entity => entity.Receipt)
                 .Include(entity => entity.PpoStatusFlags)
-                .Where(entity => !entity.PpoStatusFlags
-                    .Any(entity => entity.ActiveFlag
-                        && entity.StatusFlag == PensionStatusFlag.PpoApproved
+                .Where(entity =>
+                    !entity.PpoStatusFlags.Any(entity =>
+                        entity.ActiveFlag && entity.StatusFlag == PensionStatusFlag.PpoApproved
                     )
                 )
                 .Select(selectExpression)
@@ -90,9 +88,9 @@ namespace CTS_BE.DAL.Repositories.Pension
             Expression<Func<Pensioner, T>> selectExpression
         )
         {
-            T? pensioner = await _context.Pensioners
-                .Where(
-                    entity => entity.ActiveFlag
+            T? pensioner = await _context
+                .Pensioners.Where(entity =>
+                    entity.ActiveFlag
                     && entity.PpoId == ppoId
                     && entity.TreasuryCode == treasuryCode
                 )
@@ -116,10 +114,12 @@ namespace CTS_BE.DAL.Repositories.Pension
         )
         {
             T? response = _mapper.Map<T>(pensionerEntity);
-            try {
+            try
+            {
                 pensionerEntity.TreasuryCode = treasuryCode;
                 _context.Pensioners.Update(pensionerEntity);
-                if(await _context.SaveChangesAsync() == 0) {
+                if (await _context.SaveChangesAsync() == 0)
+                {
                     response.FillDataSource(
                         pensionerEntity,
                         "Failed to save data. Please try again after sometime."
@@ -128,14 +128,16 @@ namespace CTS_BE.DAL.Repositories.Pension
                 }
                 return _mapper.Map<T>(pensionerEntity);
             }
-            catch (DbUpdateException ex) {
+            catch (DbUpdateException ex)
+            {
                 response.FillDataSource(
                     pensionerEntity,
                     $"DbException: {ex.InnerException?.Message ?? ex.Message}"
                 );
                 return response;
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 response.FillDataSource(
                     pensionerEntity,
                     $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"

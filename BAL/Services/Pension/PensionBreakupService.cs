@@ -14,41 +14,40 @@ namespace CTS_BE.BAL.Services.Pension
         private readonly IBreakupRepository _billBreakupRepository;
         private readonly IMapper _mapper;
         private readonly IClaimService _claimService;
+
         public PensionBreakupService(
-                IBreakupRepository breakupRepository,
-                IClaimService claimService,
-                IMapper mapper
-            ) : base(claimService)
+            IBreakupRepository breakupRepository,
+            IClaimService claimService,
+            IMapper mapper
+        )
+            : base(claimService)
         {
             _billBreakupRepository = breakupRepository;
             _claimService = claimService;
             _mapper = mapper;
             _userId = _claimService.GetUserId();
         }
+
         public async Task<TResponse> CreatePensionBreakup<TEntry, TResponse>(
             TEntry pensionBreakupEntryDTO,
             short financialYear,
             string treasuryCode
         )
         {
-            Breakup breakupEntity = new() {
-                Id = 0
-            };
+            Breakup breakupEntity = new() { Id = 0 };
             TResponse? response = _mapper.Map<TResponse>(breakupEntity);
 
-            try {
+            try
+            {
                 breakupEntity.FillFrom(pensionBreakupEntryDTO);
 
-                var breakup = await _billBreakupRepository.GetSingleAysnc(
-                        entity => entity.ActiveFlag
-                        && entity.ComponentName == breakupEntity.ComponentName
-                    );
+                var breakup = await _billBreakupRepository.GetSingleAysnc(entity =>
+                    entity.ActiveFlag && entity.ComponentName == breakupEntity.ComponentName
+                );
 
-                if (breakup != null) {
-                    response.FillDataSource(
-                        breakupEntity,
-                        $"Breakup already exists!"
-                    );
+                if (breakup != null)
+                {
+                    response.FillDataSource(breakupEntity, $"Breakup already exists!");
                     return response;
                 }
 
@@ -56,21 +55,21 @@ namespace CTS_BE.BAL.Services.Pension
 
                 _billBreakupRepository.Add(breakupEntity);
 
-                if(await _billBreakupRepository.SaveChangesManagedAsync() == 0) {
-                    response.FillDataSource(
-                        breakupEntity,
-                        $"Breakup not saved!"
-                    );
+                if (await _billBreakupRepository.SaveChangesManagedAsync() == 0)
+                {
+                    response.FillDataSource(breakupEntity, $"Breakup not saved!");
                     return response;
                 }
             }
-            catch (DbUpdateException ex) {
+            catch (DbUpdateException ex)
+            {
                 response.FillDataSource(
-                        breakupEntity,
-                        $"ServiceException: {ex.InnerException?.Message}"
-                    );
+                    breakupEntity,
+                    $"ServiceException: {ex.InnerException?.Message}"
+                );
             }
-            finally {
+            finally
+            {
                 response.FillFrom(breakupEntity);
             }
             return response;
@@ -83,20 +82,20 @@ namespace CTS_BE.BAL.Services.Pension
         )
         {
             _dataCount = _billBreakupRepository.Count();
-            return await _billBreakupRepository
-                .GetSelectedColumnByConditionAsync(
-                    entity => entity.ActiveFlag,
-                    entity => _mapper.Map<TResponse>(entity),
-                    dynamicListQueryParameters
-                );
+            return await _billBreakupRepository.GetSelectedColumnByConditionAsync(
+                entity => entity.ActiveFlag,
+                entity => _mapper.Map<TResponse>(entity),
+                dynamicListQueryParameters
+            );
         }
+
         public async Task<List<TResponse>> GetBreakups<TResponse>(
             short financialYear,
             string treasuryCode
         )
         {
-            return await _billBreakupRepository.GetBreakupsAsync(
-                entity => _mapper.Map<TResponse>(entity)
+            return await _billBreakupRepository.GetBreakupsAsync(entity =>
+                _mapper.Map<TResponse>(entity)
             );
         }
     }

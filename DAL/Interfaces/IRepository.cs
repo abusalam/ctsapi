@@ -1,7 +1,7 @@
-﻿using CTS_BE.DTOs;
+﻿using System.Linq.Expressions;
+using CTS_BE.DTOs;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using System.Linq.Expressions;
 
 namespace CTS_BE.DAL.Interfaces
 {
@@ -20,10 +20,16 @@ namespace CTS_BE.DAL.Interfaces
         Task<ICollection<T>> GetAllAsync();
 
         // [Obsolete ("Use EntityFramework methods instead", true)]
-        Task<ICollection<TResult>> GetSelectedColumnAsync<TResult>(Expression<Func<T, TResult>> selectExpression);
+        Task<ICollection<TResult>> GetSelectedColumnAsync<TResult>(
+            Expression<Func<T, TResult>> selectExpression
+        );
 
         // [Obsolete ("Use EntityFramework methods instead", true)]
-        Task<ICollection<TResult>> GetSelectedColumnByConditionAsync<TResult>(Expression<Func<T, bool>> filterExpression, Expression<Func<T, TResult>> selectExpression);
+        Task<ICollection<TResult>> GetSelectedColumnByConditionAsync<TResult>(
+            Expression<Func<T, bool>> filterExpression,
+            Expression<Func<T, TResult>> selectExpression
+        );
+
         // Task<ICollection<TResult>> GetSelectedColumnByConditionAsync<TResult>(
         //     Expression<Func<T, bool>> filterExpression,
         //     Expression<Func<T, TResult>> selectExpression,
@@ -39,6 +45,7 @@ namespace CTS_BE.DAL.Interfaces
             Expression<Func<T, TResult>> selectExpression,
             DynamicListQueryParameters dynamicListQueryParameters
         );
+
         // public Task<TResult> GetSingleSelectedColumnByConditionAsync<TResult>(Expression<Func<T, bool>> filterExpression,Expression<Func<T, TResult>> selectExpression);
 
         // Task<Dictionary<TKey, List<TResult>>> GetSelectedColumnGroupByConditionAsync<TKey, TResult>(Expression<Func<T, bool>> filterExpression,Expression<Func<T, TKey>> groupByKeySelector,Expression<Func<T, TResult>> selectExpression);
@@ -48,6 +55,7 @@ namespace CTS_BE.DAL.Interfaces
 
         // [Obsolete ("Use EntityFramework methods instead", true)]
         Task<T> GetSingleAysnc(Expression<Func<T, bool>> condition);
+
         // int CountWithCondition(Expression<Func<T, bool>> condition, List<FilterParameter> dynamicFilters = null);
 
         // [Obsolete ("Use EntityFramework methods instead", true)]

@@ -5,8 +5,6 @@ namespace CTS_BE.DAL.Interfaces.Pension
 {
     public interface IBreakupRepository : IRepository<Breakup>
     {
-        public Task<List<T>> GetBreakupsAsync<T>(
-            Expression<Func<Breakup, T>> selectExpression
-        );
+        public Task<List<T>> GetBreakupsAsync<T>(Expression<Func<Breakup, T>> selectExpression);
     }
 }

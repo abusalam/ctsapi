@@ -5,12 +5,13 @@ namespace CTS_BE.Factories.Pension
 {
     public class NomineeFactory : BaseFactory<NomineeEntryDTO>
     {
-        private static readonly long[] BankIds = {1,2};
+        private static readonly long[] BankIds = { 1, 2 };
         private static readonly IDictionary<long, long[]> BranchIds = new Dictionary<long, long[]>
         {
-            {1, new long[] {1,2}},
-            {2, new long[] {3,4}}
+            { 1, new long[] { 1, 2 } },
+            { 2, new long[] { 3, 4 } },
         };
+
         public NomineeFactory()
         {
             _faker = new Faker<NomineeEntryDTO>()
@@ -25,9 +26,10 @@ namespace CTS_BE.Factories.Pension
                 .RuleFor(d => d.NomineeActive, f => f.PickRandom(true, false))
                 .RuleFor(
                     d => d.DateOfBirth,
-                    f => DateOnly.FromDateTime(
-                        DateTime.Now.AddDays((f.Random.Number(1, 300))).AddYears(-5)
-                    )
+                    f =>
+                        DateOnly.FromDateTime(
+                            DateTime.Now.AddDays((f.Random.Number(1, 300))).AddYears(-5)
+                        )
                 )
                 .RuleFor(d => d.BankAcNo, f => f.Random.Replace("################"))
                 .RuleFor(d => d.IdentificationMark, f => f.Random.Words(1))
@@ -35,7 +37,22 @@ namespace CTS_BE.Factories.Pension
                 .RuleFor(d => d.BranchId, (f, d) => f.PickRandom(BranchIds[d.BankId]))
                 .RuleFor(
                     d => d.Relation,
-                    f => f.PickRandom('F', 'M', 'H', 'W', 'S', 'D', 'B', 'T', 'E', 'I', 'A', 'C', 'O')
+                    f =>
+                        f.PickRandom(
+                            'F',
+                            'M',
+                            'H',
+                            'W',
+                            'S',
+                            'D',
+                            'B',
+                            'T',
+                            'E',
+                            'I',
+                            'A',
+                            'C',
+                            'O'
+                        )
                 );
         }
     }

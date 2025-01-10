@@ -9,9 +9,6 @@ namespace CTS_BE.BAL.Interfaces.Pension
             short financialYear,
             string treasuryCode
         );
-        public Task<T> GetFileById<T>(
-            long fileId,
-            string treasuryCode
-        );
+        public Task<T> GetFileById<T>(long fileId, string treasuryCode);
     }
 }

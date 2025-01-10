@@ -18,10 +18,7 @@ namespace CTS_BE.DAL.Interfaces.Pension
             Expression<Func<Pensioner, T>> selectExpression
         );
 
-        public Task<T> UpdatePensionerDetails<T>(
-            Pensioner pensionerEntity,
-            string treasuryCode
-        );
+        public Task<T> UpdatePensionerDetails<T>(Pensioner pensionerEntity, string treasuryCode);
 
         public Task<T?> GetPensionerDetailsByPpoIdAsync<T>(
             int ppoId,

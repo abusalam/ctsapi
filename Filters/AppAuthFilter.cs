@@ -1,14 +1,13 @@
-﻿using CTS_BE.Common;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using CTS_BE.Common;
 using CTS_BE.Helper.Authentication;
 using CTS_BE.Model.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-
 
 namespace CTS_BE.Filters
 {
@@ -19,6 +18,7 @@ namespace CTS_BE.Filters
         private readonly string[] _roles;
         private readonly string[] _permissions;
         private readonly IClaimService _claimService;
+
         public AppAuthFilterAttribute(string rolesPermissions, IClaimService claimService)
         {
             string[] parts = rolesPermissions.Split('|');
@@ -33,9 +33,9 @@ namespace CTS_BE.Filters
 
             _claimService = claimService;
         }
+
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-
             if (context.HttpContext.Items["userclaimmodel"] != null)
             {
                 String[] roles = _claimService.GetRoles();
@@ -46,16 +46,23 @@ namespace CTS_BE.Filters
                 }
                 else if (!roles.All(element => _roles.Contains(element)))
                 {
-                    context.Result = new JsonResult(new { message = ErrorMessages.Unauthorized_Acess }) { StatusCode = StatusCodes.Status401Unauthorized };
+                    context.Result = new JsonResult(
+                        new { message = ErrorMessages.Unauthorized_Acess }
+                    )
+                    {
+                        StatusCode = StatusCodes.Status401Unauthorized,
+                    };
                     return;
                 }
             }
             else
             {
-                context.Result = new JsonResult(new { message = ErrorMessages.UnAuthenticated }) { StatusCode = StatusCodes.Status401Unauthorized };
+                context.Result = new JsonResult(new { message = ErrorMessages.UnAuthenticated })
+                {
+                    StatusCode = StatusCodes.Status401Unauthorized,
+                };
                 return;
             }
-
         }
     }
 
@@ -67,5 +74,4 @@ namespace CTS_BE.Filters
             Arguments = new object[] { rolesPermissions };
         }
     }
-
 }

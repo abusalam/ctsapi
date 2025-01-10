@@ -8,7 +8,6 @@ namespace CTS_BE.BAL.Interfaces.Pension
 {
     public interface IPpoComponentRevisionService : IBaseService
     {
-
         public Task<List<TResponse>> GetPposForComponentRevisions<TResponse>(
             short financialYear,
             string treasuryCode
@@ -27,7 +26,11 @@ namespace CTS_BE.BAL.Interfaces.Pension
             string treasuryCode
         );
 
-        public Task<IEnumerable<TResponse>> GetPpoComponentRevisionsByPpoId<TResponse>(int ppoId, short financialYear, string treasuryCode);
+        public Task<IEnumerable<TResponse>> GetPpoComponentRevisionsByPpoId<TResponse>(
+            int ppoId,
+            short financialYear,
+            string treasuryCode
+        );
 
         public Task<TResponse> UpdatePpoComponentRevisionById<TEntry, TResponse>(
             long revisionId,

@@ -1,15 +1,17 @@
-﻿using CTS_BE.DAL.Interfaces;
-using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.EntityFrameworkCore;
+﻿using System.Linq;
 using System.Linq.Expressions;
-using System.Linq;
-using CTS_BE.Helper;
+using CTS_BE.DAL.Interfaces;
 using CTS_BE.DTOs;
+using CTS_BE.Helper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace CTS_BE.DAL.Repositories
 {
-    public abstract class Repository<T, Tcontext> : IRepository<T> where T : class where Tcontext : DbContext
+    public abstract class Repository<T, Tcontext> : IRepository<T>
+        where T : class
+        where Tcontext : DbContext
     {
         protected readonly Tcontext CTSDbContext = null;
 
@@ -49,7 +51,9 @@ namespace CTS_BE.DAL.Repositories
         }
 
         // [Obsolete ("Use EntityFramework methods instead", true)]
-        public async Task<ICollection<T>> GetAllByConditionAsync(Expression<Func<T, bool>> condition)
+        public async Task<ICollection<T>> GetAllByConditionAsync(
+            Expression<Func<T, bool>> condition
+        )
         {
             IQueryable<T> result = this.CTSDbContext.Set<T>();
             if (condition != null)
@@ -75,18 +79,24 @@ namespace CTS_BE.DAL.Repositories
         }
 
         // [Obsolete ("Use EntityFramework methods instead", true)]
-        public async Task<ICollection<TResult>> GetSelectedColumnAsync<TResult>(Expression<Func<T, TResult>> selectExpression)
+        public async Task<ICollection<TResult>> GetSelectedColumnAsync<TResult>(
+            Expression<Func<T, TResult>> selectExpression
+        )
         {
             IQueryable<TResult> result = this.CTSDbContext.Set<T>().Select(selectExpression);
             return await result.ToListAsync();
         }
 
         // [Obsolete ("Use EntityFramework methods instead", true)]
-        public async Task<ICollection<TResult>> GetSelectedColumnByConditionAsync<TResult>(Expression<Func<T, bool>> filterExpression, Expression<Func<T, TResult>> selectExpression)
+        public async Task<ICollection<TResult>> GetSelectedColumnByConditionAsync<TResult>(
+            Expression<Func<T, bool>> filterExpression,
+            Expression<Func<T, TResult>> selectExpression
+        )
         {
-            IQueryable<TResult> result = this.CTSDbContext.Set<T>()
-                                    .Where(filterExpression)
-                                    .Select(selectExpression);
+            IQueryable<TResult> result = this
+                .CTSDbContext.Set<T>()
+                .Where(filterExpression)
+                .Select(selectExpression);
 
             return await result.ToListAsync();
         }
@@ -101,15 +111,25 @@ namespace CTS_BE.DAL.Repositories
             int pageIndex = dynamicListQueryParameters.PageIndex;
             int pageSize = dynamicListQueryParameters.PageSize;
             List<FilterParameter> dynamicFilters = dynamicListQueryParameters.filterParameters;
-            string orderByField = (dynamicListQueryParameters.sortParameters != null) ? dynamicListQueryParameters.sortParameters.Field : null;
-            string orderByOrder = (dynamicListQueryParameters.sortParameters != null) ? dynamicListQueryParameters.sortParameters.Order : null;
+            string orderByField =
+                (dynamicListQueryParameters.sortParameters != null)
+                    ? dynamicListQueryParameters.sortParameters.Field
+                    : null;
+            string orderByOrder =
+                (dynamicListQueryParameters.sortParameters != null)
+                    ? dynamicListQueryParameters.sortParameters.Order
+                    : null;
             IQueryable<T> query = this.CTSDbContext.Set<T>().Where(filterExpression);
 
             if (dynamicFilters != null && dynamicFilters.Any())
             {
                 foreach (var filter in dynamicFilters)
                 {
-                    var dynimicFilterExpression = ExpressionHelper.GetFilterExpression<T>(filter.Field, filter.Value, filter.Operator);
+                    var dynimicFilterExpression = ExpressionHelper.GetFilterExpression<T>(
+                        filter.Field,
+                        filter.Value,
+                        filter.Operator
+                    );
                     query = query.Where(dynimicFilterExpression);
                 }
             }
@@ -118,7 +138,10 @@ namespace CTS_BE.DAL.Repositories
             {
                 var parameter = Expression.Parameter(typeof(T), "x");
                 var property = Expression.Property(parameter, orderByField);
-                var lambda = Expression.Lambda<Func<T, object>>(Expression.Convert(property, typeof(object)), parameter);
+                var lambda = Expression.Lambda<Func<T, object>>(
+                    Expression.Convert(property, typeof(object)),
+                    parameter
+                );
 
                 if (orderByOrder == "ASC")
                 {
@@ -129,9 +152,14 @@ namespace CTS_BE.DAL.Repositories
                     query = query.OrderByDescending(lambda);
                 }
             }
-            var result = await query.Select(selectExpression).Skip(pageIndex * pageSize).Take(pageSize).ToListAsync();
+            var result = await query
+                .Select(selectExpression)
+                .Skip(pageIndex * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
             return result;
         }
+
         // public async Task<ICollection<TResult>> GetSelectedColumnByConditionAsync<TResult>(
         //     Expression<Func<T, bool>> filterExpression,
         //     Expression<Func<T, TResult>> selectExpression,
@@ -193,10 +221,11 @@ namespace CTS_BE.DAL.Repositories
             Expression<Func<T, TResult>> selectExpression
         )
         {
-            TResult? result = await this.CTSDbContext.Set<T>()
-                                        .Where(filterExpression)
-                                        .Select(selectExpression)
-                                        .FirstOrDefaultAsync();
+            TResult? result = await this
+                .CTSDbContext.Set<T>()
+                .Where(filterExpression)
+                .Select(selectExpression)
+                .FirstOrDefaultAsync();
 
             return result;
         }
@@ -214,6 +243,7 @@ namespace CTS_BE.DAL.Repositories
 
             return retValue;
         }
+
         // public int CountWithCondition(Expression<Func<T, bool>> condition, List<FilterParameter> dynamicFilters = null)
         // {
         //     IQueryable<T> query = this.CTSDbContext.Set<T>();

@@ -14,19 +14,19 @@ namespace CTS_BE.Controllers.Pension
     [Route("api/v1/pension")]
     public class PensionComponentController : ApiBaseController
     {
-
         private readonly IPensionBreakupService _pensionBreakupService;
         private readonly IComponentRateService _pensionRateService;
+
         public PensionComponentController(
-                IPensionBreakupService pensionBreakupService,
-                IComponentRateService pensionRateService,
-                IClaimService claimService
-        ) : base(claimService)
+            IPensionBreakupService pensionBreakupService,
+            IComponentRateService pensionRateService,
+            IClaimService claimService
+        )
+            : base(claimService)
         {
             _pensionBreakupService = pensionBreakupService;
             _pensionRateService = pensionRateService;
         }
-
 
         [HttpPost("component")]
         [Tags("Pension: Component")]
@@ -35,27 +35,26 @@ namespace CTS_BE.Controllers.Pension
             PensionBreakupEntryDTO pensionBreakupEntryDTO
         )
         {
-
-            JsonAPIResponse<PensionBreakupResponseDTO> response = new(){
+            JsonAPIResponse<PensionBreakupResponseDTO> response = new()
+            {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = $"Component saved sucessfully!",
-                Result = new(){
-                    Id = 0
-                }
+                Result = new() { Id = 0 },
             };
-            try {
-                response.Result = await _pensionBreakupService
-                    .CreatePensionBreakup<PensionBreakupEntryDTO, PensionBreakupResponseDTO>(
-                        pensionBreakupEntryDTO,
-                        GetCurrentFyYear(),
-                        GetTreasuryCode()
-                    );
+            try
+            {
+                response.Result = await _pensionBreakupService.CreatePensionBreakup<
+                    PensionBreakupEntryDTO,
+                    PensionBreakupResponseDTO
+                >(pensionBreakupEntryDTO, GetCurrentFyYear(), GetTreasuryCode());
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 FillException(response, ex);
                 return response;
             }
-            finally {
+            finally
+            {
                 FillErrorMesageFromDataSource(response);
             }
 
@@ -66,70 +65,75 @@ namespace CTS_BE.Controllers.Pension
         [Tags("Pension: Component")]
         [OpenApi]
         [Obsolete("Use GetComponents instead")]
-        public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<PensionBreakupResponseDTO>>>> GetAllComponents(
-            DynamicListQueryParameters dynamicListQueryParameters
-        )
+        public async Task<
+            JsonAPIResponse<DynamicListResult<IEnumerable<PensionBreakupResponseDTO>>>
+        > GetAllComponents(DynamicListQueryParameters dynamicListQueryParameters)
         {
-            JsonAPIResponse<DynamicListResult<IEnumerable<PensionBreakupResponseDTO>>> response = new();
-            try {
-
-                response = new() {
-
+            JsonAPIResponse<DynamicListResult<IEnumerable<PensionBreakupResponseDTO>>> response =
+                new();
+            try
+            {
+                response = new()
+                {
                     ApiResponseStatus = Enum.APIResponseStatus.Success,
                     Result = new()
+                    {
+                        Headers = new()
                         {
-                            Headers = new () {
-
-                                new() {
-                                    Name = "Bill Component ID",
-                                    DataType = "text",
-                                    FieldName = "id",
-                                    FilterField = "id",
-                                    IsFilterable = true,
-                                    IsSortable = true,
-
-                                },
-                                new() {
-                                    Name = "Component Name",
-                                    DataType = "text",
-                                    FieldName = "componentName",
-                                    FilterField = "componentName",
-                                    IsFilterable = true,
-                                    IsSortable = true,
-                                },
-                                new() {
-                                    Name = "Component Type",
-                                    DataType = "text",
-                                    FieldName = "componentType",
-                                    FilterField = "componentType",
-                                    IsFilterable = true,
-                                    IsSortable = true,
-                                },
-                                new() {
-                                    Name = "Relief Allowed",
-                                    DataType = "text",
-                                    FieldName = "reliefFlag",
-                                    FilterField = "reliefFlag",
-                                    IsFilterable = true,
-                                    IsSortable = true,
-                                }
-
+                            new()
+                            {
+                                Name = "Bill Component ID",
+                                DataType = "text",
+                                FieldName = "id",
+                                FilterField = "id",
+                                IsFilterable = true,
+                                IsSortable = true,
                             },
-                            Data = await _pensionBreakupService.ListBreakup<PensionBreakupResponseDTO>(
-                                GetCurrentFyYear(),
-                                GetTreasuryCode(),
-                                dynamicListQueryParameters),
-                            DataCount = _pensionBreakupService.DataCount()
+                            new()
+                            {
+                                Name = "Component Name",
+                                DataType = "text",
+                                FieldName = "componentName",
+                                FilterField = "componentName",
+                                IsFilterable = true,
+                                IsSortable = true,
+                            },
+                            new()
+                            {
+                                Name = "Component Type",
+                                DataType = "text",
+                                FieldName = "componentType",
+                                FilterField = "componentType",
+                                IsFilterable = true,
+                                IsSortable = true,
+                            },
+                            new()
+                            {
+                                Name = "Relief Allowed",
+                                DataType = "text",
+                                FieldName = "reliefFlag",
+                                FilterField = "reliefFlag",
+                                IsFilterable = true,
+                                IsSortable = true,
+                            },
                         },
-                    Message = $"All Bill Breakups Received Successfully!"
-
+                        Data = await _pensionBreakupService.ListBreakup<PensionBreakupResponseDTO>(
+                            GetCurrentFyYear(),
+                            GetTreasuryCode(),
+                            dynamicListQueryParameters
+                        ),
+                        DataCount = _pensionBreakupService.DataCount(),
+                    },
+                    Message = $"All Bill Breakups Received Successfully!",
                 };
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 FillException(response, ex);
                 return response;
             }
-            finally {
+            finally
+            {
                 FillErrorMesageFromDataSource(response);
             }
             return response;
@@ -138,51 +142,40 @@ namespace CTS_BE.Controllers.Pension
         [HttpGet("component")]
         [Tags("Pension: Component")]
         [OpenApi]
-        public async Task<JsonAPIResponse<TableResponseDTO<PensionBreakupResponseDTO>>> GetComponents()
+        public async Task<
+            JsonAPIResponse<TableResponseDTO<PensionBreakupResponseDTO>>
+        > GetComponents()
         {
             JsonAPIResponse<TableResponseDTO<PensionBreakupResponseDTO>> response = new();
-            try {
-
-                response = new() {
-
+            try
+            {
+                response = new()
+                {
                     ApiResponseStatus = Enum.APIResponseStatus.Success,
                     Result = new()
+                    {
+                        Headers = new()
                         {
-                            Headers = new () {
-
-                                new() {
-                                    Name = "Bill Component ID",
-                                    FieldName = "id"
-
-                                },
-                                new() {
-                                    Name = "Component Name",
-                                    FieldName = "componentName"
-                                },
-                                new() {
-                                    Name = "Component Type",
-                                    FieldName = "componentType"
-                                },
-                                new() {
-                                    Name = "Relief Allowed",
-                                    FieldName = "reliefFlag"
-                                }
-
-                            },
-                            Data = await _pensionBreakupService.GetBreakups<PensionBreakupResponseDTO>(
-                                GetCurrentFyYear(),
-                                GetTreasuryCode()
-                            ),
+                            new() { Name = "Bill Component ID", FieldName = "id" },
+                            new() { Name = "Component Name", FieldName = "componentName" },
+                            new() { Name = "Component Type", FieldName = "componentType" },
+                            new() { Name = "Relief Allowed", FieldName = "reliefFlag" },
                         },
-                    Message = $"All Bill Breakups Received Successfully!"
-
+                        Data = await _pensionBreakupService.GetBreakups<PensionBreakupResponseDTO>(
+                            GetCurrentFyYear(),
+                            GetTreasuryCode()
+                        ),
+                    },
+                    Message = $"All Bill Breakups Received Successfully!",
                 };
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 FillException(response, ex);
                 return response;
             }
-            finally {
+            finally
+            {
                 FillErrorMesageFromDataSource(response);
             }
             return response;
@@ -195,181 +188,170 @@ namespace CTS_BE.Controllers.Pension
             ComponentRateEntryDTO pensionRatesEntryDTO
         )
         {
-
-            JsonAPIResponse<ComponentRateResponseDTO> response = new(){
+            JsonAPIResponse<ComponentRateResponseDTO> response = new()
+            {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = $"Component Rate saved sucessfully!",
-                Result = new(){
-                    Id = 0
-                }
+                Result = new() { Id = 0 },
             };
-            try {
-                response.Result = await _pensionRateService
-                    .CreateComponentRates<ComponentRateEntryDTO, ComponentRateResponseDTO>(
-                            pensionRatesEntryDTO,
-                            GetCurrentFyYear(),
-                            GetTreasuryCode()
-                        );
+            try
+            {
+                response.Result = await _pensionRateService.CreateComponentRates<
+                    ComponentRateEntryDTO,
+                    ComponentRateResponseDTO
+                >(pensionRatesEntryDTO, GetCurrentFyYear(), GetTreasuryCode());
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 FillException(response, ex);
                 return response;
             }
-            finally {
+            finally
+            {
                 FillErrorMesageFromDataSource(response);
             }
 
             return response;
         }
-
 
         [HttpGet("{categoryId}/component-rate")]
         [Tags("Pension: Component Rate")]
         [OpenApi]
-        public async Task<JsonAPIResponse<TableResponseDTO<ComponentRateResponseDTO>>> GetComponentRatesByCategoryId(
-            long categoryId
-        )
+        public async Task<
+            JsonAPIResponse<TableResponseDTO<ComponentRateResponseDTO>>
+        > GetComponentRatesByCategoryId(long categoryId)
         {
             JsonAPIResponse<TableResponseDTO<ComponentRateResponseDTO>> response = new();
-            try {
-
-                response = new() {
-
+            try
+            {
+                response = new()
+                {
                     ApiResponseStatus = Enum.APIResponseStatus.Success,
                     Result = new()
+                    {
+                        Headers = new()
                         {
-                            Headers = new () {
-
-                                new() {
-                                    Name = "Rate ID",
-                                    FieldName = "id",
-                                },
-                                new() {
-                                    Name = "Breakup",
-                                    FieldName = "componentName",
-                                },
-                                new() {
-                                    Name = "Effective From Date",
-                                    FieldName = "withEffectFrom",
-                                },
-                                new() {
-                                    Name = "Rate",
-                                    FieldName = "componentRate",
-                                },
-                                new() {
-                                    Name = "Type",
-                                    FieldName = "componentType",
-                                }
-
-                            },
-                            Data = await _pensionRateService.ListComponentRatesByCategoryId<ComponentRateResponseDTO>(
-                                    categoryId
-                                ),
+                            new() { Name = "Rate ID", FieldName = "id" },
+                            new() { Name = "Breakup", FieldName = "componentName" },
+                            new() { Name = "Effective From Date", FieldName = "withEffectFrom" },
+                            new() { Name = "Rate", FieldName = "componentRate" },
+                            new() { Name = "Type", FieldName = "componentType" },
                         },
-                    Message = $"All Component Rates Received Successfully!"
-
+                        Data =
+                            await _pensionRateService.ListComponentRatesByCategoryId<ComponentRateResponseDTO>(
+                                categoryId
+                            ),
+                    },
+                    Message = $"All Component Rates Received Successfully!",
                 };
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 FillException(response, ex);
                 return response;
             }
-            finally {
+            finally
+            {
                 FillErrorMesageFromDataSource(response);
             }
             return response;
         }
-
 
         [HttpPatch("component-rate")]
         [Tags("Pension: Component Rate")]
         [OpenApi]
         [Obsolete("Use GetComponentRatesByCategoryId instead")]
-        public async Task<JsonAPIResponse<DynamicListResult<IEnumerable<ComponentRateResponseDTO>>>> GetAllComponentRates(
-            DynamicListQueryParameters dynamicListQueryParameters
-        )
+        public async Task<
+            JsonAPIResponse<DynamicListResult<IEnumerable<ComponentRateResponseDTO>>>
+        > GetAllComponentRates(DynamicListQueryParameters dynamicListQueryParameters)
         {
-            JsonAPIResponse<DynamicListResult<IEnumerable<ComponentRateResponseDTO>>> response = new();
-            try {
-
-                response = new() {
-
+            JsonAPIResponse<DynamicListResult<IEnumerable<ComponentRateResponseDTO>>> response =
+                new();
+            try
+            {
+                response = new()
+                {
                     ApiResponseStatus = Enum.APIResponseStatus.Success,
                     Result = new()
+                    {
+                        Headers = new()
                         {
-                            Headers = new () {
-
-                                new() {
-                                    Name = "Component Rate ID",
-                                    DataType = "text",
-                                    FieldName = "id",
-                                    FilterField = "id",
-                                    IsFilterable = true,
-                                    IsSortable = true,
-
-                                },
-                                new() {
-                                    Name = "Category ID",
-                                    DataType = "text",
-                                    FieldName = "categoryId",
-                                    FilterField = "categoryId",
-                                    IsFilterable = true,
-                                    IsSortable = true,
-                                },
-                                new() {
-                                    Name = "Bill Breakup ID",
-                                    DataType = "text",
-                                    FieldName = "breakupId",
-                                    FilterField = "breakupId",
-                                    IsFilterable = true,
-                                    IsSortable = true,
-                                },
-                                new() {
-                                    Name = "Effective From Date",
-                                    DataType = "text",
-                                    FieldName = "effectiveFromDate",
-                                    FilterField = "effectiveFromDate",
-                                    IsFilterable = true,
-                                    IsSortable = true,
-                                },
-                                new() {
-                                    Name = "Rate Amount",
-                                    DataType = "text",
-                                    FieldName = "rateAmount",
-                                    FilterField = "rateAmount",
-                                    IsFilterable = true,
-                                    IsSortable = true,
-                                },
-                                new() {
-                                    Name = "Rate Type",
-                                    DataType = "text",
-                                    FieldName = "rateType",
-                                    FilterField = "rateType",
-                                    IsFilterable = true,
-                                    IsSortable = true,
-                                }
-
+                            new()
+                            {
+                                Name = "Component Rate ID",
+                                DataType = "text",
+                                FieldName = "id",
+                                FilterField = "id",
+                                IsFilterable = true,
+                                IsSortable = true,
                             },
-                            Data = await _pensionRateService.ListComponentRates<ComponentRateResponseDTO>(
-                                    GetCurrentFyYear(),
-                                    GetTreasuryCode(),
-                                    dynamicListQueryParameters
-                                ),
-                            DataCount = _pensionRateService.DataCount()
+                            new()
+                            {
+                                Name = "Category ID",
+                                DataType = "text",
+                                FieldName = "categoryId",
+                                FilterField = "categoryId",
+                                IsFilterable = true,
+                                IsSortable = true,
+                            },
+                            new()
+                            {
+                                Name = "Bill Breakup ID",
+                                DataType = "text",
+                                FieldName = "breakupId",
+                                FilterField = "breakupId",
+                                IsFilterable = true,
+                                IsSortable = true,
+                            },
+                            new()
+                            {
+                                Name = "Effective From Date",
+                                DataType = "text",
+                                FieldName = "effectiveFromDate",
+                                FilterField = "effectiveFromDate",
+                                IsFilterable = true,
+                                IsSortable = true,
+                            },
+                            new()
+                            {
+                                Name = "Rate Amount",
+                                DataType = "text",
+                                FieldName = "rateAmount",
+                                FilterField = "rateAmount",
+                                IsFilterable = true,
+                                IsSortable = true,
+                            },
+                            new()
+                            {
+                                Name = "Rate Type",
+                                DataType = "text",
+                                FieldName = "rateType",
+                                FilterField = "rateType",
+                                IsFilterable = true,
+                                IsSortable = true,
+                            },
                         },
-                    Message = $"All Bill Breakups Received Successfully!"
-
+                        Data =
+                            await _pensionRateService.ListComponentRates<ComponentRateResponseDTO>(
+                                GetCurrentFyYear(),
+                                GetTreasuryCode(),
+                                dynamicListQueryParameters
+                            ),
+                        DataCount = _pensionRateService.DataCount(),
+                    },
+                    Message = $"All Bill Breakups Received Successfully!",
                 };
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 FillException(response, ex);
                 return response;
             }
-            finally {
+            finally
+            {
                 FillErrorMesageFromDataSource(response);
             }
             return response;
         }
-
     }
 }

@@ -1,8 +1,7 @@
 namespace CTS_BE.DAL.Interfaces.Pension
 {
-  public interface IBaseRepository<T>
-  {
-    protected IBaseRepository<T> WithUserScope();
-
-  }
+    public interface IBaseRepository<T>
+    {
+        protected IBaseRepository<T> WithUserScope();
+    }
 }

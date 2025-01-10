@@ -10,10 +10,9 @@ namespace CTS_BE.DAL.Repositories.Pension
     {
         private readonly PensionDbContext _context;
         private readonly IMapper _mapper;
-        public BreakupRepository(
-            IMapper mapper,
-            PensionDbContext context
-        ) : base(context)
+
+        public BreakupRepository(IMapper mapper, PensionDbContext context)
+            : base(context)
         {
             _mapper = mapper;
             _context = context;
@@ -23,9 +22,7 @@ namespace CTS_BE.DAL.Repositories.Pension
             Expression<Func<Breakup, T>> selectExpression
         )
         {
-            return await _context.Breakups
-                .Select(selectExpression)
-                .ToListAsync();
+            return await _context.Breakups.Select(selectExpression).ToListAsync();
         }
     }
 }

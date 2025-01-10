@@ -19,8 +19,6 @@ namespace CTS_BE.BAL.Interfaces.Pension
             DynamicListQueryParameters dynamicListQueryParameters
         );
 
-        public Task<List<TResponse>> ListComponentRatesByCategoryId<TResponse>(
-            long categoryId
-        );
+        public Task<List<TResponse>> ListComponentRatesByCategoryId<TResponse>(long categoryId);
     }
 }

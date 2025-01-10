@@ -22,7 +22,8 @@ namespace CTS_BE.BAL.Services.Pension
             IBankBranchRepository bankBranchRepository,
             INomineeRepository nomineeRepository,
             IClaimService claimService
-        ) : base(claimService)
+        )
+            : base(claimService)
         {
             _mapper = mapper;
             _pensionerDetailsRepository = pensionerDetailsRepository;
@@ -30,14 +31,12 @@ namespace CTS_BE.BAL.Services.Pension
             _nomineeRepository = nomineeRepository;
         }
 
-        public async Task<NomineeListResponseDTO> GetNomineeByPpoId(
-            int ppoId,
-            string treasuryCode
-        )
+        public async Task<NomineeListResponseDTO> GetNomineeByPpoId(int ppoId, string treasuryCode)
         {
             List<Nominee>? nomineeList = new();
             NomineeListResponseDTO response = new();
-            try {
+            try
+            {
                 nomineeList = await _nomineeRepository.GetNomineeByPpoIdAsync(
                     ppoId,
                     treasuryCode,
@@ -47,10 +46,7 @@ namespace CTS_BE.BAL.Services.Pension
                 response.Nominees = _mapper.Map<List<NomineeResponseDTO>>(nomineeList);
                 if (response.NomineeCount == 0)
                 {
-                    response.FillDataSource(
-                        nomineeList,
-                        "No Nominees has been registered yet."
-                    );
+                    response.FillDataSource(nomineeList, "No Nominees has been registered yet.");
                 }
                 return response;
             }
@@ -82,12 +78,13 @@ namespace CTS_BE.BAL.Services.Pension
             T? response = _mapper.Map<T>(nomineeEntryDTO);
             try
             {
-                Pensioner? pensioner = await _pensionerDetailsRepository.GetPensionerDetailsByPpoIdAsync(
-                    nomineeEntryDTO.PpoId,
-                    financialYear,
-                    treasuryCode,
-                    entity => _mapper.Map<Pensioner>(entity)
-                );
+                Pensioner? pensioner =
+                    await _pensionerDetailsRepository.GetPensionerDetailsByPpoIdAsync(
+                        nomineeEntryDTO.PpoId,
+                        financialYear,
+                        treasuryCode,
+                        entity => _mapper.Map<Pensioner>(entity)
+                    );
 
                 if (pensioner is null)
                 {
@@ -119,10 +116,7 @@ namespace CTS_BE.BAL.Services.Pension
                 nomineeEntity.TreasuryCode = treasuryCode;
                 nomineeEntity.PensionerId = pensioner.Id;
                 SetCreatedBy(nomineeEntity);
-                return await _nomineeRepository.SaveNomineeDetails<T>(
-                    nomineeEntity,
-                    treasuryCode
-                );
+                return await _nomineeRepository.SaveNomineeDetails<T>(nomineeEntity, treasuryCode);
             }
             catch (DbUpdateException ex)
             {
@@ -150,11 +144,10 @@ namespace CTS_BE.BAL.Services.Pension
         )
         {
             Nominee? nomineeEntity = new();
-            T? response =  _mapper.Map<T>(nomineeEntity);
+            T? response = _mapper.Map<T>(nomineeEntity);
 
             try
             {
-
                 nomineeEntity = await _nomineeRepository.GetNomineeDetailsByIdAsync(
                     nomineeId,
                     treasuryCode,
@@ -198,28 +191,26 @@ namespace CTS_BE.BAL.Services.Pension
             catch (DbUpdateException ex)
             {
                 response.FillDataSource(
-                        nomineeEntity,
-                        $"DbException: {ex.InnerException?.Message ?? ex.Message}"
-                    );
+                    nomineeEntity,
+                    $"DbException: {ex.InnerException?.Message ?? ex.Message}"
+                );
                 return response;
             }
             catch (Exception ex)
             {
                 response.FillDataSource(
-                        nomineeEntity,
-                        $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
-                    );
+                    nomineeEntity,
+                    $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
+                );
                 return response;
             }
         }
 
-        public async Task<T> GetNomineeDetailsByNomineeId<T>(
-            long nomineeId,
-            string treasuryCode
-        )
+        public async Task<T> GetNomineeDetailsByNomineeId<T>(long nomineeId, string treasuryCode)
         {
             T? response = _mapper.Map<T>(new Nominee());
-            try {
+            try
+            {
                 Nominee? nomineeDetails = await _nomineeRepository.GetNomineeDetailsByIdAsync(
                     nomineeId,
                     treasuryCode,
@@ -237,16 +228,17 @@ namespace CTS_BE.BAL.Services.Pension
 
                 response = _mapper.Map<T>(nomineeDetails);
                 return response;
-
             }
-            catch (DbUpdateException ex) {
+            catch (DbUpdateException ex)
+            {
                 response.FillDataSource(
                     new Nominee(),
                     $"DbException: {ex.InnerException?.Message ?? ex.Message}"
                 );
                 return response;
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 response.FillDataSource(
                     new Nominee(),
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
@@ -257,12 +249,11 @@ namespace CTS_BE.BAL.Services.Pension
 
         public async Task<T> DeleteNomineeDetailsById<T>(long nomineeId, string treasuryCode)
         {
-            T? response =  _mapper.Map<T>(new NomineeEntryDTO());
+            T? response = _mapper.Map<T>(new NomineeEntryDTO());
             Nominee? nomineeDetails = new();
 
             try
             {
-
                 nomineeDetails = await _nomineeRepository.GetNomineeDetailsByIdAsync(
                     nomineeId,
                     treasuryCode,
@@ -289,17 +280,17 @@ namespace CTS_BE.BAL.Services.Pension
             catch (DbUpdateException ex)
             {
                 response.FillDataSource(
-                        nomineeDetails,
-                        $"DbException: {ex.InnerException?.Message ?? ex.Message}"
-                    );
+                    nomineeDetails,
+                    $"DbException: {ex.InnerException?.Message ?? ex.Message}"
+                );
                 return response;
             }
             catch (Exception ex)
             {
                 response.FillDataSource(
-                        nomineeDetails,
-                        $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
-                    );
+                    nomineeDetails,
+                    $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
+                );
                 return response;
             }
         }

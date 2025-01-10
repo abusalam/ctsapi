@@ -1,5 +1,5 @@
-using CTS_BE.DTOs;
 using CTS_BE.DAL.Entities.Pension;
+using CTS_BE.DTOs;
 
 namespace CTS_BE.BAL.Interfaces.Pension
 {
@@ -31,9 +31,6 @@ namespace CTS_BE.BAL.Interfaces.Pension
             string treasuryCode,
             short financialYear
         );
-        public Task<List<T>> GetUnusedEPpoReceipts<T>(
-            string treasuryCode,
-            short financialYear
-        );
+        public Task<List<T>> GetUnusedEPpoReceipts<T>(string treasuryCode, short financialYear);
     }
 }

@@ -11,10 +11,9 @@ namespace CTS_BE.DAL.Repositories.Pension
     {
         private readonly IMapper _mapper;
         private readonly PensionDbContext _context;
-        public NomineeRepository(
-            IMapper mapper,
-            PensionDbContext context
-        ) : base(context)
+
+        public NomineeRepository(IMapper mapper, PensionDbContext context)
+            : base(context)
         {
             _mapper = mapper;
             _context = context;
@@ -26,8 +25,9 @@ namespace CTS_BE.DAL.Repositories.Pension
             Expression<Func<Nominee, T>> selectExpression
         )
         {
-            return await _context.Nominees
-                .Where(entity => entity.ActiveFlag
+            return await _context
+                .Nominees.Where(entity =>
+                    entity.ActiveFlag
                     && entity.PpoId == ppoId
                     && entity.TreasuryCode == treasuryCode
                 )
@@ -37,17 +37,15 @@ namespace CTS_BE.DAL.Repositories.Pension
                 .ToListAsync();
         }
 
-        public async Task<T> SaveNomineeDetails<T>(
-            Nominee nominee,
-            string treasuryCode
-        )
+        public async Task<T> SaveNomineeDetails<T>(Nominee nominee, string treasuryCode)
         {
-
             T? response = _mapper.Map<T>(nominee);
-            try {
+            try
+            {
                 nominee.TreasuryCode = treasuryCode;
                 _context.Nominees.Add(nominee);
-                if(await _context.SaveChangesAsync() == 0) {
+                if (await _context.SaveChangesAsync() == 0)
+                {
                     response.FillDataSource(
                         nominee,
                         "Failed to save data. Please try again after sometime."
@@ -56,14 +54,16 @@ namespace CTS_BE.DAL.Repositories.Pension
                 }
                 return _mapper.Map<T>(nominee);
             }
-            catch (DbUpdateException ex) {
+            catch (DbUpdateException ex)
+            {
                 response.FillDataSource(
                     nominee,
                     $"DbException: {ex.InnerException?.Message ?? ex.Message}"
                 );
                 return response;
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 response.FillDataSource(
                     nominee,
                     $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
@@ -72,17 +72,15 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
         }
 
-        public async Task<T> UpdateNomineeDetails<T>(
-            Nominee nomineeEntity,
-            string treasuryCode
-        )
+        public async Task<T> UpdateNomineeDetails<T>(Nominee nomineeEntity, string treasuryCode)
         {
-
             T? response = _mapper.Map<T>(nomineeEntity);
-            try {
+            try
+            {
                 nomineeEntity.TreasuryCode = treasuryCode;
                 _context.Nominees.Update(nomineeEntity);
-                if(await _context.SaveChangesAsync() == 0) {
+                if (await _context.SaveChangesAsync() == 0)
+                {
                     response.FillDataSource(
                         nomineeEntity,
                         "Failed to save data. Please try again after sometime."
@@ -91,14 +89,16 @@ namespace CTS_BE.DAL.Repositories.Pension
                 }
                 return _mapper.Map<T>(nomineeEntity);
             }
-            catch (DbUpdateException ex) {
+            catch (DbUpdateException ex)
+            {
                 response.FillDataSource(
                     nomineeEntity,
                     $"DbException: {ex.InnerException?.Message ?? ex.Message}"
                 );
                 return response;
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 response.FillDataSource(
                     nomineeEntity,
                     $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
@@ -107,17 +107,15 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
         }
 
-        public async Task<T> DeleteNomineeDetails<T>(
-            Nominee nomineeEntity,
-            string treasuryCode
-        )
+        public async Task<T> DeleteNomineeDetails<T>(Nominee nomineeEntity, string treasuryCode)
         {
-
             T? response = _mapper.Map<T>(nomineeEntity);
-            try {
+            try
+            {
                 nomineeEntity.TreasuryCode = treasuryCode;
                 _context.Nominees.Update(nomineeEntity);
-                if(await _context.SaveChangesAsync() == 0) {
+                if (await _context.SaveChangesAsync() == 0)
+                {
                     response.FillDataSource(
                         nomineeEntity,
                         "Failed to delete data. Please try again after sometime."
@@ -126,14 +124,16 @@ namespace CTS_BE.DAL.Repositories.Pension
                 }
                 return _mapper.Map<T>(nomineeEntity);
             }
-            catch (DbUpdateException ex) {
+            catch (DbUpdateException ex)
+            {
                 response.FillDataSource(
                     nomineeEntity,
                     $"DbException: {ex.InnerException?.Message ?? ex.Message}"
                 );
                 return response;
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 response.FillDataSource(
                     nomineeEntity,
                     $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
@@ -148,16 +148,12 @@ namespace CTS_BE.DAL.Repositories.Pension
             Expression<Func<Nominee, T>> selectExpression
         )
         {
-            return await _context.Nominees
-                .Where(
-                    x => x.Id == nomineeId
-                    && x.TreasuryCode == treasuryCode
-                )
+            return await _context
+                .Nominees.Where(x => x.Id == nomineeId && x.TreasuryCode == treasuryCode)
                 .Include(nominee => nominee.Branch)
                 .ThenInclude(branch => branch == null ? null : branch.Bank)
                 .Select(selectExpression)
                 .FirstOrDefaultAsync();
         }
-
     }
 }

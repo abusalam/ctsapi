@@ -20,7 +20,8 @@ namespace CTS_BE.Helper
             CreateMap<PpoComponentRevisionPpoListItemDTO, Pensioner>().ReverseMap();
             CreateMap<PensionerResponseDTO, PensionerEntryDTO>().ReverseMap();
             CreateMap<PensionPrimaryCategoryResponseDTO, PrimaryCategory>().ReverseMap();
-            CreateMap<PensionPrimaryCategoryResponseDTO, PensionPrimaryCategoryEntryDTO>().ReverseMap();
+            CreateMap<PensionPrimaryCategoryResponseDTO, PensionPrimaryCategoryEntryDTO>()
+                .ReverseMap();
             CreateMap<PensionSubCategoryResponseDTO, SubCategory>().ReverseMap();
             CreateMap<PensionSubCategoryResponseDTO, PensionSubCategoryEntryDTO>().ReverseMap();
             CreateMap<PensionCategoryResponseDTO, Category>().ReverseMap();
@@ -78,7 +79,6 @@ namespace CTS_BE.Helper
             CreateMap<AccountHead, AccountHeadResponseDTO>().ReverseMap();
             CreateMap<EppoAmount, EPpoAmountEntryDTO>().ReverseMap();
             CreateMap<EppoNominee, EPpoNomineeEntryDTO>().ReverseMap();
-
         }
     }
 }

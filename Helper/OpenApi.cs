@@ -8,8 +8,5 @@ using System.Threading.Tasks;
 namespace CTS_BE.Helper
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-    public class OpenApi : Attribute
-    {
-        
-    }
+    public class OpenApi : Attribute { }
 }

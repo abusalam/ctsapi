@@ -4,10 +4,7 @@ namespace CTS_BE.BAL.Interfaces.Pension
 {
     public interface IPpoSanctionDetailsService : IBaseService
     {
-        public Task<T> GetSanctionDetailsById<T>(
-            long sanctionDetailsId,
-            string treasuryCode
-        );
+        public Task<T> GetSanctionDetailsById<T>(long sanctionDetailsId, string treasuryCode);
         public Task<T> CreateSanctionDetails<T>(
             PpoSanctionDetailsEntryDTO ppoSanctionDetailsEntryDTO,
             short financialYear,

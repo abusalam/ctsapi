@@ -6,16 +6,23 @@ namespace CTS_BE.Helper
     {
         public static void FillFrom<TDst, TSrc>(this TDst target, TSrc source)
         {
-            if(source is null) {
+            if (source is null)
+            {
                 return;
             }
-            if(target is null) {
+            if (target is null)
+            {
                 return;
             }
             PropertyInfo? targetPropInfoByName;
             string sourcePropertyName;
             object? sourcePropValue;
-            foreach (PropertyInfo sourcePropertyInfo in source.GetType().GetProperties().Where(p => p.CanRead))
+            foreach (
+                PropertyInfo sourcePropertyInfo in source
+                    .GetType()
+                    .GetProperties()
+                    .Where(p => p.CanRead)
+            )
             {
                 sourcePropertyName = sourcePropertyInfo.Name;
                 targetPropInfoByName = target.GetType().GetProperty(sourcePropertyName);
@@ -24,9 +31,10 @@ namespace CTS_BE.Helper
                     continue;
                 }
                 sourcePropValue = sourcePropertyInfo.GetValue(source, null);
-                if( targetPropInfoByName.CanWrite) {
+                if (targetPropInfoByName.CanWrite)
+                {
                     // try {
-                        targetPropInfoByName.SetValue(target, sourcePropValue, null);
+                    targetPropInfoByName.SetValue(target, sourcePropValue, null);
                     // }
                     // catch(ArgumentException) {
                     //     continue;

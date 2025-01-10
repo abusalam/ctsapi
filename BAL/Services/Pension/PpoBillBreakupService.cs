@@ -9,8 +9,7 @@ namespace CTS_BE.BAL.Services.Pension
 {
     public class PpoBillBreakupService : BaseService, IPpoBillBreakupService
     {
-        public PpoBillBreakupService(IClaimService claimService) : base(claimService)
-        {
-        }
+        public PpoBillBreakupService(IClaimService claimService)
+            : base(claimService) { }
     }
 }

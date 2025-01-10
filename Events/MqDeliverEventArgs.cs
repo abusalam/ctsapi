@@ -12,10 +12,8 @@ namespace CTS_BE.Events
         public ulong DeliveryTag { get; set; }
         public bool Redelivered { get; set; }
         public string Body;
-        public MqDeliverEventArgs()
-        {
-            
-        }
+
+        public MqDeliverEventArgs() { }
 
         public MqDeliverEventArgs(
             string consumerTag,

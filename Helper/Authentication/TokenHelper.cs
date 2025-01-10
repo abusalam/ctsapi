@@ -1,9 +1,4 @@
 ﻿//using CTS_BE.DAL.Enums;
-using CTS_BE.Model;
-using CTS_BE.Model.Claims;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -12,6 +7,11 @@ using System.Security.Claims;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
+using CTS_BE.Model;
+using CTS_BE.Model.Claims;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 
 namespace CTS_BE.Helper.Authentication
 {
@@ -22,14 +22,21 @@ namespace CTS_BE.Helper.Authentication
         private readonly string authSecretKey = "";
         private readonly string ActiveLifeTimeWindowinMint = "";
         private readonly ITokencache _tokencache;
-        public TokenHelper(ILogger<TokenHelper> logger, IConfiguration Configuration, ITokencache tokencache)
+
+        public TokenHelper(
+            ILogger<TokenHelper> logger,
+            IConfiguration Configuration,
+            ITokencache tokencache
+        )
         {
             _logger = logger;
             _Configuration = Configuration;
             authSecretKey = _Configuration.GetValue<string>("Auth:SecretKey") ?? "";
-            ActiveLifeTimeWindowinMint = _Configuration.GetValue<string>("Auth:ActiveLifeTimeWindowinMint") ?? "30";
+            ActiveLifeTimeWindowinMint =
+                _Configuration.GetValue<string>("Auth:ActiveLifeTimeWindowinMint") ?? "30";
             _tokencache = tokencache;
         }
+
         /*
         public string GenerateToken(UserClaimModel user, TokenType _tokenType, out DateTime ValidTo)
         {
@@ -125,28 +132,35 @@ namespace CTS_BE.Helper.Authentication
             {
                 ValidateLifetime = false, // Because there is no expiration in the generated token
                 ValidateAudience = false, // Because there is no audiance in the generated token // need to add later
-                ValidateIssuer = false,   // Because there is no issuer in the generated token
+                ValidateIssuer = false, // Because there is no issuer in the generated token
                 //ValidIssuer = "Sample", //// need to add later
                 //ValidAudience = "Sample", // // need to add later
                 ValidateIssuerSigningKey = true,
                 RequireExpirationTime = true,
                 // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
                 ClockSkew = TimeSpan.Zero,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authSecretKey)) // The same key as the one that generate the token
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authSecretKey)), // The same key as the one that generate the token
             };
         }
 
-        public AuthClaimModel ValidateAndGetTokenClaims(string token, out bool RefreshedAccessTokenRecieved)
+        public AuthClaimModel ValidateAndGetTokenClaims(
+            string token,
+            out bool RefreshedAccessTokenRecieved
+        )
         {
             int LifetimeExpirtedFlag = -1;
             var validToken = ValidateToken(token, out LifetimeExpirtedFlag);
             RefreshedAccessTokenRecieved = false;
             if (validToken != null)
             {
-                var cachedItem = _tokencache.GetItem(token);/* just to increase time to leave time in cache*/
+                var cachedItem = _tokencache.GetItem(token); /* just to increase time to leave time in cache*/
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var authToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
-                return new AuthClaimModel() { RefreshedAccessToken = string.Empty, Claims = authToken.Claims.ToList<Claim>() };
+                return new AuthClaimModel()
+                {
+                    RefreshedAccessToken = string.Empty,
+                    Claims = authToken.Claims.ToList<Claim>(),
+                };
             }
             else if (LifetimeExpirtedFlag == 2)
             {
@@ -179,13 +193,10 @@ namespace CTS_BE.Helper.Authentication
                     */
                 }
                 return null;
-
             }
             else
                 return null;
-
         }
-
 
         public void InvalidateUserLogin(List<Guid> UserIds)
         {

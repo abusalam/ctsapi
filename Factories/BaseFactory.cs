@@ -3,7 +3,8 @@ using CTS_BE.DTOs;
 
 namespace CTS_BE.Factories
 {
-    public abstract partial class BaseFactory<T> : IFactory<T> where T : BaseDTO
+    public abstract partial class BaseFactory<T> : IFactory<T>
+        where T : BaseDTO
     {
         protected Faker<T> _faker;
 

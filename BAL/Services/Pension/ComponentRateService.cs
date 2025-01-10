@@ -14,70 +14,78 @@ namespace CTS_BE.BAL.Services.Pension
         private readonly IComponentRateRepository _pensionRateRepository;
         private readonly IClaimService _claimService;
         private readonly IMapper _mapper;
+
         public ComponentRateService(
-                IComponentRateRepository pensionRateRepository,
-                IClaimService claimService,
-                IMapper mapper
-            ) : base(claimService)
+            IComponentRateRepository pensionRateRepository,
+            IClaimService claimService,
+            IMapper mapper
+        )
+            : base(claimService)
         {
             _pensionRateRepository = pensionRateRepository;
             _claimService = claimService;
             _mapper = mapper;
         }
-        public async Task<TResponse> CreateComponentRates<TEntry, TResponse>(TEntry pensionRateEntryDTO, short financialYear, string treasuryCode)
+
+        public async Task<TResponse> CreateComponentRates<TEntry, TResponse>(
+            TEntry pensionRateEntryDTO,
+            short financialYear,
+            string treasuryCode
+        )
         {
-            ComponentRate componentRateEntity = new() {
-                Id = 0
-            };
+            ComponentRate componentRateEntity = new() { Id = 0 };
             TResponse? response = _mapper.Map<TResponse>(componentRateEntity);
 
-            try {
+            try
+            {
                 componentRateEntity.FillFrom(pensionRateEntryDTO);
                 SetCreatedBy(componentRateEntity);
 
                 _pensionRateRepository.Add(componentRateEntity);
 
-                _dataCount=await _pensionRateRepository.SaveChangesManagedAsync();
-                if(_dataCount == 0) {
-                    response.FillDataSource(
-                        componentRateEntity,
-                        $"Component Rate not saved!"
-                    );
+                _dataCount = await _pensionRateRepository.SaveChangesManagedAsync();
+                if (_dataCount == 0)
+                {
+                    response.FillDataSource(componentRateEntity, $"Component Rate not saved!");
                     return response;
                 }
             }
-            catch (DbUpdateException ex) {
+            catch (DbUpdateException ex)
+            {
                 response.FillDataSource(
-                        componentRateEntity,
-                        $"ServiceException: {ex.InnerException?.Message}"
-                    );
+                    componentRateEntity,
+                    $"ServiceException: {ex.InnerException?.Message}"
+                );
             }
-            finally {
+            finally
+            {
                 response.FillFrom(componentRateEntity);
             }
             return response;
         }
 
-        public async Task<IEnumerable<TResponse>> ListComponentRates<TResponse>(short financialYear, string treasuryCode, DynamicListQueryParameters dynamicListQueryParameters)
+        public async Task<IEnumerable<TResponse>> ListComponentRates<TResponse>(
+            short financialYear,
+            string treasuryCode,
+            DynamicListQueryParameters dynamicListQueryParameters
+        )
         {
             _dataCount = _pensionRateRepository.Count();
-            return await _pensionRateRepository
-                .GetSelectedColumnByConditionAsync(
-                    entity => entity.ActiveFlag,
-                    entity => _mapper.Map<TResponse>(entity),
-                    dynamicListQueryParameters
-                );
+            return await _pensionRateRepository.GetSelectedColumnByConditionAsync(
+                entity => entity.ActiveFlag,
+                entity => _mapper.Map<TResponse>(entity),
+                dynamicListQueryParameters
+            );
         }
 
         public async Task<List<TResponse>> ListComponentRatesByCategoryId<TResponse>(
             long categoryId
         )
         {
-            var breakups = await _pensionRateRepository
-                .GetComponentRatesByCategoryId<TResponse>(
-                    categoryId,
-                    entity => _mapper.Map<TResponse>(entity)
-                );
+            var breakups = await _pensionRateRepository.GetComponentRatesByCategoryId<TResponse>(
+                categoryId,
+                entity => _mapper.Map<TResponse>(entity)
+            );
             _dataCount = breakups.Count();
 
             return breakups;

@@ -11,10 +11,12 @@ namespace CTS_BE.Controllers.Pension
     public class BankBranchController : ApiBaseController
     {
         private readonly IBankBranchService _bankBranchService;
+
         public BankBranchController(
             IClaimService claimService,
             IBankBranchService bankBranchService
-        ) : base(claimService)
+        )
+            : base(claimService)
         {
             _bankBranchService = bankBranchService;
         }
@@ -24,19 +26,22 @@ namespace CTS_BE.Controllers.Pension
         [OpenApi]
         public async Task<JsonAPIResponse<BankListResponseDTO>> GetBanks()
         {
-            JsonAPIResponse<BankListResponseDTO> response = new(){
+            JsonAPIResponse<BankListResponseDTO> response = new()
+            {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
-                Message = $"All Banks Received Successfully!"
+                Message = $"All Banks Received Successfully!",
             };
-            try {
-                response.Result = await _bankBranchService
-                    .GetBanks(GetTreasuryCode());
+            try
+            {
+                response.Result = await _bankBranchService.GetBanks(GetTreasuryCode());
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 FillException(response, ex);
                 return response;
             }
-            finally {
+            finally
+            {
                 FillErrorMesageFromDataSource(response);
             }
 
@@ -48,24 +53,29 @@ namespace CTS_BE.Controllers.Pension
         [OpenApi]
         public async Task<JsonAPIResponse<BranchListResponseDTO>> GetBranchesByBankId(long bankId)
         {
-            JsonAPIResponse<BranchListResponseDTO> response = new(){
+            JsonAPIResponse<BranchListResponseDTO> response = new()
+            {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
-                Message = $"All Branches Received Successfully!"
+                Message = $"All Branches Received Successfully!",
             };
-            try {
-                response.Result = await _bankBranchService
-                    .GetBranchesByBankId(GetTreasuryCode(), bankId);
+            try
+            {
+                response.Result = await _bankBranchService.GetBranchesByBankId(
+                    GetTreasuryCode(),
+                    bankId
+                );
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 FillException(response, ex);
                 return response;
             }
-            finally {
+            finally
+            {
                 FillErrorMesageFromDataSource(response);
             }
 
             return response;
-        }    
-    
+        }
     }
 }

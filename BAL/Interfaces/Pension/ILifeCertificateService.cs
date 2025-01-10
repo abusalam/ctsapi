@@ -9,10 +9,7 @@ namespace CTS_BE.BAL.Interfaces.Pension
 {
     public interface ILifeCertificateService : IBaseService
     {
-       public Task<T> GetLifeCertificateByPpoId<T>(
-            long ppoId,
-            string treasuryCode
-        );
+        public Task<T> GetLifeCertificateByPpoId<T>(long ppoId, string treasuryCode);
         public Task<LifeCertificateListResponseDTO> GetLifeCertificatesByBranchId(
             long branchId,
             short financialYear,

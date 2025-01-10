@@ -17,16 +17,17 @@ namespace CTS_BE.BAL.Services.Pension
         private readonly IClaimService _claimService;
         private readonly IMapper _mapper;
         private readonly IBankBranchRepository _bankBranchRepository;
+
         public BankBranchService(
             IClaimService claimService,
             IMapper mapper,
             IBankBranchRepository bankBranchRepository
-        ) : base(claimService)
+        )
+            : base(claimService)
         {
             _claimService = claimService;
             _mapper = mapper;
             _bankBranchRepository = bankBranchRepository;
-
         }
 
         public Task<BankBranchNameResponseDTO> GetBankBranchNameByBranchId(
@@ -45,24 +46,24 @@ namespace CTS_BE.BAL.Services.Pension
             throw new NotImplementedException();
         }
 
-        public async Task<BankListResponseDTO> GetBanks(
-            string treasuryCode
-        )
+        public async Task<BankListResponseDTO> GetBanks(string treasuryCode)
         {
-            BankListResponseDTO bankListDTO = new ();
+            BankListResponseDTO bankListDTO = new();
             List<Bank>? bankEntityList = new();
-            try{
+            try
+            {
                 bankEntityList = await _bankBranchRepository.GetAllBanks(treasuryCode);
                 bankListDTO.Banks = _mapper.Map<List<BankResponseDTO>>(bankEntityList);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 bankListDTO.FillDataSource(
                     bankEntityList,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );
                 return bankListDTO;
             }
-           return bankListDTO;
+            return bankListDTO;
         }
 
         public async Task<BranchListResponseDTO> GetBranchesByBankId(
@@ -70,21 +71,30 @@ namespace CTS_BE.BAL.Services.Pension
             long bankId
         )
         {
-            BranchListResponseDTO branchListResponseDTO = new ();
+            BranchListResponseDTO branchListResponseDTO = new();
             List<Branch>? branchEntityList = new();
-            try{
-                branchEntityList = await _bankBranchRepository.GetBranchesByBankId(treasuryCode, bankId);
-                branchListResponseDTO.Branches = _mapper.Map<List<BranchListItemResponseDTO>>(branchEntityList);
-                branchListResponseDTO.Bank = _mapper.Map<BankResponseDTO>(branchEntityList.FirstOrDefault()?.Bank);
+            try
+            {
+                branchEntityList = await _bankBranchRepository.GetBranchesByBankId(
+                    treasuryCode,
+                    bankId
+                );
+                branchListResponseDTO.Branches = _mapper.Map<List<BranchListItemResponseDTO>>(
+                    branchEntityList
+                );
+                branchListResponseDTO.Bank = _mapper.Map<BankResponseDTO>(
+                    branchEntityList.FirstOrDefault()?.Bank
+                );
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 branchListResponseDTO.FillDataSource(
                     branchEntityList,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );
                 return branchListResponseDTO;
             }
-           return branchListResponseDTO;
+            return branchListResponseDTO;
         }
     }
 }

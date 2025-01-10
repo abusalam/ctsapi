@@ -9,10 +9,12 @@ namespace CTS_BE.Controllers.Pension
     public class LifeCertificateController : ApiBaseController
     {
         private readonly ILifeCertificateService _lifeCertificateService;
+
         public LifeCertificateController(
             ILifeCertificateService lifeCertificateService,
             IClaimService claimService
-        ) : base(claimService)
+        )
+            : base(claimService)
         {
             _lifeCertificateService = lifeCertificateService;
         }
@@ -24,23 +26,27 @@ namespace CTS_BE.Controllers.Pension
             LifeCertificateEntryDTO lifeCertificateEntryDTO
         )
         {
-
-            JsonAPIResponse<LifeCertificateResponseDTO> response = new(){
+            JsonAPIResponse<LifeCertificateResponseDTO> response = new()
+            {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
-                Message = $"PPO Life Certificate saved sucessfully!"
+                Message = $"PPO Life Certificate saved sucessfully!",
             };
-            try {
-                response.Result = await _lifeCertificateService.CreateLifeCertificate<LifeCertificateResponseDTO>(
-                    lifeCertificateEntryDTO,
-                    GetCurrentFyYear(),
-                    GetTreasuryCode()
-                );
+            try
+            {
+                response.Result =
+                    await _lifeCertificateService.CreateLifeCertificate<LifeCertificateResponseDTO>(
+                        lifeCertificateEntryDTO,
+                        GetCurrentFyYear(),
+                        GetTreasuryCode()
+                    );
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 FillException(response, ex);
                 return response;
             }
-            finally {
+            finally
+            {
                 FillErrorMesageFromDataSource(response);
             }
 
@@ -54,22 +60,26 @@ namespace CTS_BE.Controllers.Pension
             int ppoId
         )
         {
-
-            JsonAPIResponse<LifeCertificateResponseDTO> response = new(){
+            JsonAPIResponse<LifeCertificateResponseDTO> response = new()
+            {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
-                Message = $"PPO Life Certificate received sucessfully!"
+                Message = $"PPO Life Certificate received sucessfully!",
             };
-            try {
-                response.Result = await _lifeCertificateService.GetLifeCertificateByPpoId<LifeCertificateResponseDTO>(
-                    ppoId,
-                    GetTreasuryCode()
-                );
+            try
+            {
+                response.Result =
+                    await _lifeCertificateService.GetLifeCertificateByPpoId<LifeCertificateResponseDTO>(
+                        ppoId,
+                        GetTreasuryCode()
+                    );
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 FillException(response, ex);
                 return response;
             }
-            finally {
+            finally
+            {
                 FillErrorMesageFromDataSource(response);
             }
 
@@ -84,52 +94,22 @@ namespace CTS_BE.Controllers.Pension
             LifeCertificateEntryDTO lifeCertificateEntryDTO
         )
         {
-
-            JsonAPIResponse<LifeCertificateResponseDTO> response = new(){
-                ApiResponseStatus = Enum.APIResponseStatus.Success,
-                Message = $"PPO Life Certificate updated sucessfully!"
-            };
-            try {
-                response.Result = await _lifeCertificateService.UpdateLifeCertificateByPpoId<LifeCertificateResponseDTO>(
-                    ppoId,
-                    lifeCertificateEntryDTO,
-                    GetCurrentFyYear(),
-                    GetTreasuryCode()
-                );
-            }
-            catch(Exception ex) {
-                FillException(response, ex);
-                return response;
-            }
-            finally {
-                FillErrorMesageFromDataSource(response);
-            }
-
-            return response;
-        }
-
-        [HttpGet("lifecertificate/branch/{branchId}")]
-        [Tags("Pension: Life Certificate")]
-        [OpenApi]
-        public async Task<JsonAPIResponse<LifeCertificateListResponseDTO>> GetLifeCertificatesByBranchId(
-            long branchId
-        )
-        {
-            JsonAPIResponse<LifeCertificateListResponseDTO> response = new()
+            JsonAPIResponse<LifeCertificateResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
-                Message = $"Life Certificates retrieved successfully!"
+                Message = $"PPO Life Certificate updated sucessfully!",
             };
-
             try
             {
-                response.Result = await _lifeCertificateService.GetLifeCertificatesByBranchId(
-                    branchId,
-                    GetCurrentFyYear(),
-                    GetTreasuryCode()
-                );
+                response.Result =
+                    await _lifeCertificateService.UpdateLifeCertificateByPpoId<LifeCertificateResponseDTO>(
+                        ppoId,
+                        lifeCertificateEntryDTO,
+                        GetCurrentFyYear(),
+                        GetTreasuryCode()
+                    );
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 FillException(response, ex);
                 return response;
@@ -142,6 +122,38 @@ namespace CTS_BE.Controllers.Pension
             return response;
         }
 
+        [HttpGet("lifecertificate/branch/{branchId}")]
+        [Tags("Pension: Life Certificate")]
+        [OpenApi]
+        public async Task<
+            JsonAPIResponse<LifeCertificateListResponseDTO>
+        > GetLifeCertificatesByBranchId(long branchId)
+        {
+            JsonAPIResponse<LifeCertificateListResponseDTO> response = new()
+            {
+                ApiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = $"Life Certificates retrieved successfully!",
+            };
 
+            try
+            {
+                response.Result = await _lifeCertificateService.GetLifeCertificatesByBranchId(
+                    branchId,
+                    GetCurrentFyYear(),
+                    GetTreasuryCode()
+                );
+            }
+            catch (Exception ex)
+            {
+                FillException(response, ex);
+                return response;
+            }
+            finally
+            {
+                FillErrorMesageFromDataSource(response);
+            }
+
+            return response;
+        }
     }
 }

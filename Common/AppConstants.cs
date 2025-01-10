@@ -7,16 +7,19 @@ namespace CTS_BE.Common
 {
     public static class ErrorMessages
     {
-        public const string Password_ConfirmPassword_Not_Match = "Password_ConfirmPassword_Not_Match";
+        public const string Password_ConfirmPassword_Not_Match =
+            "Password_ConfirmPassword_Not_Match";
         public const string OldPassword_Not_Match = "Please check the existing password";
         public const string Error_In_Creation = "Error_In_Creation";
         public const string Error_User_With_Id_Exists = "User with User Id Already Exists";
         public const string Error_With_Id_Exists = "Record with Id Already Exists";
-        public const string Error_With_DeptCode_Exists = "Record with department short code already Exists";
+        public const string Error_With_DeptCode_Exists =
+            "Record with department short code already Exists";
         public const string Error_With_DistCode_Exists = "Record with district code already Exists";
         public const string Error_In_Update = "Error_In_Update";
         public const string Error_System_Exception = "System Exception";
-        public const string Error_In_Activation = "Could not activate as similar active data already exists";
+        public const string Error_In_Activation =
+            "Could not activate as similar active data already exists";
         public const string Error_Duplicate_Email = "User with this mail id already exists";
         public const string Login_failed = "Login failed";
         public const string User_Not_Found = "User not found";
@@ -30,7 +33,8 @@ namespace CTS_BE.Common
         public const string No_valid_data_found_to_update = "No valid data found to update";
         public const string Record_not_found_to_update = "Record not found to update";
         public const string Record_Already_Exists = "Record already exists";
-        public const string Incorrect_CAPTCHA = "Incorrect CAPTCHA!!! Enter valid letters shown in the image";
+        public const string Incorrect_CAPTCHA =
+            "Incorrect CAPTCHA!!! Enter valid letters shown in the image";
         public const string Incorrect_creden = "Bad Request";
     }
 
@@ -60,10 +64,8 @@ namespace CTS_BE.Common
         public const string PaymentRequired = "Waiting For Payment.";
         public const string DeliveredToVendor = "Delivered To Vendor";
         public const string OopsError = "Could Not Process At This Moment";
-        public const string NoRequisitionFoundToBeDelivered = "No Requisition Found To Be Delivered";
+        public const string NoRequisitionFoundToBeDelivered =
+            "No Requisition Found To Be Delivered";
         public const string RejectedByStampClerk = "Rejected By Stamp Clerk";
     }
 }
-
-
-

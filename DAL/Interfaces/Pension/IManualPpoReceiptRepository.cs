@@ -20,6 +20,7 @@ namespace CTS_BE.DAL.Interfaces.Pension
             short finYear,
             string treasuryCode,
             PpoReceipt ppoReceipt
-        ) where T : BaseDTO;
+        )
+            where T : BaseDTO;
     }
 }

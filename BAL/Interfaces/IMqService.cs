@@ -4,7 +4,6 @@ namespace CTS_BE.BAL.Interfaces
 {
     public interface IMqService
     {
-
         public event EventHandler<MqDeliverEventArgs> RecceiveHandler;
 
         public string Despatch(string queueName, string message);

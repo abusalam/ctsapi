@@ -15,10 +15,12 @@ namespace CTS_BE.Controllers.Pension
     public class PpoStatusController : ApiBaseController
     {
         private readonly IPensionStatusService _pensionStatusService;
+
         public PpoStatusController(
-                IPensionStatusService pensionStatusService,
-                IClaimService claimService
-            ) : base(claimService)
+            IPensionStatusService pensionStatusService,
+            IClaimService claimService
+        )
+            : base(claimService)
         {
             _pensionStatusService = pensionStatusService;
         }
@@ -26,18 +28,22 @@ namespace CTS_BE.Controllers.Pension
         [HttpPost("status")]
         [Tags("Pension: PPO Status")]
         [OpenApi]
-        public async Task<JsonAPIResponse<PensionStatusEntryDTO>> SetPpoStatusFlag(PensionStatusEntryDTO pensionStatusEntryDTO) {
-
+        public async Task<JsonAPIResponse<PensionStatusEntryDTO>> SetPpoStatusFlag(
+            PensionStatusEntryDTO pensionStatusEntryDTO
+        )
+        {
             JsonAPIResponse<PensionStatusEntryDTO> response = new();
-            try {
-                response = new(){
+            try
+            {
+                response = new()
+                {
                     ApiResponseStatus = Enum.APIResponseStatus.Success,
                     Message = "PPO Status Flag Set Successfully",
                     Result = await _pensionStatusService.SetPensionStatusFlag(
                         pensionStatusEntryDTO,
                         GetCurrentFyYear(),
                         GetTreasuryCode()
-                    )
+                    ),
                 };
                 // if(System.Enum.TryParse<PensionStatusFlag>(
                 //         $"{pensionStatusEntryDTO.StatusFlag}",
@@ -62,11 +68,13 @@ namespace CTS_BE.Controllers.Pension
                 //     }
                 // }
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 FillException(response, ex);
                 return response;
             }
-            finally {
+            finally
+            {
                 FillErrorMesageFromDataSource(response);
             }
             return response;
@@ -75,16 +83,19 @@ namespace CTS_BE.Controllers.Pension
         [HttpDelete("{ppoId}/status/{statusFlag}")]
         [Tags("Pension: PPO Status")]
         [OpenApi]
-        public async Task<JsonAPIResponse<PensionStatusDTO>> ClearPpoStatusFlagByPpoId(int ppoId, PensionStatusFlag statusFlag) {
-
-            JsonAPIResponse<PensionStatusDTO> response = new(){
+        public async Task<JsonAPIResponse<PensionStatusDTO>> ClearPpoStatusFlagByPpoId(
+            int ppoId,
+            PensionStatusFlag statusFlag
+        )
+        {
+            JsonAPIResponse<PensionStatusDTO> response = new()
+            {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = "PPO Status Flag Cleared Successfully",
-                Result = new(){
-                    StatusFlag = statusFlag
-                }
+                Result = new() { StatusFlag = statusFlag },
             };
-            try {
+            try
+            {
                 response.Result = await _pensionStatusService.ClearPensionStatusFlag(
                     ppoId,
                     statusFlag,
@@ -115,11 +126,13 @@ namespace CTS_BE.Controllers.Pension
                 //     }
                 // }
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 FillException(response, ex);
                 return response;
             }
-            finally {
+            finally
+            {
                 FillErrorMesageFromDataSource(response);
             }
 
@@ -129,21 +142,25 @@ namespace CTS_BE.Controllers.Pension
         [HttpGet("{ppoId}/status/{statusFlag}")]
         [Tags("Pension: PPO Status")]
         [OpenApi]
-        public async Task<JsonAPIResponse<PensionStatusDTO>> GetPpoStatusFlagByPpoId(int ppoId, PensionStatusFlag statusFlag) {
-            JsonAPIResponse<PensionStatusDTO> response = new(){
+        public async Task<JsonAPIResponse<PensionStatusDTO>> GetPpoStatusFlagByPpoId(
+            int ppoId,
+            PensionStatusFlag statusFlag
+        )
+        {
+            JsonAPIResponse<PensionStatusDTO> response = new()
+            {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = "PPO Status Flag Retrieved Successfully",
-                Result = new(){
-                    StatusFlag = statusFlag
-                }
+                Result = new() { StatusFlag = statusFlag },
             };
-            try {
+            try
+            {
                 response.Result = await _pensionStatusService.CheckPensionStatusFlag(
-                        ppoId,
-                        statusFlag,
-                        GetCurrentFyYear(),
-                        GetTreasuryCode()
-                    );
+                    ppoId,
+                    statusFlag,
+                    GetCurrentFyYear(),
+                    GetTreasuryCode()
+                );
 
                 // if(System.Enum.TryParse<PensionStatusFlag>(
                 //         $"{response.Result.StatusFlag}",
@@ -168,15 +185,16 @@ namespace CTS_BE.Controllers.Pension
                 //     }
                 // }
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 FillException(response, ex);
                 return response;
             }
-            finally {
+            finally
+            {
                 FillErrorMesageFromDataSource(response);
             }
             return response;
         }
-    
     }
 }

@@ -21,7 +21,7 @@ namespace CTS_BE.Adapters
             EventHandler<MqDeliverEventArgs> messageReceiveHandler,
             CancellationToken cancellationToken
         );
-        
+
         public abstract string CancelConsumer(string consumerTag);
     }
 }

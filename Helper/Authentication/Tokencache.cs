@@ -6,10 +6,10 @@ namespace CTS_BE.Helper.Authentication
     {
         //private static Tokencache instance = new Tokencache();
 
-        private static Dictionary<string, TokenChachedItems> valuePairs = new Dictionary<string, TokenChachedItems>();
+        private static Dictionary<string, TokenChachedItems> valuePairs =
+            new Dictionary<string, TokenChachedItems>();
         private List<string> orderList = new List<string>();
         private static string locketstring = string.Empty;
-
 
         private readonly IConfiguration _Configuration;
         private readonly ILogger<Tokencache> _logger;
@@ -20,9 +20,14 @@ namespace CTS_BE.Helper.Authentication
         {
             _logger = logger;
             _Configuration = Configuration;
-            TokenCachEvictionTimeinMint = int.Parse(_Configuration.GetValue<string>("Auth:TokenCachEvictionTimeinMint") ?? "30");
-            TokenCacheMaxItemCount = int.Parse(_Configuration.GetValue<string>("Auth:TokenCacheMaxItemCount") ?? "1000");
+            TokenCachEvictionTimeinMint = int.Parse(
+                _Configuration.GetValue<string>("Auth:TokenCachEvictionTimeinMint") ?? "30"
+            );
+            TokenCacheMaxItemCount = int.Parse(
+                _Configuration.GetValue<string>("Auth:TokenCacheMaxItemCount") ?? "1000"
+            );
         }
+
         //private Tokencache()
         //{
 
@@ -68,9 +73,7 @@ namespace CTS_BE.Helper.Authentication
                 valuePairs[token] = cachedItem;
                 return cachedItem;
             }
-
         }
-
 
         public void RemoveItem(string token)
         {
@@ -86,7 +89,6 @@ namespace CTS_BE.Helper.Authentication
                 }
             }
         }
-
 
         public void RemoveExpiredItem()
         {
@@ -105,9 +107,7 @@ namespace CTS_BE.Helper.Authentication
                                 valuePairs.Remove(tempCachekey);
                         }
                     }
-
                 }
-
             }
         }
 
@@ -138,10 +138,8 @@ namespace CTS_BE.Helper.Authentication
                         }
                     }
                 }
-
             }
         }
-
     }
 
     public class TokenChachedItems
@@ -151,6 +149,5 @@ namespace CTS_BE.Helper.Authentication
         public UserClaimModel UserClaimModel { get; set; } = null!;
 
         public DateTime LastUsed { get; set; }
-
     }
 }

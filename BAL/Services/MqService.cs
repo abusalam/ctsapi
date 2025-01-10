@@ -1,5 +1,5 @@
-using CTS_BE.BAL.Interfaces;
 using CTS_BE.Adapters;
+using CTS_BE.BAL.Interfaces;
 using CTS_BE.Events;
 
 namespace CTS_BE.BAL.Services
@@ -33,14 +33,11 @@ namespace CTS_BE.BAL.Services
         public string SetupConsumer(string queueName, CancellationToken cancellationToken)
         {
             // _mqAdapter.MessageReceived += (sender, args) => MessageReceived?.Invoke(sender, args);
-            if(RecceiveHandler == null) {
+            if (RecceiveHandler == null)
+            {
                 return "Error: Please setup RecceiveHandler first";
             }
-            return _mqAdapter.SetupConsumer(
-                queueName,
-                RecceiveHandler,
-                cancellationToken
-            );
+            return _mqAdapter.SetupConsumer(queueName, RecceiveHandler, cancellationToken);
         }
 
         public string CancelConsumer(string consumerTag)

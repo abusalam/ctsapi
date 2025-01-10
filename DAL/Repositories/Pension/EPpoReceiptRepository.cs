@@ -8,17 +8,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Repositories.Pension
 {
-    public class EPpoReceiptRepository :
-        Repository<EppoReceipt, PensionDbContext>,
-        IEPpoReceiptRepository
+    public class EPpoReceiptRepository
+        : Repository<EppoReceipt, PensionDbContext>,
+            IEPpoReceiptRepository
     {
         private readonly IMapper _mapper;
         private readonly PensionDbContext _context;
 
-        public EPpoReceiptRepository(
-            IMapper mapper,
-            PensionDbContext context
-        ) : base(context)
+        public EPpoReceiptRepository(IMapper mapper, PensionDbContext context)
+            : base(context)
         {
             _mapper = mapper;
             _context = context;
@@ -30,14 +28,15 @@ namespace CTS_BE.DAL.Repositories.Pension
             short financialYear
         )
         {
-            return await _context.EppoReceipts
-                .Include(e => e.PhotoFile)
+            return await _context
+                .EppoReceipts.Include(e => e.PhotoFile)
                 .Include(e => e.SignatureFile)
                 .Include(e => e.EppoFile)
                 .FirstOrDefaultAsync(e =>
-                    e.Id == receiptId &&
-                    e.TreasuryCode == treasuryCode &&
-                    e.FinancialYear == financialYear);
+                    e.Id == receiptId
+                    && e.TreasuryCode == treasuryCode
+                    && e.FinancialYear == financialYear
+                );
         }
 
         public async Task<List<T>> GetUnusedEPpoReceipts<T>(
@@ -46,12 +45,12 @@ namespace CTS_BE.DAL.Repositories.Pension
             Expression<Func<EppoReceipt, T>> selectExpression
         )
         {
-            return await _context.EppoReceipts
-                .Where(e =>
-                    e.TreasuryCode == treasuryCode &&
-                    e.FinancialYear == financialYear &&
-                    e.PpoId == null &&
-                    e.Withdrawn == false
+            return await _context
+                .EppoReceipts.Where(e =>
+                    e.TreasuryCode == treasuryCode
+                    && e.FinancialYear == financialYear
+                    && e.PpoId == null
+                    && e.Withdrawn == false
                 )
                 .Include(e => e.PhotoFile)
                 .Include(e => e.SignatureFile)
@@ -79,7 +78,8 @@ namespace CTS_BE.DAL.Repositories.Pension
                 {
                     response.FillDataSource(
                         eppoReceiptExists,
-                        "eppoReceipt already exists for Pension Application No: " + eppoReceiptEntity.PensionApplnNo
+                        "eppoReceipt already exists for Pension Application No: "
+                            + eppoReceiptEntity.PensionApplnNo
                     );
                     return response;
                 }
@@ -88,22 +88,35 @@ namespace CTS_BE.DAL.Repositories.Pension
                 if (eppoReceiptEntity.EppoFile != null)
                 {
                     eppoReceiptEntity.EppoFile.FilePath = treasuryCode + "/" + financialYear + "/";
-                    var extension = provider.TryGetContentType(eppoReceiptEntity.EppoFile.FileName, out string? mimeType);
-                    eppoReceiptEntity.EppoFile.FileMimeType = mimeType ?? "application/octet-stream";
+                    var extension = provider.TryGetContentType(
+                        eppoReceiptEntity.EppoFile.FileName,
+                        out string? mimeType
+                    );
+                    eppoReceiptEntity.EppoFile.FileMimeType =
+                        mimeType ?? "application/octet-stream";
                 }
 
                 if (eppoReceiptEntity.PhotoFile != null)
                 {
                     eppoReceiptEntity.PhotoFile.FilePath = treasuryCode + "/" + financialYear + "/";
-                    var extension = provider.TryGetContentType(eppoReceiptEntity.PhotoFile.FileName, out string? mimeType);
-                    eppoReceiptEntity.PhotoFile.FileMimeType = mimeType ?? "application/octet-stream";
+                    var extension = provider.TryGetContentType(
+                        eppoReceiptEntity.PhotoFile.FileName,
+                        out string? mimeType
+                    );
+                    eppoReceiptEntity.PhotoFile.FileMimeType =
+                        mimeType ?? "application/octet-stream";
                 }
 
                 if (eppoReceiptEntity.SignatureFile != null)
                 {
-                    eppoReceiptEntity.SignatureFile.FilePath = treasuryCode + "/" + financialYear + "/";
-                    var extension = provider.TryGetContentType(eppoReceiptEntity.SignatureFile.FileName, out string? mimeType);
-                    eppoReceiptEntity.SignatureFile.FileMimeType = mimeType ?? "application/octet-stream";
+                    eppoReceiptEntity.SignatureFile.FilePath =
+                        treasuryCode + "/" + financialYear + "/";
+                    var extension = provider.TryGetContentType(
+                        eppoReceiptEntity.SignatureFile.FileName,
+                        out string? mimeType
+                    );
+                    eppoReceiptEntity.SignatureFile.FileMimeType =
+                        mimeType ?? "application/octet-stream";
                 }
                 _context.EppoReceipts.Add(eppoReceiptEntity);
 
@@ -120,11 +133,17 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             catch (DbUpdateException ex)
             {
-                response.FillDataSource(eppoReceiptEntity, $"DbException: {ex.InnerException?.Message ?? ex.Message}");
+                response.FillDataSource(
+                    eppoReceiptEntity,
+                    $"DbException: {ex.InnerException?.Message ?? ex.Message}"
+                );
             }
             catch (Exception ex)
             {
-                response.FillDataSource(eppoReceiptEntity, $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}");
+                response.FillDataSource(
+                    eppoReceiptEntity,
+                    $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
+                );
             }
             return response;
         }
@@ -135,11 +154,11 @@ namespace CTS_BE.DAL.Repositories.Pension
             short financialYear
         )
         {
-            return await _context.EppoReceipts
-                .FirstOrDefaultAsync(e =>
-                    e.PensionApplnNo == pensionApplnNo &&
-                    e.TreasuryCode == treasuryCode &&
-                    e.FinancialYear == financialYear);
+            return await _context.EppoReceipts.FirstOrDefaultAsync(e =>
+                e.PensionApplnNo == pensionApplnNo
+                && e.TreasuryCode == treasuryCode
+                && e.FinancialYear == financialYear
+            );
         }
 
         public async Task<EppoReceipt?> GetPpoIdByPpoNo(
@@ -148,11 +167,11 @@ namespace CTS_BE.DAL.Repositories.Pension
             short financialYear
         )
         {
-            return await _context.EppoReceipts
-                .FirstOrDefaultAsync(e =>
-                    e.PpoNo == ppoNo &&
-                    e.TreasuryCode == treasuryCode &&
-                    e.FinancialYear == financialYear);
+            return await _context.EppoReceipts.FirstOrDefaultAsync(e =>
+                e.PpoNo == ppoNo
+                && e.TreasuryCode == treasuryCode
+                && e.FinancialYear == financialYear
+            );
         }
 
         public async Task<T> SaveRevisedEPpoReceipt<T>(
@@ -184,11 +203,17 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             catch (DbUpdateException ex)
             {
-                response.FillDataSource(entity, $"DbException: {ex.InnerException?.Message ?? ex.Message}");
+                response.FillDataSource(
+                    entity,
+                    $"DbException: {ex.InnerException?.Message ?? ex.Message}"
+                );
             }
             catch (Exception ex)
             {
-                response.FillDataSource(entity, $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}");
+                response.FillDataSource(
+                    entity,
+                    $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
+                );
             }
 
             return response;
@@ -248,6 +273,5 @@ namespace CTS_BE.DAL.Repositories.Pension
                 return response;
             }
         }
-
     }
 }

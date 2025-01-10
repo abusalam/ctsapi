@@ -22,20 +22,26 @@ namespace CTS_BE.Controllers.Pension
     public class FactoryController : ApiBaseController
     {
         private readonly IDictionary<FactoryEntityEnum, BaseDTO> _factories;
-        public FactoryController(
-            IClaimService claimService
-        ) : base(claimService)
+
+        public FactoryController(IClaimService claimService)
+            : base(claimService)
         {
             _factories = new Dictionary<FactoryEntityEnum, BaseDTO>()
             {
-                {FactoryEntityEnum.ComponentRateEntryDTO, new ComponentRateFactory().Create()},
-                {FactoryEntityEnum.ManualPpoReceiptEntryDTO, new PpoReceiptFactory().Create()},
-                {FactoryEntityEnum.PensionerEntryDTO, new PensionerFactory().Create()},
-                {FactoryEntityEnum.PpoSanctionDetailsEntryDTO, new PpoSanctionDetailsFactory().Create()},
-                {FactoryEntityEnum.PensionPrimaryCategoryEntryDTO, new PrimaryCategoryFactory().Create()},
-                {FactoryEntityEnum.PensionSubCategoryEntryDTO, new SubCategoryFactory().Create()},
-                {FactoryEntityEnum.PensionBreakupEntryDTO, new ComponentFactory().Create()},
-                {FactoryEntityEnum.NomineeEntryDTO, new NomineeFactory().Create()},
+                { FactoryEntityEnum.ComponentRateEntryDTO, new ComponentRateFactory().Create() },
+                { FactoryEntityEnum.ManualPpoReceiptEntryDTO, new PpoReceiptFactory().Create() },
+                { FactoryEntityEnum.PensionerEntryDTO, new PensionerFactory().Create() },
+                {
+                    FactoryEntityEnum.PpoSanctionDetailsEntryDTO,
+                    new PpoSanctionDetailsFactory().Create()
+                },
+                {
+                    FactoryEntityEnum.PensionPrimaryCategoryEntryDTO,
+                    new PrimaryCategoryFactory().Create()
+                },
+                { FactoryEntityEnum.PensionSubCategoryEntryDTO, new SubCategoryFactory().Create() },
+                { FactoryEntityEnum.PensionBreakupEntryDTO, new ComponentFactory().Create() },
+                { FactoryEntityEnum.NomineeEntryDTO, new NomineeFactory().Create() },
             };
         }
 
@@ -48,7 +54,7 @@ namespace CTS_BE.Controllers.Pension
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = $"{dtoName} received successfully",
-                Result = null
+                Result = null,
             };
 
             if (!_factories.ContainsKey(dtoName))
@@ -63,6 +69,5 @@ namespace CTS_BE.Controllers.Pension
 
             return await Task.FromResult(response);
         }
-
     }
 }

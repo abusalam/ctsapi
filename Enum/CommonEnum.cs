@@ -7,10 +7,12 @@
         Error = 3,
         Info = 4,
     }
+
     public enum BillStatus
     {
         ForwardedToTreasury = 99,
     }
+
     public enum TokenStatus
     {
         BillReceived = 1,
@@ -21,11 +23,12 @@
         FrowardbyTreasuryOfficer = 6,
         ObjectedbyTreasuryOfficer = 7,
         BillClear = 8,
-        RetrunMemoGenerated = 9
+        RetrunMemoGenerated = 9,
     }
+
     public enum BTAmountType
     {
-        AG=1,
-        Treasury=2,
+        AG = 1,
+        Treasury = 2,
     }
 }

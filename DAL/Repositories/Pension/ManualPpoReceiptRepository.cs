@@ -8,16 +8,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Repositories.Pension
 {
-    public class ManualPpoReceiptRepository :
-        Repository<PpoReceipt, PensionDbContext>,
-        IManualPpoReceiptRepository
+    public class ManualPpoReceiptRepository
+        : Repository<PpoReceipt, PensionDbContext>,
+            IManualPpoReceiptRepository
     {
         protected readonly PensionDbContext _context;
         protected readonly IMapper _mapper;
-        public ManualPpoReceiptRepository(
-            IMapper mapper,
-            PensionDbContext context
-        ) : base(context)
+
+        public ManualPpoReceiptRepository(IMapper mapper, PensionDbContext context)
+            : base(context)
         {
             _mapper = mapper;
             _context = context;
@@ -29,9 +28,9 @@ namespace CTS_BE.DAL.Repositories.Pension
             Expression<Func<PpoReceipt, T>> selectExpression
         )
         {
-            return await _context.PpoReceipts
-                .Where(
-                    entity => entity.ActiveFlag
+            return await _context
+                .PpoReceipts.Where(entity =>
+                    entity.ActiveFlag
                     && entity.FinancialYear == financialYear
                     && entity.TreasuryCode == treasuryCode
                 )
@@ -47,9 +46,9 @@ namespace CTS_BE.DAL.Repositories.Pension
             Expression<Func<PpoReceipt, T>> selectExpression
         )
         {
-            return await _context.PpoReceipts
-                .Where(
-                    entity => entity.ActiveFlag
+            return await _context
+                .PpoReceipts.Where(entity =>
+                    entity.ActiveFlag
                     && entity.FinancialYear == financialYear
                     && entity.TreasuryCode == treasuryCode
                 )
@@ -57,55 +56,59 @@ namespace CTS_BE.DAL.Repositories.Pension
                 .ToListAsync();
         }
 
-
         public async Task<T> CreatePpoReceiptWithTreasuryReceiptNo<T>(
             short finYear,
             string treasuryCode,
             PpoReceipt ppoReceiptEntity
-        ) where T : BaseDTO
+        )
+            where T : BaseDTO
         {
             T result = _mapper.Map<T>(ppoReceiptEntity);
-            try {
-                PpoReceiptSequence? ppoReceiptSequence = _context.PpoReceiptSequences
-                .Where(
-                    entity => entity.ActiveFlag == true
-                    && entity.FinancialYear == finYear
-                    && entity.TreasuryCode == treasuryCode
-                )
-                .FirstOrDefault();
-                if(ppoReceiptSequence == null) {
-                    ppoReceiptSequence = new () {
+            try
+            {
+                PpoReceiptSequence? ppoReceiptSequence = _context
+                    .PpoReceiptSequences.Where(entity =>
+                        entity.ActiveFlag == true
+                        && entity.FinancialYear == finYear
+                        && entity.TreasuryCode == treasuryCode
+                    )
+                    .FirstOrDefault();
+                if (ppoReceiptSequence == null)
+                {
+                    ppoReceiptSequence = new()
+                    {
                         FinancialYear = finYear,
                         TreasuryCode = treasuryCode,
-                        NextSequenceValue = 1
+                        NextSequenceValue = 1,
                     };
                     _context.Add(ppoReceiptSequence);
-                } else {
+                }
+                else
+                {
                     ppoReceiptSequence.NextSequenceValue++;
                     _context.Update(ppoReceiptSequence);
                 }
-                string paddedNextSequenceValue = $"{ppoReceiptSequence.NextSequenceValue}".PadLeft(6,'0');
-                ppoReceiptEntity.TreasuryReceiptNo = $"{treasuryCode}{finYear}{paddedNextSequenceValue}";
+                string paddedNextSequenceValue = $"{ppoReceiptSequence.NextSequenceValue}".PadLeft(
+                    6,
+                    '0'
+                );
+                ppoReceiptEntity.TreasuryReceiptNo =
+                    $"{treasuryCode}{finYear}{paddedNextSequenceValue}";
                 _context.PpoReceipts.Add(ppoReceiptEntity);
 
-                if(_context.SaveChanges() == 0) {
-                    result.FillDataSource(
-                        ppoReceiptEntity,
-                        "Failed to add PPO Receipt"
-                    );
+                if (_context.SaveChanges() == 0)
+                {
+                    result.FillDataSource(ppoReceiptEntity, "Failed to add PPO Receipt");
                     return await Task.FromResult(result);
                 }
                 result = _mapper.Map<T>(ppoReceiptEntity);
             }
-            catch (Exception ex) {
-                result.FillDataSource(
-                    ppoReceiptEntity,
-                    ex.InnerException?.Message ?? ex.Message
-                );
+            catch (Exception ex)
+            {
+                result.FillDataSource(ppoReceiptEntity, ex.InnerException?.Message ?? ex.Message);
                 return await Task.FromResult(result);
             }
             return await Task.FromResult(result);
         }
-
     }
 }

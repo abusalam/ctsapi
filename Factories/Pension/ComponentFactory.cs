@@ -12,14 +12,8 @@ namespace CTS_BE.Factories.Pension
                     x => x.ComponentName,
                     f => f.Random.Word() + " " + f.Random.Replace("######")
                 )
-                .RuleFor(
-                    x => x.ComponentType,
-                    f => f.PickRandom('P','D')
-                )
-                .RuleFor(
-                    x => x.ReliefFlag,
-                    f => f.Random.Bool()
-                );
+                .RuleFor(x => x.ComponentType, f => f.PickRandom('P', 'D'))
+                .RuleFor(x => x.ReliefFlag, f => f.Random.Bool());
         }
     }
 }

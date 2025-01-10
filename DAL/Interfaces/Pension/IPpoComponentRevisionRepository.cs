@@ -9,7 +9,6 @@ namespace CTS_BE.DAL.Interfaces.Pension
 {
     public interface IPpoComponentRevisionRepository : IRepository<PpoComponentRevision>
     {
-
         public Task<List<T>> GetAllPpos<T>(
             Expression<Func<Pensioner, T>> selectExpression,
             short financialYear,

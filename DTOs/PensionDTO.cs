@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
-using CTS_BE.DTOs.Validators;
 using System.Dynamic;
+using CTS_BE.DTOs.Validators;
 using CTS_BE.PensionEnum;
 
 namespace CTS_BE.DTOs
@@ -21,6 +21,7 @@ namespace CTS_BE.DTOs
         [Required]
         [EnumDataType(typeof(PensionStatusFlag))]
         public PensionStatusFlag StatusFlag { get; set; }
+
         // public int StatusFlag {get; set; }
         public PensionStatusReassonFlag ReasonFlag { get; set; }
 
@@ -41,7 +42,6 @@ namespace CTS_BE.DTOs
 
     public class ManualPpoReceiptEntryDTO : BaseDTO
     {
-
         [Required]
         [StringLength(100)]
         public required string PpoNo { get; set; } = null!;
@@ -69,10 +69,12 @@ namespace CTS_BE.DTOs
         public required char PsaCode { get; set; }
 
         [Required]
-        [RegularExpression(@"[NRPO]", ErrorMessage = "{0} must be one of the following (N, R, P & O)")]
+        [RegularExpression(
+            @"[NRPO]",
+            ErrorMessage = "{0} must be one of the following (N, R, P & O)"
+        )]
         public required char PpoType { get; set; }
     }
-
 
     public class ManualPpoReceiptResponseDTO : ManualPpoReceiptEntryDTO
     {
@@ -104,7 +106,6 @@ namespace CTS_BE.DTOs
 
     public partial class FileEntryDTO : BaseDTO
     {
-
         public string FileName { get; set; } = null!;
         public byte[] Contents { get; set; } = null!;
     }
@@ -189,7 +190,10 @@ namespace CTS_BE.DTOs
 
     public partial class EPpoReceiptListDTO : BaseDTO
     {
-        public int EPpoReceiptCount { get { return EPpoReceipts?.Count ?? 0; } }
+        public int EPpoReceiptCount
+        {
+            get { return EPpoReceipts?.Count ?? 0; }
+        }
         public List<EPpoReceiptDetailDTO>? EPpoReceipts { get; set; }
     }
 
@@ -283,7 +287,10 @@ namespace CTS_BE.DTOs
     {
         [Required]
         [StringLength(3)]
-        [RegularExpression(@"^(CLS|EFP|BSC|NFP|BYT)$", ErrorMessage = "Amount type must be one of: CLS (Classification), EFP (Enhanced Family Pension), BSC (Basic Pension), NFP (Normal Family Pension), BYT (By Transfer)")]
+        [RegularExpression(
+            @"^(CLS|EFP|BSC|NFP|BYT)$",
+            ErrorMessage = "Amount type must be one of: CLS (Classification), EFP (Enhanced Family Pension), BSC (Basic Pension), NFP (Normal Family Pension), BYT (By Transfer)"
+        )]
         public string AmountType { get; set; } = null!;
         public long? ClassificationId { get; set; }
         public DateOnly? FromDate { get; set; }
@@ -296,7 +303,10 @@ namespace CTS_BE.DTOs
     public class EPpoNomineeEntryDTO : BaseDTO
     {
         [Required]
-        [RegularExpression(@"^[PFD]$", ErrorMessage = "Nominee type must be: P (Pensioner), F (Family), or D (Dependent)")]
+        [RegularExpression(
+            @"^[PFD]$",
+            ErrorMessage = "Nominee type must be: P (Pensioner), F (Family), or D (Dependent)"
+        )]
         public char NomineeType { get; set; }
 
         [Required]
@@ -312,7 +322,10 @@ namespace CTS_BE.DTOs
         public DateOnly DateOfBirth { get; set; }
 
         [Required]
-        [RegularExpression(@"^[WEHSDOMRNAFKYCUITJBPVL]$", ErrorMessage = "Relation must be one of: [WEHSDOMRNAFKYCUITJBPVL] E - Employed; L - Widow Daughter; U - Unmarried Daughter; V - Divorced Daughter; N - Minor Son; R - Minor Daughter; P - Handicapped Son; G - Handicapped Daughter; J - Dependent Father; K - Dependent Mother; H - Husband; W - Wife;")]
+        [RegularExpression(
+            @"^[WEHSDOMRNAFKYCUITJBPVL]$",
+            ErrorMessage = "Relation must be one of: [WEHSDOMRNAFKYCUITJBPVL] E - Employed; L - Widow Daughter; U - Unmarried Daughter; V - Divorced Daughter; N - Minor Son; R - Minor Daughter; P - Handicapped Son; G - Handicapped Daughter; J - Dependent Father; K - Dependent Mother; H - Husband; W - Wife;"
+        )]
         public char Relation { get; set; }
 
         [Range(0, 100)]
@@ -334,9 +347,11 @@ namespace CTS_BE.DTOs
         /// <value>Property <c>PpoType</c> Must be one of the following (P, F, C).</value>
         public char PpoType { get; set; }
 
-
         [Required]
-        [RegularExpression(@"[ELUVNRPGJKHW]", ErrorMessage = "{0} must be one of the following (E, L, U, V, N, R, P, G, J, K, H & W)")]
+        [RegularExpression(
+            @"[ELUVNRPGJKHW]",
+            ErrorMessage = "{0} must be one of the following (E, L, U, V, N, R, P, G, J, K, H & W)"
+        )]
         /// <value>Property <c>PpoSubType</c> Must be one of the following (E, L, U, V, N, R, P, G, J, K, H, W).</value>
         public char PpoSubType { get; set; }
 
@@ -363,7 +378,10 @@ namespace CTS_BE.DTOs
         [StringLength(100)]
         public string PensionerName { get; set; } = null!;
 
-        [RegularExpression(@"[MF]", ErrorMessage = "{0} must be one of the following (M - Male; F - Female;)")]
+        [RegularExpression(
+            @"[MF]",
+            ErrorMessage = "{0} must be one of the following (M - Male; F - Female;)"
+        )]
         /// <value>Property <c>Gender</c> Must be one of the following (M - Male; F - Female;).</value>
         public char? Gender { get; set; }
 
@@ -436,6 +454,7 @@ namespace CTS_BE.DTOs
 
         [StringLength(500)]
         public string? Remarks { get; set; }
+
         [Required]
         public int ReducedPensionAmount { get; set; }
 
@@ -449,7 +468,10 @@ namespace CTS_BE.DTOs
 
     public class BankListResponseDTO : BaseDTO
     {
-        public int BankCount { get { return Banks.Count; } }
+        public int BankCount
+        {
+            get { return Banks.Count; }
+        }
         public List<BankResponseDTO> Banks { get; set; } = null!;
     }
 
@@ -462,7 +484,10 @@ namespace CTS_BE.DTOs
 
     public class BranchListResponseDTO : BaseDTO
     {
-        public int BranchCount { get { return Branches.Count; } }
+        public int BranchCount
+        {
+            get { return Branches.Count; }
+        }
         public BankResponseDTO? Bank { get; set; }
         public List<BranchListItemResponseDTO> Branches { get; set; } = null!;
     }
@@ -494,8 +519,6 @@ namespace CTS_BE.DTOs
         public string PhoneNo { get; set; } = null!;
     }
 
-
-
     public class PensionerResponseDTO : PensionerEntryDTO
     {
         public long Id { get; set; }
@@ -504,7 +527,12 @@ namespace CTS_BE.DTOs
         public ManualPpoReceiptResponseDTO? Receipt { get; set; }
         public BranchResponseDTO? Branch { get; set; }
         public List<PpoSanctionDetailsResponseDTO>? PpoSanctionDetails { get; set; }
-        public override long BankId => Branch != null ? Branch.Bank != null ? Branch.Bank.Id : 0 : 0;
+        public override long BankId =>
+            Branch != null
+                ? Branch.Bank != null
+                    ? Branch.Bank.Id
+                    : 0
+                : 0;
         public string? PensionerStatus { get; set; }
         public bool? FirstPensionGenerated { get; set; }
     }
@@ -571,9 +599,12 @@ namespace CTS_BE.DTOs
     public partial class PensionPrimaryCategoryResponseDTO : PensionPrimaryCategoryEntryDTO
     {
         public long Id { get; set; }
-        public string? HeadDetails { get => $"{AccountHead?.MajorHead}-{AccountHead?.SubmajorHead}-{AccountHead?.MinorHead}-{AccountHead?.PlanStatus}-{AccountHead?.SchemeHead}-{AccountHead?.VotedCharged}-{AccountHead?.DetailHead}-{AccountHead?.SubdetailHead}"; }
+        public string? HeadDetails
+        {
+            get =>
+                $"{AccountHead?.MajorHead}-{AccountHead?.SubmajorHead}-{AccountHead?.MinorHead}-{AccountHead?.PlanStatus}-{AccountHead?.SchemeHead}-{AccountHead?.VotedCharged}-{AccountHead?.DetailHead}-{AccountHead?.SubdetailHead}";
+        }
         public AccountHeadResponseDTO? AccountHead { get; set; }
-
     }
 
     public partial class PensionSubCategoryEntryDTO : BaseDTO
@@ -624,7 +655,10 @@ namespace CTS_BE.DTOs
         /// P - Payment; D - Deduction;
         /// </summary>
         [Required]
-        [RegularExpression(@"[PD]", ErrorMessage = "{0} must be one of the following (P - Payment; D - Deduction)")]
+        [RegularExpression(
+            @"[PD]",
+            ErrorMessage = "{0} must be one of the following (P - Payment; D - Deduction)"
+        )]
         public char ComponentType { get; set; }
 
         /// <summary>
@@ -643,12 +677,14 @@ namespace CTS_BE.DTOs
     {
         [Required]
         public long CategoryId { get; set; }
+
         [Required]
         public long BreakupId { get; set; }
 
         [Required]
         [DataType(DataType.Date)]
         public DateOnly EffectiveFromDate { get; set; }
+
         [Required]
         public int RateAmount { get; set; }
 
@@ -656,17 +692,42 @@ namespace CTS_BE.DTOs
         /// P - Percentage; A - Amount;
         /// </summary>
         [Required]
-        [RegularExpression(@"[PA]", ErrorMessage = "{0} must be one of the following (P - Percentage; A - Amount;)")]
+        [RegularExpression(
+            @"[PA]",
+            ErrorMessage = "{0} must be one of the following (P - Percentage; A - Amount;)"
+        )]
         public char RateType { get; set; }
     }
 
     public partial class ComponentRateResponseDTO : ComponentRateEntryDTO
     {
         public long Id { get; set; }
-        public string ComponentName { get { return Breakup?.Id + "-" + Breakup?.ComponentName; } }
-        public string ComponentRate { get { return RateType == BreakupRateType.Amount ? "₹" + RateAmount : "" + RateAmount + "%"; } }
-        public string ComponentType { get { return Breakup?.ComponentType == BreakupComponentType.Payment ? "Payment" : "Deduction"; } }
-        public string WithEffectFrom { get { return EffectiveFromDate.ToString("dd-MM-yyyy"); } }
+        public string ComponentName
+        {
+            get { return Breakup?.Id + "-" + Breakup?.ComponentName; }
+        }
+        public string ComponentRate
+        {
+            get
+            {
+                return RateType == BreakupRateType.Amount
+                    ? "₹" + RateAmount
+                    : "" + RateAmount + "%";
+            }
+        }
+        public string ComponentType
+        {
+            get
+            {
+                return Breakup?.ComponentType == BreakupComponentType.Payment
+                    ? "Payment"
+                    : "Deduction";
+            }
+        }
+        public string WithEffectFrom
+        {
+            get { return EffectiveFromDate.ToString("dd-MM-yyyy"); }
+        }
         public PensionBreakupResponseDTO? Breakup { get; set; }
     }
 
@@ -676,25 +737,35 @@ namespace CTS_BE.DTOs
         public virtual int PpoId { get; set; }
 
         [Required]
-        [CurrentOrFutureDateUptoYears(1, ErrorMessage = "Date of bill should be within 1 years from today")]
+        [CurrentOrFutureDateUptoYears(
+            1,
+            ErrorMessage = "Date of bill should be within 1 years from today"
+        )]
         public virtual DateOnly ToDate { get; set; }
     }
 
     public partial class PensionerFirstBillResponseDTO : InitiateFirstPensionBillDTO
     {
         public long Id { get; set; }
+
         // public override int PpoId { get {return this.Pensioner.PpoId;} }
         public DateOnly FromDate { get; set; }
         public char BillType { get; set; } = 'F';
+
         // public required PensionerBankAcResponseDTO BankAccount { get; set; }
         // public long BankAccountId { get {return this.BankAccount.Id;} }
         // public PensionCategoryResponseDTO PensionCategory { get; set; } = null!;
         public ICollection<PpoPaymentListItemDTO>? PensionerPayments { get; set; }
         public List<PpoBillBreakupResponseDTO>? PpoBillBreakups { get; set; }
+
         // public List<PpoComponentRevisionResponseDTO>? PpoComponentRevisions { get; set; }
         public DateOnly BillGeneratedUptoDate { get; set; }
+
         // public long BillId { get; set; }
-        public override DateOnly ToDate { get { return this.BillGeneratedUptoDate; } }
+        public override DateOnly ToDate
+        {
+            get { return this.BillGeneratedUptoDate; }
+        }
         public DateOnly BillDate { get; set; }
         public string TreasuryVoucherNo { get; set; } = null!;
         public long TreasuryVoucherId { get; set; }
@@ -708,9 +779,20 @@ namespace CTS_BE.DTOs
 
     public partial class InitiateFirstPensionBillResponseDTO : PensionerFirstBillResponseDTO
     {
-        public long PensionerId { get { return this.Pensioner?.Id ?? 0; } }
+        public long PensionerId
+        {
+            get { return this.Pensioner?.Id ?? 0; }
+        }
         public PensionerResponseDTO? Pensioner { get; set; } = null!;
-        public string BankBranchName { get { return this.Pensioner?.Branch?.Bank?.BankName + " - " + this.Pensioner?.Branch?.BranchName; } }
+        public string BankBranchName
+        {
+            get
+            {
+                return this.Pensioner?.Branch?.Bank?.BankName
+                    + " - "
+                    + this.Pensioner?.Branch?.BranchName;
+            }
+        }
     }
 
     public partial class PpoPaymentListItemDTO : BaseDTO
@@ -741,7 +823,6 @@ namespace CTS_BE.DTOs
 
     public partial class PpoComponentRevisionEntryDTO : BaseDTO
     {
-
         [Required]
         public long RateId { get; set; }
 
@@ -774,7 +855,6 @@ namespace CTS_BE.DTOs
 
     public partial class PpoComponentRevisionUpdateDTO : BaseDTO
     {
-
         /// <summary>
         /// From date is the Date of Commencement of pension of the pensioner
         /// </summary>
@@ -803,9 +883,11 @@ namespace CTS_BE.DTOs
 
         [Required]
         [DataType(DataType.Date)]
-        [CurrentOrFutureDateUptoYears(1, ErrorMessage = "To date of bill should be current or future date upto 1 year from today")]
+        [CurrentOrFutureDateUptoYears(
+            1,
+            ErrorMessage = "To date of bill should be current or future date upto 1 year from today"
+        )]
         public DateOnly ToDate { get; set; }
-
     }
 
     public partial class PpoBillResponseDTO : BaseDTO
@@ -840,11 +922,15 @@ namespace CTS_BE.DTOs
         // public long BillId { get; set; }
         [Required]
         public int PpoId { get; set; }
+
         // public long RateId { get; set; }
 
         [Required]
         [DataType(DataType.Date)]
-        [PastDateWithinYears(100, ErrorMessage = "Date of bill should be within 100 years from today")]
+        [PastDateWithinYears(
+            100,
+            ErrorMessage = "Date of bill should be within 100 years from today"
+        )]
         public DateOnly FromDate { get; set; }
 
         [Required]
@@ -853,15 +939,25 @@ namespace CTS_BE.DTOs
 
         [Required]
         public int BreakupAmount { get; set; }
-        public int DueAmount { get { return this.BreakupAmount; } set { this.BreakupAmount = value; } }
+        public int DueAmount
+        {
+            get { return this.BreakupAmount; }
+            set { this.BreakupAmount = value; }
+        }
         public int DrawnAmount { get; set; } = 0;
-        public int NetAmount { get { return this.BreakupAmount - this.DrawnAmount; } }
+        public int NetAmount
+        {
+            get { return this.BreakupAmount - this.DrawnAmount; }
+        }
     }
 
     public partial class PpoBillBreakupResponseDTO : PpoBillBreakupEntryDTO
     {
         public long Id { get; set; }
-        public long RevisionId { get { return this.Revision?.Id ?? 0; } }
+        public long RevisionId
+        {
+            get { return this.Revision?.Id ?? 0; }
+        }
         public PpoComponentRevisionResponseDTO Revision { get; set; } = null!;
         public string ComponentName { get; set; } = null!;
         public char ComponentType { get; set; }
@@ -877,7 +973,10 @@ namespace CTS_BE.DTOs
     public partial class PpoListResponseDTO : BaseDTO
     {
         public List<PensionerListItemDTO> PpoList { get; set; } = null!;
-        public int PpoCount { get { return this.PpoList?.Count ?? 0; } }
+        public int PpoCount
+        {
+            get { return this.PpoList?.Count ?? 0; }
+        }
     }
 
     public partial class PpoBillListResponseDTO : BaseDTO
@@ -916,7 +1015,10 @@ namespace CTS_BE.DTOs
         public DateOnly FromDate { get; set; }
         public DateOnly ToDate { get; set; }
         public List<PpoBillResponseDTO> PpoBills { get; set; } = null!;
-        public long PpoBillCount { get { return this.PpoBills?.Count ?? 0; } }
+        public long PpoBillCount
+        {
+            get { return this.PpoBills?.Count ?? 0; }
+        }
         public int GrossAmount { get; set; }
         public int ByTransferAmount { get; set; }
         public int NetAmount { get; set; }
@@ -927,7 +1029,10 @@ namespace CTS_BE.DTOs
     public partial class BillListResponseDTO : BaseDTO
     {
         public List<BillResponseDTO> Bills { get; set; } = null!;
-        public long BillCount { get { return this.Bills?.Count ?? 0; } }
+        public long BillCount
+        {
+            get { return this.Bills?.Count ?? 0; }
+        }
         public string PreparedBy { get; set; } = null!;
         public DateOnly PreparedOn { get; set; }
     }
@@ -942,7 +1047,10 @@ namespace CTS_BE.DTOs
 
     public partial class RegularBillListResponseDTO : BaseDTO
     {
-        public long RegularBillCount { get { return this.RegularBills?.Count ?? 0; } }
+        public long RegularBillCount
+        {
+            get { return this.RegularBills?.Count ?? 0; }
+        }
         public List<RegularBillResponseDTO>? RegularBills { get; set; }
     }
 
@@ -964,12 +1072,21 @@ namespace CTS_BE.DTOs
         public DateOnly TreasuryVoucherDate { get; set; }
         public int GrossAmount { get; set; }
         public int NetAmount { get; set; }
-        public int AccountHeadwiseAmount { get { return NetAmount; } }
-        public int PayAmount { get { return NetAmount; } }
+        public int AccountHeadwiseAmount
+        {
+            get { return NetAmount; }
+        }
+        public int PayAmount
+        {
+            get { return NetAmount; }
+        }
         public string AmountInWords { get; set; } = null!;
         public int ByTransferAmount { get; set; }
         public BranchResponseDTO? Branch { get; set; }
-        public long PpoBillCount { get { return this.PpoBills?.Count ?? 0; } }
+        public long PpoBillCount
+        {
+            get { return this.PpoBills?.Count ?? 0; }
+        }
         public List<PpoRegularBillDetailsDTO> PpoBills { get; set; } = null!;
         public string PreparedBy { get; set; } = null!;
         public DateOnly PreparedOn { get; set; }
@@ -1015,7 +1132,10 @@ namespace CTS_BE.DTOs
     {
         public List<TableHeader> Headers { get; set; } = null!;
         public List<T> Data { get; set; } = null!;
-        public int DataCount { get { return this.Data.Count; } }
+        public int DataCount
+        {
+            get { return this.Data.Count; }
+        }
     }
 
     public partial class TableHeader : BaseDTO
@@ -1071,7 +1191,6 @@ namespace CTS_BE.DTOs
         public int? QualifyingServiceNetYears { get; set; }
         public int? QualifyingServiceNetMonths { get; set; }
         public int? QualifyingServiceNetDays { get; set; }
-
     }
 
     public partial class PpoSanctionDetailsResponseDTO : PpoSanctionDetailsEntryDTO
@@ -1092,7 +1211,10 @@ namespace CTS_BE.DTOs
         public string NomineeName { get; set; } = null!;
 
         [Required]
-        [RegularExpression(@"[FMHWSDBTEIACO]", ErrorMessage = "{0} must be one of the following (F - Father; M - Mother; H - Husband; W - Wife; S - Son; D - Daughter; B - Brother; T - Sister; E - Self; I - Brother(Minor); A - Sister(Unmarried); C - Sister(Widowed); O - Other;)")]
+        [RegularExpression(
+            @"[FMHWSDBTEIACO]",
+            ErrorMessage = "{0} must be one of the following (F - Father; M - Mother; H - Husband; W - Wife; S - Son; D - Daughter; B - Brother; T - Sister; E - Self; I - Brother(Minor); A - Sister(Unmarried); C - Sister(Widowed); O - Other;)"
+        )]
         public char Relation { get; set; }
 
         [Required]
@@ -1100,14 +1222,23 @@ namespace CTS_BE.DTOs
         public DateOnly? DateOfDeath { get; set; }
 
         [Required]
-        [RegularExpression(@"[056]", ErrorMessage = "{0} must be one of the following (0 - Family; 5 - LTA; 6 - Death Gratuity;)")]
+        [RegularExpression(
+            @"[056]",
+            ErrorMessage = "{0} must be one of the following (0 - Family; 5 - LTA; 6 - Death Gratuity;)"
+        )]
         public char? NomineeType { get; set; }
 
         [Required]
-        [RegularExpression(@"[AM]", ErrorMessage = "{0} must be one of the following (A - Adult; M - Minor;)")]
+        [RegularExpression(
+            @"[AM]",
+            ErrorMessage = "{0} must be one of the following (A - Adult; M - Minor;)"
+        )]
         public char? NomineeAdultMinor { get; set; }
 
-        [RegularExpression(@"[12345]", ErrorMessage = "{0} must be one of the following (1 - First; 2 - Second; 3 - Third; 4 - Fourth; 5 - Fifth;)")]
+        [RegularExpression(
+            @"[12345]",
+            ErrorMessage = "{0} must be one of the following (1 - First; 2 - Second; 3 - Third; 4 - Fourth; 5 - Fifth;)"
+        )]
         public int? NomineePriority { get; set; }
         public int? NomineeShare { get; set; }
         public bool? FamilyPension { get; set; }
@@ -1129,7 +1260,10 @@ namespace CTS_BE.DTOs
 
     public partial class NomineeListResponseDTO : BaseDTO
     {
-        public int NomineeCount { get { return Nominees?.Count ?? 0; } }
+        public int NomineeCount
+        {
+            get { return Nominees?.Count ?? 0; }
+        }
         public List<NomineeResponseDTO>? Nominees { get; set; }
     }
 
@@ -1164,8 +1298,10 @@ namespace CTS_BE.DTOs
 
     public partial class LifeCertificateListResponseDTO : BaseDTO
     {
-        public int LifeCertificateCount { get { return LifeCertificates?.Count ?? 0; } }
+        public int LifeCertificateCount
+        {
+            get { return LifeCertificates?.Count ?? 0; }
+        }
         public List<LifeCertificateDetailsResponseDTO>? LifeCertificates { get; set; }
     }
-
 }

@@ -4,7 +4,6 @@ namespace CTS_BE.Adapters
 {
     public class MockMqAdapter : MqAdapter
     {
-
         public override string Despatch(string queueName, string message)
         {
             Console.WriteLine($"Dispatching {message} to {queueName} queue via MockMqAdapter");
@@ -26,7 +25,8 @@ namespace CTS_BE.Adapters
         public override string SetupConsumer(
             string queueName,
             EventHandler<MqDeliverEventArgs> messageReceiveHandler,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken
+        )
         {
             Console.WriteLine($"Listening to {queueName} via MockMqAdapter");
             return $"Listening to {queueName} via MockMqAdapter";

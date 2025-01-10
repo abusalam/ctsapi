@@ -13,7 +13,7 @@ namespace CTS_BE.Factories.Pension
             { 2, new long[] { 113, 114 } }, // Bank ID 2 has branches 113 to 114
             { 3, new long[] { 115, 116 } }, // Bank ID 3 has branches 115 to 116
             { 4, Enumerable.Range(117, 35).Select(i => (long)i).ToArray() }, // Bank ID 4 has branches 117 to 151
-            { 5, Enumerable.Range(152, 19).Select(i => (long)i).ToArray() }  // Bank ID 5 has branches 152 to 170
+            { 5, Enumerable.Range(152, 19).Select(i => (long)i).ToArray() }, // Bank ID 5 has branches 152 to 170
         };
 
         public PensionerFactory()
@@ -23,9 +23,18 @@ namespace CTS_BE.Factories.Pension
                 .RuleFor(d => d.Gender, f => f.PickRandom('F', 'M'))
                 .RuleFor(
                     d => d.PensionerName,
-                    (f, d) => f.Name.FullName(d.Gender == 'M' ? Bogus.DataSets.Name.Gender.Male : Bogus.DataSets.Name.Gender.Female))
+                    (f, d) =>
+                        f.Name.FullName(
+                            d.Gender == 'M'
+                                ? Bogus.DataSets.Name.Gender.Male
+                                : Bogus.DataSets.Name.Gender.Female
+                        )
+                )
                 .RuleFor(d => d.PpoType, f => f.PickRandom('P', 'F', 'C'))
-                .RuleFor(d => d.PpoSubType, f => f.PickRandom('E', 'L', 'U', 'V', 'N', 'R', 'P', 'G', 'J', 'K', 'H', 'W'))
+                .RuleFor(
+                    d => d.PpoSubType,
+                    f => f.PickRandom('E', 'L', 'U', 'V', 'N', 'R', 'P', 'G', 'J', 'K', 'H', 'W')
+                )
                 .RuleFor(d => d.CategoryId, f => f.PickRandom(30, 48))
                 .RuleFor(d => d.PayMode, f => f.PickRandom('Q', 'B'))
                 .RuleFor(d => d.BankAcNo, f => f.Random.Replace("################"))
@@ -57,35 +66,21 @@ namespace CTS_BE.Factories.Pension
                 .RuleFor(d => d.PensionerAddress, f => f.Address.FullAddress())
                 .RuleFor(d => d.Religion, f => f.PickRandom('H', 'M', 'O'))
                 .RuleFor(d => d.Remarks, f => f.Random.Words(5))
-                .RuleFor(
-                    d => d.AccountHolderName,
-                    (f, d) => d.PensionerName
-                )
-                .RuleFor(
-                    d => d.EnhancePensionAmount,
-                    (f, d) => d.BasicPensionAmount
-                )
+                .RuleFor(d => d.AccountHolderName, (f, d) => d.PensionerName)
+                .RuleFor(d => d.EnhancePensionAmount, (f, d) => d.BasicPensionAmount)
                 .RuleFor(
                     d => d.DateOfBirth,
-                    f => DateOnly.FromDateTime(
-                        DateTime.Now.AddDays((f.Random.Number(1, 300)))
-                        .AddYears(-61)
-                    )
+                    f =>
+                        DateOnly.FromDateTime(
+                            DateTime.Now.AddDays((f.Random.Number(1, 300))).AddYears(-61)
+                        )
                 )
                 .RuleFor(
                     d => d.DateOfRetirement,
-                    (f, d) => PensionCalculator.CalculatePeriodEndDate(
-                        d.DateOfBirth.AddYears(60)
-                    )
+                    (f, d) => PensionCalculator.CalculatePeriodEndDate(d.DateOfBirth.AddYears(60))
                 )
-                .RuleFor(
-                    d => d.DateOfCommencement,
-                    (f, d) => d.DateOfRetirement.AddDays(1)
-                )
-                .RuleFor(
-                    d => d.CommutedFromDate,
-                    (f, d) => d.DateOfCommencement
-                )
+                .RuleFor(d => d.DateOfCommencement, (f, d) => d.DateOfRetirement.AddDays(1))
+                .RuleFor(d => d.CommutedFromDate, (f, d) => d.DateOfCommencement)
                 .RuleFor(
                     d => d.ReducedPensionAmount,
                     (f, d) => (d.BasicPensionAmount - d.CommutedPensionAmount ?? 0)

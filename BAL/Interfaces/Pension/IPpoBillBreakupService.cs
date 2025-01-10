@@ -5,8 +5,5 @@ using System.Threading.Tasks;
 
 namespace CTS_BE.BAL.Interfaces.Pension
 {
-    public interface IPpoBillBreakupService : IBaseService
-    {
-        
-    }
+    public interface IPpoBillBreakupService : IBaseService { }
 }

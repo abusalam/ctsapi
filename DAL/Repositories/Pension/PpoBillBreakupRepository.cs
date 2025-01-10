@@ -7,12 +7,11 @@ using CTS_BE.DAL.Interfaces.Pension;
 
 namespace CTS_BE.DAL.Repositories.Pension
 {
-    public class PpoBillBreakupRepository : 
-        Repository<PpoBillBreakup, PensionDbContext>,
-        IPpoBillBreakupRepository
+    public class PpoBillBreakupRepository
+        : Repository<PpoBillBreakup, PensionDbContext>,
+            IPpoBillBreakupRepository
     {
-        public PpoBillBreakupRepository(PensionDbContext context) : base(context)
-        {
-        }
+        public PpoBillBreakupRepository(PensionDbContext context)
+            : base(context) { }
     }
 }

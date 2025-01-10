@@ -19,18 +19,21 @@ namespace CTS_BE.BAL.Services.Pension
         private readonly IComponentRateRepository _componentRateRepository;
         private readonly IPpoComponentRevisionRepository _ppoComponentRevisionRepository;
         private readonly IBreakupRepository _breakupRepository;
+
         // private readonly IPensionBillRepository _pensionBillRepository;
         private readonly IMapper _mapper;
+
         public PensionBillService(
-                IPensionerDetailsRepository pensionerDetailsRepository,
-                ICategoryRepository categoryRepository,
-                IComponentRateRepository componentRateRepository,
-                IPpoComponentRevisionRepository ppoComponentRevisionRepository,
-                IBreakupRepository breakupRepository,
-                // IPensionBillRepository pensionBillRepository,
-                IClaimService claimService,
-                IMapper mapper
-            ) : base(claimService)
+            IPensionerDetailsRepository pensionerDetailsRepository,
+            ICategoryRepository categoryRepository,
+            IComponentRateRepository componentRateRepository,
+            IPpoComponentRevisionRepository ppoComponentRevisionRepository,
+            IBreakupRepository breakupRepository,
+            // IPensionBillRepository pensionBillRepository,
+            IClaimService claimService,
+            IMapper mapper
+        )
+            : base(claimService)
         {
             _pensionerDetailsRepository = pensionerDetailsRepository;
             _categoryRepository = categoryRepository;
@@ -46,65 +49,64 @@ namespace CTS_BE.BAL.Services.Pension
             char billType,
             short financialYear,
             string treasuryCode
-        ) where T : PensionerFirstBillResponseDTO
+        )
+            where T : PensionerFirstBillResponseDTO
         {
-            PensionDbContext pensionDbContext = (PensionDbContext)_pensionerDetailsRepository.GetDbContext();
-            Pensioner pensioner = await _pensionerDetailsRepository.GetSingleAysnc(
-                    entity => entity.ActiveFlag
-                    && entity.PpoId == initiateFirstPensionBillDTO.PpoId
-                    && entity.TreasuryCode == treasuryCode
-                );
+            PensionDbContext pensionDbContext = (PensionDbContext)
+                _pensionerDetailsRepository.GetDbContext();
+            Pensioner pensioner = await _pensionerDetailsRepository.GetSingleAysnc(entity =>
+                entity.ActiveFlag
+                && entity.PpoId == initiateFirstPensionBillDTO.PpoId
+                && entity.TreasuryCode == treasuryCode
+            );
 
             if (pensioner == null)
             {
                 InitiateFirstPensionBillResponseDTO errResponse = new();
-                errResponse.FillDataSource(
-                    pensioner,
-                    "Pensioner not found!"
-                );
+                errResponse.FillDataSource(pensioner, "Pensioner not found!");
                 return _mapper.Map<T>(errResponse);
             }
 
-            pensionDbContext.Entry(pensioner)
-                .Reference(entity => entity.Branch)
-                .Load();
-            pensionDbContext.Entry(pensioner.Branch)
-                .Reference(entity => entity.Bank)
-                .Load();
-            pensionDbContext.Entry(pensioner)
-                .Reference(entity => entity.Category)
-                .Load();
-            pensionDbContext.Entry(pensioner.Category)
+            pensionDbContext.Entry(pensioner).Reference(entity => entity.Branch).Load();
+            pensionDbContext.Entry(pensioner.Branch).Reference(entity => entity.Bank).Load();
+            pensionDbContext.Entry(pensioner).Reference(entity => entity.Category).Load();
+            pensionDbContext
+                .Entry(pensioner.Category)
                 .Reference(entity => entity.PrimaryCategory)
                 .Load();
 
-            pensionDbContext.Entry(pensioner.Category.PrimaryCategory)
+            pensionDbContext
+                .Entry(pensioner.Category.PrimaryCategory)
                 .Reference(entity => entity.AccountHead)
                 .Load();
 
-            pensionDbContext.Entry(pensioner.Category)
+            pensionDbContext
+                .Entry(pensioner.Category)
                 .Reference(entity => entity.SubCategory)
                 .Load();
-            pensionDbContext.Entry(pensioner)
-                .Reference(entity => entity.Receipt)
-                .Load();
-            pensionDbContext.Entry(pensioner.Category)
+            pensionDbContext.Entry(pensioner).Reference(entity => entity.Receipt).Load();
+            pensionDbContext
+                .Entry(pensioner.Category)
                 .Collection(entity => entity.ComponentRates)
-                .Query().Where(entity => entity.ActiveFlag)
+                .Query()
+                .Where(entity => entity.ActiveFlag)
                 .Load();
 
             foreach (ComponentRate componentRate in pensioner.Category.ComponentRates)
             {
-                pensionDbContext.Entry(componentRate)
-                .Reference(entity => entity.Breakup)
-                .Load();
+                pensionDbContext.Entry(componentRate).Reference(entity => entity.Breakup).Load();
             }
 
             List<PpoPaymentListItemDTO>? ppoPayments = PensionCalculator.CalculatePpoPayments(
                 pensioner.Category.ComponentRates,
-                billType == BillType.FirstBill ? pensioner.DateOfCommencement :
-                PensionCalculator.CalculatePeriodStartDate(initiateFirstPensionBillDTO.ToDate),
-                PensionCalculator.CalculatePeriodEndDate(initiateFirstPensionBillDTO.ToDate).AddDays(1),
+                billType == BillType.FirstBill
+                    ? pensioner.DateOfCommencement
+                    : PensionCalculator.CalculatePeriodStartDate(
+                        initiateFirstPensionBillDTO.ToDate
+                    ),
+                PensionCalculator
+                    .CalculatePeriodEndDate(initiateFirstPensionBillDTO.ToDate)
+                    .AddDays(1),
                 pensioner.BasicPensionAmount,
                 pensioner.CommutedPensionAmount
             );
@@ -112,25 +114,27 @@ namespace CTS_BE.BAL.Services.Pension
             List<PpoBillBreakupResponseDTO> ppoBillBreakups = new();
             foreach (PpoPaymentListItemDTO ppoPayment in ppoPayments)
             {
-                ppoBillBreakups.Add(new PpoBillBreakupResponseDTO()
-                {
-                    PpoId = pensioner.PpoId,
-                    DrawnAmount = ppoPayment.DrawnAmount,
-                    DueAmount = ppoPayment.DueAmount,
-                    ComponentName = ppoPayment.ComponentName,
-                    ComponentType = ppoPayment.ComponentType,
-                    AmountPerMonth = ppoPayment.AmountPerMonth,
-                    BaseAmount = ppoPayment.BaseAmount,
-                    BreakupAmount = ppoPayment.AmountPerMonth * ppoPayment.PeriodInMonths,
-                    FromDate = ppoPayment.FromDate,
-                    ToDate = ppoPayment.ToDate,
-                    Revision = new PpoComponentRevisionResponseDTO()
+                ppoBillBreakups.Add(
+                    new PpoBillBreakupResponseDTO()
                     {
+                        PpoId = pensioner.PpoId,
+                        DrawnAmount = ppoPayment.DrawnAmount,
+                        DueAmount = ppoPayment.DueAmount,
+                        ComponentName = ppoPayment.ComponentName,
+                        ComponentType = ppoPayment.ComponentType,
                         AmountPerMonth = ppoPayment.AmountPerMonth,
+                        BaseAmount = ppoPayment.BaseAmount,
+                        BreakupAmount = ppoPayment.AmountPerMonth * ppoPayment.PeriodInMonths,
                         FromDate = ppoPayment.FromDate,
-                        RateId = ppoPayment.RateId
+                        ToDate = ppoPayment.ToDate,
+                        Revision = new PpoComponentRevisionResponseDTO()
+                        {
+                            AmountPerMonth = ppoPayment.AmountPerMonth,
+                            FromDate = ppoPayment.FromDate,
+                            RateId = ppoPayment.RateId,
+                        },
                     }
-                });
+                );
             }
 
             InitiateFirstPensionBillResponseDTO response = new()
@@ -153,14 +157,22 @@ namespace CTS_BE.BAL.Services.Pension
 
                 response.Pensioner = pensionerResponse;
                 response.PensionerPayments = ppoPayments;
-                response.GrossAmount = response.PensionerPayments.ToList().Sum(entity => entity.DueAmount);
-                response.NetAmount = response.PensionerPayments.ToList().Sum(entity => entity.NetAmount);
+                response.GrossAmount = response
+                    .PensionerPayments.ToList()
+                    .Sum(entity => entity.DueAmount);
+                response.NetAmount = response
+                    .PensionerPayments.ToList()
+                    .Sum(entity => entity.NetAmount);
             }
             else
             {
                 response.PpoBillBreakups = ppoBillBreakups;
-                response.GrossAmount = response.PpoBillBreakups.ToList().Sum(entity => entity.DueAmount);
-                response.NetAmount = response.PpoBillBreakups.ToList().Sum(entity => entity.NetAmount);
+                response.GrossAmount = response
+                    .PpoBillBreakups.ToList()
+                    .Sum(entity => entity.DueAmount);
+                response.NetAmount = response
+                    .PpoBillBreakups.ToList()
+                    .Sum(entity => entity.NetAmount);
             }
 
             return _mapper.Map<T>(response);
@@ -171,87 +183,86 @@ namespace CTS_BE.BAL.Services.Pension
             char billType,
             short financialYear,
             string treasuryCode
-        ) where T : PensionerFirstBillResponseDTO
+        )
+            where T : PensionerFirstBillResponseDTO
         {
-
-            PensionDbContext pensionDbContext = (PensionDbContext)_pensionerDetailsRepository.GetDbContext();
-            Pensioner pensioner = await _pensionerDetailsRepository.GetSingleAysnc(
-                    entity => entity.ActiveFlag
-                    && entity.PpoId == initiateFirstPensionBillDTO.PpoId
-                    && entity.TreasuryCode == treasuryCode
-                );
+            PensionDbContext pensionDbContext = (PensionDbContext)
+                _pensionerDetailsRepository.GetDbContext();
+            Pensioner pensioner = await _pensionerDetailsRepository.GetSingleAysnc(entity =>
+                entity.ActiveFlag
+                && entity.PpoId == initiateFirstPensionBillDTO.PpoId
+                && entity.TreasuryCode == treasuryCode
+            );
 
             if (pensioner == null)
             {
                 InitiateFirstPensionBillResponseDTO errResponse = new();
-                errResponse.FillDataSource(
-                    pensioner,
-                    "Pensioner not found!"
-                );
+                errResponse.FillDataSource(pensioner, "Pensioner not found!");
                 return _mapper.Map<T>(errResponse);
             }
 
-            pensionDbContext.Entry(pensioner)
-                .Reference(entity => entity.Branch)
-                .Load();
-            pensionDbContext.Entry(pensioner.Branch)
-                .Reference(entity => entity.Bank)
-                .Load();
-            pensionDbContext.Entry(pensioner)
-                .Reference(entity => entity.Category)
-                .Load();
-            pensionDbContext.Entry(pensioner.Category)
+            pensionDbContext.Entry(pensioner).Reference(entity => entity.Branch).Load();
+            pensionDbContext.Entry(pensioner.Branch).Reference(entity => entity.Bank).Load();
+            pensionDbContext.Entry(pensioner).Reference(entity => entity.Category).Load();
+            pensionDbContext
+                .Entry(pensioner.Category)
                 .Reference(entity => entity.PrimaryCategory)
                 .Load();
-            pensionDbContext.Entry(pensioner.Category)
+            pensionDbContext
+                .Entry(pensioner.Category)
                 .Reference(entity => entity.SubCategory)
                 .Load();
-            pensionDbContext.Entry(pensioner)
-                .Reference(entity => entity.Receipt)
-                .Load();
-            pensionDbContext.Entry(pensioner.Category)
+            pensionDbContext.Entry(pensioner).Reference(entity => entity.Receipt).Load();
+            pensionDbContext
+                .Entry(pensioner.Category)
                 .Collection(entity => entity.ComponentRates)
-                .Query().Where(entity => entity.ActiveFlag)
+                .Query()
+                .Where(entity => entity.ActiveFlag)
                 .Load();
 
             foreach (ComponentRate componentRate in pensioner.Category.ComponentRates)
             {
-                pensionDbContext.Entry(componentRate)
-                .Reference(entity => entity.Breakup)
-                .Load();
+                pensionDbContext.Entry(componentRate).Reference(entity => entity.Breakup).Load();
             }
             List<PpoPaymentListItemDTO>? ppoPayments = PensionCalculator.CalculatePpoPayments(
-                        pensioner.Category.ComponentRates,
-                        billType == BillType.FirstBill ? pensioner.DateOfCommencement :
-                        PensionCalculator.CalculatePeriodStartDate(initiateFirstPensionBillDTO.ToDate),
-                        // billType == BillType.FirstBill ? initiateFirstPensionBillDTO.ToDate :
-                        PensionCalculator.CalculatePeriodEndDate(initiateFirstPensionBillDTO.ToDate).AddDays(1),
-                        pensioner.BasicPensionAmount,
-                        pensioner.CommutedPensionAmount
-                    );
+                pensioner.Category.ComponentRates,
+                billType == BillType.FirstBill
+                    ? pensioner.DateOfCommencement
+                    : PensionCalculator.CalculatePeriodStartDate(
+                        initiateFirstPensionBillDTO.ToDate
+                    ),
+                // billType == BillType.FirstBill ? initiateFirstPensionBillDTO.ToDate :
+                PensionCalculator
+                    .CalculatePeriodEndDate(initiateFirstPensionBillDTO.ToDate)
+                    .AddDays(1),
+                pensioner.BasicPensionAmount,
+                pensioner.CommutedPensionAmount
+            );
             List<PpoBillBreakupResponseDTO> ppoBillBreakups = new();
 
             foreach (PpoPaymentListItemDTO ppoPayment in ppoPayments)
             {
-                ppoBillBreakups.Add(new PpoBillBreakupResponseDTO()
-                {
-                    PpoId = pensioner.PpoId,
-                    DrawnAmount = ppoPayment.DrawnAmount,
-                    DueAmount = ppoPayment.DueAmount,
-                    ComponentName = ppoPayment.ComponentName,
-                    ComponentType = ppoPayment.ComponentType,
-                    AmountPerMonth = ppoPayment.AmountPerMonth,
-                    BaseAmount = ppoPayment.BaseAmount,
-                    BreakupAmount = ppoPayment.AmountPerMonth * ppoPayment.PeriodInMonths,
-                    FromDate = ppoPayment.FromDate,
-                    ToDate = ppoPayment.ToDate,
-                    Revision = new PpoComponentRevisionResponseDTO()
+                ppoBillBreakups.Add(
+                    new PpoBillBreakupResponseDTO()
                     {
+                        PpoId = pensioner.PpoId,
+                        DrawnAmount = ppoPayment.DrawnAmount,
+                        DueAmount = ppoPayment.DueAmount,
+                        ComponentName = ppoPayment.ComponentName,
+                        ComponentType = ppoPayment.ComponentType,
                         AmountPerMonth = ppoPayment.AmountPerMonth,
+                        BaseAmount = ppoPayment.BaseAmount,
+                        BreakupAmount = ppoPayment.AmountPerMonth * ppoPayment.PeriodInMonths,
                         FromDate = ppoPayment.FromDate,
-                        RateId = ppoPayment.RateId
+                        ToDate = ppoPayment.ToDate,
+                        Revision = new PpoComponentRevisionResponseDTO()
+                        {
+                            AmountPerMonth = ppoPayment.AmountPerMonth,
+                            FromDate = ppoPayment.FromDate,
+                            RateId = ppoPayment.RateId,
+                        },
                     }
-                });
+                );
             }
             InitiateFirstPensionBillResponseDTO response = new()
             {
@@ -271,17 +282,24 @@ namespace CTS_BE.BAL.Services.Pension
             {
                 response.Pensioner = _mapper.Map<PensionerResponseDTO>(pensioner);
                 response.PensionerPayments = ppoPayments;
-                response.GrossAmount = response.PensionerPayments.ToList().Sum(entity => entity.DueAmount);
-                response.NetAmount = response.PensionerPayments.ToList().Sum(entity => entity.NetAmount);
+                response.GrossAmount = response
+                    .PensionerPayments.ToList()
+                    .Sum(entity => entity.DueAmount);
+                response.NetAmount = response
+                    .PensionerPayments.ToList()
+                    .Sum(entity => entity.NetAmount);
             }
             else
             {
                 response.PpoBillBreakups = ppoBillBreakups;
-                response.GrossAmount = response.PpoBillBreakups.ToList().Sum(entity => entity.DueAmount);
-                response.NetAmount = response.PpoBillBreakups.ToList().Sum(entity => entity.NetAmount);
+                response.GrossAmount = response
+                    .PpoBillBreakups.ToList()
+                    .Sum(entity => entity.DueAmount);
+                response.NetAmount = response
+                    .PpoBillBreakups.ToList()
+                    .Sum(entity => entity.NetAmount);
             }
             return _mapper.Map<T>(response);
         }
-
     }
 }

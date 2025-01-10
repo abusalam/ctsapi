@@ -13,12 +13,13 @@ namespace CTS_BE.Controllers.Pension
     [Route("api/v1/ppo")]
     public class PpoSanctionDetailsController : ApiBaseController
     {
-
         private readonly IPpoSanctionDetailsService _ppoSanctionDetailsService;
+
         public PpoSanctionDetailsController(
             IPpoSanctionDetailsService ppoSanctionDetailsService,
             IClaimService claimService
-        ) : base(claimService)
+        )
+            : base(claimService)
         {
             _ppoSanctionDetailsService = ppoSanctionDetailsService;
         }
@@ -30,23 +31,27 @@ namespace CTS_BE.Controllers.Pension
             PpoSanctionDetailsEntryDTO ppoSanctionDetailsEntryDTO
         )
         {
-
-            JsonAPIResponse<PpoSanctionDetailsResponseDTO> response = new(){
+            JsonAPIResponse<PpoSanctionDetailsResponseDTO> response = new()
+            {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
-                Message = $"PPO Sanction Details saved sucessfully!"
+                Message = $"PPO Sanction Details saved sucessfully!",
             };
-            try {
-                response.Result = await _ppoSanctionDetailsService.CreateSanctionDetails<PpoSanctionDetailsResponseDTO>(
-                    ppoSanctionDetailsEntryDTO,
-                    GetCurrentFyYear(),
-                    GetTreasuryCode()
-                );
+            try
+            {
+                response.Result =
+                    await _ppoSanctionDetailsService.CreateSanctionDetails<PpoSanctionDetailsResponseDTO>(
+                        ppoSanctionDetailsEntryDTO,
+                        GetCurrentFyYear(),
+                        GetTreasuryCode()
+                    );
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 FillException(response, ex);
                 return response;
             }
-            finally {
+            finally
+            {
                 FillErrorMesageFromDataSource(response);
             }
 
@@ -61,24 +66,28 @@ namespace CTS_BE.Controllers.Pension
             PpoSanctionDetailsEntryDTO ppoSanctionDetailsEntryDTO
         )
         {
-
-            JsonAPIResponse<PpoSanctionDetailsResponseDTO> response = new(){
+            JsonAPIResponse<PpoSanctionDetailsResponseDTO> response = new()
+            {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
-                Message = $"PPO Sanction Details updated sucessfully!"
+                Message = $"PPO Sanction Details updated sucessfully!",
             };
-            try {
-                response.Result = await _ppoSanctionDetailsService.UpdateSanctionDetailsById<PpoSanctionDetailsResponseDTO>(
-                    sanctionDetailsId,
-                    ppoSanctionDetailsEntryDTO,
-                    GetCurrentFyYear(),
-                    GetTreasuryCode()
-                );
+            try
+            {
+                response.Result =
+                    await _ppoSanctionDetailsService.UpdateSanctionDetailsById<PpoSanctionDetailsResponseDTO>(
+                        sanctionDetailsId,
+                        ppoSanctionDetailsEntryDTO,
+                        GetCurrentFyYear(),
+                        GetTreasuryCode()
+                    );
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 FillException(response, ex);
                 return response;
             }
-            finally {
+            finally
+            {
                 FillErrorMesageFromDataSource(response);
             }
 
@@ -92,22 +101,26 @@ namespace CTS_BE.Controllers.Pension
             long sanctionDetailsId
         )
         {
-
-            JsonAPIResponse<PpoSanctionDetailsResponseDTO> response = new(){
+            JsonAPIResponse<PpoSanctionDetailsResponseDTO> response = new()
+            {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
-                Message = $"PPO Sanction Details received sucessfully!"
+                Message = $"PPO Sanction Details received sucessfully!",
             };
-            try {
-                response.Result = await _ppoSanctionDetailsService.GetSanctionDetailsById<PpoSanctionDetailsResponseDTO>(
-                    sanctionDetailsId,
-                    GetTreasuryCode()
-                );
+            try
+            {
+                response.Result =
+                    await _ppoSanctionDetailsService.GetSanctionDetailsById<PpoSanctionDetailsResponseDTO>(
+                        sanctionDetailsId,
+                        GetTreasuryCode()
+                    );
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 FillException(response, ex);
                 return response;
             }
-            finally {
+            finally
+            {
                 FillErrorMesageFromDataSource(response);
             }
 

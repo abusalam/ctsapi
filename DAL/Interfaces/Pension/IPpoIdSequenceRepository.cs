@@ -8,10 +8,6 @@ namespace CTS_BE.DAL.Interfaces.Pension
 {
     public interface IPpoIdSequenceRepository : IRepository<PpoIdSequence>
     {
-        public Task<int> GetNextPpoId(
-            short financialYear,
-            string treasuryCode
-        );
-        
+        public Task<int> GetNextPpoId(short financialYear, string treasuryCode);
     }
 }

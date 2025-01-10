@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.BAL.Services.Pension
 {
-    public class LifeCertificateService : BaseService,ILifeCertificateService
+    public class LifeCertificateService : BaseService, ILifeCertificateService
     {
         private readonly IMapper _mapper;
         private readonly IPensionerDetailsRepository _pensionerDetailsRepository;
@@ -22,7 +22,8 @@ namespace CTS_BE.BAL.Services.Pension
             IBankBranchRepository bankBranchRepository,
             ILifeCertificateRepository lifeCertificateRepository,
             IClaimService claimService
-        ) : base(claimService)
+        )
+            : base(claimService)
         {
             _mapper = mapper;
             _pensionerDetailsRepository = pensionerDetailsRepository;
@@ -30,18 +31,17 @@ namespace CTS_BE.BAL.Services.Pension
             _lifeCertificateRepository = lifeCertificateRepository;
         }
 
-        public async Task<T> GetLifeCertificateByPpoId<T>(
-            long ppoId,
-            string treasuryCode
-        )
+        public async Task<T> GetLifeCertificateByPpoId<T>(long ppoId, string treasuryCode)
         {
             T? response = _mapper.Map<T>(new LifeCertificate());
-            try {
-                LifeCertificate? lifeCertificateDetails = await _lifeCertificateRepository.GetLifeCertificateByPpoIdAsync(
-                    ppoId,
-                    treasuryCode,
-                    entity => _mapper.Map<LifeCertificate>(entity)
-                );
+            try
+            {
+                LifeCertificate? lifeCertificateDetails =
+                    await _lifeCertificateRepository.GetLifeCertificateByPpoIdAsync(
+                        ppoId,
+                        treasuryCode,
+                        entity => _mapper.Map<LifeCertificate>(entity)
+                    );
 
                 if (lifeCertificateDetails is null)
                 {
@@ -54,16 +54,17 @@ namespace CTS_BE.BAL.Services.Pension
 
                 response = _mapper.Map<T>(lifeCertificateDetails);
                 return response;
-
             }
-            catch (DbUpdateException ex) {
+            catch (DbUpdateException ex)
+            {
                 response.FillDataSource(
                     new LifeCertificate(),
                     $"DbException: {ex.InnerException?.Message ?? ex.Message}"
                 );
                 return response;
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 response.FillDataSource(
                     new LifeCertificate(),
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
@@ -95,36 +96,39 @@ namespace CTS_BE.BAL.Services.Pension
                 }
 
                 // Get pensioners with life certificates
-                pensioners = await _lifeCertificateRepository.GetPensionersWithLifeCertificatesByBranchId(
-                    branchId,
-                    financialYear,
-                    treasuryCode
-                );
+                pensioners =
+                    await _lifeCertificateRepository.GetPensionersWithLifeCertificatesByBranchId(
+                        branchId,
+                        financialYear,
+                        treasuryCode
+                    );
 
                 // Map pensioners to life certificate response DTOs
-                pensioners.ForEach(p => {
-                        LifeCertificate? lc = null;
-                        if (p.LifeCertificates.Count > 0)
+                pensioners.ForEach(p =>
+                {
+                    LifeCertificate? lc = null;
+                    if (p.LifeCertificates.Count > 0)
+                    {
+                        lc = p
+                            .LifeCertificates.Where(l =>
+                                l.TreasuryCode == treasuryCode && l.FinancialYear == financialYear
+                            )
+                            .First();
+                    }
+                    lifeCertificates.Add(
+                        new LifeCertificateDetailsResponseDTO
                         {
-                            lc = p.LifeCertificates.Where(
-                                l => l.TreasuryCode == treasuryCode
-                                && l.FinancialYear == financialYear
-                                ).First();
-                        }
-                        lifeCertificates.Add(new LifeCertificateDetailsResponseDTO
-                                {
-                                    PpoId = p.PpoId,
-                                    PensionerName = p.PensionerName,
-                                    PpoNo = p.PpoNo,
-                                    BankAcNo = p.BankAcNo,
-                                    MobileNumber = p.MobileNumber ?? "--",
-                                    Id = lc?.Id ?? 0,
-                                    DigitalMode = lc?.DigitalMode ?? false,
-                                    CertificateSubmitted = lc?.CertificateSubmitted ?? false,
-                                }
-                            );
+                            PpoId = p.PpoId,
+                            PensionerName = p.PensionerName,
+                            PpoNo = p.PpoNo,
+                            BankAcNo = p.BankAcNo,
+                            MobileNumber = p.MobileNumber ?? "--",
+                            Id = lc?.Id ?? 0,
+                            DigitalMode = lc?.DigitalMode ?? false,
+                            CertificateSubmitted = lc?.CertificateSubmitted ?? false,
                         }
                     );
+                });
                 response.LifeCertificates = lifeCertificates;
                 return response;
             }
@@ -144,16 +148,19 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
-            LifeCertificate lifeCertificateEntity = _mapper.Map<LifeCertificate>(lifeCertificateEntryDTO);
+            LifeCertificate lifeCertificateEntity = _mapper.Map<LifeCertificate>(
+                lifeCertificateEntryDTO
+            );
             T? response = _mapper.Map<T>(lifeCertificateEntity);
             try
             {
-                Pensioner? pensioner = await _pensionerDetailsRepository.GetPensionerDetailsByPpoIdAsync(
-                    lifeCertificateEntryDTO.PpoId,
-                    financialYear,
-                    treasuryCode,
-                    entity => _mapper.Map<Pensioner>(entity)
-                );
+                Pensioner? pensioner =
+                    await _pensionerDetailsRepository.GetPensionerDetailsByPpoIdAsync(
+                        lifeCertificateEntryDTO.PpoId,
+                        financialYear,
+                        treasuryCode,
+                        entity => _mapper.Map<Pensioner>(entity)
+                    );
 
                 if (pensioner is null)
                 {
@@ -164,11 +171,12 @@ namespace CTS_BE.BAL.Services.Pension
                     return response;
                 }
 
-                LifeCertificate? lc = await _lifeCertificateRepository.GetLifeCertificateByPpoIdAsync(
-                    lifeCertificateEntryDTO.PpoId,
-                    treasuryCode,
-                    entity => _mapper.Map<LifeCertificate>(entity)
-                );
+                LifeCertificate? lc =
+                    await _lifeCertificateRepository.GetLifeCertificateByPpoIdAsync(
+                        lifeCertificateEntryDTO.PpoId,
+                        treasuryCode,
+                        entity => _mapper.Map<LifeCertificate>(entity)
+                    );
 
                 if (lc is not null)
                 {
@@ -213,16 +221,16 @@ namespace CTS_BE.BAL.Services.Pension
         )
         {
             LifeCertificate? lifeCertificateEntity = new();
-            T? response =  _mapper.Map<T>(lifeCertificateEntity);
+            T? response = _mapper.Map<T>(lifeCertificateEntity);
 
             try
             {
-
-                lifeCertificateEntity = await _lifeCertificateRepository.GetLifeCertificateByPpoIdAsync(
-                    ppoId,
-                    treasuryCode,
-                    entity => _mapper.Map<LifeCertificate>(entity)
-                );
+                lifeCertificateEntity =
+                    await _lifeCertificateRepository.GetLifeCertificateByPpoIdAsync(
+                        ppoId,
+                        treasuryCode,
+                        entity => _mapper.Map<LifeCertificate>(entity)
+                    );
 
                 if (lifeCertificateEntity is null)
                 {
@@ -233,12 +241,13 @@ namespace CTS_BE.BAL.Services.Pension
                     return response;
                 }
 
-                Pensioner? pensioner = await _pensionerDetailsRepository.GetPensionerDetailsByPpoIdAsync(
-                    ppoId,
-                    financialYear,
-                    treasuryCode,
-                    entity => _mapper.Map<Pensioner>(entity)
-                );
+                Pensioner? pensioner =
+                    await _pensionerDetailsRepository.GetPensionerDetailsByPpoIdAsync(
+                        ppoId,
+                        financialYear,
+                        treasuryCode,
+                        entity => _mapper.Map<Pensioner>(entity)
+                    );
 
                 if (pensioner is null)
                 {
@@ -278,20 +287,19 @@ namespace CTS_BE.BAL.Services.Pension
             catch (DbUpdateException ex)
             {
                 response.FillDataSource(
-                        lifeCertificateEntity,
-                        $"DbException: {ex.InnerException?.Message ?? ex.Message}"
-                    );
+                    lifeCertificateEntity,
+                    $"DbException: {ex.InnerException?.Message ?? ex.Message}"
+                );
                 return response;
             }
             catch (Exception ex)
             {
                 response.FillDataSource(
-                        lifeCertificateEntity,
-                        $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
-                    );
+                    lifeCertificateEntity,
+                    $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
+                );
                 return response;
             }
         }
-
     }
 }

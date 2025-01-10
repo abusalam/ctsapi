@@ -5,10 +5,10 @@ namespace CTS_BE.BAL.Interfaces.Pension
     public interface IPpoReceiptService : IBaseService
     {
         public Task<ManualPpoReceiptResponseDTO> CreatePpoReceipt(
-                ManualPpoReceiptEntryDTO manualPpoReceiptDTO,
-                short financialYear,
-                string treasuryCode
-            );
+            ManualPpoReceiptEntryDTO manualPpoReceiptDTO,
+            short financialYear,
+            string treasuryCode
+        );
         public Task<ManualPpoReceiptResponseDTO> GetPpoReceipt(string treasuryReceiptNo);
         public Task<ManualPpoReceiptResponseDTO> GetPpoReceipt(long receiptId);
         public Task<IEnumerable<ListAllPpoReceiptsResponseDTO>> GetAllPpoReceipts(
@@ -16,14 +16,8 @@ namespace CTS_BE.BAL.Interfaces.Pension
             string treasuryCode,
             DynamicListQueryParameters dynamicListQueryParameters
         );
-        public Task<List<T>> GetPpoReceipts<T>(
-            short financialYear,
-            string treasuryCode
-        );
-        public Task<List<T>> GetAllUnusedPpoReceipts<T>(
-            short financialYear,
-            string treasuryCode
-        );
+        public Task<List<T>> GetPpoReceipts<T>(short financialYear, string treasuryCode);
+        public Task<List<T>> GetAllUnusedPpoReceipts<T>(short financialYear, string treasuryCode);
         public Task<ManualPpoReceiptResponseDTO> UpdatePpoReceipt(
             string treasuryReceiptNo,
             ManualPpoReceiptEntryDTO manualPpoReceiptDTO

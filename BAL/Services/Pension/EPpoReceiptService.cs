@@ -14,7 +14,7 @@ namespace CTS_BE.BAL.Services.Pension
         IEPpoReceiptRepository ePpoReceiptRepository,
         IMapper mapper,
         IClaimService claimService
-        ) : BaseService(claimService), IEPpoReceiptService
+    ) : BaseService(claimService), IEPpoReceiptService
     {
         private readonly IEPpoReceiptRepository _ePpoReceiptRepository = ePpoReceiptRepository;
         private readonly IMapper _mapper = mapper;
@@ -126,17 +126,15 @@ namespace CTS_BE.BAL.Services.Pension
             short financialYear
         )
         {
-            T? response = _mapper.Map<T>(new EppoReceipt()
-            {
-                PensionApplnNo = pensionApplnNo
-            });
+            T? response = _mapper.Map<T>(new EppoReceipt() { PensionApplnNo = pensionApplnNo });
             try
             {
-                EppoReceipt? eppoReceipt = await _ePpoReceiptRepository.GetEPpoReceiptByPensionApplnNo(
-                    pensionApplnNo,
-                    treasuryCode,
-                    financialYear
-                );
+                EppoReceipt? eppoReceipt =
+                    await _ePpoReceiptRepository.GetEPpoReceiptByPensionApplnNo(
+                        pensionApplnNo,
+                        treasuryCode,
+                        financialYear
+                    );
 
                 if (eppoReceipt is null)
                 {
@@ -183,12 +181,12 @@ namespace CTS_BE.BAL.Services.Pension
             EppoReceipt? eppoReceipt = new();
             try
             {
-
-                EppoReceipt? eppoEntity = await _ePpoReceiptRepository.GetEPpoReceiptByPensionApplnNo(
-                    pensionApplnNo,
-                    treasuryCode,
-                    financialYear
-                );
+                EppoReceipt? eppoEntity =
+                    await _ePpoReceiptRepository.GetEPpoReceiptByPensionApplnNo(
+                        pensionApplnNo,
+                        treasuryCode,
+                        financialYear
+                    );
 
                 if (eppoEntity is null)
                 {
@@ -209,18 +207,18 @@ namespace CTS_BE.BAL.Services.Pension
                     financialYear,
                     ePpoReceiptWithdrawlEntryDTO.WithdrawReason,
                     ePpoReceiptWithdrawlEntryDTO.FreshRevisionFlag,
-                    entity => _mapper.Map<T>(new EPpoReceiptWithdrawlResponseDTO
-                    {
-                        PensionApplnNo = pensionApplnNo
-                    })
+                    entity =>
+                        _mapper.Map<T>(
+                            new EPpoReceiptWithdrawlResponseDTO { PensionApplnNo = pensionApplnNo }
+                        )
                 );
             }
             catch (Exception ex)
             {
                 response.FillDataSource(
-                        eppoReceipt,
-                        $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
-                    );
+                    eppoReceipt,
+                    $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
+                );
                 return response;
             }
         }

@@ -7,8 +7,5 @@ using CTS_BE.PensionEnum;
 
 namespace CTS_BE.DAL.Interfaces.Pension
 {
-    public interface IPensionStatusRepository : IRepository<PpoStatusFlag>
-    {
-        
-    }
+    public interface IPensionStatusRepository : IRepository<PpoStatusFlag> { }
 }

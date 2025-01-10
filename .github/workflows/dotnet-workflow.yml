@@ -11,7 +11,7 @@ jobs:
       - name: Checkout IFMS-CTS repository for branch selection
         uses: actions/checkout@v4
         with:
-          repository: 'abusalam/IFMS-CTS'
+          repository: "abusalam/IFMS-CTS"
 
       - name: Select Branch of IFMS-CTS repository
         id: selected-branch
@@ -31,10 +31,15 @@ jobs:
       - name: Checkout DotNet repository
         uses: actions/checkout@v4
 
+      - name: Verify Code Formatting
+        run: |
+          dotnet tool restore
+          dotnet csharpier --check .
+
       - name: Setup dotnet
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.x'
+          dotnet-version: "8.x"
           # cache: true
       - name: Install dependencies & Build DotNet
         run: |
@@ -51,9 +56,9 @@ jobs:
       - name: Checkout IFMS-CTS repository
         uses: actions/checkout@v4
         with:
-          repository: 'abusalam/IFMS-CTS'
+          repository: "abusalam/IFMS-CTS"
           ref: ${{ needs.database.outputs.branch-name }}
-          submodules: 'recursive'
+          submodules: "recursive"
 
       - name: Start Backend Database Server
         run: |

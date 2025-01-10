@@ -8,9 +8,8 @@ namespace CTS_BE.Controllers.Pension
     [Route("api/v1")]
     public class PensionController : ApiBaseController
     {
-        public PensionController(
-                IClaimService claimService
-            ) : base(claimService) {}
+        public PensionController(IClaimService claimService)
+            : base(claimService) { }
 
         [HttpPost("echo")]
         [Tags("Pension")]
@@ -21,7 +20,7 @@ namespace CTS_BE.Controllers.Pension
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = "Echoing Request",
-                Result = req
+                Result = req,
             };
             return await Task.FromResult(response);
         }
@@ -35,7 +34,7 @@ namespace CTS_BE.Controllers.Pension
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = "Writing DateOnly",
-                Result = dateOnly
+                Result = dateOnly,
             };
             return await Task.FromResult(response);
         }
@@ -50,10 +49,9 @@ namespace CTS_BE.Controllers.Pension
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = "Reading DateOnly",
-                Result = dateOnly
+                Result = dateOnly,
             };
             return await Task.FromResult(response);
         }
-
     }
 }

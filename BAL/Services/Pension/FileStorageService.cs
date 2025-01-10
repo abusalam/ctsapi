@@ -19,7 +19,8 @@ namespace CTS_BE.BAL.Services.Pension
             IFileStorageRepository fileStorageRepository,
             IMapper mapper,
             IClaimService claimService
-        ) : base(claimService)
+        )
+            : base(claimService)
         {
             _fileStorageRepository = fileStorageRepository;
             _mapper = mapper;
@@ -29,19 +30,19 @@ namespace CTS_BE.BAL.Services.Pension
             FileEntryDTO fileEntryDTO,
             short financialYear,
             string treasuryCode
-        ) {
+        )
+        {
             UploadedFile fileEntity = _mapper.Map<UploadedFile>(fileEntryDTO);
             T response = _mapper.Map<T>(fileEntity);
             try
             {
                 fileEntity = _mapper.Map<UploadedFile>(fileEntryDTO);
                 SetCreatedBy(fileEntity);
-                response = await _fileStorageRepository
-                    .SaveUploadedFile<T>(
-                        financialYear,
-                        treasuryCode,
-                        fileEntity
-                    );
+                response = await _fileStorageRepository.SaveUploadedFile<T>(
+                    financialYear,
+                    treasuryCode,
+                    fileEntity
+                );
             }
             catch (DbUpdateException ex)
             {
@@ -50,7 +51,8 @@ namespace CTS_BE.BAL.Services.Pension
                     $"DbException: {ex.InnerException?.Message ?? ex.Message}"
                 );
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 response.FillDataSource(
                     fileEntity,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
@@ -60,10 +62,7 @@ namespace CTS_BE.BAL.Services.Pension
             return response;
         }
 
-        public async Task<T> GetFileById<T>(
-            long fileId,
-            string treasuryCode
-        )
+        public async Task<T> GetFileById<T>(long fileId, string treasuryCode)
         {
             UploadedFile? uploadedFile = new();
             T? response = _mapper.Map<T>(new UploadedFile());
@@ -83,7 +82,8 @@ namespace CTS_BE.BAL.Services.Pension
                     $"DbException: {ex.InnerException?.Message ?? ex.Message}"
                 );
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 response.FillDataSource(
                     uploadedFile,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"

@@ -6,7 +6,11 @@ namespace CTS_BE.Helper
 {
     public static class ExpressionHelper
     {
-        public static Expression<Func<T, bool>> GetFilterExpression<T>(string field, dynamic value, string op)
+        public static Expression<Func<T, bool>> GetFilterExpression<T>(
+            string field,
+            dynamic value,
+            string op
+        )
         {
             var parameter = Expression.Parameter(typeof(T), "x");
             Expression propertyAccess;
@@ -20,7 +24,9 @@ namespace CTS_BE.Helper
                 propertyAccess = GetPropertyAccess<T>(parameter, field);
             }
 
-            var convertedValue = Expression.Constant(Convert.ChangeType(value, propertyAccess.Type));
+            var convertedValue = Expression.Constant(
+                Convert.ChangeType(value, propertyAccess.Type)
+            );
 
             Expression predicate;
 
@@ -42,7 +48,9 @@ namespace CTS_BE.Helper
                     predicate = Expression.Call(propertyAccess, "Contains", null, convertedValue);
                     break;
                 case "notcontains":
-                    predicate = Expression.Not(Expression.Call(propertyAccess, "Contains", null, convertedValue));
+                    predicate = Expression.Not(
+                        Expression.Call(propertyAccess, "Contains", null, convertedValue)
+                    );
                     break;
                 case "endswith":
                     predicate = Expression.Call(propertyAccess, "EndsWith", null, convertedValue);
@@ -56,7 +64,11 @@ namespace CTS_BE.Helper
 
             return Expression.Lambda<Func<T, bool>>(predicate, parameter);
         }
-        private static Expression GetNestedPropertyAccess(ParameterExpression parameter, string field)
+
+        private static Expression GetNestedPropertyAccess(
+            ParameterExpression parameter,
+            string field
+        )
         {
             string[] fieldParts = field.Split('.');
             Expression propertyAccess = parameter;
@@ -66,7 +78,9 @@ namespace CTS_BE.Helper
                 PropertyInfo property = propertyAccess.Type.GetProperty(propertyName);
                 if (property == null)
                 {
-                    throw new ArgumentException($"Property '{propertyName}' not found on type '{propertyAccess.Type}'.");
+                    throw new ArgumentException(
+                        $"Property '{propertyName}' not found on type '{propertyAccess.Type}'."
+                    );
                 }
 
                 propertyAccess = Expression.Property(propertyAccess, property);

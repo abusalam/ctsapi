@@ -9,10 +9,12 @@ namespace CTS_BE.Controllers.Pension
     public class EPpoReceiptController : ApiBaseController
     {
         private readonly IEPpoReceiptService _ppoReceiptService;
+
         public EPpoReceiptController(
             IEPpoReceiptService ppoReceiptService,
             IClaimService claimService
-        ) : base(claimService)
+        )
+            : base(claimService)
         {
             _ppoReceiptService = ppoReceiptService;
         }
@@ -24,23 +26,27 @@ namespace CTS_BE.Controllers.Pension
             EPpoReceiptEntryDTO ePpoReceiptEntryDTO
         )
         {
-
-            JsonAPIResponse<EPpoReceiptResponseDTO> response = new(){
+            JsonAPIResponse<EPpoReceiptResponseDTO> response = new()
+            {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
-                Message = $"ePPO Receipt saved sucessfully!"
+                Message = $"ePPO Receipt saved sucessfully!",
             };
-            try {
-                response.Result = await _ppoReceiptService.CreateEPpoReceipt<EPpoReceiptResponseDTO>(
-                    ePpoReceiptEntryDTO,
-                    GetTreasuryCode(),
-                    GetCurrentFyYear()
-                );
+            try
+            {
+                response.Result =
+                    await _ppoReceiptService.CreateEPpoReceipt<EPpoReceiptResponseDTO>(
+                        ePpoReceiptEntryDTO,
+                        GetTreasuryCode(),
+                        GetCurrentFyYear()
+                    );
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 FillException(response, ex);
                 return response;
             }
-            finally {
+            finally
+            {
                 FillErrorMesageFromDataSource(response);
             }
             return response;
@@ -49,27 +55,28 @@ namespace CTS_BE.Controllers.Pension
         [HttpGet("e-ppo/receipt/{receiptId}")]
         [Tags("Pension: e-PPO Receipt")]
         [OpenApi]
-        public async Task<JsonAPIResponse<EPpoReceiptDetailDTO>> GetEPpoReceiptById(
-            long receiptId
-        )
+        public async Task<JsonAPIResponse<EPpoReceiptDetailDTO>> GetEPpoReceiptById(long receiptId)
         {
-
-            JsonAPIResponse<EPpoReceiptDetailDTO> response = new(){
+            JsonAPIResponse<EPpoReceiptDetailDTO> response = new()
+            {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
-                Message = $"ePPO Receipt received sucessfully!"
+                Message = $"ePPO Receipt received sucessfully!",
             };
-            try {
+            try
+            {
                 response.Result = await _ppoReceiptService.GetEPpoReceiptById<EPpoReceiptDetailDTO>(
                     receiptId,
                     GetTreasuryCode(),
                     GetCurrentFyYear()
                 );
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 FillException(response, ex);
                 return response;
             }
-            finally {
+            finally
+            {
                 FillErrorMesageFromDataSource(response);
             }
             return response;
@@ -78,51 +85,40 @@ namespace CTS_BE.Controllers.Pension
         [HttpGet("e-ppo/receipt/unused")]
         [Tags("Pension: e-PPO Receipt")]
         [OpenApi]
-        public async Task<JsonAPIResponse<TableResponseDTO<EPpoReceiptDetailDTO>>> GetUnusedEPpoReceipts()
+        public async Task<
+            JsonAPIResponse<TableResponseDTO<EPpoReceiptDetailDTO>>
+        > GetUnusedEPpoReceipts()
         {
             JsonAPIResponse<TableResponseDTO<EPpoReceiptDetailDTO>> response = new();
-            try {
-
-                response = new() {
-
+            try
+            {
+                response = new()
+                {
                     ApiResponseStatus = Enum.APIResponseStatus.Success,
                     Result = new()
+                    {
+                        Headers = new()
                         {
-                            Headers = new () {
-
-                                new() {
-                                    Name = "PPO No",
-                                    FieldName = "ppoNo",
-
-                                },
-                                new() {
-                                    Name = "Pension Application No",
-                                    FieldName = "pensionApplnNo",
-                                },
-                                new() {
-                                    Name = "Name of Pensioner",
-                                    FieldName = "pensionerName",
-                                },
-                                new() {
-                                    Name = "Mobile Number",
-                                    FieldName = "mobileNumber",
-                                }
-
-                            },
-                            Data = await _ppoReceiptService.GetUnusedEPpoReceipts<EPpoReceiptDetailDTO>(
-                                GetTreasuryCode(),
-                                GetCurrentFyYear()
-                            ),
+                            new() { Name = "PPO No", FieldName = "ppoNo" },
+                            new() { Name = "Pension Application No", FieldName = "pensionApplnNo" },
+                            new() { Name = "Name of Pensioner", FieldName = "pensionerName" },
+                            new() { Name = "Mobile Number", FieldName = "mobileNumber" },
                         },
-                    Message = $"ePPO Receipt received sucessfully!"
-
+                        Data = await _ppoReceiptService.GetUnusedEPpoReceipts<EPpoReceiptDetailDTO>(
+                            GetTreasuryCode(),
+                            GetCurrentFyYear()
+                        ),
+                    },
+                    Message = $"ePPO Receipt received sucessfully!",
                 };
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 FillException(response, ex);
                 return response;
             }
-            finally {
+            finally
+            {
                 FillErrorMesageFromDataSource(response);
             }
             return response;
@@ -135,23 +131,27 @@ namespace CTS_BE.Controllers.Pension
             EPpoReceiptRevisionEntryDTO ePpoReceiptRevisionEntryDTO
         )
         {
-
-            JsonAPIResponse<EPpoReceiptRevisionResponseDTO> response = new(){
+            JsonAPIResponse<EPpoReceiptRevisionResponseDTO> response = new()
+            {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
-                Message = $"ePPO Revision saved sucessfully!"
+                Message = $"ePPO Revision saved sucessfully!",
             };
-            try {
-                response.Result = await _ppoReceiptService.CreateEPpoReceiptRevision<EPpoReceiptRevisionResponseDTO>(
-                    ePpoReceiptRevisionEntryDTO,
-                    GetTreasuryCode(),
-                    GetCurrentFyYear()
-                );
+            try
+            {
+                response.Result =
+                    await _ppoReceiptService.CreateEPpoReceiptRevision<EPpoReceiptRevisionResponseDTO>(
+                        ePpoReceiptRevisionEntryDTO,
+                        GetTreasuryCode(),
+                        GetCurrentFyYear()
+                    );
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 FillException(response, ex);
                 return response;
             }
-            finally {
+            finally
+            {
                 FillErrorMesageFromDataSource(response);
             }
 
@@ -165,22 +165,27 @@ namespace CTS_BE.Controllers.Pension
             string applicationNo
         )
         {
-            JsonAPIResponse<EPpoReceiptPpoIdResponseDTO> response = new(){
+            JsonAPIResponse<EPpoReceiptPpoIdResponseDTO> response = new()
+            {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
-                Message = $"ePPO Receipt Details received sucessfully!"
+                Message = $"ePPO Receipt Details received sucessfully!",
             };
-            try {
-                response.Result = await _ppoReceiptService.GetEPpoReceiptByPensionApplnNo<EPpoReceiptPpoIdResponseDTO>(
-                    applicationNo,
-                    GetTreasuryCode(),
-                    GetCurrentFyYear()
-                );
+            try
+            {
+                response.Result =
+                    await _ppoReceiptService.GetEPpoReceiptByPensionApplnNo<EPpoReceiptPpoIdResponseDTO>(
+                        applicationNo,
+                        GetTreasuryCode(),
+                        GetCurrentFyYear()
+                    );
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 FillException(response, ex);
                 return response;
             }
-            finally {
+            finally
+            {
                 FillErrorMesageFromDataSource(response);
             }
 
@@ -194,23 +199,28 @@ namespace CTS_BE.Controllers.Pension
             EPpoReceiptWithdrawlEntryDTO ePpoReceiptWithdrawlEntryDTO
         )
         {
-            JsonAPIResponse<EPpoReceiptWithdrawlResponseDTO> response = new(){
+            JsonAPIResponse<EPpoReceiptWithdrawlResponseDTO> response = new()
+            {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
-                Message = $"ePPO Receipt withdrawn sucessfully!"
+                Message = $"ePPO Receipt withdrawn sucessfully!",
             };
-            try {
-                response.Result = await _ppoReceiptService.RegisterEPpoReceiptWithdrawal<EPpoReceiptWithdrawlResponseDTO>(
-                    ePpoReceiptWithdrawlEntryDTO.PensionApplnNo,
-                    ePpoReceiptWithdrawlEntryDTO,
-                    GetTreasuryCode(),
-                    GetCurrentFyYear()
-                );
+            try
+            {
+                response.Result =
+                    await _ppoReceiptService.RegisterEPpoReceiptWithdrawal<EPpoReceiptWithdrawlResponseDTO>(
+                        ePpoReceiptWithdrawlEntryDTO.PensionApplnNo,
+                        ePpoReceiptWithdrawlEntryDTO,
+                        GetTreasuryCode(),
+                        GetCurrentFyYear()
+                    );
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 FillException(response, ex);
                 return response;
             }
-            finally {
+            finally
+            {
                 FillErrorMesageFromDataSource(response);
             }
             return response;

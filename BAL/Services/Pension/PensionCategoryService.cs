@@ -15,13 +15,15 @@ namespace CTS_BE.BAL.Services.Pension
         private readonly ISubCategoryRepository _subCategoryRepository;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
+
         public PensionCategoryService(
-                IPrimaryCategoryRepository primaryCategoryRepository,
-                ISubCategoryRepository subCategoryRepository,
-                ICategoryRepository categoryRepository,
-                IClaimService claimService,
-                IMapper mapper
-            ) : base(claimService)
+            IPrimaryCategoryRepository primaryCategoryRepository,
+            ISubCategoryRepository subCategoryRepository,
+            ICategoryRepository categoryRepository,
+            IClaimService claimService,
+            IMapper mapper
+        )
+            : base(claimService)
         {
             _primaryCategoryRepository = primaryCategoryRepository;
             _subCategoryRepository = subCategoryRepository;
@@ -35,20 +37,17 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
-            PrimaryCategory primaryCategoryEntity = new()
-            {
-                Id = 0
-            };
+            PrimaryCategory primaryCategoryEntity = new() { Id = 0 };
             TResponse? response = _mapper.Map<TResponse>(primaryCategoryEntity);
 
             try
             {
                 primaryCategoryEntity.FillFrom(pensionPrimaryCategoryEntryDTO);
 
-                var primaryCategory = await _primaryCategoryRepository.GetSingleAysnc(
-                        entity => entity.ActiveFlag
-                        && entity.PrimaryCategoryName == primaryCategoryEntity.PrimaryCategoryName
-                    );
+                var primaryCategory = await _primaryCategoryRepository.GetSingleAysnc(entity =>
+                    entity.ActiveFlag
+                    && entity.PrimaryCategoryName == primaryCategoryEntity.PrimaryCategoryName
+                );
                 if (primaryCategory != null)
                 {
                     response.FillDataSource(
@@ -65,41 +64,40 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (await _primaryCategoryRepository.SaveChangesManagedAsync() == 0)
                 {
-                    response.FillDataSource(
-                        primaryCategoryEntity,
-                        $"Primary Category not saved!"
-                    );
+                    response.FillDataSource(primaryCategoryEntity, $"Primary Category not saved!");
                     return response;
                 }
             }
             catch (DbUpdateException ex)
             {
                 response.FillDataSource(
-                        primaryCategoryEntity,
-                        $"ServiceException: {ex.InnerException?.Message}"
-                    );
+                    primaryCategoryEntity,
+                    $"ServiceException: {ex.InnerException?.Message}"
+                );
             }
             finally
             {
-                PrimaryCategory? primaryCategory = await _primaryCategoryRepository.GetPrimaryCategoryWithAccountHeadAsync(primaryCategoryEntity.Id);
+                PrimaryCategory? primaryCategory =
+                    await _primaryCategoryRepository.GetPrimaryCategoryWithAccountHeadAsync(
+                        primaryCategoryEntity.Id
+                    );
                 response = _mapper.Map<TResponse>(primaryCategory);
             }
             return response;
         }
 
         public async Task<IEnumerable<TResponse>> ListPrimaryCategory<TResponse>(
-                short financialYear,
-                string treasuryCode,
-                DynamicListQueryParameters dynamicListQueryParameters
-            )
+            short financialYear,
+            string treasuryCode,
+            DynamicListQueryParameters dynamicListQueryParameters
+        )
         {
             _dataCount = _primaryCategoryRepository.Count();
-            return await _primaryCategoryRepository
-                .GetSelectedColumnByConditionAsync(
-                    entity => entity.ActiveFlag,
-                    entity => _mapper.Map<TResponse>(entity),
-                    dynamicListQueryParameters
-                );
+            return await _primaryCategoryRepository.GetSelectedColumnByConditionAsync(
+                entity => entity.ActiveFlag,
+                entity => _mapper.Map<TResponse>(entity),
+                dynamicListQueryParameters
+            );
         }
 
         public async Task<List<PensionPrimaryCategoryResponseDTO>> GetPrimaryCategories(
@@ -116,26 +114,19 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
-            SubCategory subCategoryEntity = new()
-            {
-                Id = 0
-            };
+            SubCategory subCategoryEntity = new() { Id = 0 };
             TResponse? response = _mapper.Map<TResponse>(subCategoryEntity);
 
             try
             {
                 subCategoryEntity.FillFrom(pensionSubCategoryEntryDTO);
 
-                var subCategory = await _subCategoryRepository.GetSingleAysnc(
-                        entity => entity.ActiveFlag
-                        && entity.SubCategoryName == subCategoryEntity.SubCategoryName
-                    );
+                var subCategory = await _subCategoryRepository.GetSingleAysnc(entity =>
+                    entity.ActiveFlag && entity.SubCategoryName == subCategoryEntity.SubCategoryName
+                );
                 if (subCategory != null)
                 {
-                    response.FillDataSource(
-                        subCategoryEntity,
-                        $"Sub Category already exists!"
-                    );
+                    response.FillDataSource(subCategoryEntity, $"Sub Category already exists!");
                     return response;
                 }
 
@@ -146,19 +137,16 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (await _subCategoryRepository.SaveChangesManagedAsync() == 0)
                 {
-                    response.FillDataSource(
-                        subCategoryEntity,
-                        $"Sub Category not saved!"
-                    );
+                    response.FillDataSource(subCategoryEntity, $"Sub Category not saved!");
                     return response;
                 }
             }
             catch (DbUpdateException ex)
             {
                 response.FillDataSource(
-                        subCategoryEntity,
-                        $"ServiceException: {ex.InnerException?.Message}"
-                    );
+                    subCategoryEntity,
+                    $"ServiceException: {ex.InnerException?.Message}"
+                );
             }
             finally
             {
@@ -168,18 +156,17 @@ namespace CTS_BE.BAL.Services.Pension
         }
 
         public async Task<IEnumerable<TResponse>> ListSubCategory<TResponse>(
-                short financialYear,
-                string treasuryCode,
-                DynamicListQueryParameters dynamicListQueryParameters
-            )
+            short financialYear,
+            string treasuryCode,
+            DynamicListQueryParameters dynamicListQueryParameters
+        )
         {
             _dataCount = _subCategoryRepository.Count();
-            return await _subCategoryRepository
-                .GetSelectedColumnByConditionAsync(
-                    entity => entity.ActiveFlag,
-                    entity => _mapper.Map<TResponse>(entity),
-                    dynamicListQueryParameters
-                );
+            return await _subCategoryRepository.GetSelectedColumnByConditionAsync(
+                entity => entity.ActiveFlag,
+                entity => _mapper.Map<TResponse>(entity),
+                dynamicListQueryParameters
+            );
         }
 
         public async Task<List<TResponse>> GetSubCategories<TResponse>(
@@ -187,10 +174,8 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
-            return await _subCategoryRepository
-                .GetSubCategoriesAsync<TResponse>();
+            return await _subCategoryRepository.GetSubCategoriesAsync<TResponse>();
         }
-
 
         public async Task<TResponse> CreatePensionCategory<TEntry, TResponse>(
             TEntry pensionCategoryEntryDTO,
@@ -198,10 +183,7 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
-            Category categoryEntity = new()
-            {
-                Id = 0
-            };
+            Category categoryEntity = new() { Id = 0 };
             TResponse? response = _mapper.Map<TResponse>(categoryEntity);
 
             try
@@ -219,9 +201,9 @@ namespace CTS_BE.BAL.Services.Pension
             catch (DbUpdateException ex)
             {
                 response.FillDataSource(
-                        categoryEntity,
-                        $"DbException: {ex.InnerException?.Message ?? ex.Message}"
-                    );
+                    categoryEntity,
+                    $"DbException: {ex.InnerException?.Message ?? ex.Message}"
+                );
             }
             catch (Exception ex)
             {
@@ -234,7 +216,6 @@ namespace CTS_BE.BAL.Services.Pension
             return response;
         }
 
-
         public async Task<T> GetPensionCategoryById<T>(
             long categoryId,
             short financialYear,
@@ -245,7 +226,6 @@ namespace CTS_BE.BAL.Services.Pension
             T PensionCategoryDTO = _mapper.Map<T>(pensionCategoryEntity);
             try
             {
-
                 pensionCategoryEntity = await _categoryRepository.GetCategoryById(
                     categoryId,
                     financialYear,
@@ -287,12 +267,11 @@ namespace CTS_BE.BAL.Services.Pension
         )
         {
             _dataCount = _categoryRepository.Count();
-            return await _categoryRepository
-                .GetSelectedColumnByConditionAsync(
-                    entity => entity.ActiveFlag,
-                    entity => _mapper.Map<TResponse>(entity),
-                    dynamicListQueryParameters
-                );
+            return await _categoryRepository.GetSelectedColumnByConditionAsync(
+                entity => entity.ActiveFlag,
+                entity => _mapper.Map<TResponse>(entity),
+                dynamicListQueryParameters
+            );
         }
 
         public async Task<List<TResponse>> GetPensionCategories<TResponse>(
@@ -308,8 +287,10 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
-            return await _primaryCategoryRepository.GetAccountHeadsAsync(financialYear, treasuryCode);
+            return await _primaryCategoryRepository.GetAccountHeadsAsync(
+                financialYear,
+                treasuryCode
+            );
         }
-
     }
 }

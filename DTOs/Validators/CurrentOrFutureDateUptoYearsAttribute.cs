@@ -7,12 +7,11 @@ namespace CTS_BE.DTOs.Validators
         /// <summary>
         /// Validate that the date is in the future and upto specified number of years.
         /// </summary>
-        public CurrentOrFutureDateUptoYearsAttribute(short years) : base(
-            typeof(DateOnly),
-            DateTime.Now.ToString("yyyy-MM-dd"),
-            DateTime.Now.AddYears(years).ToString("yyyy-MM-dd")
-        )
-        {
-        }
+        public CurrentOrFutureDateUptoYearsAttribute(short years)
+            : base(
+                typeof(DateOnly),
+                DateTime.Now.ToString("yyyy-MM-dd"),
+                DateTime.Now.AddYears(years).ToString("yyyy-MM-dd")
+            ) { }
     }
 }

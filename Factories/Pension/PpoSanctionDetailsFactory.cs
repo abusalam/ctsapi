@@ -11,11 +11,12 @@ namespace CTS_BE.Factories.Pension
                 .RuleFor(d => d.EmployeeGender, f => f.PickRandom('F', 'M'))
                 .RuleFor(
                     d => d.EmployeeName,
-                    (f,d) => f.Name.FullName(
-                        d.EmployeeGender == 'M' ?
-                        Bogus.DataSets.Name.Gender.Male :
-                        Bogus.DataSets.Name.Gender.Female
-                    )
+                    (f, d) =>
+                        f.Name.FullName(
+                            d.EmployeeGender == 'M'
+                                ? Bogus.DataSets.Name.Gender.Male
+                                : Bogus.DataSets.Name.Gender.Female
+                        )
                 )
                 .RuleFor(d => d.SanctionAuthority, f => f.Random.Words(1))
                 .RuleFor(d => d.SanctionNo, f => f.Random.Replace("####/????/####"))
@@ -35,24 +36,15 @@ namespace CTS_BE.Factories.Pension
                 .RuleFor(d => d.QualifyingServiceGrossDays, f => f.Random.Number(0, 27))
                 .RuleFor(
                     d => d.QualifyingServiceNetYears,
-                    (f, d) => f.Random.Number(
-                        5,
-                        d.QualifyingServiceGrossYears ?? 10
-                    )
+                    (f, d) => f.Random.Number(5, d.QualifyingServiceGrossYears ?? 10)
                 )
                 .RuleFor(
                     d => d.QualifyingServiceNetMonths,
-                    (f, d) => f.Random.Number(
-                        0,
-                        d.QualifyingServiceGrossMonths ?? 10
-                    )
+                    (f, d) => f.Random.Number(0, d.QualifyingServiceGrossMonths ?? 10)
                 )
                 .RuleFor(
                     d => d.QualifyingServiceNetDays,
-                    (f, d) => f.Random.Number(
-                        0,
-                        d.QualifyingServiceGrossDays ?? 20
-                    )
+                    (f, d) => f.Random.Number(0, d.QualifyingServiceGrossDays ?? 20)
                 );
         }
     }

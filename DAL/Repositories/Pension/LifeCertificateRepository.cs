@@ -11,14 +11,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Repositories.Pension
 {
-    public class LifeCertificateRepository : Repository<LifeCertificate, PensionDbContext>, ILifeCertificateRepository
+    public class LifeCertificateRepository
+        : Repository<LifeCertificate, PensionDbContext>,
+            ILifeCertificateRepository
     {
         private readonly IMapper _mapper;
         private readonly PensionDbContext _context;
-        public LifeCertificateRepository(
-            IMapper mapper,
-            PensionDbContext context
-        ) : base(context)
+
+        public LifeCertificateRepository(IMapper mapper, PensionDbContext context)
+            : base(context)
         {
             _mapper = mapper;
             _context = context;
@@ -30,11 +31,8 @@ namespace CTS_BE.DAL.Repositories.Pension
             Expression<Func<LifeCertificate, T>> selectExpression
         )
         {
-            return await _context.LifeCertificates
-                .Where(
-                    x => x.PpoId == ppoId
-                    && x.TreasuryCode == treasuryCode
-                )
+            return await _context
+                .LifeCertificates.Where(x => x.PpoId == ppoId && x.TreasuryCode == treasuryCode)
                 .Select(selectExpression)
                 .FirstOrDefaultAsync();
         }
@@ -45,12 +43,12 @@ namespace CTS_BE.DAL.Repositories.Pension
             string treasuryCode
         )
         {
-            return await _context.Pensioners
-                .Include(p => p.LifeCertificates)
+            return await _context
+                .Pensioners.Include(p => p.LifeCertificates)
                 .Where(p =>
-                    p.Branch.Id == branchId &&
-                    p.TreasuryCode == treasuryCode &&
-                    p.FinancialYear == financialYear
+                    p.Branch.Id == branchId
+                    && p.TreasuryCode == treasuryCode
+                    && p.FinancialYear == financialYear
                 )
                 .ToListAsync();
         }
@@ -60,13 +58,14 @@ namespace CTS_BE.DAL.Repositories.Pension
             string treasuryCode
         )
         {
-
             T? response = _mapper.Map<T>(lifeCertificate);
-            try {
+            try
+            {
                 lifeCertificate.TreasuryCode = treasuryCode;
                 lifeCertificate.DigitalMode = false;
                 _context.LifeCertificates.Add(lifeCertificate);
-                if(await _context.SaveChangesAsync() == 0) {
+                if (await _context.SaveChangesAsync() == 0)
+                {
                     response.FillDataSource(
                         lifeCertificate,
                         "Failed to save data. Please try again after sometime."
@@ -75,14 +74,16 @@ namespace CTS_BE.DAL.Repositories.Pension
                 }
                 return _mapper.Map<T>(lifeCertificate);
             }
-            catch (DbUpdateException ex) {
+            catch (DbUpdateException ex)
+            {
                 response.FillDataSource(
                     lifeCertificate,
                     $"DbException: {ex.InnerException?.Message ?? ex.Message}"
                 );
                 return response;
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 response.FillDataSource(
                     lifeCertificate,
                     $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
@@ -90,6 +91,7 @@ namespace CTS_BE.DAL.Repositories.Pension
                 return response;
             }
         }
+
         public async Task<T> UpdateLifeCertificateByPpoId<T>(
             LifeCertificate lifeCertificateDetailEntity,
             string treasuryCode
@@ -99,9 +101,9 @@ namespace CTS_BE.DAL.Repositories.Pension
             try
             {
                 // First, retrieve the existing entity
-                var existingEntity = await _context.LifeCertificates
-                    .FirstOrDefaultAsync(x => x.PpoId == lifeCertificateDetailEntity.PpoId
-                                            && x.TreasuryCode == treasuryCode);
+                var existingEntity = await _context.LifeCertificates.FirstOrDefaultAsync(x =>
+                    x.PpoId == lifeCertificateDetailEntity.PpoId && x.TreasuryCode == treasuryCode
+                );
 
                 if (existingEntity == null)
                 {
@@ -113,7 +115,9 @@ namespace CTS_BE.DAL.Repositories.Pension
                 }
 
                 // Update the properties of the existing entity
-                _context.Entry(existingEntity).CurrentValues.SetValues(lifeCertificateDetailEntity);
+                _context
+                    .Entry(existingEntity)
+                    .CurrentValues.SetValues(lifeCertificateDetailEntity);
 
                 // Or alternatively, manually update specific properties:
                 // existingEntity.AccountHolderName = lifeCertificateDetailEntity.AccountHolderName;

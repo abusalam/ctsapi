@@ -1,16 +1,16 @@
-using CTS_BE.DTOs;
 using CTS_BE.DAL.Entities.Pension;
+using CTS_BE.DTOs;
 
 namespace CTS_BE.DAL.Interfaces.Pension
 {
     public interface IPpoBillRepository : IRepository<PpoBill>
     {
-        public Task<int> GetNextBillNo(
-            short financialYear,
-            string treasuryCode
-        );
+        public Task<int> GetNextBillNo(short financialYear, string treasuryCode);
 
-        public Task<PpoBill> SavePpoBillBreakups(long ppoBillId, List<PpoBillBreakup> ppoBillBreakups);
+        public Task<PpoBill> SavePpoBillBreakups(
+            long ppoBillId,
+            List<PpoBillBreakup> ppoBillBreakups
+        );
 
         public Task<PpoBill?> GetPpoFirstBillByPpoId(
             int ppoId,
@@ -18,10 +18,7 @@ namespace CTS_BE.DAL.Interfaces.Pension
             string treasuryCode
         );
 
-        public Task<PpoBill?> GetPpoBillByPpoId(
-            int ppoId,
-            string treasuryCode
-        );
+        public Task<PpoBill?> GetPpoBillByPpoId(int ppoId, string treasuryCode);
 
         public Task<PpoBill?> GetPpoBillByPpoId(
             int ppoId,
@@ -29,10 +26,6 @@ namespace CTS_BE.DAL.Interfaces.Pension
             short financialYear
         );
 
-        public Task<T> SavePpoBill<T>(
-            PpoBill firstBill,
-            short financialYear,
-            string treasuryCode
-        );
+        public Task<T> SavePpoBill<T>(PpoBill firstBill, short financialYear, string treasuryCode);
     }
 }

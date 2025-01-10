@@ -40,25 +40,31 @@ namespace CTS_BE.Adapters
             factory.FillFrom(rabbitMqOptions);
 
             _queueName = rabbitMqOptions.Queue;
-            try {
+            try
+            {
                 _connection = factory.CreateConnection();
                 _channel = _connection.CreateModel();
             }
-            catch (BrokerUnreachableException e) {
+            catch (BrokerUnreachableException e)
+            {
                 Console.WriteLine($"Failed to connect to rabbitmq: {e.Message}");
             }
         }
 
-        private void SetupQueue(string queueName) {
-            if(_channel == null) {
+        private void SetupQueue(string queueName)
+        {
+            if (_channel == null)
+            {
                 throw new Exception($"Failed to setup queue: {queueName} via RabbitMqAdapter");
             }
             _queueName = queueName;
-            _channel.QueueDeclare(queue: _queueName,
-                     durable: true,
-                     exclusive: false,
-                     autoDelete: false,
-                     arguments: null);
+            _channel.QueueDeclare(
+                queue: _queueName,
+                durable: true,
+                exclusive: false,
+                autoDelete: false,
+                arguments: null
+            );
             _channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
         }
 
@@ -74,10 +80,12 @@ namespace CTS_BE.Adapters
             var body = Encoding.UTF8.GetBytes(message);
             IBasicProperties properties = _channel.CreateBasicProperties();
             properties.Persistent = true;
-            _channel.BasicPublish(exchange: string.Empty,
-                                routingKey: queueName,
-                                basicProperties: properties,
-                                body: body);
+            _channel.BasicPublish(
+                exchange: string.Empty,
+                routingKey: queueName,
+                basicProperties: properties,
+                body: body
+            );
             Console.WriteLine($" [x] Sent {message}");
             return $"Sending {message} via RabbitMqAdapter";
         }
@@ -85,9 +93,10 @@ namespace CTS_BE.Adapters
         public override string ReceiveSingle(string queueName)
         {
             SetupQueue(_queueName);
-            var msgData = _channel.BasicGet(_queueName,false);
+            var msgData = _channel.BasicGet(_queueName, false);
             string receivedMessage = string.Empty;
-            if (msgData != null) {
+            if (msgData != null)
+            {
                 receivedMessage = Encoding.UTF8.GetString(msgData.Body.ToArray());
                 _channel.BasicAck(msgData.DeliveryTag, false);
                 Console.WriteLine($" [x] Received {receivedMessage}");
@@ -105,8 +114,9 @@ namespace CTS_BE.Adapters
         {
             SetupQueue(_queueName);
             string consumerTag = string.Empty;
-            if(_channel.ConsumerCount(queueName) == 0) {
-                EventingBasicConsumer consumer = new (_channel);
+            if (_channel.ConsumerCount(queueName) == 0)
+            {
+                EventingBasicConsumer consumer = new(_channel);
                 consumer.Received += (model, ea) =>
                 {
                     MqDeliverEventArgs args = new(
@@ -122,19 +132,17 @@ namespace CTS_BE.Adapters
                 {
                     Console.WriteLine($" [x] Stopped Listening to {queueName} via RabbitMqAdapter");
                 };
-                consumerTag = _channel.BasicConsume(
-                    queueName,
-                    false,
-                    consumer
-                );
-                cancellationToken.Register(()=>{
-                        _channel.BasicCancel(consumerTag);
-                        Console.WriteLine($" [x] Cancelling Listener on {queueName} via RabbitMqAdapter");
-                    }
-                );
+                consumerTag = _channel.BasicConsume(queueName, false, consumer);
+                cancellationToken.Register(() =>
+                {
+                    _channel.BasicCancel(consumerTag);
+                    Console.WriteLine(
+                        $" [x] Cancelling Listener on {queueName} via RabbitMqAdapter"
+                    );
+                });
                 Console.WriteLine($" [x] Listening to {queueName} via RabbitMqAdapter");
             }
-            return consumerTag;// $"Listening to {queueName} with consumerTag {consumerTag} via RabbitMqAdapter";
+            return consumerTag; // $"Listening to {queueName} with consumerTag {consumerTag} via RabbitMqAdapter";
         }
 
         /// <summary>
@@ -152,7 +160,8 @@ namespace CTS_BE.Adapters
         {
             SetupQueue(_queueName);
             string consumerTag = string.Empty;
-            if(_channel.ConsumerCount(queueName) == 0) {
+            if (_channel.ConsumerCount(queueName) == 0)
+            {
                 AsyncEventingBasicConsumer consumer = new AsyncEventingBasicConsumer(_channel);
                 consumer.Received += async (model, ea) =>
                 {
@@ -171,24 +180,23 @@ namespace CTS_BE.Adapters
                     Console.WriteLine($" [x] Stopped Listening to {queueName} via RabbitMqAdapter");
                     await Task.Yield();
                 };
-                consumerTag = _channel.BasicConsume(
-                    queueName,
-                    false,
-                    consumer
-                );
-                cancellationToken.Register(()=>{
-                        _channel.BasicCancel(consumerTag);
-                        Console.WriteLine($" [x] Cancelling Listener on {queueName} via RabbitMqAdapter");
-                    }
-                );
+                consumerTag = _channel.BasicConsume(queueName, false, consumer);
+                cancellationToken.Register(() =>
+                {
+                    _channel.BasicCancel(consumerTag);
+                    Console.WriteLine(
+                        $" [x] Cancelling Listener on {queueName} via RabbitMqAdapter"
+                    );
+                });
                 Console.WriteLine($" [x] Listening to {queueName} via RabbitMqAdapter");
             }
-            return consumerTag;// $"Listening to {queueName} with consumerTag {consumerTag} via RabbitMqAdapter";
+            return consumerTag; // $"Listening to {queueName} with consumerTag {consumerTag} via RabbitMqAdapter";
         }
 
         public override string CancelConsumer(string consumerTag)
         {
-            if(_channel == null) {
+            if (_channel == null)
+            {
                 throw new Exception($"Failed to stop consumer: {consumerTag} via RabbitMqAdapter");
             }
             _channel.BasicCancel(consumerTag);

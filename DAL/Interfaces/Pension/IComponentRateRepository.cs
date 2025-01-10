@@ -13,6 +13,5 @@ namespace CTS_BE.DAL.Interfaces.Pension
             long categoryId,
             Expression<Func<ComponentRate, T>> selectExpression
         );
-
     }
 }
