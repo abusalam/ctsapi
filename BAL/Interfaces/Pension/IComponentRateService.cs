@@ -13,10 +13,9 @@ namespace CTS_BE.BAL.Interfaces.Pension
             short financialYear,
             string treasuryCode
         );
-        public Task<IEnumerable<TResponse>> ListComponentRates<TResponse>(
+        public Task<List<ComponentRateResponseDTO>> ListComponentRates(
             short financialYear,
-            string treasuryCode,
-            DynamicListQueryParameters dynamicListQueryParameters
+            string treasuryCode
         );
 
         public Task<List<TResponse>> ListComponentRatesByCategoryId<TResponse>(long categoryId);

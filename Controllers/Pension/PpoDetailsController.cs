@@ -132,10 +132,10 @@ namespace CTS_BE.Controllers.Pension
         [OpenApi]
         [Obsolete("Use GetPensioners instead")]
         public async Task<
-            JsonAPIResponse<DynamicListResult<IEnumerable<PensionerListItemDTO>>>
-        > GetAllPensioners(DynamicListQueryParameters dynamicListQueryParameters)
+            JsonAPIResponse<TableResponseDTO<PensionerListItemDTO>>
+        > GetAllPensioners()
         {
-            JsonAPIResponse<DynamicListResult<IEnumerable<PensionerListItemDTO>>> response = new();
+            JsonAPIResponse<TableResponseDTO<PensionerListItemDTO>> response = new();
             try
             {
                 response = new()
@@ -145,67 +145,17 @@ namespace CTS_BE.Controllers.Pension
                     {
                         Headers = new()
                         {
-                            new()
-                            {
-                                Name = "PPO ID",
-                                DataType = "text",
-                                FieldName = "ppoId",
-                                FilterField = "ppoId",
-                                IsFilterable = true,
-                                IsSortable = true,
-                            },
-                            new()
-                            {
-                                Name = "Name of Pensioner",
-                                DataType = "text",
-                                FieldName = "pensionerName",
-                                FilterField = "pensionerName",
-                                IsFilterable = true,
-                                IsSortable = true,
-                            },
-                            new()
-                            {
-                                Name = "Mobile",
-                                DataType = "text",
-                                FieldName = "mobileNumber",
-                                FilterField = "mobileNumber",
-                                IsFilterable = true,
-                                IsSortable = true,
-                            },
-                            new()
-                            {
-                                Name = "Date of Birth",
-                                DataType = "text",
-                                FieldName = "dateOfBirth",
-                                FilterField = "dateOfBirth",
-                                IsFilterable = true,
-                                IsSortable = true,
-                            },
-                            new()
-                            {
-                                Name = "Date of Retirement",
-                                DataType = "text",
-                                FieldName = "dateOfRetirement",
-                                FilterField = "dateOfRetirement",
-                                IsFilterable = true,
-                                IsSortable = true,
-                            },
-                            new()
-                            {
-                                Name = "PPO No",
-                                DataType = "text",
-                                FieldName = "ppoNo",
-                                FilterField = "ppoNo",
-                                IsFilterable = true,
-                                IsSortable = true,
-                            },
+                            new() { Name = "PPO ID", FieldName = "ppoId" },
+                            new() { Name = "Name of Pensioner", FieldName = "pensionerName" },
+                            new() { Name = "Mobile", FieldName = "mobileNumber" },
+                            new() { Name = "Date of Birth", FieldName = "dateOfBirth" },
+                            new() { Name = "Date of Retirement", FieldName = "dateOfRetirement" },
+                            new() { Name = "PPO No", FieldName = "ppoNo" },
                         },
                         Data = await _pensionerDetailsService.GetAllPensioners(
                             GetCurrentFyYear(),
-                            GetTreasuryCode(),
-                            dynamicListQueryParameters
+                            GetTreasuryCode()
                         ),
-                        DataCount = _pensionerDetailsService.DataCount(),
                     },
                     Message = $"All PPO Details Received Successfully!",
                 };
@@ -268,10 +218,10 @@ namespace CTS_BE.Controllers.Pension
         [Tags("Pension: PPO Details")]
         [OpenApi]
         public async Task<
-            JsonAPIResponse<DynamicListResult<IEnumerable<PensionerListItemDTO>>>
+            JsonAPIResponse<TableResponseDTO<PensionerListItemDTO>>
         > GetAllNotApprovedPensioners()
         {
-            JsonAPIResponse<DynamicListResult<IEnumerable<PensionerListItemDTO>>> response = new();
+            JsonAPIResponse<TableResponseDTO<PensionerListItemDTO>> response = new();
             try
             {
                 response = new()
@@ -281,66 +231,17 @@ namespace CTS_BE.Controllers.Pension
                     {
                         Headers = new()
                         {
-                            new()
-                            {
-                                Name = "PPO ID",
-                                DataType = "text",
-                                FieldName = "ppoId",
-                                FilterField = "ppoId",
-                                IsFilterable = true,
-                                IsSortable = true,
-                            },
-                            new()
-                            {
-                                Name = "Name of Pensioner",
-                                DataType = "text",
-                                FieldName = "pensionerName",
-                                FilterField = "pensionerName",
-                                IsFilterable = true,
-                                IsSortable = true,
-                            },
-                            new()
-                            {
-                                Name = "Mobile",
-                                DataType = "text",
-                                FieldName = "mobileNumber",
-                                FilterField = "mobileNumber",
-                                IsFilterable = true,
-                                IsSortable = true,
-                            },
-                            new()
-                            {
-                                Name = "Date of Birth",
-                                DataType = "text",
-                                FieldName = "dateOfBirth",
-                                FilterField = "dateOfBirth",
-                                IsFilterable = true,
-                                IsSortable = true,
-                            },
-                            new()
-                            {
-                                Name = "Date of Retirement",
-                                DataType = "text",
-                                FieldName = "dateOfRetirement",
-                                FilterField = "dateOfRetirement",
-                                IsFilterable = true,
-                                IsSortable = true,
-                            },
-                            new()
-                            {
-                                Name = "PPO No",
-                                DataType = "text",
-                                FieldName = "ppoNo",
-                                FilterField = "ppoNo",
-                                IsFilterable = true,
-                                IsSortable = true,
-                            },
+                            new() { Name = "PPO ID", FieldName = "ppoId" },
+                            new() { Name = "Name of Pensioner", FieldName = "pensionerName" },
+                            new() { Name = "Mobile", FieldName = "mobileNumber" },
+                            new() { Name = "Date of Birth", FieldName = "dateOfBirth" },
+                            new() { Name = "Date of Retirement", FieldName = "dateOfRetirement" },
+                            new() { Name = "PPO No", FieldName = "ppoNo" },
                         },
                         Data = await _pensionerDetailsService.GetAllNonApprovedPensioners(
                             GetCurrentFyYear(),
                             GetTreasuryCode()
                         ),
-                        DataCount = _pensionerDetailsService.DataCount(),
                     },
                     Message = $"All Not Approved PPO Details Received Successfully!",
                 };

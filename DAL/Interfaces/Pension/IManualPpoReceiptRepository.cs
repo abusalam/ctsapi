@@ -22,5 +22,6 @@ namespace CTS_BE.DAL.Interfaces.Pension
             PpoReceipt ppoReceipt
         )
             where T : BaseDTO;
+        IQueryable<PpoReceipt> GetQueryablePpoReceipts();
     }
 }

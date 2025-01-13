@@ -1,5 +1,6 @@
 using AutoMapper;
 using CTS_BE.BAL.Interfaces.Pension;
+using CTS_BE.DAL;
 using CTS_BE.DAL.Entities.Pension;
 using CTS_BE.DAL.Interfaces.Pension;
 using CTS_BE.DTOs;
@@ -12,17 +13,20 @@ namespace CTS_BE.BAL.Services.Pension
     public class PensionBreakupService : BaseService, IPensionBreakupService
     {
         private readonly IBreakupRepository _billBreakupRepository;
+        private readonly PensionDbContext _pensionDbContext;
         private readonly IMapper _mapper;
         private readonly IClaimService _claimService;
 
         public PensionBreakupService(
             IBreakupRepository breakupRepository,
+            PensionDbContext pensionDbContext,
             IClaimService claimService,
             IMapper mapper
         )
             : base(claimService)
         {
             _billBreakupRepository = breakupRepository;
+            _pensionDbContext = pensionDbContext;
             _claimService = claimService;
             _mapper = mapper;
             _userId = _claimService.GetUserId();
@@ -41,7 +45,7 @@ namespace CTS_BE.BAL.Services.Pension
             {
                 breakupEntity.FillFrom(pensionBreakupEntryDTO);
 
-                var breakup = await _billBreakupRepository.GetSingleAysnc(entity =>
+                var breakup = await _pensionDbContext.Breakups.FirstOrDefaultAsync(entity =>
                     entity.ActiveFlag && entity.ComponentName == breakupEntity.ComponentName
                 );
 
@@ -52,10 +56,9 @@ namespace CTS_BE.BAL.Services.Pension
                 }
 
                 SetCreatedBy(breakupEntity);
+                await _pensionDbContext.Breakups.AddAsync(breakupEntity);
 
-                _billBreakupRepository.Add(breakupEntity);
-
-                if (await _billBreakupRepository.SaveChangesManagedAsync() == 0)
+                if (await _pensionDbContext.SaveChangesAsync() == 0)
                 {
                     response.FillDataSource(breakupEntity, $"Breakup not saved!");
                     return response;
@@ -75,18 +78,16 @@ namespace CTS_BE.BAL.Services.Pension
             return response;
         }
 
-        public async Task<IEnumerable<TResponse>> ListBreakup<TResponse>(
+        public async Task<List<PensionBreakupResponseDTO>> ListBreakup(
             short financialYear,
-            string treasuryCode,
-            DynamicListQueryParameters dynamicListQueryParameters
+            string treasuryCode
         )
         {
-            _dataCount = _billBreakupRepository.Count();
-            return await _billBreakupRepository.GetSelectedColumnByConditionAsync(
-                entity => entity.ActiveFlag,
-                entity => _mapper.Map<TResponse>(entity),
-                dynamicListQueryParameters
-            );
+            _dataCount = await _pensionDbContext.Breakups.CountAsync();
+            return await _pensionDbContext
+                .Breakups.Where(entity => entity.ActiveFlag)
+                .Select(entity => _mapper.Map<PensionBreakupResponseDTO>(entity))
+                .ToListAsync();
         }
 
         public async Task<List<TResponse>> GetBreakups<TResponse>(

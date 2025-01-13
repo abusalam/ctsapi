@@ -1,14 +1,5 @@
 ﻿namespace CTS_BE.DTOs
 {
-    public class DynamicListQueryParameters
-    {
-        public string? ListType { get; set; }
-        public int PageSize { get; set; } = 10;
-        public int PageIndex { get; set; } = 0;
-        public List<FilterParameter>? filterParameters { get; set; }
-        public SortParameter? sortParameters { get; set; }
-    }
-
     public class FilterParameter
     {
         public string? Field { get; set; }
@@ -20,13 +11,6 @@
     {
         public string? Field { get; set; } = "";
         public string? Order { get; set; } = "ASC";
-    }
-
-    public class DynamicListResult<T> : BaseDTO
-    {
-        public List<ListHeader> Headers { get; set; }
-        public T Data { get; set; }
-        public int DataCount { get; set; }
     }
 
     public class ListHeader

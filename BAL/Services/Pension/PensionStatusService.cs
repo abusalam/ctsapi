@@ -20,6 +20,7 @@ namespace CTS_BE.BAL.Services.Pension
         protected IMapper _mapper;
 
         public PensionStatusService(
+            PensionDbContext pensionDbContext,
             IPensionStatusRepository pensionStatusRepository,
             IClaimService claimService,
             IMapper mapper
@@ -27,7 +28,7 @@ namespace CTS_BE.BAL.Services.Pension
             : base(claimService)
         {
             _pensionStatusRepository = pensionStatusRepository;
-            _pensionDbContext = (PensionDbContext)pensionStatusRepository.GetDbContext();
+            _pensionDbContext = pensionDbContext;
             _claimService = claimService;
             _mapper = mapper;
             _userId = _claimService.GetUserId();
@@ -43,14 +44,15 @@ namespace CTS_BE.BAL.Services.Pension
             PensionStatusDTO pensionStatusDTO = new();
             try
             {
-                pensionStatusDTO = _mapper.Map<PensionStatusDTO>(
-                    await _pensionStatusRepository.GetSingleAysnc(entity =>
+                var ppoStatusEntity = await _pensionDbContext.PpoStatusFlags.FirstOrDefaultAsync(
+                    entity =>
                         entity.ActiveFlag
                         && entity.TreasuryCode == treasuryCode
                         && entity.PpoId == ppoId
                         && entity.StatusFlag == pensionStatusFlag
-                    )
                 );
+
+                pensionStatusDTO = _mapper.Map<PensionStatusDTO>(ppoStatusEntity);
                 if (pensionStatusDTO is null)
                 {
                     pensionStatusDTO = new() { StatusFlag = pensionStatusFlag };
@@ -79,13 +81,13 @@ namespace CTS_BE.BAL.Services.Pension
             PpoStatusFlag ppoStatusEntity = new();
             try
             {
-                Pensioner? pensioner = await _pensionDbContext
-                    .Pensioners.Where(entity =>
+                Pensioner? pensioner = await _pensionDbContext.Pensioners.FirstOrDefaultAsync(
+                    entity =>
                         entity.ActiveFlag
                         && entity.PpoId == pensionStatusEntryDTO.PpoId
                         && entity.TreasuryCode == treasuryCode
-                    )
-                    .FirstOrDefaultAsync();
+                );
+
                 if (pensioner is null)
                 {
                     pensionStatusEntryDTO.FillDataSource(
@@ -94,11 +96,13 @@ namespace CTS_BE.BAL.Services.Pension
                     );
                     return pensionStatusEntryDTO;
                 }
-                ppoStatusEntity = await _pensionStatusRepository.GetSingleAysnc(entity =>
-                    entity.ActiveFlag
-                    && entity.TreasuryCode == treasuryCode
-                    && entity.PpoId == pensionStatusEntryDTO.PpoId
-                    && entity.StatusFlag == pensionStatusEntryDTO.StatusFlag
+
+                ppoStatusEntity = await _pensionDbContext.PpoStatusFlags.FirstOrDefaultAsync(
+                    entity =>
+                        entity.ActiveFlag
+                        && entity.TreasuryCode == treasuryCode
+                        && entity.PpoId == pensionStatusEntryDTO.PpoId
+                        && entity.StatusFlag == pensionStatusEntryDTO.StatusFlag
                 );
 
                 if (ppoStatusEntity is null)
@@ -109,9 +113,8 @@ namespace CTS_BE.BAL.Services.Pension
                     ppoStatusEntity.FinancialYear = financialYear;
                     SetCreatedBy(ppoStatusEntity);
 
-                    _pensionStatusRepository.Add(ppoStatusEntity);
-
-                    await _pensionStatusRepository.SaveChangesManagedAsync();
+                    await _pensionDbContext.PpoStatusFlags.AddAsync(ppoStatusEntity);
+                    await _pensionDbContext.SaveChangesAsync();
                 }
             }
             catch (DbUpdateException ex)
@@ -133,19 +136,21 @@ namespace CTS_BE.BAL.Services.Pension
             PpoStatusFlag ppoStatusEntity = new();
             try
             {
-                ppoStatusEntity = await _pensionStatusRepository.GetSingleAysnc(entity =>
-                    entity.ActiveFlag
-                    && entity.FinancialYear == financialYear
-                    && entity.TreasuryCode == treasuryCode
-                    && entity.PpoId == ppoId
-                    && entity.StatusFlag == pensionStatusFlag
+                ppoStatusEntity = await _pensionDbContext.PpoStatusFlags.FirstOrDefaultAsync(
+                    entity =>
+                        entity.ActiveFlag
+                        && entity.FinancialYear == financialYear
+                        && entity.TreasuryCode == treasuryCode
+                        && entity.PpoId == ppoId
+                        && entity.StatusFlag == pensionStatusFlag
                 );
+
                 if (ppoStatusEntity is not null)
                 {
                     ppoStatusEntity.ActiveFlag = false;
                     SetUpdatedBy(ppoStatusEntity);
-                    _pensionStatusRepository.Update(ppoStatusEntity);
-                    if (await _pensionStatusRepository.SaveChangesManagedAsync() == 0)
+                    _pensionDbContext.PpoStatusFlags.Update(ppoStatusEntity);
+                    if (await _pensionDbContext.SaveChangesAsync() == 0)
                     {
                         PensionStatusDTO pensionStatusDTO = _mapper.Map<PensionStatusDTO>(
                             ppoStatusEntity

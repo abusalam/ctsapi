@@ -119,12 +119,10 @@ namespace CTS_BE.Controllers.Pension
         [OpenApi]
         [Obsolete("Use GetPpoReceipts instead")]
         public async Task<
-            JsonAPIResponse<DynamicListResult<IEnumerable<ListAllPpoReceiptsResponseDTO>>>
-        > GetAllPpoReceipts(DynamicListQueryParameters dynamicListQueryParameters)
+            JsonAPIResponse<TableResponseDTO<ListAllPpoReceiptsResponseDTO>>
+        > GetAllPpoReceipts()
         {
-            JsonAPIResponse<
-                DynamicListResult<IEnumerable<ListAllPpoReceiptsResponseDTO>>
-            > response = new();
+            JsonAPIResponse<TableResponseDTO<ListAllPpoReceiptsResponseDTO>> response = new();
             try
             {
                 response = new()
@@ -134,49 +132,15 @@ namespace CTS_BE.Controllers.Pension
                     {
                         Headers = new()
                         {
-                            new()
-                            {
-                                Name = "Treasury Receipt No",
-                                DataType = "text",
-                                FieldName = "treasuryReceiptNo",
-                                FilterField = "treasuryReceiptNo",
-                                IsFilterable = true,
-                                IsSortable = true,
-                            },
-                            new()
-                            {
-                                Name = "PPO No",
-                                DataType = "text",
-                                FieldName = "ppoNo",
-                                FilterField = "ppoNo",
-                                IsFilterable = true,
-                                IsSortable = true,
-                            },
-                            new()
-                            {
-                                Name = "Name of Pensioner",
-                                DataType = "text",
-                                FieldName = "pensionerName",
-                                FilterField = "pensionerName",
-                                IsFilterable = true,
-                                IsSortable = true,
-                            },
-                            new()
-                            {
-                                Name = "Date of Receipt",
-                                DataType = "text",
-                                FieldName = "receiptDate",
-                                FilterField = "receiptDate",
-                                IsFilterable = true,
-                                IsSortable = true,
-                            },
+                            new() { Name = "Treasury Receipt No", FieldName = "treasuryReceiptNo" },
+                            new() { Name = "PPO No", FieldName = "ppoNo" },
+                            new() { Name = "Name of Pensioner", FieldName = "pensionerName" },
+                            new() { Name = "Date of Receipt", FieldName = "receiptDate" },
                         },
                         Data = await _ppoReceiptService.GetAllPpoReceipts(
                             GetCurrentFyYear(),
-                            GetTreasuryCode(),
-                            dynamicListQueryParameters
+                            GetTreasuryCode()
                         ),
-                        DataCount = _ppoReceiptService.DataCount(),
                     },
                     Message = $"All PPO Receipts Received Successfully!",
                 };

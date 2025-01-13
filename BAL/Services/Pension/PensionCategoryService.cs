@@ -1,5 +1,6 @@
 using AutoMapper;
 using CTS_BE.BAL.Interfaces.Pension;
+using CTS_BE.DAL;
 using CTS_BE.DAL.Entities.Pension;
 using CTS_BE.DAL.Interfaces.Pension;
 using CTS_BE.DTOs;
@@ -11,12 +12,14 @@ namespace CTS_BE.BAL.Services.Pension
 {
     public class PensionCategoryService : BaseService, IPensionCategoryService
     {
+        private readonly PensionDbContext _pensionDbContext;
         private readonly IPrimaryCategoryRepository _primaryCategoryRepository;
         private readonly ISubCategoryRepository _subCategoryRepository;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
 
         public PensionCategoryService(
+            PensionDbContext pensionDbContext,
             IPrimaryCategoryRepository primaryCategoryRepository,
             ISubCategoryRepository subCategoryRepository,
             ICategoryRepository categoryRepository,
@@ -25,6 +28,7 @@ namespace CTS_BE.BAL.Services.Pension
         )
             : base(claimService)
         {
+            _pensionDbContext = pensionDbContext;
             _primaryCategoryRepository = primaryCategoryRepository;
             _subCategoryRepository = subCategoryRepository;
             _categoryRepository = categoryRepository;
@@ -44,10 +48,12 @@ namespace CTS_BE.BAL.Services.Pension
             {
                 primaryCategoryEntity.FillFrom(pensionPrimaryCategoryEntryDTO);
 
-                var primaryCategory = await _primaryCategoryRepository.GetSingleAysnc(entity =>
-                    entity.ActiveFlag
-                    && entity.PrimaryCategoryName == primaryCategoryEntity.PrimaryCategoryName
+                var primaryCategory = await _pensionDbContext.PrimaryCategories.FirstOrDefaultAsync(
+                    entity =>
+                        entity.ActiveFlag
+                        && entity.PrimaryCategoryName == primaryCategoryEntity.PrimaryCategoryName
                 );
+
                 if (primaryCategory != null)
                 {
                     response.FillDataSource(
@@ -60,9 +66,9 @@ namespace CTS_BE.BAL.Services.Pension
                 primaryCategoryEntity.ActiveFlag = true;
                 primaryCategoryEntity.CreatedAt = DateTime.Now;
 
-                _primaryCategoryRepository.Add(primaryCategoryEntity);
+                await _pensionDbContext.PrimaryCategories.AddAsync(primaryCategoryEntity);
 
-                if (await _primaryCategoryRepository.SaveChangesManagedAsync() == 0)
+                if (await _pensionDbContext.SaveChangesAsync() == 0)
                 {
                     response.FillDataSource(primaryCategoryEntity, $"Primary Category not saved!");
                     return response;
@@ -86,18 +92,16 @@ namespace CTS_BE.BAL.Services.Pension
             return response;
         }
 
-        public async Task<IEnumerable<TResponse>> ListPrimaryCategory<TResponse>(
+        public async Task<List<PensionPrimaryCategoryResponseDTO>> ListPrimaryCategory(
             short financialYear,
-            string treasuryCode,
-            DynamicListQueryParameters dynamicListQueryParameters
+            string treasuryCode
         )
         {
-            _dataCount = _primaryCategoryRepository.Count();
-            return await _primaryCategoryRepository.GetSelectedColumnByConditionAsync(
-                entity => entity.ActiveFlag,
-                entity => _mapper.Map<TResponse>(entity),
-                dynamicListQueryParameters
-            );
+            _dataCount = await _pensionDbContext.PrimaryCategories.CountAsync();
+            return await _pensionDbContext
+                .PrimaryCategories.Where(entity => entity.ActiveFlag)
+                .Select(entity => _mapper.Map<PensionPrimaryCategoryResponseDTO>(entity))
+                .ToListAsync();
         }
 
         public async Task<List<PensionPrimaryCategoryResponseDTO>> GetPrimaryCategories(
@@ -105,7 +109,11 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
-            return await _primaryCategoryRepository.GetPrimaryCategoriesAsync();
+            return await _pensionDbContext
+                .PrimaryCategories.Select(entity =>
+                    _mapper.Map<PensionPrimaryCategoryResponseDTO>(entity)
+                )
+                .ToListAsync();
         }
 
         public async Task<TResponse> CreatePensionSubCategory<TEntry, TResponse>(
@@ -121,9 +129,12 @@ namespace CTS_BE.BAL.Services.Pension
             {
                 subCategoryEntity.FillFrom(pensionSubCategoryEntryDTO);
 
-                var subCategory = await _subCategoryRepository.GetSingleAysnc(entity =>
-                    entity.ActiveFlag && entity.SubCategoryName == subCategoryEntity.SubCategoryName
+                var subCategory = await _pensionDbContext.SubCategories.FirstOrDefaultAsync(
+                    entity =>
+                        entity.ActiveFlag
+                        && entity.SubCategoryName == subCategoryEntity.SubCategoryName
                 );
+
                 if (subCategory != null)
                 {
                     response.FillDataSource(subCategoryEntity, $"Sub Category already exists!");
@@ -133,9 +144,9 @@ namespace CTS_BE.BAL.Services.Pension
                 subCategoryEntity.ActiveFlag = true;
                 subCategoryEntity.CreatedAt = DateTime.Now;
 
-                _subCategoryRepository.Add(subCategoryEntity);
+                await _pensionDbContext.SubCategories.AddAsync(subCategoryEntity);
 
-                if (await _subCategoryRepository.SaveChangesManagedAsync() == 0)
+                if (await _pensionDbContext.SaveChangesAsync() == 0)
                 {
                     response.FillDataSource(subCategoryEntity, $"Sub Category not saved!");
                     return response;
@@ -155,18 +166,16 @@ namespace CTS_BE.BAL.Services.Pension
             return response;
         }
 
-        public async Task<IEnumerable<TResponse>> ListSubCategory<TResponse>(
+        public async Task<List<PensionSubCategoryResponseDTO>> ListSubCategory(
             short financialYear,
-            string treasuryCode,
-            DynamicListQueryParameters dynamicListQueryParameters
+            string treasuryCode
         )
         {
-            _dataCount = _subCategoryRepository.Count();
-            return await _subCategoryRepository.GetSelectedColumnByConditionAsync(
-                entity => entity.ActiveFlag,
-                entity => _mapper.Map<TResponse>(entity),
-                dynamicListQueryParameters
-            );
+            _dataCount = await _pensionDbContext.SubCategories.CountAsync();
+            return await _pensionDbContext
+                .SubCategories.Where(entity => entity.ActiveFlag)
+                .Select(entity => _mapper.Map<PensionSubCategoryResponseDTO>(entity))
+                .ToListAsync();
         }
 
         public async Task<List<TResponse>> GetSubCategories<TResponse>(
@@ -260,18 +269,16 @@ namespace CTS_BE.BAL.Services.Pension
             }
         }
 
-        public async Task<IEnumerable<TResponse>> ListPensionCategory<TResponse>(
+        public async Task<List<PensionCategoryListDTO>> ListPensionCategory(
             short financialYear,
-            string treasuryCode,
-            DynamicListQueryParameters dynamicListQueryParameters
+            string treasuryCode
         )
         {
-            _dataCount = _categoryRepository.Count();
-            return await _categoryRepository.GetSelectedColumnByConditionAsync(
-                entity => entity.ActiveFlag,
-                entity => _mapper.Map<TResponse>(entity),
-                dynamicListQueryParameters
-            );
+            _dataCount = await _pensionDbContext.Categories.CountAsync();
+            return await _pensionDbContext
+                .Categories.Where(entity => entity.ActiveFlag)
+                .Select(entity => _mapper.Map<PensionCategoryListDTO>(entity))
+                .ToListAsync();
         }
 
         public async Task<List<TResponse>> GetPensionCategories<TResponse>(

@@ -9,10 +9,9 @@ namespace CTS_BE.BAL.Interfaces.Pension
             short financialYear,
             string treasuryCode
         );
-        public Task<IEnumerable<TResponse>> ListBreakup<TResponse>(
+        public Task<List<PensionBreakupResponseDTO>> ListBreakup(
             short financialYear,
-            string treasuryCode,
-            DynamicListQueryParameters dynamicListQueryParameters
+            string treasuryCode
         );
         public Task<List<TResponse>> GetBreakups<TResponse>(
             short financialYear,

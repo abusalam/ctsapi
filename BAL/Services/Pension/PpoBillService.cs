@@ -22,19 +22,20 @@ namespace CTS_BE.BAL.Services.Pension
         private readonly PensionDbContext _pensionDbContext;
 
         public PpoBillService(
+            PensionDbContext pensionDbContext,
+            IClaimService claimService,
+            IMapper mapper,
             IPpoBillRepository ppoBillRepository,
             IBankBranchRepository bankBranchRepository,
-            ITreasuryRepository treasuryRepository,
-            IMapper mapper,
-            IClaimService claimService
+            ITreasuryRepository treasuryRepository
         )
             : base(claimService)
         {
-            _mapper = mapper;
+            _pensionDbContext = pensionDbContext;
             _ppoBillRepository = ppoBillRepository;
             _bankBranchRepository = bankBranchRepository;
             _treasuryRepository = treasuryRepository;
-            _pensionDbContext = (PensionDbContext)this._ppoBillRepository.GetDbContext();
+            _mapper = mapper;
         }
 
         public async Task<RegularBillListResponseDTO> GetRegularPensionBills(

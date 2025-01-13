@@ -14,13 +14,13 @@ namespace CTS_BE.BAL.Services.Pension
     public class PensionerDetailsService : BaseService, IPensionerDetailsService
     {
         private readonly IPensionerDetailsRepository _pensionerDetailsRepository;
+        private readonly PensionDbContext _pensionDbContext;
         private readonly IPpoIdSequenceRepository _ppoIdSequenceRepository;
         private readonly IClaimService _claimService;
         private readonly IMapper _mapper;
 
-        private readonly PensionDbContext _pensionDbContext;
-
         public PensionerDetailsService(
+            PensionDbContext pensionDbContext,
             IPensionerDetailsRepository pensionerDetailsRepository,
             IPpoIdSequenceRepository ppoIdSequenceRepository,
             IClaimService claimService,
@@ -29,7 +29,7 @@ namespace CTS_BE.BAL.Services.Pension
             : base(claimService)
         {
             _pensionerDetailsRepository = pensionerDetailsRepository;
-            _pensionDbContext = (PensionDbContext)_pensionerDetailsRepository.GetDbContext();
+            _pensionDbContext = pensionDbContext;
             _ppoIdSequenceRepository = ppoIdSequenceRepository;
             _claimService = claimService;
             _mapper = mapper;
@@ -269,43 +269,43 @@ namespace CTS_BE.BAL.Services.Pension
             }
         }
 
-        public async Task<IEnumerable<PensionerListItemDTO>> GetAllPensioners(
-            short financialYear,
-            string treasuryCode,
-            DynamicListQueryParameters dynamicListQueryParameters
-        )
-        {
-            _dataCount = _pensionerDetailsRepository.Count();
-            return await _pensionerDetailsRepository.GetSelectedColumnByConditionAsync(
-                entity =>
-                    entity.ActiveFlag
-                    && entity.FinancialYear == financialYear
-                    && entity.TreasuryCode == treasuryCode,
-                entity => _mapper.Map<PensionerListItemDTO>(entity),
-                dynamicListQueryParameters
-            );
-        }
-
-        public async Task<List<T>> GetPensioners<T>(short financialYear, string treasuryCode)
-        {
-            return await _pensionerDetailsRepository.GetPensionerListAsync(
-                financialYear,
-                treasuryCode,
-                entity => _mapper.Map<T>(entity)
-            );
-        }
-
-        public async Task<IEnumerable<PensionerListItemDTO>> GetAllNonApprovedPensioners(
+        public async Task<List<PensionerListItemDTO>> GetAllPensioners(
             short financialYear,
             string treasuryCode
         )
         {
-            var pensioners =
+            return await _pensionDbContext
+                .Pensioners.Where(entity =>
+                    entity.ActiveFlag
+                    && entity.FinancialYear == financialYear
+                    && entity.TreasuryCode == treasuryCode
+                )
+                .Select(entity => _mapper.Map<PensionerListItemDTO>(entity))
+                .ToListAsync();
+        }
+
+        public async Task<List<T>> GetPensioners<T>(short financialYear, string treasuryCode)
+        {
+            return await _pensionDbContext
+                .Pensioners.Where(entity =>
+                    entity.FinancialYear == financialYear && entity.TreasuryCode == treasuryCode
+                )
+                .Select(entity => _mapper.Map<T>(entity))
+                .ToListAsync();
+        }
+
+        public async Task<List<PensionerListItemDTO>> GetAllNonApprovedPensioners(
+            short financialYear,
+            string treasuryCode
+        )
+        {
+            var pensioners = (
                 await _pensionerDetailsRepository.GetAllNotApprovedPensionerDetailsAsync(
                     financialYear,
                     treasuryCode,
                     entity => _mapper.Map<PensionerListItemDTO>(entity)
-                );
+                )
+            ).ToList();
             _dataCount = pensioners.Count();
             return pensioners;
         }

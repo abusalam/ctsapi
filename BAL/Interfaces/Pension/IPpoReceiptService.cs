@@ -11,10 +11,9 @@ namespace CTS_BE.BAL.Interfaces.Pension
         );
         public Task<ManualPpoReceiptResponseDTO> GetPpoReceipt(string treasuryReceiptNo);
         public Task<ManualPpoReceiptResponseDTO> GetPpoReceipt(long receiptId);
-        public Task<IEnumerable<ListAllPpoReceiptsResponseDTO>> GetAllPpoReceipts(
+        public Task<List<ListAllPpoReceiptsResponseDTO>> GetAllPpoReceipts(
             short financialYear,
-            string treasuryCode,
-            DynamicListQueryParameters dynamicListQueryParameters
+            string treasuryCode
         );
         public Task<List<T>> GetPpoReceipts<T>(short financialYear, string treasuryCode);
         public Task<List<T>> GetAllUnusedPpoReceipts<T>(short financialYear, string treasuryCode);

@@ -108,12 +108,10 @@ namespace CTS_BE.Controllers.Pension
         [OpenApi]
         [Obsolete("Use GetPrimaryCategories instead")]
         public async Task<
-            JsonAPIResponse<DynamicListResult<IEnumerable<PensionPrimaryCategoryResponseDTO>>>
-        > GetAllPrimaryCategories(DynamicListQueryParameters dynamicListQueryParameters)
+            JsonAPIResponse<TableResponseDTO<PensionPrimaryCategoryResponseDTO>>
+        > GetAllPrimaryCategories()
         {
-            JsonAPIResponse<
-                DynamicListResult<IEnumerable<PensionPrimaryCategoryResponseDTO>>
-            > response = new();
+            JsonAPIResponse<TableResponseDTO<PensionPrimaryCategoryResponseDTO>> response = new();
             try
             {
                 response = new()
@@ -123,41 +121,18 @@ namespace CTS_BE.Controllers.Pension
                     {
                         Headers = new()
                         {
-                            new()
-                            {
-                                Name = "Primary Category ID",
-                                DataType = "text",
-                                FieldName = "id",
-                                FilterField = "id",
-                                IsFilterable = true,
-                                IsSortable = true,
-                            },
-                            new()
-                            {
-                                Name = "Head of Account",
-                                DataType = "text",
-                                FieldName = "hoaId",
-                                FilterField = "hoaId",
-                                IsFilterable = true,
-                                IsSortable = true,
-                            },
+                            new() { Name = "Primary Category ID", FieldName = "id" },
+                            new() { Name = "Head of Account", FieldName = "hoaId" },
                             new()
                             {
                                 Name = "Primary Category Name",
-                                DataType = "text",
                                 FieldName = "primaryCategoryName",
-                                FilterField = "primaryCategoryName",
-                                IsFilterable = true,
-                                IsSortable = true,
                             },
                         },
-                        Data =
-                            await _pensionCategoryService.ListPrimaryCategory<PensionPrimaryCategoryResponseDTO>(
-                                GetCurrentFyYear(),
-                                GetTreasuryCode(),
-                                dynamicListQueryParameters
-                            ),
-                        DataCount = _pensionCategoryService.DataCount(),
+                        Data = await _pensionCategoryService.ListPrimaryCategory(
+                            GetCurrentFyYear(),
+                            GetTreasuryCode()
+                        ),
                     },
                     Message = $"All Primary Category Details Received Successfully!",
                 };
@@ -212,12 +187,10 @@ namespace CTS_BE.Controllers.Pension
         [OpenApi]
         [Obsolete("Use GetSubCategories instead")]
         public async Task<
-            JsonAPIResponse<DynamicListResult<IEnumerable<PensionSubCategoryResponseDTO>>>
-        > GetAllSubCategories(DynamicListQueryParameters dynamicListQueryParameters)
+            JsonAPIResponse<TableResponseDTO<PensionSubCategoryResponseDTO>>
+        > GetAllSubCategories()
         {
-            JsonAPIResponse<
-                DynamicListResult<IEnumerable<PensionSubCategoryResponseDTO>>
-            > response = new();
+            JsonAPIResponse<TableResponseDTO<PensionSubCategoryResponseDTO>> response = new();
             try
             {
                 response = new()
@@ -227,32 +200,13 @@ namespace CTS_BE.Controllers.Pension
                     {
                         Headers = new()
                         {
-                            new()
-                            {
-                                Name = "Sub Category ID",
-                                DataType = "text",
-                                FieldName = "id",
-                                FilterField = "id",
-                                IsFilterable = true,
-                                IsSortable = true,
-                            },
-                            new()
-                            {
-                                Name = "Sub Category Name",
-                                DataType = "text",
-                                FieldName = "subCategoryName",
-                                FilterField = "subCategoryName",
-                                IsFilterable = true,
-                                IsSortable = true,
-                            },
+                            new() { Name = "Sub Category ID", FieldName = "id" },
+                            new() { Name = "Sub Category Name", FieldName = "subCategoryName" },
                         },
-                        Data =
-                            await _pensionCategoryService.ListSubCategory<PensionSubCategoryResponseDTO>(
-                                GetCurrentFyYear(),
-                                GetTreasuryCode(),
-                                dynamicListQueryParameters
-                            ),
-                        DataCount = _pensionCategoryService.DataCount(),
+                        Data = await _pensionCategoryService.ListSubCategory(
+                            GetCurrentFyYear(),
+                            GetTreasuryCode()
+                        ),
                     },
                     Message = $"All Sub Category Details Received Successfully!",
                 };
@@ -383,11 +337,10 @@ namespace CTS_BE.Controllers.Pension
         [OpenApi]
         [Obsolete("Use GetCategories instead")]
         public async Task<
-            JsonAPIResponse<DynamicListResult<IEnumerable<PensionCategoryListDTO>>>
-        > GetAllCategories(DynamicListQueryParameters dynamicListQueryParameters)
+            JsonAPIResponse<TableResponseDTO<PensionCategoryListDTO>>
+        > GetAllCategories()
         {
-            JsonAPIResponse<DynamicListResult<IEnumerable<PensionCategoryListDTO>>> response =
-                new();
+            JsonAPIResponse<TableResponseDTO<PensionCategoryListDTO>> response = new();
             try
             {
                 response = new()
@@ -397,50 +350,15 @@ namespace CTS_BE.Controllers.Pension
                     {
                         Headers = new()
                         {
-                            new()
-                            {
-                                Name = "Category ID",
-                                DataType = "text",
-                                FieldName = "id",
-                                FilterField = "id",
-                                IsFilterable = true,
-                                IsSortable = true,
-                            },
-                            new()
-                            {
-                                Name = "Primary Category ID",
-                                DataType = "text",
-                                FieldName = "primaryCategoryId",
-                                FilterField = "primaryCategoryId",
-                                IsFilterable = true,
-                                IsSortable = true,
-                            },
-                            new()
-                            {
-                                Name = "Sub Category ID",
-                                DataType = "text",
-                                FieldName = "subCategoryId",
-                                FilterField = "subCategoryId",
-                                IsFilterable = true,
-                                IsSortable = true,
-                            },
-                            new()
-                            {
-                                Name = "Category Name",
-                                DataType = "text",
-                                FieldName = "categoryName",
-                                FilterField = "categoryName",
-                                IsFilterable = true,
-                                IsSortable = true,
-                            },
+                            new() { Name = "Category ID", FieldName = "id" },
+                            new() { Name = "Primary Category ID", FieldName = "primaryCategoryId" },
+                            new() { Name = "Sub Category ID", FieldName = "subCategoryId" },
+                            new() { Name = "Category Name", FieldName = "categoryName" },
                         },
-                        Data =
-                            await _pensionCategoryService.ListPensionCategory<PensionCategoryListDTO>(
-                                GetCurrentFyYear(),
-                                GetTreasuryCode(),
-                                dynamicListQueryParameters
-                            ),
-                        DataCount = _pensionCategoryService.DataCount(),
+                        Data = await _pensionCategoryService.ListPensionCategory(
+                            GetCurrentFyYear(),
+                            GetTreasuryCode()
+                        ),
                     },
                     Message = $"All PPO Details Received Successfully!",
                 };

@@ -21,13 +21,12 @@ namespace CTS_BE.BAL.Interfaces.Pension
             string treasuryCode
         );
         public Task<T> GetPensioner<T>(int ppoId, short financialYear, string treasuryCode);
-        public Task<IEnumerable<PensionerListItemDTO>> GetAllPensioners(
+        public Task<List<PensionerListItemDTO>> GetAllPensioners(
             short financialYear,
-            string treasuryCode,
-            DynamicListQueryParameters dynamicListQueryParameters
+            string treasuryCode
         );
         public Task<List<T>> GetPensioners<T>(short financialYear, string treasuryCode);
-        public Task<IEnumerable<PensionerListItemDTO>> GetAllNonApprovedPensioners(
+        public Task<List<PensionerListItemDTO>> GetAllNonApprovedPensioners(
             short financialYear,
             string treasuryCode
         );

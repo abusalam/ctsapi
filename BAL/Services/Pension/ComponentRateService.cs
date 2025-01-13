@@ -1,5 +1,6 @@
 using AutoMapper;
 using CTS_BE.BAL.Interfaces.Pension;
+using CTS_BE.DAL;
 using CTS_BE.DAL.Entities.Pension;
 using CTS_BE.DAL.Interfaces.Pension;
 using CTS_BE.DTOs;
@@ -11,20 +12,23 @@ namespace CTS_BE.BAL.Services.Pension
 {
     public class ComponentRateService : BaseService, IComponentRateService
     {
+        private readonly PensionDbContext _context;
         private readonly IComponentRateRepository _pensionRateRepository;
         private readonly IClaimService _claimService;
         private readonly IMapper _mapper;
 
         public ComponentRateService(
             IComponentRateRepository pensionRateRepository,
+            PensionDbContext context,
             IClaimService claimService,
             IMapper mapper
         )
             : base(claimService)
         {
-            _pensionRateRepository = pensionRateRepository;
+            _context = context;
             _claimService = claimService;
             _mapper = mapper;
+            _pensionRateRepository = pensionRateRepository;
         }
 
         public async Task<TResponse> CreateComponentRates<TEntry, TResponse>(
@@ -41,9 +45,10 @@ namespace CTS_BE.BAL.Services.Pension
                 componentRateEntity.FillFrom(pensionRateEntryDTO);
                 SetCreatedBy(componentRateEntity);
 
-                _pensionRateRepository.Add(componentRateEntity);
+                // Use AddAsync directly on the DbSet
+                await _context.Set<ComponentRate>().AddAsync(componentRateEntity);
 
-                _dataCount = await _pensionRateRepository.SaveChangesManagedAsync();
+                _dataCount = await _context.SaveChangesAsync();
                 if (_dataCount == 0)
                 {
                     response.FillDataSource(componentRateEntity, $"Component Rate not saved!");
@@ -64,18 +69,20 @@ namespace CTS_BE.BAL.Services.Pension
             return response;
         }
 
-        public async Task<IEnumerable<TResponse>> ListComponentRates<TResponse>(
+        public async Task<List<ComponentRateResponseDTO>> ListComponentRates(
             short financialYear,
-            string treasuryCode,
-            DynamicListQueryParameters dynamicListQueryParameters
+            string treasuryCode
         )
         {
-            _dataCount = _pensionRateRepository.Count();
-            return await _pensionRateRepository.GetSelectedColumnByConditionAsync(
-                entity => entity.ActiveFlag,
-                entity => _mapper.Map<TResponse>(entity),
-                dynamicListQueryParameters
-            );
+            // Use CountAsync directly on the DbSet
+            _dataCount = await _context
+                .Set<ComponentRate>()
+                .CountAsync(entity => entity.ActiveFlag);
+            return await _context
+                .Set<ComponentRate>()
+                .Where(entity => entity.ActiveFlag)
+                .Select(entity => _mapper.Map<ComponentRateResponseDTO>(entity))
+                .ToListAsync();
         }
 
         public async Task<List<TResponse>> ListComponentRatesByCategoryId<TResponse>(

@@ -1,9 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using CTS_BE.DAL.Entities.Pension;
 using CTS_BE.DAL.Interfaces.Pension;
+using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Repositories.Pension
 {
@@ -11,8 +10,10 @@ namespace CTS_BE.DAL.Repositories.Pension
         : Repository<PpoIdSequence, PensionDbContext>,
             IPpoIdSequenceRepository
     {
+        private readonly PensionDbContext _context;
+
         public PpoIdSequenceRepository(PensionDbContext context)
-            : base(context) { }
+            : base(context) => _context = context;
 
         public async Task<int> GetNextPpoId(short financialYear, string treasuryCode)
         {
@@ -21,17 +22,16 @@ namespace CTS_BE.DAL.Repositories.Pension
 
             try
             {
-                ppoIdSequenceEntity = await GetSingleAysnc(entity =>
+                // Use FirstOrDefaultAsync to get the entity
+                ppoIdSequenceEntity = await _context.PpoIdSequences.FirstOrDefaultAsync(entity =>
                     entity.TreasuryCode == treasuryCode
-                );
+                )!;
+
                 if (ppoIdSequenceEntity?.NextSequenceValue > 0)
                 {
-                    //TODO: Not to increase when saving ppo details fails
                     ppoIdSequenceEntity.NextSequenceValue++;
-                    if (Update(ppoIdSequenceEntity))
-                    {
-                        seqValue = ppoIdSequenceEntity.NextSequenceValue;
-                    }
+                    _context.PpoIdSequences.Update(ppoIdSequenceEntity); // Update the entity
+                    seqValue = ppoIdSequenceEntity.NextSequenceValue;
                 }
                 else
                 {
@@ -40,9 +40,11 @@ namespace CTS_BE.DAL.Repositories.Pension
                         TreasuryCode = treasuryCode,
                         NextSequenceValue = 1,
                     };
-                    Add(ppoIdSequenceEntity);
+                    await _context.PpoIdSequences.AddAsync(ppoIdSequenceEntity);
                 }
-                if (await SaveChangesManagedAsync() > 0)
+
+                // Save changes asynchronously
+                if (await _context.SaveChangesAsync() > 0)
                 {
                     seqValue = ppoIdSequenceEntity.NextSequenceValue;
                 }

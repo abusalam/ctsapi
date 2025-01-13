@@ -66,11 +66,10 @@ namespace CTS_BE.Controllers.Pension
         [OpenApi]
         [Obsolete("Use GetComponents instead")]
         public async Task<
-            JsonAPIResponse<DynamicListResult<IEnumerable<PensionBreakupResponseDTO>>>
-        > GetAllComponents(DynamicListQueryParameters dynamicListQueryParameters)
+            JsonAPIResponse<TableResponseDTO<PensionBreakupResponseDTO>>
+        > GetAllComponents()
         {
-            JsonAPIResponse<DynamicListResult<IEnumerable<PensionBreakupResponseDTO>>> response =
-                new();
+            JsonAPIResponse<TableResponseDTO<PensionBreakupResponseDTO>> response = new();
             try
             {
                 response = new()
@@ -80,49 +79,15 @@ namespace CTS_BE.Controllers.Pension
                     {
                         Headers = new()
                         {
-                            new()
-                            {
-                                Name = "Bill Component ID",
-                                DataType = "text",
-                                FieldName = "id",
-                                FilterField = "id",
-                                IsFilterable = true,
-                                IsSortable = true,
-                            },
-                            new()
-                            {
-                                Name = "Component Name",
-                                DataType = "text",
-                                FieldName = "componentName",
-                                FilterField = "componentName",
-                                IsFilterable = true,
-                                IsSortable = true,
-                            },
-                            new()
-                            {
-                                Name = "Component Type",
-                                DataType = "text",
-                                FieldName = "componentType",
-                                FilterField = "componentType",
-                                IsFilterable = true,
-                                IsSortable = true,
-                            },
-                            new()
-                            {
-                                Name = "Relief Allowed",
-                                DataType = "text",
-                                FieldName = "reliefFlag",
-                                FilterField = "reliefFlag",
-                                IsFilterable = true,
-                                IsSortable = true,
-                            },
+                            new() { Name = "Bill Component ID", FieldName = "id" },
+                            new() { Name = "Component Name", FieldName = "componentName" },
+                            new() { Name = "Component Type", FieldName = "componentType" },
+                            new() { Name = "Relief Allowed", FieldName = "reliefFlag" },
                         },
-                        Data = await _pensionBreakupService.ListBreakup<PensionBreakupResponseDTO>(
+                        Data = await _pensionBreakupService.ListBreakup(
                             GetCurrentFyYear(),
-                            GetTreasuryCode(),
-                            dynamicListQueryParameters
+                            GetTreasuryCode()
                         ),
-                        DataCount = _pensionBreakupService.DataCount(),
                     },
                     Message = $"All Bill Breakups Received Successfully!",
                 };
@@ -262,11 +227,10 @@ namespace CTS_BE.Controllers.Pension
         [OpenApi]
         [Obsolete("Use GetComponentRatesByCategoryId instead")]
         public async Task<
-            JsonAPIResponse<DynamicListResult<IEnumerable<ComponentRateResponseDTO>>>
-        > GetAllComponentRates(DynamicListQueryParameters dynamicListQueryParameters)
+            JsonAPIResponse<TableResponseDTO<ComponentRateResponseDTO>>
+        > GetAllComponentRates()
         {
-            JsonAPIResponse<DynamicListResult<IEnumerable<ComponentRateResponseDTO>>> response =
-                new();
+            JsonAPIResponse<TableResponseDTO<ComponentRateResponseDTO>> response = new();
             try
             {
                 response = new()
@@ -276,68 +240,17 @@ namespace CTS_BE.Controllers.Pension
                     {
                         Headers = new()
                         {
-                            new()
-                            {
-                                Name = "Component Rate ID",
-                                DataType = "text",
-                                FieldName = "id",
-                                FilterField = "id",
-                                IsFilterable = true,
-                                IsSortable = true,
-                            },
-                            new()
-                            {
-                                Name = "Category ID",
-                                DataType = "text",
-                                FieldName = "categoryId",
-                                FilterField = "categoryId",
-                                IsFilterable = true,
-                                IsSortable = true,
-                            },
-                            new()
-                            {
-                                Name = "Bill Breakup ID",
-                                DataType = "text",
-                                FieldName = "breakupId",
-                                FilterField = "breakupId",
-                                IsFilterable = true,
-                                IsSortable = true,
-                            },
-                            new()
-                            {
-                                Name = "Effective From Date",
-                                DataType = "text",
-                                FieldName = "effectiveFromDate",
-                                FilterField = "effectiveFromDate",
-                                IsFilterable = true,
-                                IsSortable = true,
-                            },
-                            new()
-                            {
-                                Name = "Rate Amount",
-                                DataType = "text",
-                                FieldName = "rateAmount",
-                                FilterField = "rateAmount",
-                                IsFilterable = true,
-                                IsSortable = true,
-                            },
-                            new()
-                            {
-                                Name = "Rate Type",
-                                DataType = "text",
-                                FieldName = "rateType",
-                                FilterField = "rateType",
-                                IsFilterable = true,
-                                IsSortable = true,
-                            },
+                            new() { Name = "Component Rate ID", FieldName = "id" },
+                            new() { Name = "Category ID", FieldName = "categoryId" },
+                            new() { Name = "Bill Breakup ID", FieldName = "breakupId" },
+                            new() { Name = "Effective From Date", FieldName = "effectiveFromDate" },
+                            new() { Name = "Rate Amount", FieldName = "rateAmount" },
+                            new() { Name = "Rate Type", FieldName = "rateType" },
                         },
-                        Data =
-                            await _pensionRateService.ListComponentRates<ComponentRateResponseDTO>(
-                                GetCurrentFyYear(),
-                                GetTreasuryCode(),
-                                dynamicListQueryParameters
-                            ),
-                        DataCount = _pensionRateService.DataCount(),
+                        Data = await _pensionRateService.ListComponentRates(
+                            GetCurrentFyYear(),
+                            GetTreasuryCode()
+                        ),
                     },
                     Message = $"All Bill Breakups Received Successfully!",
                 };

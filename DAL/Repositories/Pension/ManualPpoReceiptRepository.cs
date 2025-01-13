@@ -110,5 +110,10 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             return await Task.FromResult(result);
         }
+
+        public IQueryable<PpoReceipt> GetQueryablePpoReceipts()
+        {
+            return _context.PpoReceipts;
+        }
     }
 }

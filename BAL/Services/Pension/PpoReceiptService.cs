@@ -1,5 +1,6 @@
 using AutoMapper;
 using CTS_BE.BAL.Interfaces.Pension;
+using CTS_BE.DAL;
 using CTS_BE.DAL.Entities.Pension;
 using CTS_BE.DAL.Interfaces.Pension;
 using CTS_BE.DTOs;
@@ -14,11 +15,13 @@ namespace CTS_BE.BAL.Services.Pension
         private readonly IManualPpoReceiptRepository _manualPpoReceiptRepository;
         private readonly IClaimService _claimService;
         private readonly IMapper _mapper;
+        private readonly PensionDbContext _pensionDbContext;
 
         public PpoReceiptService(
             IManualPpoReceiptRepository manualPpoReceiptRepository,
             IClaimService claimService,
-            IMapper mapper
+            IMapper mapper,
+            PensionDbContext pensionDbContext
         )
             : base(claimService)
         {
@@ -26,6 +29,7 @@ namespace CTS_BE.BAL.Services.Pension
             _claimService = claimService;
             _mapper = mapper;
             _userId = _claimService.GetUserId();
+            _pensionDbContext = pensionDbContext;
         }
 
         public async Task<ManualPpoReceiptResponseDTO> GetPpoReceipt(string treasuryReceiptNo)
@@ -34,9 +38,11 @@ namespace CTS_BE.BAL.Services.Pension
             try
             {
                 manualPpoReceiptResponseDTO = _mapper.Map<ManualPpoReceiptResponseDTO>(
-                    await _manualPpoReceiptRepository.GetSingleAysnc(entity =>
-                        entity.ActiveFlag && entity.TreasuryReceiptNo == treasuryReceiptNo
-                    )
+                    await _manualPpoReceiptRepository
+                        .GetQueryablePpoReceipts()
+                        .FirstOrDefaultAsync(entity =>
+                            entity.ActiveFlag && entity.TreasuryReceiptNo == treasuryReceiptNo
+                        )
                 );
             }
             catch (DbUpdateException ex)
@@ -58,9 +64,9 @@ namespace CTS_BE.BAL.Services.Pension
             try
             {
                 manualPpoReceiptResponseDTO = _mapper.Map<ManualPpoReceiptResponseDTO>(
-                    await _manualPpoReceiptRepository.GetSingleAysnc(entity =>
-                        entity.ActiveFlag && entity.Id == receiptId
-                    )
+                    await _manualPpoReceiptRepository
+                        .GetQueryablePpoReceipts()
+                        .FirstOrDefaultAsync(entity => entity.ActiveFlag && entity.Id == receiptId)
                 );
             }
             catch (DbUpdateException ex)
@@ -107,21 +113,21 @@ namespace CTS_BE.BAL.Services.Pension
             return manualPpoReceiptDTOResponse;
         }
 
-        public async Task<IEnumerable<ListAllPpoReceiptsResponseDTO>> GetAllPpoReceipts(
+        public async Task<List<ListAllPpoReceiptsResponseDTO>> GetAllPpoReceipts(
             short financialYear,
-            string treasuryCode,
-            DynamicListQueryParameters dynamicListQueryParameters
+            string treasuryCode
         )
         {
-            _dataCount = _manualPpoReceiptRepository.Count();
-            return await _manualPpoReceiptRepository.GetSelectedColumnByConditionAsync(
-                entity =>
+            _dataCount = _manualPpoReceiptRepository.GetQueryablePpoReceipts().Count();
+            return await _manualPpoReceiptRepository
+                .GetQueryablePpoReceipts()
+                .Where(entity =>
                     entity.ActiveFlag
                     && entity.FinancialYear == financialYear
-                    && entity.TreasuryCode == treasuryCode,
-                entity => _mapper.Map<ListAllPpoReceiptsResponseDTO>(entity),
-                dynamicListQueryParameters
-            );
+                    && entity.TreasuryCode == treasuryCode
+                )
+                .Select(entity => _mapper.Map<ListAllPpoReceiptsResponseDTO>(entity))
+                .ToListAsync();
         }
 
         public async Task<List<T>> GetPpoReceipts<T>(short financialYear, string treasuryCode)
@@ -156,9 +162,9 @@ namespace CTS_BE.BAL.Services.Pension
                 _mapper.Map<ManualPpoReceiptResponseDTO>(manualPpoReceiptEntity);
             try
             {
-                manualPpoReceiptEntity = await _manualPpoReceiptRepository.GetSingleAysnc(entity =>
-                    entity.TreasuryReceiptNo == treasuryReceiptNo
-                );
+                manualPpoReceiptEntity = await _manualPpoReceiptRepository
+                    .GetQueryablePpoReceipts()
+                    .FirstOrDefaultAsync(entity => entity.TreasuryReceiptNo == treasuryReceiptNo);
 
                 if (manualPpoReceiptEntity is null)
                 {
@@ -170,12 +176,15 @@ namespace CTS_BE.BAL.Services.Pension
                 }
                 manualPpoReceiptEntity.FillFrom(manualPpoReceiptDTO);
                 SetUpdatedBy(manualPpoReceiptEntity);
-                _manualPpoReceiptRepository.Update(manualPpoReceiptEntity);
-                if (await _manualPpoReceiptRepository.SaveChangesManagedAsync() == 0)
+                _pensionDbContext.PpoReceipts.Update(manualPpoReceiptEntity);
+                if (await _pensionDbContext.SaveChangesAsync() == 0)
                 {
+                    PensionStatusDTO pensionStatusDTO = _mapper.Map<PensionStatusDTO>(
+                        manualPpoReceiptEntity
+                    );
                     manualPpoReceiptDTOResponse.FillDataSource(
                         manualPpoReceiptEntity,
-                        "Update Failed!"
+                        "Status Flag is not cleared."
                     );
                     return manualPpoReceiptDTOResponse;
                 }
@@ -204,8 +213,8 @@ namespace CTS_BE.BAL.Services.Pension
                 _mapper.Map<ManualPpoReceiptResponseDTO>(manualPpoReceiptEntity);
             try
             {
-                manualPpoReceiptEntity = await _manualPpoReceiptRepository.GetSingleAysnc(entity =>
-                    entity.ActiveFlag && entity.Id == receiptId
+                manualPpoReceiptEntity = await _pensionDbContext.PpoReceipts.FirstOrDefaultAsync(
+                    entity => entity.ActiveFlag && entity.Id == receiptId
                 );
 
                 if (manualPpoReceiptEntity is null)
@@ -218,8 +227,8 @@ namespace CTS_BE.BAL.Services.Pension
                 }
                 manualPpoReceiptEntity.FillFrom(manualPpoReceiptDTO);
                 SetUpdatedBy(manualPpoReceiptEntity);
-                _manualPpoReceiptRepository.Update(manualPpoReceiptEntity);
-                if (await _manualPpoReceiptRepository.SaveChangesManagedAsync() == 0)
+                _pensionDbContext.PpoReceipts.Update(manualPpoReceiptEntity);
+                if (await _pensionDbContext.SaveChangesAsync() == 0)
                 {
                     manualPpoReceiptDTOResponse.FillDataSource(
                         manualPpoReceiptEntity,

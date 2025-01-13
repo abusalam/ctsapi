@@ -15,10 +15,9 @@ namespace CTS_BE.BAL.Interfaces.Pension
             string treasuryCode
         );
 
-        public Task<IEnumerable<TResponse>> ListPrimaryCategory<TResponse>(
+        public Task<List<PensionPrimaryCategoryResponseDTO>> ListPrimaryCategory(
             short financialYear,
-            string treasuryCode,
-            DynamicListQueryParameters dynamicListQueryParameters
+            string treasuryCode
         );
 
         public Task<List<PensionPrimaryCategoryResponseDTO>> GetPrimaryCategories(
@@ -32,10 +31,9 @@ namespace CTS_BE.BAL.Interfaces.Pension
             string treasuryCode
         );
 
-        public Task<IEnumerable<TResponse>> ListSubCategory<TResponse>(
+        public Task<List<PensionSubCategoryResponseDTO>> ListSubCategory(
             short financialYear,
-            string treasuryCode,
-            DynamicListQueryParameters dynamicListQueryParameters
+            string treasuryCode
         );
 
         public Task<List<TResponse>> GetSubCategories<TResponse>(
@@ -49,10 +47,9 @@ namespace CTS_BE.BAL.Interfaces.Pension
             string treasuryCode
         );
 
-        public Task<IEnumerable<TResponse>> ListPensionCategory<TResponse>(
+        public Task<List<PensionCategoryListDTO>> ListPensionCategory(
             short financialYear,
-            string treasuryCode,
-            DynamicListQueryParameters dynamicListQueryParameters
+            string treasuryCode
         );
 
         public Task<List<TResponse>> GetPensionCategories<TResponse>(
