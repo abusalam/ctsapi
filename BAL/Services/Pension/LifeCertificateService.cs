@@ -80,8 +80,8 @@ namespace CTS_BE.BAL.Services.Pension
         )
         {
             LifeCertificateListResponseDTO response = new();
-            List<Pensioner>? pensioners = null;
-            List<LifeCertificateDetailsResponseDTO>? lifeCertificates = new();
+            List<Pensioner>? pensioners = [];
+            List<LifeCertificateDetailsResponseDTO>? lifeCertificates = [];
             try
             {
                 // Validate branch exists
@@ -109,11 +109,7 @@ namespace CTS_BE.BAL.Services.Pension
                     LifeCertificate? lc = null;
                     if (p.LifeCertificates.Count > 0)
                     {
-                        lc = p
-                            .LifeCertificates.Where(l =>
-                                l.TreasuryCode == treasuryCode && l.FinancialYear == financialYear
-                            )
-                            .First();
+                        lc = p.LifeCertificates.Where(l => l.TreasuryCode == treasuryCode).First();
                     }
                     lifeCertificates.Add(
                         new LifeCertificateDetailsResponseDTO
@@ -135,7 +131,7 @@ namespace CTS_BE.BAL.Services.Pension
             catch (Exception ex)
             {
                 response.FillDataSource(
-                    pensioners,
+                    lifeCertificates,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message} {ex.StackTrace}"
                 );
                 return response;
@@ -187,6 +183,7 @@ namespace CTS_BE.BAL.Services.Pension
                     return response;
                 }
                 lifeCertificateEntity.FillFrom(lifeCertificateEntryDTO);
+                lifeCertificateEntity.FinancialYear = financialYear;
                 lifeCertificateEntity.TreasuryCode = treasuryCode;
                 lifeCertificateEntity.PensionerId = pensioner.Id;
                 SetCreatedBy(lifeCertificateEntity);
