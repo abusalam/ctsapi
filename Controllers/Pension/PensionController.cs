@@ -53,5 +53,19 @@ namespace CTS_BE.Controllers.Pension
             };
             return await Task.FromResult(response);
         }
+
+        [HttpGet("current-financial-year")]
+        [Tags("Pension")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<short>> GetCurrentFinancialYear()
+        {
+            JsonAPIResponse<short> response = new()
+            {
+                ApiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = "Current Financial Year retrieved successfully!",
+                Result = GetCurrentFyYear(),
+            };
+            return await Task.FromResult(response);
+        }
     }
 }

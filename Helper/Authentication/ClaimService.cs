@@ -6,8 +6,8 @@ namespace CTS_BE.Helper.Authentication
     public class ClaimService : IClaimService
     {
         private readonly IHttpContextAccessor _contextAccessor;
-        private List<ClaimModel.Application> _applications = new List<ClaimModel.Application>();
-        private AuthClaimModel logedinUserClaims = new AuthClaimModel();
+        private readonly List<ClaimModel.Application> _applications = [];
+        private readonly AuthClaimModel logedinUserClaims = new();
 
         public ClaimService(IHttpContextAccessor contextAccessor)
         {
@@ -154,6 +154,18 @@ namespace CTS_BE.Helper.Authentication
                 .Select(application => application.Id)
                 .FirstOrDefault();
             return id;
+        }
+
+        public short GetFinancialYear()
+        {
+            if (_contextAccessor.HttpContext?.Items["FinancialYear"] is short fy)
+            {
+                return fy;
+            }
+            else
+            {
+                return 0;
+            }
         }
     }
 }

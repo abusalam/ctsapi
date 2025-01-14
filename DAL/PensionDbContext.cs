@@ -44,6 +44,8 @@ public partial class PensionDbContext : DbContext
 
     public virtual DbSet<EppoRevision> EppoRevisions { get; set; }
 
+    public virtual DbSet<FinancialYear> FinancialYears { get; set; }
+
     public virtual DbSet<LifeCertificate> LifeCertificates { get; set; }
 
     public virtual DbSet<Nominee> Nominees { get; set; }
@@ -275,6 +277,16 @@ public partial class PensionDbContext : DbContext
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
 
             entity.HasOne(d => d.EppoFile).WithMany(p => p.EppoRevisions).HasConstraintName("eppo_revisions_eppo_file_id_fkey");
+        });
+
+        modelBuilder.Entity<FinancialYear>(entity =>
+        {
+            entity.HasKey(e => e.CurrentYear).HasName("financial_years_pkey");
+
+            entity.ToTable("financial_years", "cts_pension", tb => tb.HasComment("PensionModuleSchema v1"));
+
+            entity.Property(e => e.CurrentYear).ValueGeneratedNever();
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
         });
 
         modelBuilder.Entity<LifeCertificate>(entity =>

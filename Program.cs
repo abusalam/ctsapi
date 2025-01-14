@@ -103,6 +103,7 @@ builder.Services.AddTransient<INomineeRepository, NomineeRepository>();
 builder.Services.AddTransient<ILifeCertificateRepository, LifeCertificateRepository>();
 builder.Services.AddTransient<IEPpoReceiptRepository, EPpoReceiptRepository>();
 builder.Services.AddTransient<ITreasuryRepository, TreasuryRepository>();
+builder.Services.AddTransient<IFinancialYearRepository, FinancialYearRepository>();
 
 // Pension Services
 builder.Services.AddTransient<IFileStorageService, FileStorageService>();
@@ -116,10 +117,10 @@ builder.Services.AddTransient<IComponentRateService, ComponentRateService>();
 builder.Services.AddTransient<IPpoComponentRevisionService, PpoComponentRevisionService>();
 builder.Services.AddTransient<IPpoBillService, PpoBillService>();
 builder.Services.AddTransient<IBankBranchService, BankBranchService>();
-builder.Services.AddScoped<IPpoSanctionDetailsService, PpoSanctionDetailsService>();
-builder.Services.AddScoped<INomineeService, NomineeService>();
-builder.Services.AddScoped<ILifeCertificateService, LifeCertificateService>();
-builder.Services.AddScoped<IEPpoReceiptService, EPpoReceiptService>();
+builder.Services.AddTransient<IPpoSanctionDetailsService, PpoSanctionDetailsService>();
+builder.Services.AddTransient<INomineeService, NomineeService>();
+builder.Services.AddTransient<ILifeCertificateService, LifeCertificateService>();
+builder.Services.AddTransient<IEPpoReceiptService, EPpoReceiptService>();
 
 //Automapper
 builder.Services.AddAutoMapper(typeof(Program));
@@ -185,9 +186,7 @@ builder.Services.Configure<ApiBehaviorOptions>(config =>
         {
             ApiResponseStatus = APIResponseStatus.Error,
             Result = ctx.ModelState.Values,
-            Message =
-                "DTO validation error :: result field specifies error location."
-                + ctx.ModelState.Values,
+            Message = "DTO validation error :: result field specifies error location.",
         }
     );
 });
@@ -216,6 +215,7 @@ app.UseAuthorization();
 app.UseStaticFiles();
 
 app.UseAuthTokenMiddleware();
+app.UseFinancialYear();
 
 app.MapControllers();
 

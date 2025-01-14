@@ -11,15 +11,9 @@ namespace CTS_BE.Controllers.Pension
     [ApiController]
     [Produces(MediaTypeNames.Application.Json)]
     [Route("api/v1")]
-    public class ApiBaseController : ControllerBase
+    public class ApiBaseController(IClaimService claimService) : ControllerBase
     {
-        private readonly IClaimService _claimService;
-        private const short CURRENT_FINANCIAL_YEAR = 2024;
-
-        public ApiBaseController(IClaimService claimService)
-        {
-            _claimService = claimService;
-        }
+        private readonly IClaimService _claimService = claimService;
 
         protected string GetTreasuryCode()
         {
@@ -28,7 +22,7 @@ namespace CTS_BE.Controllers.Pension
 
         protected short GetCurrentFyYear()
         {
-            return CURRENT_FINANCIAL_YEAR;
+            return _claimService.GetFinancialYear();
         }
 
         protected void FillErrorMesageFromDataSource<T>(JsonAPIResponse<T> response)

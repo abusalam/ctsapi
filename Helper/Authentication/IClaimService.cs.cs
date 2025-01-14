@@ -16,5 +16,6 @@
         public string GetUserName();
         public List<string> GetPermissions();
         public int GetApplicationIdByApplicationName(string applicationName);
+        public short GetFinancialYear();
     }
 }
