@@ -1304,4 +1304,9 @@ namespace CTS_BE.DTOs
         }
         public List<LifeCertificateDetailsResponseDTO>? LifeCertificates { get; set; }
     }
+
+    public partial class FinancialYearResponseDTO : BaseDTO
+    {
+        public short CurrentYear { get; set; }
+    }
 }

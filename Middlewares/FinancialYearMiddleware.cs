@@ -45,7 +45,7 @@ namespace CTS_BE.Middlewares
                             ApiResponseStatus = APIResponseStatus.Error,
                             Message = "Unable to retrieve current financial year from database.",
                         },
-                        StatusCodes.Status200OK
+                        StatusCodes.Status412PreconditionFailed
                     );
                 }
             }
@@ -62,7 +62,7 @@ namespace CTS_BE.Middlewares
                         ApiResponseStatus = APIResponseStatus.Error,
                         Message = "An error occurred while retrieving the current financial year.",
                     },
-                    StatusCodes.Status200OK
+                    StatusCodes.Status412PreconditionFailed
                 );
             }
         }
