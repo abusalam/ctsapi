@@ -74,7 +74,7 @@ jobs:
           echo "IFMS-CTS Branch: ${{ needs.database.outputs.branch-name }}"
           git show --oneline -s
           cd dotnet/CTS-BE
-          git pull origin ${{ github.head.ref || github.ref }} --ff-only
+          git checkout --progress --force ${{ github.head.ref || github.ref }}
           echo "dotnet/CTS-BE Branch: ${{ github.head.ref || github.ref }}"
           git show --oneline -s
           cd ..
