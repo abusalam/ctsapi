@@ -76,7 +76,7 @@ jobs:
           cd dotnet/CTS-BE
           echo "dotnet/CTS-BE Current Commit: On Branch: ${{ github.ref_name }}"
           git show --oneline -s
-          git checkout --progress --force ${{ github.ref_name }}
+          git checkout --progress --force refs/remotes/origin/${{ github.ref_name }}
           echo "dotnet/CTS-BE Updated Commit:"
           git show --oneline -s
           cd ..
