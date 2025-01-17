@@ -22,11 +22,13 @@ public partial class PensionDbContext : DbContext
 
     public virtual DbSet<Bill> Bills { get; set; }
 
+    public virtual DbSet<BillBytransfer> BillBytransfers { get; set; }
+
     public virtual DbSet<Branch> Branches { get; set; }
 
     public virtual DbSet<Breakup> Breakups { get; set; }
 
-    public virtual DbSet<Bytransfer> Bytransfers { get; set; }
+    public virtual DbSet<BytransferHead> BytransferHeads { get; set; }
 
     public virtual DbSet<Category> Categories { get; set; }
 
@@ -55,6 +57,8 @@ public partial class PensionDbContext : DbContext
     public virtual DbSet<PpoBill> PpoBills { get; set; }
 
     public virtual DbSet<PpoBillBreakup> PpoBillBreakups { get; set; }
+
+    public virtual DbSet<PpoBytransfer> PpoBytransfers { get; set; }
 
     public virtual DbSet<PpoComponentRevision> PpoComponentRevisions { get; set; }
 
@@ -116,6 +120,23 @@ public partial class PensionDbContext : DbContext
                 .HasConstraintName("bills_branch_id_fkey");
         });
 
+        modelBuilder.Entity<BillBytransfer>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("bill_bytransfers_pkey");
+
+            entity.ToTable("bill_bytransfers", "cts_pension", tb => tb.HasComment("PensionModuleSchema v1"));
+
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            entity.HasOne(d => d.BytransferHead).WithMany(p => p.BillBytransfers)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("bill_bytransfers_bytransfer_head_id_fkey");
+
+            entity.HasOne(d => d.PpoBill).WithMany(p => p.BillBytransfers)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("bill_bytransfers_ppo_bill_id_fkey");
+        });
+
         modelBuilder.Entity<Branch>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("branches_pkey");
@@ -141,17 +162,18 @@ public partial class PensionDbContext : DbContext
             entity.Property(e => e.ReliefFlag).HasComment("Relief Allowed (Yes/No)");
         });
 
-        modelBuilder.Entity<Bytransfer>(entity =>
+        modelBuilder.Entity<BytransferHead>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("bytransfers_pkey");
+            entity.HasKey(e => e.Id).HasName("bytransfer_heads_pkey");
 
-            entity.ToTable("bytransfers", "cts_pension", tb => tb.HasComment("PensionModuleSchema v1"));
+            entity.ToTable("bytransfer_heads", "cts_pension", tb => tb.HasComment("PensionModuleSchema v1"));
 
+            entity.Property(e => e.BytransferType).HasComment("P - Payment; R - Recovery;");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-            entity.HasOne(d => d.PpoBill).WithMany(p => p.Bytransfers)
+            entity.HasOne(d => d.AccountHead).WithMany(p => p.BytransferHeads)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("bytransfers_ppo_bill_id_fkey");
+                .HasConstraintName("bytransfer_heads_account_head_id_fkey");
         });
 
         modelBuilder.Entity<Category>(entity =>
@@ -390,6 +412,21 @@ public partial class PensionDbContext : DbContext
             entity.HasOne(d => d.Revision).WithMany(p => p.PpoBillBreakups)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("ppo_bill_breakups_revision_id_fkey");
+        });
+
+        modelBuilder.Entity<PpoBytransfer>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("ppo_bytransfers_pkey");
+
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            entity.HasOne(d => d.BytransferHead).WithMany(p => p.PpoBytransfers)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("ppo_bytransfers_bytransfer_head_id_fkey");
+
+            entity.HasOne(d => d.Pensioner).WithMany(p => p.PpoBytransfers)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("ppo_bytransfers_pensioner_id_fkey");
         });
 
         modelBuilder.Entity<PpoComponentRevision>(entity =>

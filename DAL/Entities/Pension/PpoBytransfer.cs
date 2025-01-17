@@ -6,11 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Entities.Pension;
 
-/// <summary>
-/// PensionModuleSchema v1
-/// </summary>
-[Table("bytransfers", Schema = "cts_pension")]
-public partial class Bytransfer
+[Table("ppo_bytransfers", Schema = "cts_pension")]
+public partial class PpoBytransfer
 {
     [Key]
     [Column("id")]
@@ -23,17 +20,27 @@ public partial class Bytransfer
     [StringLength(3)]
     public string TreasuryCode { get; set; } = null!;
 
-    [Column("ppo_bill_id")]
-    public long PpoBillId { get; set; }
+    [Column("pensioner_id")]
+    public long PensionerId { get; set; }
 
-    [Column("bytransfer_hoa_id")]
-    public int BytransferHoaId { get; set; }
+    [Column("ppo_id")]
+    public int PpoId { get; set; }
 
-    [Column("bytransfer_wef")]
-    public DateOnly BytransferWef { get; set; }
+    [Column("from_date")]
+    public DateOnly FromDate { get; set; }
+
+    [Column("to_date")]
+    public DateOnly ToDate { get; set; }
+
+    [Column("bytransfer_head_id")]
+    public long BytransferHeadId { get; set; }
 
     [Column("bytransfer_amount")]
     public int BytransferAmount { get; set; }
+
+    [Column("remarks")]
+    [StringLength(500)]
+    public string? Remarks { get; set; }
 
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime? CreatedAt { get; set; }
@@ -50,7 +57,11 @@ public partial class Bytransfer
     [Column("active_flag")]
     public bool ActiveFlag { get; set; }
 
-    [ForeignKey("PpoBillId")]
-    [InverseProperty("Bytransfers")]
-    public virtual PpoBill PpoBill { get; set; } = null!;
+    [ForeignKey("BytransferHeadId")]
+    [InverseProperty("PpoBytransfers")]
+    public virtual BytransferHead BytransferHead { get; set; } = null!;
+
+    [ForeignKey("PensionerId")]
+    [InverseProperty("PpoBytransfers")]
+    public virtual Pensioner Pensioner { get; set; } = null!;
 }

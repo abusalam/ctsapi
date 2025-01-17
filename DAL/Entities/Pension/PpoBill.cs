@@ -109,7 +109,7 @@ public partial class PpoBill
     public virtual Bill Bill { get; set; } = null!;
 
     [InverseProperty("PpoBill")]
-    public virtual ICollection<Bytransfer> Bytransfers { get; set; } = new List<Bytransfer>();
+    public virtual ICollection<BillBytransfer> BillBytransfers { get; set; } = new List<BillBytransfer>();
 
     [ForeignKey("PensionerId")]
     [InverseProperty("PpoBills")]
