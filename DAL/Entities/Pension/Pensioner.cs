@@ -231,6 +231,9 @@ public partial class Pensioner
     public virtual ICollection<PpoBill> PpoBills { get; set; } = new List<PpoBill>();
 
     [InverseProperty("Pensioner")]
+    public virtual ICollection<PpoBytransfer> PpoBytransfers { get; set; } = new List<PpoBytransfer>();
+
+    [InverseProperty("Pensioner")]
     public virtual ICollection<PpoComponentRevision> PpoComponentRevisions { get; set; } = new List<PpoComponentRevision>();
 
     [InverseProperty("Pensioner")]

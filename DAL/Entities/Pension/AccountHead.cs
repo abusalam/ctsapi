@@ -74,6 +74,9 @@ public partial class AccountHead
     public virtual ICollection<Bill> Bills { get; set; } = new List<Bill>();
 
     [InverseProperty("AccountHead")]
+    public virtual ICollection<BytransferHead> BytransferHeads { get; set; } = new List<BytransferHead>();
+
+    [InverseProperty("AccountHead")]
     public virtual ICollection<Classification> Classifications { get; set; } = new List<Classification>();
 
     [InverseProperty("AccountHead")]
