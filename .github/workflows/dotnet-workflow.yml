@@ -74,8 +74,15 @@ jobs:
           echo "IFMS-CTS Branch: ${{ needs.database.outputs.branch-name }}"
           git show --oneline -s
           cd dotnet/CTS-BE
-          git checkout --progress --force ${{ github.head.ref || github.ref }}
-          echo "dotnet/CTS-BE Branch: ${{ github.head.ref || github.ref }}"
+          echo "dotnet/CTS-BE Current Commit:"
+          git show --oneline -s
+          cd ../..
+          SUBMODULE_PATH="dotnet/CTS-BE"
+          git submodule foreach --recursive "if [ \$path = '$SUBMODULE_PATH' ]; then git fetch origin \$(git branch --show-current); git checkout origin/\$(git branch --show-current); fi"
+          cd dotnet/CTS-BE
+          echo "dotnet/CTS-BE Updated Commit:"
+          # git checkout --progress --force ${{ github.head.ref || github.ref }}
+          # echo "dotnet/CTS-BE Branch: ${{ github.head.ref || github.ref }}"
           git show --oneline -s
           cd ..
           dotnet test --logger trx --results-directory "TestResults-8.x"
