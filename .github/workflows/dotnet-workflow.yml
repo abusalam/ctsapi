@@ -76,7 +76,11 @@ jobs:
           cd dotnet/CTS-BE
           echo "dotnet/CTS-BE Current Commit: On Branch: ${{ github.ref_name }}"
           git show --oneline -s
-          git checkout --progress --force refs/remotes/origin/${{ github.ref_name }}
+          cd ../..
+          SUBMODULE_PATH="dotnet/CTS-BE"
+          BRANCH_NAME="${{ github.ref_name }}"
+          git submodule foreach --recursive "if [ \$path = '$SUBMODULE_PATH' ]; then if git ls-remote --exit-code origin $BRANCH_NAME; then git fetch origin $BRANCH_NAME; git checkout origin/$BRANCH_NAME; else echo 'Branch $BRANCH_NAME not found in submodule, skipping.'; fi; fi"
+          cd dotnet/CTS-BE
           echo "dotnet/CTS-BE Updated Commit:"
           git show --oneline -s
           cd ..
