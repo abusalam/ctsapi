@@ -25,5 +25,9 @@ namespace CTS_BE.BAL.Interfaces.Pension
             long receiptId,
             ManualPpoReceiptEntryDTO manualPpoReceiptDTO
         );
+        public Task<DeactivationResponseDTO> DeactivateUnusedPpoReceipts(
+            short financialYear,
+            string treasuryCode
+        );
     }
 }

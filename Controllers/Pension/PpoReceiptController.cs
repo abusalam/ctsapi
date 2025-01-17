@@ -318,5 +318,51 @@ namespace CTS_BE.Controllers.Pension
             }
             return response;
         }
+
+        [HttpPatch("receipts/unused/deactivate")]
+        [Tags("Pension: Manual PPO Receipt")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<DeactivationResponseDTO>> DeactivateUnusedPpoReceipts()
+        {
+            JsonAPIResponse<DeactivationResponseDTO> response = new();
+            try
+            {
+                DeactivationResponseDTO deactivatedResponse =
+                    await _ppoReceiptService.DeactivateUnusedPpoReceipts(
+                        GetCurrentFyYear(),
+                        GetTreasuryCode()
+                    );
+
+                if (!string.IsNullOrEmpty(deactivatedResponse.ErrorMessage))
+                {
+                    response = new()
+                    {
+                        ApiResponseStatus = Enum.APIResponseStatus.Error,
+                        Result = deactivatedResponse,
+                        Message = deactivatedResponse.ErrorMessage,
+                    };
+                }
+                else
+                {
+                    response = new()
+                    {
+                        ApiResponseStatus = Enum.APIResponseStatus.Success,
+                        Result = deactivatedResponse,
+                        Message =
+                            $"{deactivatedResponse.DeactivatedCount} unused PPO receipts deactivated successfully!",
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                FillException(response, ex);
+                return response;
+            }
+            finally
+            {
+                FillErrorMesageFromDataSource(response);
+            }
+            return response;
+        }
     }
 }

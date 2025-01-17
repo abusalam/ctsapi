@@ -23,5 +23,6 @@ namespace CTS_BE.DAL.Interfaces.Pension
         )
             where T : BaseDTO;
         IQueryable<PpoReceipt> GetQueryablePpoReceipts();
+        public Task<int> DeactivateUnusedPpoReceipts(short financialYear, string treasuryCode);
     }
 }

@@ -1309,4 +1309,10 @@ namespace CTS_BE.DTOs
     {
         public short CurrentYear { get; set; }
     }
+
+    public class DeactivationResponseDTO : BaseDTO
+    {
+        public int DeactivatedCount { get; set; }
+        public string? ErrorMessage { get; set; }
+    }
 }

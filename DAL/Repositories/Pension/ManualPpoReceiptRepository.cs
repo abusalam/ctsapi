@@ -115,5 +115,25 @@ namespace CTS_BE.DAL.Repositories.Pension
         {
             return _context.PpoReceipts;
         }
+
+        public async Task<int> DeactivateUnusedPpoReceipts(short financialYear, string treasuryCode)
+        {
+            var unusedReceipts = await _context
+                .PpoReceipts.Where(entity =>
+                    entity.ActiveFlag
+                    && entity.FinancialYear == financialYear
+                    && entity.TreasuryCode == treasuryCode
+                )
+                .Include(entity => entity.Pensioners)
+                .Where(entity => entity.Pensioners.Count == 0)
+                .ToListAsync();
+
+            foreach (var receipt in unusedReceipts)
+            {
+                receipt.ActiveFlag = false;
+            }
+
+            return await _context.SaveChangesAsync();
+        }
     }
 }

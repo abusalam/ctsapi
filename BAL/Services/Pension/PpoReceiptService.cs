@@ -249,5 +249,28 @@ namespace CTS_BE.BAL.Services.Pension
             }
             return _mapper.Map<ManualPpoReceiptResponseDTO>(manualPpoReceiptEntity);
         }
+
+        public async Task<DeactivationResponseDTO> DeactivateUnusedPpoReceipts(
+            short financialYear,
+            string treasuryCode
+        )
+        {
+            try
+            {
+                int deactivatedCount =
+                    await _manualPpoReceiptRepository.DeactivateUnusedPpoReceipts(
+                        financialYear,
+                        treasuryCode
+                    );
+                return new DeactivationResponseDTO { DeactivatedCount = deactivatedCount };
+            }
+            catch (DbUpdateException ex)
+            {
+                return new DeactivationResponseDTO
+                {
+                    ErrorMessage = ex.InnerException?.Message ?? ex.Message,
+                };
+            }
+        }
     }
 }
