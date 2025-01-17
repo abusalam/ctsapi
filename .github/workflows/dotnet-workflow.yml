@@ -76,13 +76,8 @@ jobs:
           cd dotnet/CTS-BE
           echo "dotnet/CTS-BE Current Commit: On Branch: ${{ github.ref_name }}"
           git show --oneline -s
-          cd ../..
-          SUBMODULE_PATH="dotnet/CTS-BE"
-          git submodule foreach --recursive "if [ \$path = '$SUBMODULE_PATH' ]; then git fetch origin \${{ github.ref_name }}; git checkout origin/\${{github.ref_name }}; fi"
-          cd dotnet/CTS-BE
+          git checkout --progress --force ${{ github.ref_name }}
           echo "dotnet/CTS-BE Updated Commit:"
-          # git checkout --progress --force ${{ github.head.ref || github.ref }}
-          # echo "dotnet/CTS-BE Branch: ${{ github.head.ref || github.ref }}"
           git show --oneline -s
           cd ..
           dotnet test --logger trx --results-directory "TestResults-8.x"
