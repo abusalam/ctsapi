@@ -9,7 +9,7 @@
         public string GetRoleByApplicationName(string applicationName);
         public int GetRoleIdByApplicationId(int applicationId);
         public List<int> GetRoleIdsByApplicationIds(List<int> applicationIds);
-        public List<int?> GetLevelIdsByApplicationIds(List<int> applicationIds);
+        public List<int> GetLevelIdsByApplicationIds(List<int> applicationIds);
         public List<string> GetScopesByApplicationName(string applicationName);
         public string GetScope();
         public int GetUserId();

@@ -127,7 +127,8 @@ builder.Services.AddTransient<IConvertToFamilyPensionService, ConvertToFamilyPen
 builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddTransient<ITokenHelper, TokenHelper>();
-builder.Services.AddSingleton<ITokencache, Tokencache>();
+
+// builder.Services.AddSingleton<ITokencache, Tokencache>();
 
 builder.Services.AddTransient<IClaimService, ClaimService>();
 

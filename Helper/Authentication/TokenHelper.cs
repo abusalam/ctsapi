@@ -11,20 +11,14 @@ namespace CTS_BE.Helper.Authentication
         private readonly ILogger<TokenHelper> _logger;
         private readonly string authSecretKey = "";
         private readonly string ActiveLifeTimeWindowinMint = "";
-        private readonly ITokencache _tokencache;
 
-        public TokenHelper(
-            ILogger<TokenHelper> logger,
-            IConfiguration Configuration,
-            ITokencache tokencache
-        )
+        public TokenHelper(ILogger<TokenHelper> logger, IConfiguration Configuration)
         {
             _logger = logger;
             _Configuration = Configuration;
             authSecretKey = _Configuration.GetValue<string>("Auth:SecretKey") ?? "";
             ActiveLifeTimeWindowinMint =
                 _Configuration.GetValue<string>("Auth:ActiveLifeTimeWindowinMint") ?? "30";
-            _tokencache = tokencache;
         }
 
         /// <summary>
@@ -82,32 +76,25 @@ namespace CTS_BE.Helper.Authentication
             out bool RefreshedAccessTokenRecieved
         )
         {
-            int LifetimeExpirtedFlag = -1;
-            var validToken = ValidateToken(token, out LifetimeExpirtedFlag);
+            SecurityToken? validToken = ValidateToken(token, out int LifetimeExpiredFlag);
             RefreshedAccessTokenRecieved = false;
+            AuthClaimModel? authClaimModel = new()
+            {
+                RefreshedAccessToken = string.Empty,
+                Claims = [],
+            };
+
             if (validToken != null)
             {
-                var cachedItem = _tokencache.GetItem(token); /* just to increase time to leave time in cache*/
+                // var cachedItem = _tokencache.GetItem(token); /* just to increase time to leave time in cache*/
                 var tokenHandler = new JwtSecurityTokenHandler();
-                var authToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
-                return new AuthClaimModel()
-                {
-                    RefreshedAccessToken = string.Empty,
-                    Claims = [.. authToken.Claims],
-                };
-            }
-            else if (LifetimeExpirtedFlag == 2)
-            {
-                var cachedItem = _tokencache.GetItem(token);
 
-                if (cachedItem == null)
+                if (tokenHandler.ReadToken(token) is JwtSecurityToken authToken)
                 {
-                    return null;
+                    authClaimModel.Claims = [.. authToken.Claims];
                 }
-                return null;
             }
-            else
-                return null;
+            return authClaimModel;
         }
     }
 }

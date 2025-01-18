@@ -5,41 +5,76 @@ namespace CTS_BE.Helper.Authentication
 {
     public class ClaimService : IClaimService
     {
-        private readonly IHttpContextAccessor _contextAccessor;
+        private readonly IHttpContextAccessor? _contextAccessor;
         private readonly List<ClaimModel.Application> _applications = [];
         private readonly AuthClaimModel logedinUserClaims = new();
 
         public ClaimService(IHttpContextAccessor contextAccessor)
         {
             _contextAccessor = contextAccessor;
-            logedinUserClaims = (AuthClaimModel)
-                _contextAccessor.HttpContext.Items["userclaimmodel"];
-            if (logedinUserClaims != null)
+
+            if (
+                _contextAccessor?.HttpContext?.Items is not null
+                && _contextAccessor.HttpContext.Items.TryGetValue(
+                    "userclaimmodel",
+                    out var userClaimModel
+                )
+                && userClaimModel is AuthClaimModel logedinUserClaims
+            )
             {
-                _applications = logedinUserClaims
-                    .Claims.Where(claims => claims.Type == "application")
-                    .Select(claim =>
-                        JsonConvert.DeserializeObject<ClaimModel.Application>(claim.Value)
-                    )
-                    .ToList();
+                _applications =
+                [
+                    .. logedinUserClaims
+                        .Claims.Where(claim => claim?.Type == "application")
+                        .Select(claim =>
+                        {
+                            try
+                            {
+                                return JsonConvert.DeserializeObject<ClaimModel.Application?>(
+                                    claim.Value
+                                );
+                            }
+                            catch (JsonReaderException)
+                            {
+                                // Handle JSON deserialization errors gracefully.
+                                return new ClaimModel.Application(); // or a default ClaimModel.Application object if appropriate
+                            }
+                        }),
+                ]; // Important: Convert the IEnumerable to a List
+            }
+            else
+            {
+                _applications = [new ClaimModel.Application()];
             }
         }
 
         public string[] GetUserApplications()
         {
-            string[] usersApplication = _applications
-                .Select(application => application.Name)
-                .ToArray();
-            return usersApplication;
+            if (_applications != null)
+            {
+                return [.. _applications.Select(application => application.Name)];
+            }
+            else
+            {
+                return [""];
+            }
         }
 
         public string[] GetRoles()
         {
-            string[] userRole = _applications
-                .SelectMany(application => application.Roles)
-                .Select(role => role.Name)
-                .ToArray();
-            return userRole;
+            if (_applications != null)
+            {
+                return
+                [
+                    .. _applications
+                        .SelectMany(application => application.Roles)
+                        .Select(role => role.Name),
+                ];
+            }
+            else
+            {
+                return [""];
+            }
         }
 
         public string GetRole()
@@ -63,36 +98,35 @@ namespace CTS_BE.Helper.Authentication
 
         public List<int> GetRoleIdsByApplicationIds(List<int> applicationIds)
         {
-            List<int> roleIds = _applications
-                .Where(application => applicationIds.Contains(application.Id))
-                .SelectMany(application => application.Roles)
-                .Select(role => role.Id)
-                .ToList();
-
-            return roleIds;
+            return
+            [
+                .. _applications
+                    .Where(application => applicationIds.Contains(application.Id))
+                    .SelectMany(application => application.Roles)
+                    .Select(role => role.Id),
+            ];
         }
 
-        public List<int?> GetLevelIdsByApplicationIds(List<int> applicationIds)
+        public List<int> GetLevelIdsByApplicationIds(List<int> applicationIds)
         {
-            List<int?> levelIds = _applications
+            return _applications
                 .Where(application => applicationIds.Contains(application.Id))
                 .SelectMany(application => application.Levels)
                 .Select(level => level.Id)
                 .ToList();
-
-            return levelIds;
         }
 
         public List<string> GetScopesByApplicationName(string applicationName)
         {
-            List<string> userScopes = _applications
-                .Where(application => application.Name == applicationName)
-                .SelectMany(application => application.Levels)
-                .SelectMany(level => level.Scope)
-                .Select(scope => scope) // Extract only letters
-                .Distinct() // Add this line to get unique letter combinations
-                .ToList();
-            return userScopes;
+            return
+            [
+                .. _applications
+                    .Where(application => application.Name == applicationName)
+                    .SelectMany(application => application.Levels)
+                    .SelectMany(level => level.Scope)
+                    .Select(scope => scope) // Extract only letters
+                    .Distinct(),
+            ];
         }
 
         public string GetScopeByApplicationName(string applicationName)
@@ -103,21 +137,22 @@ namespace CTS_BE.Helper.Authentication
 
         public string GetScope()
         {
-            List<string> scopeValues = _applications
-                .SelectMany(application => application.Levels)
-                .Where(level => level != null && level.Scope != null)
-                .SelectMany(level => level.Scope)
-                .ToList();
+            List<string> scopeValues =
+            [
+                .. _applications
+                    .SelectMany(application => application.Levels)
+                    .Where(level => level != null && level.Scope != null)
+                    .SelectMany(level => level.Scope),
+            ];
             return scopeValues[0];
         }
 
         public string GetRoleByApplicationName(string applicationName)
         {
-            string roleName = _applications
-                .Where(application => application.Name == applicationName)
-                .Select(role => role.Name)
-                .FirstOrDefault();
-            return roleName;
+            return _applications
+                    .Where(application => application.Name == applicationName)
+                    .Select(role => role.Name)
+                    .FirstOrDefault() ?? "";
         }
 
         public int GetUserId()
@@ -131,20 +166,19 @@ namespace CTS_BE.Helper.Authentication
         public string GetUserName()
         {
             return logedinUserClaims
-                .Claims.Where(claims => claims.Type == "name")
-                .Select(claim => claim.Value)
-                .FirstOrDefault();
+                    .Claims.Where(claims => claims.Type == "name")
+                    .Select(claim => claim.Value)
+                    .FirstOrDefault() ?? "";
         }
 
         public List<string> GetPermissions()
         {
-            var a = logedinUserClaims;
-            string[] userPermission = _applications
-                .SelectMany(application => application.Roles)
-                .SelectMany(role => role.Permissions)
-                .ToArray();
-            return userPermission.ToList();
-            // return _applications.FirstOrDefault().Roles.SelectMany(role => role.Permissions).ToList();
+            return
+            [
+                .. _applications
+                    .SelectMany(application => application.Roles)
+                    .SelectMany(role => role.Permissions),
+            ];
         }
 
         public int GetApplicationIdByApplicationName(string applicationName)
@@ -158,7 +192,7 @@ namespace CTS_BE.Helper.Authentication
 
         public short GetFinancialYear()
         {
-            if (_contextAccessor.HttpContext?.Items["FinancialYear"] is short fy)
+            if (_contextAccessor?.HttpContext?.Items["FinancialYear"] is short fy)
             {
                 return fy;
             }

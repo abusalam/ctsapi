@@ -1,22 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using CTS_BE.Common;
+﻿using CTS_BE.Common;
 using CTS_BE.Helper.Authentication;
-using CTS_BE.Model.Claims;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace CTS_BE.Filters
 {
-    //public class DBTDashboardAuthFilter
-
     public class AppAuthFilterAttribute : IAuthorizationFilter
     {
-        private readonly string[] _roles;
-        private readonly string[] _permissions;
+        private readonly string[]? _roles;
+        private readonly string[]? _permissions;
         private readonly IClaimService _claimService;
 
         public AppAuthFilterAttribute(string rolesPermissions, IClaimService claimService)
@@ -24,12 +16,12 @@ namespace CTS_BE.Filters
             string[] parts = rolesPermissions.Split('|');
 
             // Extract permissions
-            string permissionsPart = parts.FirstOrDefault(p => p.StartsWith("permissions:"));
-            _permissions = permissionsPart?.Substring("permissions:".Length).Split(',');
+            string? permissionsPart = parts.FirstOrDefault(p => p.StartsWith("permissions:"));
+            _permissions = permissionsPart?["permissions:".Length..].Split(',');
 
             // Extract roles
-            string rolesPart = parts.FirstOrDefault(p => p.StartsWith("roles:"));
-            _roles = rolesPart?.Substring("roles:".Length).Split(',');
+            string? rolesPart = parts.FirstOrDefault(p => p.StartsWith("roles:"));
+            _roles = rolesPart?["roles:".Length..].Split(',');
 
             _claimService = claimService;
         }
@@ -40,11 +32,17 @@ namespace CTS_BE.Filters
             {
                 String[] roles = _claimService.GetRoles();
 
-                if (_roles.Length == 1 && string.IsNullOrEmpty(_roles[0]))
+                if (_roles == null)
                 {
-                    /*its all role*/
+                    context.Result = new JsonResult(
+                        new { message = ErrorMessages.Unauthorized_Acess }
+                    )
+                    {
+                        StatusCode = StatusCodes.Status401Unauthorized,
+                    };
+                    return;
                 }
-                else if (!roles.All(element => _roles.Contains(element)))
+                if (!roles.All(element => _roles.Contains(element)))
                 {
                     context.Result = new JsonResult(
                         new { message = ErrorMessages.Unauthorized_Acess }
@@ -71,7 +69,7 @@ namespace CTS_BE.Filters
         public AuthorizeAttribute(string rolesPermissions)
             : base(typeof(AppAuthFilterAttribute))
         {
-            Arguments = new object[] { rolesPermissions };
+            Arguments = [rolesPermissions];
         }
     }
 }

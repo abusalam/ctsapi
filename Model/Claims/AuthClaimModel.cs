@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using System.Security.Claims;
 
 namespace CTS_BE.Model.Claims
 {
     public class AuthClaimModel
     {
-        public List<Claim>? Claims { get; set; }
-        public string? RefreshedAccessToken { get; set; }
+        public List<Claim> Claims { get; set; } = [];
+        public string RefreshedAccessToken { get; set; } = "";
     }
 }
