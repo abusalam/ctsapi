@@ -110,7 +110,10 @@ namespace CTS_BE.BAL.Services.Pension
         )
         {
             return await _pensionDbContext
-                .PrimaryCategories.Select(entity =>
+                .PrimaryCategories
+                .Where(entity => entity.ActiveFlag)
+                .Include(entity => entity.AccountHead)
+                .Select(entity =>
                     _mapper.Map<PensionPrimaryCategoryResponseDTO>(entity)
                 )
                 .ToListAsync();
