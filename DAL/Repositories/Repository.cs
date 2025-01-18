@@ -1,11 +1,12 @@
-﻿using System.Linq;
-using System.Linq.Expressions;
+﻿// using System.Linq;
+// using System.Linq.Expressions;
 using CTS_BE.DAL.Interfaces;
-using CTS_BE.DTOs;
-using CTS_BE.Helper;
+// using CTS_BE.DTOs;
+// using CTS_BE.Helper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
-using Microsoft.EntityFrameworkCore.Storage;
+
+// using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+// using Microsoft.EntityFrameworkCore.Storage;
 
 namespace CTS_BE.DAL.Repositories
 {
@@ -13,93 +14,93 @@ namespace CTS_BE.DAL.Repositories
         where T : class
         where Tcontext : DbContext
     {
-        protected readonly Tcontext CTSDbContext = null;
+        // protected readonly Tcontext CTSDbContext = null;
 
         public Repository(Tcontext context)
         {
-            this.CTSDbContext = context;
+            // this.CTSDbContext = context;
         }
 
-        [Obsolete("Use EntityFramework methods instead", true)]
-        public bool IsTransactionRunning()
-        {
-            return this.CTSDbContext.Database.CurrentTransaction != null;
-        }
+        // [Obsolete("Use EntityFramework methods instead", true)]
+        // public bool IsTransactionRunning()
+        // {
+        //     return this.CTSDbContext.Database.CurrentTransaction != null;
+        // }
 
-        [Obsolete("Use EntityFramework methods instead", true)]
-        private IDbContextTransaction BeginTran()
-        {
-            return this.CTSDbContext.Database.BeginTransaction();
-        }
+        // [Obsolete("Use EntityFramework methods instead", true)]
+        // private IDbContextTransaction BeginTran()
+        // {
+        //     return this.CTSDbContext.Database.BeginTransaction();
+        // }
 
-        [Obsolete("Use EntityFramework methods instead", true)]
-        public IExecutionStrategy GetExecutionStrategy()
-        {
-            return this.CTSDbContext.Database.CreateExecutionStrategy();
-        }
+        // [Obsolete("Use EntityFramework methods instead", true)]
+        // public IExecutionStrategy GetExecutionStrategy()
+        // {
+        //     return this.CTSDbContext.Database.CreateExecutionStrategy();
+        // }
 
-        [Obsolete("Use EntityFramework methods instead", true)]
-        public IQueryable<T> GetAllByCondition(Expression<Func<T, bool>> condition)
-        {
-            IQueryable<T> result = this.CTSDbContext.Set<T>();
-            if (condition != null)
-            {
-                result = result.Where(condition);
-            }
+        // [Obsolete("Use EntityFramework methods instead", true)]
+        // public IQueryable<T> GetAllByCondition(Expression<Func<T, bool>> condition)
+        // {
+        //     IQueryable<T> result = this.CTSDbContext.Set<T>();
+        //     if (condition != null)
+        //     {
+        //         result = result.Where(condition);
+        //     }
 
-            return result;
-        }
+        //     return result;
+        // }
 
-        [Obsolete("Use EntityFramework methods instead", true)]
-        public async Task<ICollection<T>> GetAllByConditionAsync(
-            Expression<Func<T, bool>> condition
-        )
-        {
-            IQueryable<T> result = this.CTSDbContext.Set<T>();
-            if (condition != null)
-            {
-                result = result.Where(condition);
-            }
+        // [Obsolete("Use EntityFramework methods instead", true)]
+        // public async Task<ICollection<T>> GetAllByConditionAsync(
+        //     Expression<Func<T, bool>> condition
+        // )
+        // {
+        //     IQueryable<T> result = this.CTSDbContext.Set<T>();
+        //     if (condition != null)
+        //     {
+        //         result = result.Where(condition);
+        //     }
 
-            return await result.ToListAsync();
-        }
+        //     return await result.ToListAsync();
+        // }
 
-        [Obsolete("Use EntityFramework methods instead", true)]
-        public IQueryable<T> GetAll()
-        {
-            IQueryable<T> result = this.CTSDbContext.Set<T>();
-            return result;
-        }
+        // [Obsolete("Use EntityFramework methods instead", true)]
+        // public IQueryable<T> GetAll()
+        // {
+        //     IQueryable<T> result = this.CTSDbContext.Set<T>();
+        //     return result;
+        // }
 
-        [Obsolete("Use EntityFramework methods instead", true)]
-        public async Task<ICollection<T>> GetAllAsync()
-        {
-            IQueryable<T> result = this.CTSDbContext.Set<T>();
-            return await result.ToListAsync();
-        }
+        // [Obsolete("Use EntityFramework methods instead", true)]
+        // public async Task<ICollection<T>> GetAllAsync()
+        // {
+        //     IQueryable<T> result = this.CTSDbContext.Set<T>();
+        //     return await result.ToListAsync();
+        // }
 
-        [Obsolete("Use EntityFramework methods instead", true)]
-        public async Task<ICollection<TResult>> GetSelectedColumnAsync<TResult>(
-            Expression<Func<T, TResult>> selectExpression
-        )
-        {
-            IQueryable<TResult> result = this.CTSDbContext.Set<T>().Select(selectExpression);
-            return await result.ToListAsync();
-        }
+        // [Obsolete("Use EntityFramework methods instead", true)]
+        // public async Task<ICollection<TResult>> GetSelectedColumnAsync<TResult>(
+        //     Expression<Func<T, TResult>> selectExpression
+        // )
+        // {
+        //     IQueryable<TResult> result = this.CTSDbContext.Set<T>().Select(selectExpression);
+        //     return await result.ToListAsync();
+        // }
 
-        [Obsolete("Use EntityFramework methods instead", true)]
-        public async Task<ICollection<TResult>> GetSelectedColumnByConditionAsync<TResult>(
-            Expression<Func<T, bool>> filterExpression,
-            Expression<Func<T, TResult>> selectExpression
-        )
-        {
-            IQueryable<TResult> result = this
-                .CTSDbContext.Set<T>()
-                .Where(filterExpression)
-                .Select(selectExpression);
+        // [Obsolete("Use EntityFramework methods instead", true)]
+        // public async Task<ICollection<TResult>> GetSelectedColumnByConditionAsync<TResult>(
+        //     Expression<Func<T, bool>> filterExpression,
+        //     Expression<Func<T, TResult>> selectExpression
+        // )
+        // {
+        //     IQueryable<TResult> result = this
+        //         .CTSDbContext.Set<T>()
+        //         .Where(filterExpression)
+        //         .Select(selectExpression);
 
-            return await result.ToListAsync();
-        }
+        //     return await result.ToListAsync();
+        // }
 
         // public async Task<ICollection<TResult>> GetSelectedColumnByConditionAsync<TResult>(
         //     Expression<Func<T, bool>> filterExpression,
@@ -156,34 +157,34 @@ namespace CTS_BE.DAL.Repositories
 
         // }
 
-        [Obsolete("Use EntityFramework methods instead", true)]
-        public async Task<TResult?> GetSingleSelectedColumnByConditionAsync<TResult>(
-            Expression<Func<T, bool>> filterExpression,
-            Expression<Func<T, TResult>> selectExpression
-        )
-        {
-            TResult? result = await this
-                .CTSDbContext.Set<T>()
-                .Where(filterExpression)
-                .Select(selectExpression)
-                .FirstOrDefaultAsync();
+        // [Obsolete("Use EntityFramework methods instead", true)]
+        // public async Task<TResult?> GetSingleSelectedColumnByConditionAsync<TResult>(
+        //     Expression<Func<T, bool>> filterExpression,
+        //     Expression<Func<T, TResult>> selectExpression
+        // )
+        // {
+        //     TResult? result = await this
+        //         .CTSDbContext.Set<T>()
+        //         .Where(filterExpression)
+        //         .Select(selectExpression)
+        //         .FirstOrDefaultAsync();
 
-            return result;
-        }
+        //     return result;
+        // }
 
-        [Obsolete("Use EntityFramework methods instead", true)]
-        public T GetSingle(Expression<Func<T, bool>> condition)
-        {
-            return this.CTSDbContext.Set<T>().Where(condition).FirstOrDefault();
-        }
+        // [Obsolete("Use EntityFramework methods instead", true)]
+        // public T GetSingle(Expression<Func<T, bool>> condition)
+        // {
+        //     return this.CTSDbContext.Set<T>().Where(condition).FirstOrDefault();
+        // }
 
-        [Obsolete("Use EntityFramework methods instead", true)]
-        public async Task<T> GetSingleAysnc(Expression<Func<T, bool>> condition)
-        {
-            var retValue = await this.CTSDbContext.Set<T>().Where(condition).SingleOrDefaultAsync();
+        // [Obsolete("Use EntityFramework methods instead", true)]
+        // public async Task<T> GetSingleAysnc(Expression<Func<T, bool>> condition)
+        // {
+        //     var retValue = await this.CTSDbContext.Set<T>().Where(condition).SingleOrDefaultAsync();
 
-            return retValue;
-        }
+        //     return retValue;
+        // }
 
         // public int CountWithCondition(Expression<Func<T, bool>> condition, List<FilterParameter> dynamicFilters = null)
         // {
@@ -201,75 +202,75 @@ namespace CTS_BE.DAL.Repositories
         //     return query.Count(condition);
         // }
 
-        [Obsolete("Use EntityFramework methods instead", true)]
-        public int CountWithCondition(Expression<Func<T, bool>> condition)
-        {
-            IQueryable<T> query = this.CTSDbContext.Set<T>();
-            return query.Count(condition);
-        }
+        // [Obsolete("Use EntityFramework methods instead", true)]
+        // public int CountWithCondition(Expression<Func<T, bool>> condition)
+        // {
+        //     IQueryable<T> query = this.CTSDbContext.Set<T>();
+        //     return query.Count(condition);
+        // }
 
-        [Obsolete("Use EntityFramework methods instead", true)]
-        public async Task<int> CountWithConditionAsync(Expression<Func<T, bool>> condition)
-        {
-            IQueryable<T> query = this.CTSDbContext.Set<T>();
-            return await query.CountAsync(condition);
-        }
+        // [Obsolete("Use EntityFramework methods instead", true)]
+        // public async Task<int> CountWithConditionAsync(Expression<Func<T, bool>> condition)
+        // {
+        //     IQueryable<T> query = this.CTSDbContext.Set<T>();
+        //     return await query.CountAsync(condition);
+        // }
 
-        [Obsolete("Use EntityFramework methods instead", true)]
-        public int Count()
-        {
-            return this.CTSDbContext.Set<T>().Count();
-        }
+        // [Obsolete("Use EntityFramework methods instead", true)]
+        // public int Count()
+        // {
+        //     return this.CTSDbContext.Set<T>().Count();
+        // }
 
-        [Obsolete("Use EntityFramework methods instead", true)]
-        public async Task<object> ExecuteQuery(string sqlQuery, object parameters)
-        {
-            return await this.CTSDbContext.Database.ExecuteSqlRawAsync(sqlQuery, parameters);
-        }
+        // [Obsolete("Use EntityFramework methods instead", true)]
+        // public async Task<object> ExecuteQuery(string sqlQuery, object parameters)
+        // {
+        //     return await this.CTSDbContext.Database.ExecuteSqlRawAsync(sqlQuery, parameters);
+        // }
 
-        [Obsolete("Use EntityFramework methods instead", true)]
-        public bool Add(T entity)
-        {
-            this.CTSDbContext.Set<T>().Add(entity);
-            return true;
-        }
+        // [Obsolete("Use EntityFramework methods instead", true)]
+        // public bool Add(T entity)
+        // {
+        //     this.CTSDbContext.Set<T>().Add(entity);
+        //     return true;
+        // }
 
-        [Obsolete("Use EntityFramework methods instead", true)]
-        public void AddRange(IEnumerable<T> entities)
-        {
-            this.CTSDbContext.Set<T>().AddRange(entities);
-        }
+        // [Obsolete("Use EntityFramework methods instead", true)]
+        // public void AddRange(IEnumerable<T> entities)
+        // {
+        //     this.CTSDbContext.Set<T>().AddRange(entities);
+        // }
 
-        [Obsolete("Use EntityFramework methods instead", true)]
-        public bool Update(T entity)
-        {
-            this.CTSDbContext.Entry(entity).State = EntityState.Modified;
-            return true;
-        }
+        // [Obsolete("Use EntityFramework methods instead", true)]
+        // public bool Update(T entity)
+        // {
+        //     this.CTSDbContext.Entry(entity).State = EntityState.Modified;
+        //     return true;
+        // }
 
-        [Obsolete("Use EntityFramework methods instead", true)]
-        public bool Delete(T entity)
-        {
-            this.CTSDbContext.Set<T>().Remove(entity);
-            return true;
-        }
+        // [Obsolete("Use EntityFramework methods instead", true)]
+        // public bool Delete(T entity)
+        // {
+        //     this.CTSDbContext.Set<T>().Remove(entity);
+        //     return true;
+        // }
 
-        [Obsolete("Use EntityFramework methods instead", true)]
-        public void SaveChangesManaged()
-        {
-            this.CTSDbContext.SaveChanges();
-        }
+        // [Obsolete("Use EntityFramework methods instead", true)]
+        // public void SaveChangesManaged()
+        // {
+        //     this.CTSDbContext.SaveChanges();
+        // }
 
-        [Obsolete("Use EntityFramework methods instead", true)]
-        public async Task<int> SaveChangesManagedAsync()
-        {
-            return await this.CTSDbContext.SaveChangesAsync();
-        }
+        // [Obsolete("Use EntityFramework methods instead", true)]
+        // public async Task<int> SaveChangesManagedAsync()
+        // {
+        //     return await this.CTSDbContext.SaveChangesAsync();
+        // }
 
-        [Obsolete("Use EntityFramework methods instead", true)]
-        public DbContext GetDbContext()
-        {
-            return this.CTSDbContext;
-        }
+        // [Obsolete("Use EntityFramework methods instead", true)]
+        // public DbContext GetDbContext()
+        // {
+        //     return this.CTSDbContext;
+        // }
     }
 }

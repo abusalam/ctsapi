@@ -78,7 +78,7 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
-            PpoStatusFlag ppoStatusEntity = new();
+            PpoStatusFlag? ppoStatusEntity = new();
             try
             {
                 Pensioner? pensioner = await _pensionDbContext.Pensioners.FirstOrDefaultAsync(
@@ -133,7 +133,7 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
-            PpoStatusFlag ppoStatusEntity = new();
+            PpoStatusFlag? ppoStatusEntity = new();
             try
             {
                 ppoStatusEntity = await _pensionDbContext.PpoStatusFlags.FirstOrDefaultAsync(

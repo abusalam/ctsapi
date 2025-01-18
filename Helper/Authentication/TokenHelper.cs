@@ -1,16 +1,6 @@
-﻿//using CTS_BE.DAL.Enums;
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Security.Principal;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Text;
-using System.Threading.Tasks;
-using CTS_BE.Model;
 using CTS_BE.Model.Claims;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 
 namespace CTS_BE.Helper.Authentication
@@ -37,62 +27,6 @@ namespace CTS_BE.Helper.Authentication
             _tokencache = tokencache;
         }
 
-        /*
-        public string GenerateToken(UserClaimModel user, TokenType _tokenType, out DateTime ValidTo)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-
-            try
-            {
-                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authSecretKey));
-                double expireInterval;
-                List<Claim> authClaims = null;
-
-                if (_tokenType == TokenType.AccessToken)
-                {
-                    authClaims = new List<Claim>
-                    {
-                            new Claim(ClaimType.TokenType.ToString(), "AccessToken"),
-                            new Claim(ClaimType.UserId.ToString(), user.UserId.ToString()),
-                            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                            new Claim(ClaimType.Role.ToString(), user.RoleName)
-
-                    };
-
-                    expireInterval = Convert.ToDouble(_Configuration.GetValue<string>("Auth:AccessTokenLifeTime"));
-                }
-                else
-                {
-                    //authClaims = new List<Claim>
-                    //{
-                    //        new Claim("TokenType", "RefreshToken"),
-                    //        new Claim("UserId", user.UserId.ToString()),
-                    //        new Claim("CreationDate", DateTime.UtcNow.ToString()),
-                    //        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-
-                    //};
-                    //expireInterval = Convert.ToDouble(_Configuration.GetValue<string>("Auth:RefreshTokenLifeTime"));
-
-                    throw new Exception("Invalid token type execute");
-                }
-
-                var Createdtoken = new JwtSecurityToken(
-                    expires: DateTime.UtcNow.AddMinutes(expireInterval),
-                    claims: authClaims,
-                    signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-                    );
-
-                ValidTo = Createdtoken.ValidTo;
-                var token = tokenHandler.WriteToken(Createdtoken);
-                return token;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                throw ex;
-            }
-        }
-        */
         /// <summary>
         /// out int LifetimeExpirtedFlag = 0 when the token is valid
         /// out int LifetimeExpirtedFlag = 1 when the token is invalid due any other reason
@@ -159,7 +93,7 @@ namespace CTS_BE.Helper.Authentication
                 return new AuthClaimModel()
                 {
                     RefreshedAccessToken = string.Empty,
-                    Claims = authToken.Claims.ToList<Claim>(),
+                    Claims = [.. authToken.Claims],
                 };
             }
             else if (LifetimeExpirtedFlag == 2)
@@ -170,46 +104,10 @@ namespace CTS_BE.Helper.Authentication
                 {
                     return null;
                 }
-                else
-                {
-                    /*
-                    _tokencache.RemoveItem(token);
-                    TimeSpan span = DateTime.UtcNow.Subtract(cachedItem.tokenValidTo);
-                    if (span.TotalMinutes > 0 && span.TotalMinutes < int.Parse(ActiveLifeTimeWindowinMint))
-                    {
-                        DateTime newValidTo;
-                        var newAccessToken = GenerateToken(cachedItem.userClaimModel, TokenType.AccessToken, out newValidTo);
-                        var newtokenHandler = new JwtSecurityTokenHandler();
-                        var newauthToken = newtokenHandler.ReadToken(newAccessToken) as JwtSecurityToken;
-                        var result = new AuthClaimModel() { RefreshedAccessToken = newAccessToken, claims = newauthToken.Claims.ToList<Claim>() };
-                        _tokencache.PutItem(newAccessToken, new TokenChachedItems() { tokenValidTo = newValidTo, userClaimModel = cachedItem.userClaimModel });
-                        RefreshedAccessTokenRecieved = true;
-                        return result;
-                    }
-                    else
-                    {
-                        return null;
-                    }
-                    */
-                }
                 return null;
             }
             else
                 return null;
-        }
-
-        public void InvalidateUserLogin(List<Guid> UserIds)
-        {
-            try
-            {
-                foreach (var userid in UserIds)
-                    _tokencache.InvalidateUserToken(userid);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                throw ex;
-            }
         }
     }
 }

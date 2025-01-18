@@ -17,7 +17,7 @@ namespace CTS_BE.DAL.Repositories.Pension
 
         public async Task<int> GetNextPpoId(short financialYear, string treasuryCode)
         {
-            PpoIdSequence ppoIdSequenceEntity = new();
+            PpoIdSequence? ppoIdSequenceEntity = new();
             int seqValue = 0;
 
             try
@@ -51,7 +51,7 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             finally
             {
-                if (seqValue == 0)
+                if (seqValue == 0 && ppoIdSequenceEntity != null)
                 {
                     ppoIdSequenceEntity.NextSequenceValue = 0;
                 }

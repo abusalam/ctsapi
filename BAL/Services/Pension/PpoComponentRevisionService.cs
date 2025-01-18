@@ -58,7 +58,7 @@ namespace CTS_BE.BAL.Services.Pension
             {
                 ppoComponentRevision.FillFrom(ppoComponentRevisionDTO);
 
-                PpoComponentRevision ppoComponentRevisionFound =
+                PpoComponentRevision? ppoComponentRevisionFound =
                     await _pensionDbContext.PpoComponentRevisions.FirstOrDefaultAsync(entity =>
                         entity.ActiveFlag
                         // && entity.TreasuryCode == treasuryCode
@@ -77,7 +77,7 @@ namespace CTS_BE.BAL.Services.Pension
                     return response;
                 }
 
-                Pensioner pensionerFound = await _pensionDbContext.Pensioners.FirstOrDefaultAsync(
+                Pensioner? pensionerFound = await _pensionDbContext.Pensioners.FirstOrDefaultAsync(
                     entity =>
                         entity.ActiveFlag
                         && entity.TreasuryCode == treasuryCode
@@ -131,7 +131,7 @@ namespace CTS_BE.BAL.Services.Pension
                     PpoComponentRevision ppoComponentRevision = new() { Id = 0, PpoId = ppoId };
                     ppoComponentRevision.FillFrom(ppoComponentRevisionDTO);
 
-                    PpoComponentRevision ppoComponentRevisionFound =
+                    PpoComponentRevision? ppoComponentRevisionFound =
                         await _pensionDbContext.PpoComponentRevisions.FirstOrDefaultAsync(entity =>
                             entity.ActiveFlag
                             && entity.PpoId == ppoId
@@ -148,7 +148,7 @@ namespace CTS_BE.BAL.Services.Pension
                         );
                         continue;
                     }
-                    Pensioner pensionerFound =
+                    Pensioner? pensionerFound =
                         await _pensionDbContext.Pensioners.FirstOrDefaultAsync(entity =>
                             entity.ActiveFlag
                             && entity.TreasuryCode == treasuryCode
@@ -197,7 +197,7 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
-            PpoComponentRevision ppoComponentRevision = new() { Id = 0 };
+            PpoComponentRevision? ppoComponentRevision = new() { Id = 0 };
             TResponse? response = _mapper.Map<TResponse>(ppoComponentRevision);
 
             try
@@ -262,7 +262,7 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
-            PpoComponentRevision ppoComponentRevision = new() { Id = 0 };
+            PpoComponentRevision? ppoComponentRevision = new() { Id = 0 };
             TResponse? response = _mapper.Map<TResponse>(ppoComponentRevision);
 
             try

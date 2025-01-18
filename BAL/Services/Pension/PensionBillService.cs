@@ -34,7 +34,7 @@ namespace CTS_BE.BAL.Services.Pension
         )
             where T : PensionerFirstBillResponseDTO
         {
-            Pensioner pensioner = await _pensionDbContext
+            Pensioner? pensioner = await _pensionDbContext
                 .Pensioners.Include(p => p.Branch)
                 .ThenInclude(b => b.Bank)
                 .Include(p => p.Category)
@@ -142,7 +142,7 @@ namespace CTS_BE.BAL.Services.Pension
         )
             where T : PensionerFirstBillResponseDTO
         {
-            Pensioner pensioner = await _pensionDbContext
+            Pensioner? pensioner = await _pensionDbContext
                 .Pensioners.Include(p => p.Branch)
                 .ThenInclude(b => b.Bank)
                 .Include(p => p.Category)
