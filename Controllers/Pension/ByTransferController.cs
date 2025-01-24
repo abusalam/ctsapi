@@ -35,64 +35,7 @@ namespace CTS_BE.Controllers.Pension
             _cancellationTokenSource = new CancellationTokenSource();
         }
 
-        // [HttpPost("by-transfer")]
-        // [Tags("Pension: ByTransfer")]
-        //[OpenApi]
-        // public async Task<JsonAPIResponse<ByTransferHeadResponseDTO>> SaveByTransferHead(
-        //     ByTransferHeadEntryDTO byTransferHeadEntryDTO
-        // )
-        // {
-        //     JsonAPIResponse<ByTransferHeadResponseDTO> response = new()
-        //     {
-        //         ApiResponseStatus = Enum.APIResponseStatus.Success,
-        //         Message = "ByTransfer Head saved successfully!",
-        //         Result = new() { DataSource = new() },
-        //     };
-
-        //     try
-        //     {
-        //         //// Map the request DTO to response DTO
-        //         //ByTransferHeadResponseDTO byTransferHeadResponseDTO = new()
-        //         //{
-        //         //    AccountHeadId = byTransferHeadEntryDTO.AccountHeadId,
-        //         //     ByTransferType = byTransferHeadEntryDTO.ByTransferType,
-        //         //    ByTransferDescription = byTransferHeadEntryDTO.ByTransferDescription,
-
-        //         //    //BillBytransfers = byTransferHeadRequestDTO.BillBytransfers,
-        //         //};
-
-        //         // Call the service method to save the ByTransferHead
-        //         response.savedByTransferHead =
-        //             await _byTransferHeadService.SaveByTransferHead<ByTransferHeadResponseDTO>(
-        //                 byTransferHeadEntryDTO,
-        //                 GetCurrentFyYear(),
-        //                 GetTreasuryCode()
-        //             );
-
-        //         // Check if DataSource contains validation errors or saved data
-        //         if (savedByTransferHead.DataSource != null)
-        //         {
-        //             response.Result.DataSource = savedByTransferHead.DataSource;
-        //             return response;
-        //         }
-
-        //         response.Result = savedByTransferHead;
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         // Handle exceptions and populate error response
-        //         FillException(response, ex);
-        //         return response;
-        //     }
-        //     finally
-        //     {
-        //         // Attach error messages from DataSource if any
-        //         FillErrorMesageFromDataSource(response);
-        //     }
-
-        //     return response;
-        // }
-
+ 
 
 
 
