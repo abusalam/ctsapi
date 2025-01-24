@@ -20,81 +20,46 @@ namespace CTS_BE.DAL.Repositories.Pension
             _mapper = mapper;
         }
 
-        //public async Task<T> SaveByTransferHead<T>(
-        //    BytransferHead byTransferHeadEntity,
-        //    short financialYear,
-        //    string treasuryCode
-        //)
-        //{
-        //    T responseDTO = _mapper.Map<T>(byTransferHeadEntity);
+        public async Task<BytransferHead?> GetByTransferHeadByIdAsync(
+      long byTransferHeadId,
+      string treasuryCode
+  )
+        {
+           
+            var byTransferHead = await _pensionDbContext
+                .BytransferHeads.Where(entity =>
+                    entity.ActiveFlag
+                    && entity.Id == byTransferHeadId
+                    && entity.BillBytransfers.Any(b => b.TreasuryCode == treasuryCode) 
+                )
+                .FirstOrDefaultAsync();
 
-        //    // Check if the corresponding AccountHead exists
-        //    AccountHead? accountHead = await _pensionDbContext
-        //        .AccountHeads.Where(entity =>
-        //            entity.Id == byTransferHeadEntity.AccountHeadId && entity.ActiveFlag
-        //        )
-        //        .FirstOrDefaultAsync();
+            if (byTransferHead == null)
+            {
+                return null;
+            }
 
-        //    if (accountHead == null)
-        //    {
-        //        responseDTO.FillDataSource(byTransferHeadEntity, "Account head not found!");
-        //        return responseDTO;
-        //    }
+          
+            _pensionDbContext
+                .Entry(byTransferHead)
+                .Reference(entity => entity.AccountHead) 
+                .Load();
 
-        //    // Populate additional fields in BytransferHead
-        //    byTransferHeadEntity.ActiveFlag = true;
-        //    byTransferHeadEntity.CreatedAt = DateTime.Now;
-        //    byTransferHeadEntity.UpdatedAt = DateTime.Now;
-        //    // byTransferHeadEntity.TreasuryCode = treasuryCode;
+            _pensionDbContext
+                .Entry(byTransferHead)
+                .Collection(entity => entity.BillBytransfers) 
+                .Load();
 
-        //    // Validate and prepare related entities
-        //    byTransferHeadEntity
-        //        .BillBytransfers.ToList()
-        //        .ForEach(billBytransfer =>
-        //        {
-        //            billBytransfer.ActiveFlag = true;
-        //            billBytransfer.FinancialYear = financialYear;
-        //            billBytransfer.TreasuryCode = treasuryCode;
-        //            billBytransfer.CreatedAt = DateTime.Now;
-        //            billBytransfer.CreatedBy = byTransferHeadEntity.CreatedBy;
-        //        });
+            
+            foreach (var billBytransfer in byTransferHead.BillBytransfers)
+            {
+                _pensionDbContext.Entry(billBytransfer)
+                    .Reference(entity => entity.PpoBill) 
+                    .Load();
+            }
 
-        //    // Add the BytransferHead entity to the DbContext
-        //    await _pensionDbContext.BytransferHeads.AddAsync(byTransferHeadEntity);
-
-        //    // Save changes and handle response
-        //    if (await _pensionDbContext.SaveChangesAsync() == 0)
-        //    {
-        //        responseDTO.FillDataSource(byTransferHeadEntity, "Bytransfer head not saved!");
-        //        return responseDTO;
-        //    }
-
-        //    // Load navigation properties for a complete response
-        //    _pensionDbContext
-        //        .Entry(byTransferHeadEntity)
-        //        .Reference(entity => entity.AccountHead)
-        //        .Load();
-        //    byTransferHeadEntity
-        //        .BillBytransfers.ToList()
-        //        .ForEach(billBytransfer =>
-        //        {
-        //            _pensionDbContext
-        //                .Entry(billBytransfer)
-        //                .Reference(entity => entity.BytransferHead)
-        //                .Load();
-        //        });
-
-        //    // Map the updated entity back to DTO
-        //    responseDTO = _mapper.Map<T>(byTransferHeadEntity);
-
-        //    return responseDTO;
-        //}
-
-
-
-        //new added
-
-
+            return byTransferHead;
+        }
         public async Task<T> SaveByTransferHead<T>(
             BytransferHead byTransferHeadEntity,
             short financialYear,
@@ -103,17 +68,17 @@ namespace CTS_BE.DAL.Repositories.Pension
         {
             T responseDTO = _mapper.Map<T>(byTransferHeadEntity);
 
-            // Add the BytransferHead entity to the DbContext
+           
             await _pensionDbContext.BytransferHeads.AddAsync(byTransferHeadEntity);
 
-            // Save changes and handle response
+            
             if (await _pensionDbContext.SaveChangesAsync() == 0)
             {
                 responseDTO.FillDataSource(byTransferHeadEntity, "Bytransfer head not saved!");
                 return responseDTO;
             }
 
-            // Load navigation properties for a complete response
+          
             _pensionDbContext
                 .Entry(byTransferHeadEntity)
                 .Reference(entity => entity.AccountHead)
@@ -126,7 +91,7 @@ namespace CTS_BE.DAL.Repositories.Pension
                     .Load();
             }
 
-            // Map the updated entity back to DTO
+           
             responseDTO = _mapper.Map<T>(byTransferHeadEntity);
 
             return responseDTO;

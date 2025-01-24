@@ -11,8 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CTS_BE.Controllers.Pension
 {
-    // [Route("api/[controller]")]
-    //[ApiController]
+  
 
 
     public class ByTransferController : ApiBaseController
@@ -54,7 +53,7 @@ namespace CTS_BE.Controllers.Pension
 
             try
             {
-                // Call the service method to save the ByTransferHead
+               
                 response.Result =
                     await _byTransferHeadService.SaveByTransferHead<ByTransferHeadResponseDTO>(
                         byTransferHeadEntryDTO,
@@ -64,17 +63,55 @@ namespace CTS_BE.Controllers.Pension
             }
             catch (Exception ex)
             {
-                // Handle exceptions and populate error response
+               
                 FillException(response, ex);
                 return response;
             }
             finally
             {
-                // Attach error messages from DataSource if any
+              
                 FillErrorMesageFromDataSource(response);
             }
 
             return response;
+        }
+
+
+
+
+
+        [HttpGet("bytransfer/{byTransferHeadId}")]
+        [Tags("Pension: By Transfer Head")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<ByTransferHeadResponseDTO>> GetByTransferHeadById(
+    long byTransferHeadId
+)
+        {
+            JsonAPIResponse<ByTransferHeadResponseDTO> response = new()
+            {
+                ApiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = "By Transfer Head details received successfully!",
+            };
+
+            try
+            {
+                
+                response.Result = await _byTransferHeadService.GetByTransferHeadById<ByTransferHeadResponseDTO>(
+                    byTransferHeadId,
+                    GetTreasuryCode() 
+                );
+            }
+            catch (Exception ex)
+            {
+                FillException(response, ex); 
+                return response;
+            }
+            finally
+            {
+                FillErrorMesageFromDataSource(response);
+            }
+
+            return response; 
         }
     }
 }

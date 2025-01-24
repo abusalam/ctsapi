@@ -113,5 +113,49 @@ namespace CTS_BE.BAL.Services.Pension
 
             return responseDTO;
         }
+
+
+
+        public async Task<T> GetByTransferHeadById<T>(long byTransferHeadId, string treasuryCode)
+        {
+            T? response = _mapper.Map<T>(new BytransferHead());
+            try
+            {
+                // Retrieve the BytransferHead entity from the repository
+                BytransferHead? byTransferHead = await _byTransferHeadRepository.GetByTransferHeadByIdAsync(
+                    byTransferHeadId,
+                    treasuryCode
+                );
+
+                if (byTransferHead is null)
+                {
+                    response.FillDataSource(
+                        byTransferHead,
+                        "BytransferHead does not exist. Please check the Id and try again."
+                    );
+                    return response;
+                }
+
+                // Map the retrieved entity to the response type
+                response = _mapper.Map<T>(byTransferHead);
+                return response;
+            }
+            catch (DbUpdateException ex)
+            {
+                response.FillDataSource(
+                    new BytransferHead(),
+                    $"DbException: {ex.InnerException?.Message ?? ex.Message}"
+                );
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.FillDataSource(
+                    new BytransferHead(),
+                    $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
+                );
+                return response;
+            }
+        }
     }
 }
