@@ -9,5 +9,10 @@ namespace CTS_BE.DAL.Interfaces.Pension
             short financialYear,
             string treasuryCode
         );
+
+        Task<BytransferHead?> GetByTransferHeadByIdAsync(
+            long byTransferHeadId,
+            string treasuryCode
+        );
     }
 }

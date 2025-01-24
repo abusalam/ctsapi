@@ -21,16 +21,15 @@ namespace CTS_BE.DAL.Repositories.Pension
         }
 
         public async Task<BytransferHead?> GetByTransferHeadByIdAsync(
-      long byTransferHeadId,
-      string treasuryCode
-  )
+            long byTransferHeadId,
+            string treasuryCode
+        )
         {
-           
             var byTransferHead = await _pensionDbContext
                 .BytransferHeads.Where(entity =>
                     entity.ActiveFlag
                     && entity.Id == byTransferHeadId
-                    && entity.BillBytransfers.Any(b => b.TreasuryCode == treasuryCode) 
+                    && entity.BillBytransfers.Any(b => b.TreasuryCode == treasuryCode)
                 )
                 .FirstOrDefaultAsync();
 
@@ -39,27 +38,21 @@ namespace CTS_BE.DAL.Repositories.Pension
                 return null;
             }
 
-          
-            _pensionDbContext
-                .Entry(byTransferHead)
-                .Reference(entity => entity.AccountHead) 
-                .Load();
+            _pensionDbContext.Entry(byTransferHead).Reference(entity => entity.AccountHead).Load();
 
             _pensionDbContext
                 .Entry(byTransferHead)
-                .Collection(entity => entity.BillBytransfers) 
+                .Collection(entity => entity.BillBytransfers)
                 .Load();
 
-            
             foreach (var billBytransfer in byTransferHead.BillBytransfers)
             {
-                _pensionDbContext.Entry(billBytransfer)
-                    .Reference(entity => entity.PpoBill) 
-                    .Load();
+                _pensionDbContext.Entry(billBytransfer).Reference(entity => entity.PpoBill).Load();
             }
 
             return byTransferHead;
         }
+
         public async Task<T> SaveByTransferHead<T>(
             BytransferHead byTransferHeadEntity,
             short financialYear,
@@ -68,17 +61,14 @@ namespace CTS_BE.DAL.Repositories.Pension
         {
             T responseDTO = _mapper.Map<T>(byTransferHeadEntity);
 
-           
             await _pensionDbContext.BytransferHeads.AddAsync(byTransferHeadEntity);
 
-            
             if (await _pensionDbContext.SaveChangesAsync() == 0)
             {
                 responseDTO.FillDataSource(byTransferHeadEntity, "Bytransfer head not saved!");
                 return responseDTO;
             }
 
-          
             _pensionDbContext
                 .Entry(byTransferHeadEntity)
                 .Reference(entity => entity.AccountHead)
@@ -91,7 +81,6 @@ namespace CTS_BE.DAL.Repositories.Pension
                     .Load();
             }
 
-           
             responseDTO = _mapper.Map<T>(byTransferHeadEntity);
 
             return responseDTO;

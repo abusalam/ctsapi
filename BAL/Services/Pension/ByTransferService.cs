@@ -32,7 +32,6 @@ namespace CTS_BE.BAL.Services.Pension
             _treasuryRepository = treasuryRepository;
         }
 
-     
         public async Task<T> SaveByTransferHead<T>(
             ByTransferHeadEntryDTO byTransferHeadEntryDTO,
             short financialYear,
@@ -46,7 +45,6 @@ namespace CTS_BE.BAL.Services.Pension
 
             try
             {
-                // Check if AccountHead exists
                 AccountHead? accountHead = await _pensionDbContext
                     .AccountHeads.Where(entity =>
                         entity.Id == byTransferHeadEntity.AccountHeadId && entity.ActiveFlag
@@ -62,7 +60,6 @@ namespace CTS_BE.BAL.Services.Pension
                     return responseDTO;
                 }
 
-                // Check if ByTransferHead already exists
                 BytransferHead? existingByTransferHead = await _pensionDbContext
                     .BytransferHeads.Where(entity =>
                         entity.ActiveFlag
@@ -83,12 +80,11 @@ namespace CTS_BE.BAL.Services.Pension
                     return responseDTO;
                 }
 
-               
                 SetCreatedBy(byTransferHeadEntity);
                 byTransferHeadEntity.UpdatedAt = DateTime.Now;
                 // byTransferHeadEntity.TreasuryCode = treasuryCode;
 
-                // Process related entities (BillBytransfers)
+
                 foreach (var billBytransfer in byTransferHeadEntity.BillBytransfers)
                 {
                     SetCreatedBy(billBytransfer);
@@ -96,7 +92,6 @@ namespace CTS_BE.BAL.Services.Pension
                     billBytransfer.TreasuryCode = treasuryCode;
                 }
 
-                // Save ByTransferHead using the repository
                 responseDTO = await _byTransferHeadRepository.SaveByTransferHead<T>(
                     byTransferHeadEntity,
                     financialYear,
@@ -114,18 +109,16 @@ namespace CTS_BE.BAL.Services.Pension
             return responseDTO;
         }
 
-
-
         public async Task<T> GetByTransferHeadById<T>(long byTransferHeadId, string treasuryCode)
         {
             T? response = _mapper.Map<T>(new BytransferHead());
             try
             {
-                // Retrieve the BytransferHead entity from the repository
-                BytransferHead? byTransferHead = await _byTransferHeadRepository.GetByTransferHeadByIdAsync(
-                    byTransferHeadId,
-                    treasuryCode
-                );
+                BytransferHead? byTransferHead =
+                    await _byTransferHeadRepository.GetByTransferHeadByIdAsync(
+                        byTransferHeadId,
+                        treasuryCode
+                    );
 
                 if (byTransferHead is null)
                 {
@@ -136,7 +129,6 @@ namespace CTS_BE.BAL.Services.Pension
                     return response;
                 }
 
-                // Map the retrieved entity to the response type
                 response = _mapper.Map<T>(byTransferHead);
                 return response;
             }

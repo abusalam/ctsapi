@@ -11,9 +11,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CTS_BE.Controllers.Pension
 {
-  
-
-
     public class ByTransferController : ApiBaseController
     {
         private readonly IClaimService _claimService;
@@ -34,12 +31,8 @@ namespace CTS_BE.Controllers.Pension
             _cancellationTokenSource = new CancellationTokenSource();
         }
 
- 
-
-
-
         [HttpPost("by-transfer")]
-        [Tags("Pension: ByTransfer")]
+        [Tags("Pension:By Transfer")]
         [OpenApi]
         public async Task<JsonAPIResponse<ByTransferHeadResponseDTO>> SaveByTransferHead(
             ByTransferHeadEntryDTO byTransferHeadEntryDTO
@@ -53,7 +46,6 @@ namespace CTS_BE.Controllers.Pension
 
             try
             {
-               
                 response.Result =
                     await _byTransferHeadService.SaveByTransferHead<ByTransferHeadResponseDTO>(
                         byTransferHeadEntryDTO,
@@ -63,29 +55,23 @@ namespace CTS_BE.Controllers.Pension
             }
             catch (Exception ex)
             {
-               
                 FillException(response, ex);
                 return response;
             }
             finally
             {
-              
                 FillErrorMesageFromDataSource(response);
             }
 
             return response;
         }
 
-
-
-
-
         [HttpGet("bytransfer/{byTransferHeadId}")]
-        [Tags("Pension: By Transfer Head")]
+        [Tags("Pension:By Transfer")]
         [OpenApi]
         public async Task<JsonAPIResponse<ByTransferHeadResponseDTO>> GetByTransferHeadById(
-    long byTransferHeadId
-)
+            long byTransferHeadId
+        )
         {
             JsonAPIResponse<ByTransferHeadResponseDTO> response = new()
             {
@@ -95,15 +81,15 @@ namespace CTS_BE.Controllers.Pension
 
             try
             {
-                
-                response.Result = await _byTransferHeadService.GetByTransferHeadById<ByTransferHeadResponseDTO>(
-                    byTransferHeadId,
-                    GetTreasuryCode() 
-                );
+                response.Result =
+                    await _byTransferHeadService.GetByTransferHeadById<ByTransferHeadResponseDTO>(
+                        byTransferHeadId,
+                        GetTreasuryCode()
+                    );
             }
             catch (Exception ex)
             {
-                FillException(response, ex); 
+                FillException(response, ex);
                 return response;
             }
             finally
@@ -111,7 +97,7 @@ namespace CTS_BE.Controllers.Pension
                 FillErrorMesageFromDataSource(response);
             }
 
-            return response; 
+            return response;
         }
     }
 }
