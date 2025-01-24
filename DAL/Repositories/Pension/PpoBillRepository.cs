@@ -198,7 +198,7 @@ namespace CTS_BE.DAL.Repositories.Pension
                 ppoBillResponseDTO.FillDataSource(pensioner, "Pensioner not found!");
                 return ppoBillResponseDTO;
             }
-
+            //bill logic
             if (ppoBillEntity.BillType == BillType.FirstBill)
             {
                 pensioner.PpoStatusFlags.Add(
@@ -215,6 +215,7 @@ namespace CTS_BE.DAL.Repositories.Pension
                     }
                 );
             }
+            //Prepare PPO Bill Entity
 
             ppoBillEntity.ActiveFlag = true;
             ppoBillEntity.PensionerId = pensioner.Id;

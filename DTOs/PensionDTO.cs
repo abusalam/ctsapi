@@ -1309,4 +1309,26 @@ namespace CTS_BE.DTOs
     {
         public short CurrentYear { get; set; }
     }
+
+    public partial class ByTransferHeadEntryDTO : BaseDTO
+    {
+        [Required]
+        [RegularExpression(
+            @"[PR]",
+            ErrorMessage = "{0} must be one of the following (P - Payment; R - Recovery)"
+        )]
+        public char ByTransferType { get; set; }
+
+        [Required]
+        public long AccountHeadId { get; set; }
+
+        [Required]
+        [StringLength(500)]
+        public string ByTransferDescription { get; set; } = null!;
+    }
+
+    public partial class ByTransferHeadResponseDTO : ByTransferHeadEntryDTO
+    {
+        public long Id { get; set; }
+    }
 }
