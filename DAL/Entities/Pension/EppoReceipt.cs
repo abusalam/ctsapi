@@ -163,6 +163,9 @@ public partial class EppoReceipt
     [InverseProperty("EppoReceiptPhotoFiles")]
     public virtual UploadedFile? PhotoFile { get; set; }
 
+    [InverseProperty("EppoReceipt")]
+    public virtual ICollection<PpoReceipt> PpoReceipts { get; set; } = new List<PpoReceipt>();
+
     [ForeignKey("SignatureFileId")]
     [InverseProperty("EppoReceiptSignatureFiles")]
     public virtual UploadedFile? SignatureFile { get; set; }

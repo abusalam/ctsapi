@@ -221,7 +221,15 @@ app.UseAuthorization();
 app.UseStaticFiles();
 
 app.UseAuthTokenMiddleware();
-app.UseFinancialYear();
+
+// Conditional middleware based on route pattern
+app.UseWhen(
+    context => !context.Request.Path.StartsWithSegments("/api/v1/db"),
+    appBuilder =>
+    {
+        appBuilder.UseFinancialYear(); // This middleware will NOT run for paths starting with /api/vi/db
+    }
+);
 
 app.MapControllers();
 

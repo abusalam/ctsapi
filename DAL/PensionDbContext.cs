@@ -466,6 +466,11 @@ public partial class PensionDbContext : DbContext
             entity.ToTable("ppo_receipts", "cts_pension", tb => tb.HasComment("PensionModuleSchema v1"));
 
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.ReceiptType)
+                .HasDefaultValueSql("'PPO'::character varying")
+                .HasComment("PPO - PpoReceipt; EPPO - EppoReceipt;");
+
+            entity.HasOne(d => d.EppoReceipt).WithMany(p => p.PpoReceipts).HasConstraintName("ppo_receipts_eppo_receipt_id_fkey");
         });
 
         modelBuilder.Entity<PpoReceiptSequence>(entity =>

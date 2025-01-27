@@ -59,6 +59,16 @@ public partial class PpoReceipt
     [StringLength(100)]
     public string PpoStatus { get; set; } = null!;
 
+    /// <summary>
+    /// PPO - PpoReceipt; EPPO - EppoReceipt;
+    /// </summary>
+    [Column("receipt_type")]
+    [StringLength(30)]
+    public string ReceiptType { get; set; } = null!;
+
+    [Column("eppo_receipt_id")]
+    public long? EppoReceiptId { get; set; }
+
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime? CreatedAt { get; set; }
 
@@ -73,6 +83,10 @@ public partial class PpoReceipt
 
     [Column("active_flag")]
     public bool ActiveFlag { get; set; }
+
+    [ForeignKey("EppoReceiptId")]
+    [InverseProperty("PpoReceipts")]
+    public virtual EppoReceipt? EppoReceipt { get; set; }
 
     [InverseProperty("Receipt")]
     public virtual ICollection<Pensioner> Pensioners { get; set; } = new List<Pensioner>();
