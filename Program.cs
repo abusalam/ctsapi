@@ -104,6 +104,7 @@ builder.Services.AddTransient<ILifeCertificateRepository, LifeCertificateReposit
 builder.Services.AddTransient<IEPpoReceiptRepository, EPpoReceiptRepository>();
 builder.Services.AddTransient<ITreasuryRepository, TreasuryRepository>();
 builder.Services.AddTransient<IFinancialYearRepository, FinancialYearRepository>();
+builder.Services.AddTransient<IByTransferRepository, ByTransferRepository>();
 
 // Pension Services
 builder.Services.AddTransient<IFileStorageService, FileStorageService>();
@@ -122,6 +123,7 @@ builder.Services.AddTransient<INomineeService, NomineeService>();
 builder.Services.AddTransient<ILifeCertificateService, LifeCertificateService>();
 builder.Services.AddTransient<IEPpoReceiptService, EPpoReceiptService>();
 builder.Services.AddTransient<IConvertToFamilyPensionService, ConvertToFamilyPensionService>();
+builder.Services.AddTransient<IByTransferService, ByTransferService>();
 
 //Automapper
 builder.Services.AddAutoMapper(typeof(Program));
