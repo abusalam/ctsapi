@@ -83,7 +83,6 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
-            _dataCount = await _pensionDbContext.Breakups.CountAsync();
             return await _pensionDbContext
                 .Breakups.Where(entity => entity.ActiveFlag)
                 .Select(entity => _mapper.Map<PensionBreakupResponseDTO>(entity))

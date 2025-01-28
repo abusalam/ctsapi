@@ -39,59 +39,20 @@ namespace CTS_BE.DAL.Repositories.Pension
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<T> CreateCategory<T>(
-            short finYear,
-            string treasuryCode,
-            Category categoryEntity
-        )
+        public async Task<bool> CategoryExists(Category categoryEntity)
+        {
+            return await _context.Categories.AnyAsync(entity =>
+                entity.ActiveFlag
+                && entity.PrimaryCategoryId == categoryEntity.PrimaryCategoryId
+                && entity.SubCategoryId == categoryEntity.SubCategoryId
+            );
+        }
+
+        public async Task<T> CreateCategory<T>(Category categoryEntity)
         {
             T response = _mapper.Map<T>(categoryEntity);
             try
             {
-                Category? categoryExists = await _context
-                    .Categories.Where(entity =>
-                        entity.ActiveFlag
-                        && entity.PrimaryCategoryId == categoryEntity.PrimaryCategoryId
-                        && entity.SubCategoryId == categoryEntity.SubCategoryId
-                    )
-                    .FirstOrDefaultAsync();
-
-                if (categoryExists != null)
-                {
-                    response.FillDataSource(categoryExists, $"Category already exists!");
-                    return response;
-                }
-
-                categoryEntity.ActiveFlag = true;
-                categoryEntity.CreatedAt = DateTime.Now;
-
-                PrimaryCategory? primaryCategoryEntity = await _context
-                    .PrimaryCategories.Where(entity =>
-                        entity.Id == categoryEntity.PrimaryCategoryId
-                    )
-                    .FirstOrDefaultAsync();
-
-                if (primaryCategoryEntity == null)
-                {
-                    response.FillDataSource(categoryExists, $"Primary Category does not exists!");
-                    return response;
-                }
-
-                SubCategory? subCategoryEntity = await _context
-                    .SubCategories.Where(entity => entity.Id == categoryEntity.SubCategoryId)
-                    .FirstOrDefaultAsync();
-
-                if (subCategoryEntity == null)
-                {
-                    response.FillDataSource(categoryExists, $"Sub Category does not exists!");
-                    return response;
-                }
-
-                categoryEntity.CategoryName =
-                    primaryCategoryEntity?.PrimaryCategoryName
-                    + " : "
-                    + subCategoryEntity?.SubCategoryName;
-
                 _context.Categories.Add(categoryEntity);
 
                 if (await _context.SaveChangesAsync() == 0)
@@ -100,14 +61,6 @@ namespace CTS_BE.DAL.Repositories.Pension
                     return response;
                 }
                 response = _mapper.Map<T>(categoryEntity);
-            }
-            catch (DbUpdateException ex)
-            {
-                response.FillDataSource(
-                    categoryEntity,
-                    $"DbException: {ex.InnerException?.Message ?? ex.Message}"
-                );
-                return response;
             }
             catch (Exception ex)
             {

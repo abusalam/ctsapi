@@ -118,7 +118,6 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
-            _dataCount = _manualPpoReceiptRepository.GetQueryablePpoReceipts().Count();
             return await _manualPpoReceiptRepository
                 .GetQueryablePpoReceipts()
                 .Where(entity =>

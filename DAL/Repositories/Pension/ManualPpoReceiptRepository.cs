@@ -115,5 +115,36 @@ namespace CTS_BE.DAL.Repositories.Pension
         {
             return _context.PpoReceipts;
         }
+
+        public string GenerateTreasuryReceiptNo(short finYear, string treasuryCode)
+        {
+            PpoReceiptSequence? ppoReceiptSequence = _context
+                .PpoReceiptSequences.Where(entity =>
+                    entity.ActiveFlag == true
+                    && entity.FinancialYear == finYear
+                    && entity.TreasuryCode == treasuryCode
+                )
+                .FirstOrDefault();
+            if (ppoReceiptSequence == null)
+            {
+                ppoReceiptSequence = new()
+                {
+                    FinancialYear = finYear,
+                    TreasuryCode = treasuryCode,
+                    NextSequenceValue = 1,
+                };
+                _context.Add(ppoReceiptSequence);
+            }
+            else
+            {
+                ppoReceiptSequence.NextSequenceValue++;
+                _context.Update(ppoReceiptSequence);
+            }
+            string paddedNextSequenceValue = $"{ppoReceiptSequence.NextSequenceValue}".PadLeft(
+                6,
+                '0'
+            );
+            return $"{treasuryCode}{finYear}{paddedNextSequenceValue}";
+        }
     }
 }

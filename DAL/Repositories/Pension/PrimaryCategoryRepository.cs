@@ -2,47 +2,60 @@ using AutoMapper;
 using CTS_BE.DAL.Entities.Pension;
 using CTS_BE.DAL.Interfaces.Pension;
 using CTS_BE.DTOs;
+using CTS_BE.Helper;
 using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Repositories.Pension
 {
-    public class PrimaryCategoryRepository
-        : Repository<PrimaryCategory, PensionDbContext>,
-            IPrimaryCategoryRepository
+    public class PrimaryCategoryRepository(IMapper mapper, PensionDbContext context)
+        : IPrimaryCategoryRepository
     {
-        private readonly PensionDbContext _context;
+        private readonly PensionDbContext _context = context;
+        private readonly IMapper _mapper = mapper;
 
-        private readonly IMapper _mapper;
-
-        public PrimaryCategoryRepository(IMapper mapper, PensionDbContext context)
-            : base(context)
+        public async Task<PrimaryCategory?> GetPrimaryCategoryById(long primaryCategoryId)
         {
-            _context = context;
-            _mapper = mapper;
+            return await _context
+                .PrimaryCategories.Where(entity =>
+                    entity.ActiveFlag && entity.Id == primaryCategoryId
+                )
+                .FirstOrDefaultAsync();
         }
 
-        public async Task<List<PensionPrimaryCategoryResponseDTO>> GetPrimaryCategoriesAsync()
+        public async Task<bool> PrimaryCategoryExists(string primaryCategoryName)
+        {
+            return await _context.PrimaryCategories.AnyAsync(entity =>
+                entity.ActiveFlag && entity.PrimaryCategoryName == primaryCategoryName
+            );
+        }
+
+        public async Task<T> SavePrimaryCategoryAsync<T>(PrimaryCategory primaryCategory)
+        {
+            T? response = _mapper.Map<T>(primaryCategory);
+            try
+            {
+                _context.PrimaryCategories.Add(primaryCategory);
+                if (await _context.SaveChangesAsync() == 0)
+                {
+                    response.FillDataSource(primaryCategory, "Failed to add Primary Category!");
+                    return response;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.FillDataSource(
+                    primaryCategory,
+                    $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
+                );
+                return response;
+            }
+            return response;
+        }
+
+        public async Task<List<PrimaryCategory>> GetPrimaryCategoriesAsync()
         {
             return await _context
                 .PrimaryCategories.Where(entity => entity.ActiveFlag)
-                .Select(entity => new PensionPrimaryCategoryResponseDTO
-                {
-                    Id = entity.Id,
-                    AccountHeadId = entity.AccountHeadId,
-                    PrimaryCategoryName = entity.PrimaryCategoryName,
-                    AccountHead = new AccountHeadResponseDTO
-                    {
-                        Id = entity.AccountHead.Id,
-                        MajorHead = entity.AccountHead.MajorHead,
-                        SubmajorHead = entity.AccountHead.SubmajorHead,
-                        MinorHead = entity.AccountHead.MinorHead,
-                        PlanStatus = entity.AccountHead.PlanStatus,
-                        SchemeHead = entity.AccountHead.SchemeHead,
-                        DetailHead = entity.AccountHead.DetailHead,
-                        SubdetailHead = entity.AccountHead.SubdetailHead,
-                        VotedCharged = entity.AccountHead.VotedCharged,
-                    },
-                })
                 .ToListAsync();
         }
 

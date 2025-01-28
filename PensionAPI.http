@@ -15,6 +15,56 @@
 
 @ApprovedPpoIdStatusFlag = {{SetPPOApprovedFlag.response.body.$.result.statusFlag}}
 
+
+
+
+
+
+
+
+
+### Create database
+# @name MigrateDatabase
+POST {{PensionAPI_HostAddress}}/api/v1/db/migrate
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+
+
+
+
+
+
+
+
+### Seed database
+# @name SeedDatabase
+PUT {{PensionAPI_HostAddress}}/api/v1/db/seed
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+
+
+
+
+
+
+
+
+### Drop database
+# @name DropDatabase
+DELETE {{PensionAPI_HostAddress}}/api/v1/db/drop
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+
+
+
+
+
+
+
+
 ### All List APIs
 # @name AllPatchAPIs
 # GET {{PensionAPI_HostAddress}}/api/v1/factory/PpoSanctionDetailsEntryDTO
@@ -160,6 +210,18 @@ Content-Type: application/json
   "SubCategoryId": 3
 }
 
+### Get Category By Id
+# @name GetCategoryById
+GET {{PensionAPI_HostAddress}}/api/v1/pension/category/{categoryId}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+### Get Account Heads
+# @name GetAccountHeads
+GET {{PensionAPI_HostAddress}}/api/v1/pension/account-heads
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
 ### Create Pension SubCategory
 # @name CreatePensionSubCategory
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
@@ -259,6 +321,18 @@ Accept: application/json
 Authorization: Bearer {{accessToken}}
 
 
+
+### Send Bill
+# @name SendFirstPensionBill
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+POST {{PensionAPI_HostAddress}}/api/v1/ppo/send-bill
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "message": "GeneratePensionBillRequest"
+}
 
 ### Set Category ID
 
@@ -487,7 +561,11 @@ Get {{PensionAPI_HostAddress}}/api/v1/ppo/{{GeneratedPpoId}}/details
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
-
+### Get all not approved pensioners
+# @name GetAllNotApprovedPensioners
+GET {{PensionAPI_HostAddress}}/api/v1/ppo/details/not-approved
+Accept: application/json
+Authorization: Bearer {{accessToken}}
 
 
 
@@ -525,6 +603,18 @@ Authorization: Bearer {{accessToken}}
 ### Read PPO Receipt Request
 # @name GetPPOReceiptByTreasuryReceiptNo
 GET {{PensionAPI_HostAddress}}/api/v1/manual-ppo/receipts/{{treasuryReceiptNo}}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+### Read PPO Receipt Request By ReceiptId
+# @name GetPpoReceiptById
+GET {{PensionAPI_HostAddress}}/api/v1/manual-ppo/receipt/{{receiptId}}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+### Get Unused PPO Receipts
+# @name GetAllUnusedPpoReceipts
+GET {{PensionAPI_HostAddress}}/api/v1/manual-ppo/receipts/unused
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -568,9 +658,27 @@ Content-Type: application/json
 
 
 ### Update PPO Receipt Request
-# @name UpdatePPOReceipt
+# @name UpdatePpoReceiptByTreasuryReceiptNo
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
 PUT {{PensionAPI_HostAddress}}/api/v1/manual-ppo/receipts/{{treasuryReceiptNo}}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "ppoNo": "PPO-{{$randomInt 100000 999999}}",
+  "pensionerName": "Jack Smith",
+  "dateOfCommencement": "2024-07-19",
+  "mobileNumber": "{{$randomInt 6000000000 9999999999}}",
+  "receiptDate": "{{$datetime "YYYY-MM-DD"}}",
+  "psaCode": "A",
+  "ppoType": "N"
+}
+
+### Update PPO Receipt Request
+# @name UpdatePpoReceipt
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+PUT {{PensionAPI_HostAddress}}/api/v1/manual-ppo/receipts/{{receiptId}}
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
@@ -755,6 +863,12 @@ Content-Type: application/json
 ### Get All Ppos For Component Revisions
 # @name GetAllPposForComponentRevisions
 GET {{PensionAPI_HostAddress}}/api/v1/ppo/component-revision/ppos
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+### Get Convert to Family Pension List
+# @name GetPensionersToConvert
+GET {{PensionAPI_HostAddress}}/api/v1/convert-to-family-pension-list
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -991,6 +1105,12 @@ Content-Type: application/json
   "bankAcNo": "0204102717963203",
   "branchId": 3
 }
+
+### Delete NomineeDetails By Id
+# @name DeleteNomineeDetailsById
+DELETE {{PensionAPI_HostAddress}}/api/v1/ppo/nominee/{{NomineeId}}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
 
 
 

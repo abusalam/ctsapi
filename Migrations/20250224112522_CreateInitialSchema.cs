@@ -495,6 +495,57 @@ namespace CTS_BE.Migrations
             );
 
             migrationBuilder.CreateTable(
+                name: "bytransfer_heads",
+                schema: "cts_pension",
+                columns: table => new
+                {
+                    id = table
+                        .Column<long>(type: "bigint", nullable: false)
+                        .Annotation(
+                            "Npgsql:ValueGenerationStrategy",
+                            NpgsqlValueGenerationStrategy.IdentityByDefaultColumn
+                        ),
+                    bytransfer_type = table.Column<char>(
+                        type: "character(1)",
+                        maxLength: 1,
+                        nullable: false,
+                        comment: "P - Payment; R - Recovery;"
+                    ),
+                    account_head_id = table.Column<long>(type: "bigint", nullable: false),
+                    bytransfer_description = table.Column<string>(
+                        type: "character varying(500)",
+                        maxLength: 500,
+                        nullable: false
+                    ),
+                    ag_bytransfer = table.Column<bool>(type: "boolean", nullable: false),
+                    created_at = table.Column<DateTime>(
+                        type: "timestamp without time zone",
+                        nullable: true,
+                        defaultValueSql: "CURRENT_TIMESTAMP"
+                    ),
+                    created_by = table.Column<int>(type: "integer", nullable: false),
+                    updated_at = table.Column<DateTime>(
+                        type: "timestamp without time zone",
+                        nullable: true
+                    ),
+                    updated_by = table.Column<int>(type: "integer", nullable: true),
+                    active_flag = table.Column<bool>(type: "boolean", nullable: false),
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("bytransfer_heads_pkey", x => x.id);
+                    table.ForeignKey(
+                        name: "bytransfer_heads_account_head_id_fkey",
+                        column: x => x.account_head_id,
+                        principalSchema: "cts_pension",
+                        principalTable: "account_heads",
+                        principalColumn: "id"
+                    );
+                },
+                comment: "PensionModuleSchema v1"
+            );
+
+            migrationBuilder.CreateTable(
                 name: "classifications",
                 schema: "cts_pension",
                 columns: table => new
@@ -1620,21 +1671,28 @@ namespace CTS_BE.Migrations
                     relation = table.Column<char>(
                         type: "character(1)",
                         maxLength: 1,
-                        nullable: false
+                        nullable: false,
+                        comment: "F - Father; M - Mother; H - Husband; W - Wife; S - Son; D - Daughter; B - Brother; T - Sister; E - Self; I - Brother(Minor); A - Sister(Unmarried); C - Sister(Widowed); O - Other;"
                     ),
                     date_of_birth = table.Column<DateOnly>(type: "date", nullable: false),
                     date_of_death = table.Column<DateOnly>(type: "date", nullable: true),
                     nominee_type = table.Column<char>(
                         type: "character(1)",
                         maxLength: 1,
-                        nullable: true
+                        nullable: true,
+                        comment: "1 - Family; 5 - LTA; 6 - Death Gratuity;"
                     ),
                     nominee_adult_minor = table.Column<char>(
                         type: "character(1)",
                         maxLength: 1,
-                        nullable: true
+                        nullable: true,
+                        comment: "A - Adult; M - Minor;"
                     ),
-                    nominee_priority = table.Column<int>(type: "integer", nullable: true),
+                    nominee_priority = table.Column<int>(
+                        type: "integer",
+                        nullable: true,
+                        comment: "1 - First; 2 - Second; 3 - Third; 4 - Fourth; 5 - Fifth;"
+                    ),
                     nominee_share = table.Column<int>(type: "integer", nullable: true),
                     bank_ac_no = table.Column<string>(
                         type: "character varying(30)",
@@ -1722,6 +1780,41 @@ namespace CTS_BE.Migrations
                     gross_amount = table.Column<int>(type: "integer", nullable: false),
                     bytransfer_amount = table.Column<int>(type: "integer", nullable: false),
                     net_amount = table.Column<int>(type: "integer", nullable: false),
+                    account_holder_name = table.Column<string>(
+                        type: "character varying(100)",
+                        maxLength: 100,
+                        nullable: false
+                    ),
+                    bank_ac_no = table.Column<string>(
+                        type: "character varying(30)",
+                        maxLength: 30,
+                        nullable: false
+                    ),
+                    ifsc_code = table.Column<string>(
+                        type: "character varying(11)",
+                        maxLength: 11,
+                        nullable: false
+                    ),
+                    payment_status = table.Column<char>(
+                        type: "character(1)",
+                        maxLength: 1,
+                        nullable: false
+                    ),
+                    correction_status = table.Column<char>(
+                        type: "character(1)",
+                        maxLength: 1,
+                        nullable: false
+                    ),
+                    failed_reason = table.Column<string>(
+                        type: "character varying(500)",
+                        maxLength: 500,
+                        nullable: true
+                    ),
+                    remarks = table.Column<string>(
+                        type: "character varying(500)",
+                        maxLength: 500,
+                        nullable: true
+                    ),
                     created_at = table.Column<DateTime>(
                         type: "timestamp without time zone",
                         nullable: true,
@@ -1747,6 +1840,68 @@ namespace CTS_BE.Migrations
                     );
                     table.ForeignKey(
                         name: "ppo_bills_pensioner_id_fkey",
+                        column: x => x.pensioner_id,
+                        principalSchema: "cts_pension",
+                        principalTable: "pensioners",
+                        principalColumn: "id"
+                    );
+                },
+                comment: "PensionModuleSchema v1"
+            );
+
+            migrationBuilder.CreateTable(
+                name: "ppo_bytransfers",
+                schema: "cts_pension",
+                columns: table => new
+                {
+                    id = table
+                        .Column<long>(type: "bigint", nullable: false)
+                        .Annotation(
+                            "Npgsql:ValueGenerationStrategy",
+                            NpgsqlValueGenerationStrategy.IdentityByDefaultColumn
+                        ),
+                    financial_year = table.Column<int>(type: "integer", nullable: false),
+                    treasury_code = table.Column<string>(
+                        type: "character varying(3)",
+                        maxLength: 3,
+                        nullable: false
+                    ),
+                    pensioner_id = table.Column<long>(type: "bigint", nullable: false),
+                    ppo_id = table.Column<int>(type: "integer", nullable: false),
+                    from_date = table.Column<DateOnly>(type: "date", nullable: false),
+                    to_date = table.Column<DateOnly>(type: "date", nullable: false),
+                    bytransfer_head_id = table.Column<long>(type: "bigint", nullable: false),
+                    bytransfer_amount = table.Column<int>(type: "integer", nullable: false),
+                    remarks = table.Column<string>(
+                        type: "character varying(500)",
+                        maxLength: 500,
+                        nullable: true
+                    ),
+                    created_at = table.Column<DateTime>(
+                        type: "timestamp without time zone",
+                        nullable: true,
+                        defaultValueSql: "CURRENT_TIMESTAMP"
+                    ),
+                    created_by = table.Column<int>(type: "integer", nullable: false),
+                    updated_at = table.Column<DateTime>(
+                        type: "timestamp without time zone",
+                        nullable: true
+                    ),
+                    updated_by = table.Column<int>(type: "integer", nullable: true),
+                    active_flag = table.Column<bool>(type: "boolean", nullable: false),
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("ppo_bytransfers_pkey", x => x.id);
+                    table.ForeignKey(
+                        name: "ppo_bytransfers_bytransfer_head_id_fkey",
+                        column: x => x.bytransfer_head_id,
+                        principalSchema: "cts_pension",
+                        principalTable: "bytransfer_heads",
+                        principalColumn: "id"
+                    );
+                    table.ForeignKey(
+                        name: "ppo_bytransfers_pensioner_id_fkey",
                         column: x => x.pensioner_id,
                         principalSchema: "cts_pension",
                         principalTable: "pensioners",
@@ -1998,7 +2153,7 @@ namespace CTS_BE.Migrations
             );
 
             migrationBuilder.CreateTable(
-                name: "bytransfers",
+                name: "bill_bytransfers",
                 schema: "cts_pension",
                 columns: table => new
                 {
@@ -2015,9 +2170,13 @@ namespace CTS_BE.Migrations
                         nullable: false
                     ),
                     ppo_bill_id = table.Column<long>(type: "bigint", nullable: false),
-                    bytransfer_hoa_id = table.Column<int>(type: "integer", nullable: false),
-                    bytransfer_wef = table.Column<DateOnly>(type: "date", nullable: false),
+                    bytransfer_head_id = table.Column<long>(type: "bigint", nullable: false),
                     bytransfer_amount = table.Column<int>(type: "integer", nullable: false),
+                    remarks = table.Column<string>(
+                        type: "character varying(500)",
+                        maxLength: 500,
+                        nullable: true
+                    ),
                     created_at = table.Column<DateTime>(
                         type: "timestamp without time zone",
                         nullable: true,
@@ -2033,9 +2192,77 @@ namespace CTS_BE.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("bytransfers_pkey", x => x.id);
+                    table.PrimaryKey("bill_bytransfers_pkey", x => x.id);
                     table.ForeignKey(
-                        name: "bytransfers_ppo_bill_id_fkey",
+                        name: "bill_bytransfers_bytransfer_head_id_fkey",
+                        column: x => x.bytransfer_head_id,
+                        principalSchema: "cts_pension",
+                        principalTable: "bytransfer_heads",
+                        principalColumn: "id"
+                    );
+                    table.ForeignKey(
+                        name: "bill_bytransfers_ppo_bill_id_fkey",
+                        column: x => x.ppo_bill_id,
+                        principalSchema: "cts_pension",
+                        principalTable: "ppo_bills",
+                        principalColumn: "id"
+                    );
+                },
+                comment: "PensionModuleSchema v1"
+            );
+
+            migrationBuilder.CreateTable(
+                name: "ppo_paid_amounts",
+                schema: "cts_pension",
+                columns: table => new
+                {
+                    id = table
+                        .Column<long>(type: "bigint", nullable: false)
+                        .Annotation(
+                            "Npgsql:ValueGenerationStrategy",
+                            NpgsqlValueGenerationStrategy.IdentityByDefaultColumn
+                        ),
+                    financial_year = table.Column<int>(type: "integer", nullable: false),
+                    treasury_code = table.Column<string>(
+                        type: "character varying(3)",
+                        maxLength: 3,
+                        nullable: false
+                    ),
+                    ppo_id = table.Column<int>(type: "integer", nullable: false),
+                    ppo_bill_id = table.Column<long>(
+                        type: "bigint",
+                        nullable: false,
+                        comment: "BillId is to identify the bill on which the actual payment made"
+                    ),
+                    breakup_id = table.Column<long>(type: "bigint", nullable: false),
+                    paid_from_date = table.Column<DateOnly>(type: "date", nullable: false),
+                    paid_to_date = table.Column<DateOnly>(type: "date", nullable: false),
+                    breakup_amount = table.Column<int>(type: "integer", nullable: false),
+                    created_at = table.Column<DateTime>(
+                        type: "timestamp without time zone",
+                        nullable: true,
+                        defaultValueSql: "CURRENT_TIMESTAMP"
+                    ),
+                    created_by = table.Column<int>(type: "integer", nullable: false),
+                    updated_at = table.Column<DateTime>(
+                        type: "timestamp without time zone",
+                        nullable: true
+                    ),
+                    updated_by = table.Column<int>(type: "integer", nullable: true),
+                    active_flag = table.Column<bool>(type: "boolean", nullable: false),
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("ppo_paid_amounts_pkey", x => x.id);
+                    table.ForeignKey(
+                        name: "ppo_paid_amounts_breakup_id_fkey",
+                        column: x => x.breakup_id,
+                        principalSchema: "cts_pension",
+                        principalTable: "breakups",
+                        principalColumn: "id"
+                    );
+                    table.ForeignKey(
+                        name: "ppo_paid_amounts_ppo_bill_id_fkey",
                         column: x => x.ppo_bill_id,
                         principalSchema: "cts_pension",
                         principalTable: "ppo_bills",
@@ -2119,6 +2346,20 @@ namespace CTS_BE.Migrations
             );
 
             migrationBuilder.CreateIndex(
+                name: "IX_bill_bytransfers_bytransfer_head_id",
+                schema: "cts_pension",
+                table: "bill_bytransfers",
+                column: "bytransfer_head_id"
+            );
+
+            migrationBuilder.CreateIndex(
+                name: "IX_bill_bytransfers_ppo_bill_id",
+                schema: "cts_pension",
+                table: "bill_bytransfers",
+                column: "ppo_bill_id"
+            );
+
+            migrationBuilder.CreateIndex(
                 name: "IX_bills_account_head_id",
                 schema: "cts_pension",
                 table: "bills",
@@ -2148,10 +2389,10 @@ namespace CTS_BE.Migrations
             );
 
             migrationBuilder.CreateIndex(
-                name: "IX_bytransfers_ppo_bill_id",
+                name: "IX_bytransfer_heads_account_head_id",
                 schema: "cts_pension",
-                table: "bytransfers",
-                column: "ppo_bill_id"
+                table: "bytransfer_heads",
+                column: "account_head_id"
             );
 
             migrationBuilder.CreateIndex(
@@ -2365,6 +2606,20 @@ namespace CTS_BE.Migrations
             );
 
             migrationBuilder.CreateIndex(
+                name: "IX_ppo_bytransfers_bytransfer_head_id",
+                schema: "cts_pension",
+                table: "ppo_bytransfers",
+                column: "bytransfer_head_id"
+            );
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ppo_bytransfers_pensioner_id",
+                schema: "cts_pension",
+                table: "ppo_bytransfers",
+                column: "pensioner_id"
+            );
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ppo_component_revisions_pensioner_id",
                 schema: "cts_pension",
                 table: "ppo_component_revisions",
@@ -2376,6 +2631,35 @@ namespace CTS_BE.Migrations
                 schema: "cts_pension",
                 table: "ppo_component_revisions",
                 column: "rate_id"
+            );
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ppo_paid_amounts_breakup_id",
+                schema: "cts_pension",
+                table: "ppo_paid_amounts",
+                column: "breakup_id"
+            );
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ppo_paid_amounts_ppo_bill_id",
+                schema: "cts_pension",
+                table: "ppo_paid_amounts",
+                column: "ppo_bill_id"
+            );
+
+            migrationBuilder.CreateIndex(
+                name: "ppo_paid_amounts_treasury_code_ppo_id_ppo_bill_id_breakup_i_key",
+                schema: "cts_pension",
+                table: "ppo_paid_amounts",
+                columns: new[]
+                {
+                    "treasury_code",
+                    "ppo_id",
+                    "ppo_bill_id",
+                    "breakup_id",
+                    "paid_from_date",
+                },
+                unique: true
             );
 
             migrationBuilder.CreateIndex(
@@ -2450,7 +2734,7 @@ namespace CTS_BE.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(name: "bytransfers", schema: "cts_pension");
+            migrationBuilder.DropTable(name: "bill_bytransfers", schema: "cts_pension");
 
             migrationBuilder.DropTable(name: "dml_history", schema: "cts_pension");
 
@@ -2468,7 +2752,11 @@ namespace CTS_BE.Migrations
 
             migrationBuilder.DropTable(name: "ppo_bill_breakups", schema: "cts_pension");
 
+            migrationBuilder.DropTable(name: "ppo_bytransfers", schema: "cts_pension");
+
             migrationBuilder.DropTable(name: "ppo_id_sequences", schema: "cts_pension");
+
+            migrationBuilder.DropTable(name: "ppo_paid_amounts", schema: "cts_pension");
 
             migrationBuilder.DropTable(name: "ppo_receipt_sequences", schema: "cts_pension");
 
@@ -2480,35 +2768,37 @@ namespace CTS_BE.Migrations
 
             migrationBuilder.DropTable(name: "classifications", schema: "cts_pension");
 
+            migrationBuilder.DropTable(name: "ppo_component_revisions", schema: "cts_pension");
+
+            migrationBuilder.DropTable(name: "bytransfer_heads", schema: "cts_pension");
+
             migrationBuilder.DropTable(name: "ppo_bills", schema: "cts_pension");
 
-            migrationBuilder.DropTable(name: "ppo_component_revisions", schema: "cts_pension");
+            migrationBuilder.DropTable(name: "component_rates", schema: "cts_pension");
 
             migrationBuilder.DropTable(name: "bills", schema: "cts_pension");
 
             migrationBuilder.DropTable(name: "pensioners", schema: "cts_pension");
 
-            migrationBuilder.DropTable(name: "component_rates", schema: "cts_pension");
+            migrationBuilder.DropTable(name: "breakups", schema: "cts_pension");
 
             migrationBuilder.DropTable(name: "branches", schema: "cts_pension");
 
-            migrationBuilder.DropTable(name: "ppo_receipts", schema: "cts_pension");
-
-            migrationBuilder.DropTable(name: "breakups", schema: "cts_pension");
-
             migrationBuilder.DropTable(name: "categories", schema: "cts_pension");
 
-            migrationBuilder.DropTable(name: "banks", schema: "cts_pension");
+            migrationBuilder.DropTable(name: "ppo_receipts", schema: "cts_pension");
 
-            migrationBuilder.DropTable(name: "eppo_receipts", schema: "cts_pension");
+            migrationBuilder.DropTable(name: "banks", schema: "cts_pension");
 
             migrationBuilder.DropTable(name: "primary_categories", schema: "cts_pension");
 
             migrationBuilder.DropTable(name: "sub_categories", schema: "cts_pension");
 
-            migrationBuilder.DropTable(name: "uploaded_files", schema: "cts_pension");
+            migrationBuilder.DropTable(name: "eppo_receipts", schema: "cts_pension");
 
             migrationBuilder.DropTable(name: "account_heads", schema: "cts_pension");
+
+            migrationBuilder.DropTable(name: "uploaded_files", schema: "cts_pension");
         }
     }
 }

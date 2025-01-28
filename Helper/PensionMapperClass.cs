@@ -20,17 +20,22 @@ namespace CTS_BE.Helper
             CreateMap<PpoComponentRevisionPpoListItemDTO, Pensioner>().ReverseMap();
             CreateMap<PensionerResponseDTO, PensionerEntryDTO>().ReverseMap();
             CreateMap<PensionPrimaryCategoryResponseDTO, PrimaryCategory>().ReverseMap();
+            CreateMap<PensionPrimaryCategoryEntryDTO, PrimaryCategory>().ReverseMap();
             CreateMap<PensionPrimaryCategoryResponseDTO, PensionPrimaryCategoryEntryDTO>()
                 .ReverseMap();
+            CreateMap<PensionPrimaryCategoryEntryDTO, PrimaryCategory>().ReverseMap();
             CreateMap<PensionSubCategoryResponseDTO, SubCategory>().ReverseMap();
+            CreateMap<PensionSubCategoryEntryDTO, SubCategory>().ReverseMap();
             CreateMap<PensionSubCategoryResponseDTO, PensionSubCategoryEntryDTO>().ReverseMap();
+            CreateMap<PensionSubCategoryEntryDTO, SubCategory>().ReverseMap();
             CreateMap<PensionCategoryResponseDTO, Category>().ReverseMap();
             CreateMap<PensionCategoryListDTO, Category>().ReverseMap();
             CreateMap<PensionCategoryResponseDTO, PensionCategoryEntryDTO>().ReverseMap();
             CreateMap<PensionBreakupResponseDTO, Breakup>().ReverseMap();
-            CreateMap<PensionBreakupResponseDTO, PensionBreakupEntryDTO>().ReverseMap();
+            CreateMap<Breakup, PensionBreakupEntryDTO>().ReverseMap();
             CreateMap<ComponentRateResponseDTO, ComponentRate>().ReverseMap();
             CreateMap<ComponentRateResponseDTO, ComponentRateEntryDTO>().ReverseMap();
+            CreateMap<ComponentRateEntryDTO, ComponentRate>().ReverseMap();
             CreateMap<PpoComponentRevisionResponseDTO, PpoComponentRevision>().ReverseMap();
             CreateMap<PpoComponentRevisionResponseDTO, PpoComponentRevisionEntryDTO>().ReverseMap();
             CreateMap<PpoBillEntryDTO, PpoBill>().ReverseMap();

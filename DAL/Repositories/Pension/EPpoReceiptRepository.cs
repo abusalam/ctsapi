@@ -70,6 +70,7 @@ namespace CTS_BE.DAL.Repositories.Pension
             try
             {
                 eppoReceiptEntity.FinancialYear = financialYear;
+                eppoReceiptEntity.Withdrawn = false;
                 EppoReceipt? eppoReceiptExists = await _context.EppoReceipts.FirstOrDefaultAsync(
                     e => e.PensionApplnNo == eppoReceiptEntity.PensionApplnNo
                 );
@@ -118,13 +119,36 @@ namespace CTS_BE.DAL.Repositories.Pension
                     eppoReceiptEntity.SignatureFile.FileMimeType =
                         mimeType ?? "application/octet-stream";
                 }
+
                 _context.EppoReceipts.Add(eppoReceiptEntity);
+                await _context.SaveChangesAsync();
+
+                var dateOfCommencement = eppoReceiptEntity.DateOfRetirement.AddDays(1);
+                var ppoReceipt = new PpoReceipt
+                {
+                    PpoNo = eppoReceiptEntity.PpoNo,
+                    ReceiptType = "EPPO",
+                    TreasuryReceiptNo = eppoReceiptEntity.PensionApplnNo,
+                    PsaCode = 'D',
+                    PpoType = eppoReceiptEntity.PpoTypeCode,
+                    PensionerName = eppoReceiptEntity.PensionerName,
+                    MobileNumber = eppoReceiptEntity.MobileNumber,
+                    DateOfCommencement = dateOfCommencement,
+                    ReceiptDate = dateOfCommencement.AddDays(1),
+                    TreasuryCode = treasuryCode,
+                    FinancialYear = financialYear,
+                    EppoReceiptId = eppoReceiptEntity.Id,
+                    PpoStatus = "EPPO Received",
+                    ActiveFlag = true,
+                };
+
+                _context.PpoReceipts.Add(ppoReceipt);
 
                 if (await _context.SaveChangesAsync() == 0)
                 {
                     response.FillDataSource(
                         eppoReceiptEntity,
-                        "Failed to save data. Please try again after sometime."
+                        "Failed to save PpoReceipt data. Please try again after sometime."
                     );
                     return response;
                 }

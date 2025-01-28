@@ -252,7 +252,6 @@ namespace CTS_BE.BAL.Services.Pension
                 financialYear,
                 treasuryCode
             );
-            _dataCount = revisions.Count;
             return revisions;
         }
 

@@ -47,38 +47,29 @@ namespace CTS_BE.BAL.Services.Pension
             try
             {
                 primaryCategoryEntity.FillFrom(pensionPrimaryCategoryEntryDTO);
-
-                var primaryCategory = await _pensionDbContext.PrimaryCategories.FirstOrDefaultAsync(
-                    entity =>
-                        entity.ActiveFlag
-                        && entity.PrimaryCategoryName == primaryCategoryEntity.PrimaryCategoryName
+                var PrimaryCategoryExists = await _primaryCategoryRepository.PrimaryCategoryExists(
+                    primaryCategoryEntity.PrimaryCategoryName
                 );
 
-                if (primaryCategory != null)
+                if (PrimaryCategoryExists)
                 {
                     response.FillDataSource(
                         primaryCategoryEntity,
-                        $"Primary Category already exists!"
+                        $"Primary Category '{primaryCategoryEntity.PrimaryCategoryName}' already exists!"
                     );
                     return response;
                 }
 
-                primaryCategoryEntity.ActiveFlag = true;
-                primaryCategoryEntity.CreatedAt = DateTime.Now;
-
-                await _pensionDbContext.PrimaryCategories.AddAsync(primaryCategoryEntity);
-
-                if (await _pensionDbContext.SaveChangesAsync() == 0)
-                {
-                    response.FillDataSource(primaryCategoryEntity, $"Primary Category not saved!");
-                    return response;
-                }
+                SetCreatedBy(primaryCategoryEntity);
+                response = await _primaryCategoryRepository.SavePrimaryCategoryAsync<TResponse>(
+                    primaryCategoryEntity
+                );
             }
-            catch (DbUpdateException ex)
+            catch (Exception ex)
             {
                 response.FillDataSource(
                     primaryCategoryEntity,
-                    $"ServiceException: {ex.InnerException?.Message}"
+                    $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );
             }
             finally
@@ -92,28 +83,23 @@ namespace CTS_BE.BAL.Services.Pension
             return response;
         }
 
-        public async Task<List<PensionPrimaryCategoryResponseDTO>> ListPrimaryCategory(
-            short financialYear,
-            string treasuryCode
-        )
+        public async Task<List<T>> GetPrimaryCategories<T>(short financialYear, string treasuryCode)
         {
-            _dataCount = await _pensionDbContext.PrimaryCategories.CountAsync();
-            return await _pensionDbContext
-                .PrimaryCategories.Where(entity => entity.ActiveFlag)
-                .Select(entity => _mapper.Map<PensionPrimaryCategoryResponseDTO>(entity))
-                .ToListAsync();
-        }
-
-        public async Task<List<PensionPrimaryCategoryResponseDTO>> GetPrimaryCategories(
-            short financialYear,
-            string treasuryCode
-        )
-        {
-            return await _pensionDbContext
-                .PrimaryCategories.Where(entity => entity.ActiveFlag)
-                .Include(entity => entity.AccountHead)
-                .Select(entity => _mapper.Map<PensionPrimaryCategoryResponseDTO>(entity))
-                .ToListAsync();
+            var primaryCategories = new List<PrimaryCategory>();
+            var response = new List<T>();
+            try
+            {
+                primaryCategories = await _primaryCategoryRepository.GetPrimaryCategoriesAsync();
+                response = _mapper.Map<List<T>>(primaryCategories);
+            }
+            catch (Exception ex)
+            {
+                response.FillDataSource(
+                    primaryCategories,
+                    $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
+                );
+            }
+            return response;
         }
 
         public async Task<TResponse> CreatePensionSubCategory<TEntry, TResponse>(
@@ -156,7 +142,7 @@ namespace CTS_BE.BAL.Services.Pension
             {
                 response.FillDataSource(
                     subCategoryEntity,
-                    $"ServiceException: {ex.InnerException?.Message}"
+                    $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );
             }
             finally
@@ -171,7 +157,7 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
-            _dataCount = await _pensionDbContext.SubCategories.CountAsync();
+            // _dataCount = await _pensionDbContext.SubCategories.CountAsync();
             return await _pensionDbContext
                 .SubCategories.Where(entity => entity.ActiveFlag)
                 .Select(entity => _mapper.Map<PensionSubCategoryResponseDTO>(entity))
@@ -192,27 +178,49 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
-            Category categoryEntity = new() { Id = 0 };
+            Category categoryEntity = new();
             TResponse? response = _mapper.Map<TResponse>(categoryEntity);
-
             try
             {
                 categoryEntity.FillFrom(pensionCategoryEntryDTO);
-                categoryEntity.ActiveFlag = true;
-                categoryEntity.CreatedAt = DateTime.Now;
+
+                var categoryExists = await _categoryRepository.CategoryExists(categoryEntity);
+
+                if (categoryExists)
+                {
+                    response.FillDataSource(categoryEntity, $"Category already exists!");
+                    return response;
+                }
+
+                PrimaryCategory? primaryCategoryEntity =
+                    await _primaryCategoryRepository.GetPrimaryCategoryById(
+                        categoryEntity.PrimaryCategoryId
+                    );
+
+                if (primaryCategoryEntity == null)
+                {
+                    response.FillDataSource(categoryEntity, $"Primary Category does not exists!");
+                    return response;
+                }
+
+                SubCategory? subCategoryEntity = await _subCategoryRepository.GetSubCategoryById(
+                    categoryEntity.SubCategoryId
+                );
+
+                if (subCategoryEntity == null)
+                {
+                    response.FillDataSource(categoryEntity, $"Sub Category does not exists!");
+                    return response;
+                }
+
+                categoryEntity.CategoryName =
+                    primaryCategoryEntity?.PrimaryCategoryName
+                    + " : "
+                    + subCategoryEntity?.SubCategoryName;
+
                 SetCreatedBy(categoryEntity);
-                response = await _categoryRepository.CreateCategory<TResponse>(
-                    financialYear,
-                    treasuryCode,
-                    categoryEntity
-                );
-            }
-            catch (DbUpdateException ex)
-            {
-                response.FillDataSource(
-                    categoryEntity,
-                    $"DbException: {ex.InnerException?.Message ?? ex.Message}"
-                );
+
+                response = await _categoryRepository.CreateCategory<TResponse>(categoryEntity);
             }
             catch (Exception ex)
             {
@@ -274,7 +282,7 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
-            _dataCount = await _pensionDbContext.Categories.CountAsync();
+            // _dataCount = await _pensionDbContext.Categories.CountAsync();
             return await _pensionDbContext
                 .Categories.Where(entity => entity.ActiveFlag)
                 .Select(entity => _mapper.Map<PensionCategoryListDTO>(entity))
