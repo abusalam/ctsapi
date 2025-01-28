@@ -192,6 +192,7 @@ namespace CTS_BE.DAL.Repositories.Pension
                     && entity.PpoId == ppoBillEntity.PpoId
                     && entity.TreasuryCode == treasuryCode
                 )
+                .Include(p => p.Branch)
                 .FirstOrDefaultAsync();
             if (pensioner == null)
             {
@@ -221,6 +222,13 @@ namespace CTS_BE.DAL.Repositories.Pension
             ppoBillEntity.PpoId = ppoBillEntity.PpoId;
             ppoBillEntity.FinancialYear = financialYear;
             ppoBillEntity.TreasuryCode = treasuryCode;
+            ppoBillEntity.AccountHolderName = pensioner.AccountHolderName;
+            ppoBillEntity.BankAcNo = pensioner.BankAcNo;
+            ppoBillEntity.IfscCode = pensioner.Branch.IfscCode;
+            ppoBillEntity.PaymentStatus = 'I';
+            ppoBillEntity.CorrectionStatus = 'P';
+            ppoBillEntity.FailedReason = "Processing";
+            ppoBillEntity.Remarks = "Bill Generated";
             ppoBillEntity
                 .PpoBillBreakups.ToList()
                 .ForEach(entity =>
