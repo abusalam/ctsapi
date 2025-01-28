@@ -37,6 +37,28 @@ GET {{PensionAPI_HostAddress}}/api/v1/ppo/{{GeneratedPpoId}}/component-revision
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
+
+
+
+
+
+
+
+
+### Get ByTransferHead By Id
+# @name GetByTransferHeadById
+GET {{PensionAPI_HostAddress}}/api/v1/by-transfer-headmap/{{ByTransferHeadId}}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+
+
+
+
+
+
+
+
 ### Delete Ppo Component Revision
 # @name DeletePpoComponenRevision
 DELETE {{PensionAPI_HostAddress}}/api/v1/ppo/{{RevisionId}}/component-revision
@@ -56,6 +78,28 @@ Content-Type: application/json
   "fromDate": "2024-01-01",
   "amountPerMonth": 5000
 }
+
+
+
+
+
+
+
+
+
+### Get all ByTransferHeads
+# @name GetAllByTransferHeads
+GET {{PensionAPI_HostAddress}}/api/v1/by-transfer-headmaps
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+
+
+
+
+
+
+
 
 ### Create Ppo Component Single Revision
 # @name CreatePpoComponentSingleRevision
@@ -127,6 +171,37 @@ Content-Type: application/json
 {
   "SubCategoryName": "ROPA 2026"
 }
+
+
+
+
+
+
+
+
+
+### Create By Transfer Head Mapping
+# @name CreateByTransferHeadMap
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+POST {{PensionAPI_HostAddress}}/api/v1/by-transfer-headmap
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "byTransferType": "P",
+  "accountHeadId": 69545,
+  "byTransferDescription": "INCOME TAX - T.D.S",
+  "agBytransfer": true
+}
+
+
+
+
+
+
+
+
 
 ### Create Pension PrimaryCategory
 # @name CreatePensionPrimaryCategory
@@ -203,7 +278,7 @@ Content-Type: application/json
 @TaxAmount = {{GenerateFirstPensionBill.response.body.$.result.grossAmount}}
 @PensionerPayments = {{GenerateFirstPensionBill.response.body.$.result.pensionerPayments}}
 
-
+@ByTransferHeadId = {{CreateByTransferHeadMap.response.body.result.id}}
 
 
 

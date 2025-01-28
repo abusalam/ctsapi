@@ -79,6 +79,8 @@ namespace CTS_BE.Helper
             CreateMap<AccountHead, AccountHeadResponseDTO>().ReverseMap();
             CreateMap<EppoAmount, EPpoAmountEntryDTO>().ReverseMap();
             CreateMap<EppoNominee, EPpoNomineeEntryDTO>().ReverseMap();
+            CreateMap<BytransferHead, ByTransferHeadEntryDTO>().ReverseMap();
+            CreateMap<BytransferHead, ByTransferHeadResponseDTO>().ReverseMap();
         }
     }
 }
