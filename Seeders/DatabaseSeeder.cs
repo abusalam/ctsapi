@@ -9,11 +9,15 @@ namespace CTS_BE.Seeders
         private static readonly ILogger<DatabaseSeeder> _logger =
             NullLogger<DatabaseSeeder>.Instance;
 
-        public static bool Initialize(IServiceProvider serviceProvider)
+        public static (bool, string) Initialize(
+            IServiceProvider serviceProvider,
+            string selectedSeeder,
+            int count
+        )
         {
             if (serviceProvider == null)
             {
-                return false;
+                return (false, "Service provider is null");
             }
 
             // Get the logger. Use Null Logger if logging is not configured. This avoids null reference exceptions.
@@ -23,7 +27,7 @@ namespace CTS_BE.Seeders
             if (dbContextOptions == null)
             {
                 logger.LogError("DbContextOptions<PensionDbContext> is not registered.");
-                return false;
+                return (false, "DbContextOptions<PensionDbContext> is not registered.");
             }
 
             using var context = new PensionDbContext(dbContextOptions);
@@ -31,7 +35,7 @@ namespace CTS_BE.Seeders
             if (context == null)
             {
                 logger.LogError("PensionDbContext could not be created.");
-                return false;
+                return (false, "PensionDbContext could not be created.");
             }
 
             // Get all ISeeder implementations via reflection
@@ -42,7 +46,15 @@ namespace CTS_BE.Seeders
                 {
                     try
                     {
-                        return (ISeeder?)Activator.CreateInstance(t); // Cast to nullable ISeeder
+                        // Run all seeders when selectedSeeder is empty or only the seeder name matches
+                        if (t.Name == selectedSeeder || selectedSeeder == string.Empty)
+                        {
+                            return (ISeeder?)serviceProvider.GetRequiredService(t); // Get from DI
+                        }
+                        else
+                        {
+                            return null;
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -50,7 +62,7 @@ namespace CTS_BE.Seeders
                             ex,
                             "Failed to create instance of seeder type {SeederType}",
                             t.FullName ?? "Unknown Type"
-                        ); //Null-coalescing operator for t.FullName
+                        );
                         return null;
                     }
                 })
@@ -62,9 +74,7 @@ namespace CTS_BE.Seeders
             {
                 try
                 {
-                    seeder!.Seed(context); // Null-forgiving operator, safe because of the Where clause above
-                    context.SaveChanges();
-                    return true;
+                    seeder!.Seed(count); // Null-forgiving operator, safe because of the Where clause above
                 }
                 catch (Exception ex)
                 {
@@ -73,10 +83,10 @@ namespace CTS_BE.Seeders
                         "Error during seeding with {SeederType}",
                         seeder?.GetType().FullName ?? "Unknown Seeder"
                     ); //Null-conditional and null-coalescing operator
-                    return false;
+                    return (false, ex.InnerException?.Message ?? ex.Message);
                 }
             }
-            return false;
+            return (true, string.Empty);
         }
     }
 }

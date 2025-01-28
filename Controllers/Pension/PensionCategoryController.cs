@@ -83,10 +83,11 @@ namespace CTS_BE.Controllers.Pension
                                 FieldName = "primaryCategoryName",
                             },
                         },
-                        Data = await _pensionCategoryService.GetPrimaryCategories(
-                            GetCurrentFyYear(),
-                            GetTreasuryCode()
-                        ),
+                        Data =
+                            await _pensionCategoryService.GetPrimaryCategories<PensionPrimaryCategoryResponseDTO>(
+                                GetCurrentFyYear(),
+                                GetTreasuryCode()
+                            ),
                     },
                     Message = $"All Primary Category Details Received Successfully!",
                 };
@@ -129,10 +130,11 @@ namespace CTS_BE.Controllers.Pension
                                 FieldName = "primaryCategoryName",
                             },
                         },
-                        Data = await _pensionCategoryService.ListPrimaryCategory(
-                            GetCurrentFyYear(),
-                            GetTreasuryCode()
-                        ),
+                        Data =
+                            await _pensionCategoryService.GetPrimaryCategories<PensionPrimaryCategoryResponseDTO>(
+                                GetCurrentFyYear(),
+                                GetTreasuryCode()
+                            ),
                     },
                     Message = $"All Primary Category Details Received Successfully!",
                 };

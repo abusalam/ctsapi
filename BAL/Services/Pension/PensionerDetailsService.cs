@@ -306,7 +306,6 @@ namespace CTS_BE.BAL.Services.Pension
                     entity => _mapper.Map<PensionerListItemDTO>(entity)
                 )
             ).ToList();
-            _dataCount = pensioners.Count();
             return pensioners;
         }
 

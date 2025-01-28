@@ -7,6 +7,33 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.Controllers.Pension
 {
+    public enum Seeders
+    {
+        DatabaseSeeder,
+        AccountHeadSeeder,
+        BankSeeder,
+        BillSeeder,
+        BranchSeeder,
+        BreakupSeeder,
+        CategorySeeder,
+        ClassificationSeeder,
+        ComponentRateSeeder,
+        EppoAmountSeeder,
+        EppoNomineeSeeder,
+        EppoReceiptSeeder,
+        EppoRevisionSeeder,
+        FinancialYearSeeder,
+        LifeCertificateSeeder,
+        NomineeSeeder,
+        PensionerSeeder,
+        PpoBillSeeder,
+        PpoReceiptSeeder,
+        PpoSanctionDetailsSeeder,
+        PrimaryCategorySeeder,
+        SubCategorySeeder,
+        TreasurySeeder,
+    }
+
     public class DatabaseController(
         IClaimService claimService,
         IServiceProvider serviceProvider,
@@ -53,32 +80,46 @@ namespace CTS_BE.Controllers.Pension
             }
         }
 
-        [HttpPut("db/seed")] // Use PUT as it modifies data
+        [HttpPut("db/seed/{seeder}/{count}")] // Use PUT as it modifies data
         [Tags("Database Management")]
         [OpenApi]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status412PreconditionFailed)]
         [ProducesDefaultResponseType]
-        public IActionResult SeedDatabase()
+        public IActionResult SeedDatabase(Seeders seeder = Seeders.DatabaseSeeder, int count = 5)
         {
             try
             {
                 using var scope = _serviceProvider.CreateScope();
                 using var context = scope.ServiceProvider.GetRequiredService<PensionDbContext>();
-                if (context.FinancialYears.Any())
+
+                var seederName = System.Enum.GetName(typeof(Seeders), seeder);
+
+                if (seederName == null)
                 {
-                    return Ok("Database is already seeded");
+                    return BadRequest("Invalid seeder name.");
                 }
 
-                if (DatabaseSeeder.Initialize(_serviceProvider))
+                if (seeder == Seeders.DatabaseSeeder)
                 {
-                    return Ok("Database seeded successfully.");
+                    seederName = string.Empty;
+                }
+
+                var (success, errorMessage) = DatabaseSeeder.Initialize(
+                    _serviceProvider,
+                    seederName,
+                    count
+                );
+
+                if (success)
+                {
+                    return Ok($"Database seeded successfully with seeder: {seederName}.");
                 }
                 else
                 {
                     return StatusCode(
                         StatusCodes.Status412PreconditionFailed,
-                        "An error occurred seeding the database. Check server log for details"
+                        new ErrorResponse(errorMessage)
                     );
                 }
             }
@@ -87,8 +128,10 @@ namespace CTS_BE.Controllers.Pension
                 _logger.LogError(ex, "An error occurred seeding the DB.");
                 return StatusCode(
                     StatusCodes.Status412PreconditionFailed,
-                    "An error occurred seeding the database."
-                ); // Return 412 Precondition Failed
+                    new ErrorResponse(
+                        $"An error occurred seeding the database: {ex.InnerException?.Message ?? ex.Message}. Check server log for details."
+                    )
+                );
             }
         }
 
@@ -140,5 +183,15 @@ namespace CTS_BE.Controllers.Pension
             return NotFound(); // Return 404 Not Found in non-DEBUG builds
         }
 #endif
+    }
+}
+
+public class ErrorResponse
+{
+    public string ErrorMessage { get; set; }
+
+    public ErrorResponse(string errorMessage)
+    {
+        ErrorMessage = errorMessage;
     }
 }

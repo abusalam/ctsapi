@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CTS_BE.Migrations
 {
     [DbContext(typeof(PensionDbContext))]
-    [Migration("20250127143155_CreateInitialSchema")]
+    [Migration("20250219122637_CreateInitialSchema")]
     partial class CreateInitialSchema
     {
         /// <inheritdoc />
@@ -262,6 +262,77 @@ namespace CTS_BE.Migrations
                         });
                 });
 
+            modelBuilder.Entity("CTS_BE.DAL.Entities.Pension.BillBytransfer", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<bool>("ActiveFlag")
+                        .HasColumnType("boolean")
+                        .HasColumnName("active_flag");
+
+                    b.Property<int>("BytransferAmount")
+                        .HasColumnType("integer")
+                        .HasColumnName("bytransfer_amount");
+
+                    b.Property<long>("BytransferHeadId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("bytransfer_head_id");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by");
+
+                    b.Property<int>("FinancialYear")
+                        .HasColumnType("integer")
+                        .HasColumnName("financial_year");
+
+                    b.Property<long>("PpoBillId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("ppo_bill_id");
+
+                    b.Property<string>("Remarks")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("remarks");
+
+                    b.Property<string>("TreasuryCode")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)")
+                        .HasColumnName("treasury_code");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by");
+
+                    b.HasKey("Id")
+                        .HasName("bill_bytransfers_pkey");
+
+                    b.HasIndex("BytransferHeadId");
+
+                    b.HasIndex("PpoBillId");
+
+                    b.ToTable("bill_bytransfers", "cts_pension", t =>
+                        {
+                            t.HasComment("PensionModuleSchema v1");
+                        });
+                });
+
             modelBuilder.Entity("CTS_BE.DAL.Entities.Pension.Branch", b =>
                 {
                     b.Property<long>("Id")
@@ -411,7 +482,7 @@ namespace CTS_BE.Migrations
                         });
                 });
 
-            modelBuilder.Entity("CTS_BE.DAL.Entities.Pension.Bytransfer", b =>
+            modelBuilder.Entity("CTS_BE.DAL.Entities.Pension.BytransferHead", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -420,21 +491,29 @@ namespace CTS_BE.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
+                    b.Property<long>("AccountHeadId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("account_head_id");
+
                     b.Property<bool>("ActiveFlag")
                         .HasColumnType("boolean")
                         .HasColumnName("active_flag");
 
-                    b.Property<int>("BytransferAmount")
-                        .HasColumnType("integer")
-                        .HasColumnName("bytransfer_amount");
+                    b.Property<bool>("AgBytransfer")
+                        .HasColumnType("boolean")
+                        .HasColumnName("ag_bytransfer");
 
-                    b.Property<int>("BytransferHoaId")
-                        .HasColumnType("integer")
-                        .HasColumnName("bytransfer_hoa_id");
+                    b.Property<string>("BytransferDescription")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("bytransfer_description");
 
-                    b.Property<DateOnly>("BytransferWef")
-                        .HasColumnType("date")
-                        .HasColumnName("bytransfer_wef");
+                    b.Property<char>("BytransferType")
+                        .HasMaxLength(1)
+                        .HasColumnType("character(1)")
+                        .HasColumnName("bytransfer_type")
+                        .HasComment("P - Payment; R - Recovery;");
 
                     b.Property<DateTime?>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -446,20 +525,6 @@ namespace CTS_BE.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("created_by");
 
-                    b.Property<int>("FinancialYear")
-                        .HasColumnType("integer")
-                        .HasColumnName("financial_year");
-
-                    b.Property<long>("PpoBillId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("ppo_bill_id");
-
-                    b.Property<string>("TreasuryCode")
-                        .IsRequired()
-                        .HasMaxLength(3)
-                        .HasColumnType("character varying(3)")
-                        .HasColumnName("treasury_code");
-
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("updated_at");
@@ -469,11 +534,11 @@ namespace CTS_BE.Migrations
                         .HasColumnName("updated_by");
 
                     b.HasKey("Id")
-                        .HasName("bytransfers_pkey");
+                        .HasName("bytransfer_heads_pkey");
 
-                    b.HasIndex("PpoBillId");
+                    b.HasIndex("AccountHeadId");
 
-                    b.ToTable("bytransfers", "cts_pension", t =>
+                    b.ToTable("bytransfer_heads", "cts_pension", t =>
                         {
                             t.HasComment("PensionModuleSchema v1");
                         });
@@ -1394,7 +1459,8 @@ namespace CTS_BE.Migrations
                     b.Property<char?>("NomineeAdultMinor")
                         .HasMaxLength(1)
                         .HasColumnType("character(1)")
-                        .HasColumnName("nominee_adult_minor");
+                        .HasColumnName("nominee_adult_minor")
+                        .HasComment("A - Adult; M - Minor;");
 
                     b.Property<string>("NomineeName")
                         .IsRequired()
@@ -1404,7 +1470,8 @@ namespace CTS_BE.Migrations
 
                     b.Property<int?>("NomineePriority")
                         .HasColumnType("integer")
-                        .HasColumnName("nominee_priority");
+                        .HasColumnName("nominee_priority")
+                        .HasComment("1 - First; 2 - Second; 3 - Third; 4 - Fourth; 5 - Fifth;");
 
                     b.Property<int?>("NomineeShare")
                         .HasColumnType("integer")
@@ -1413,7 +1480,8 @@ namespace CTS_BE.Migrations
                     b.Property<char?>("NomineeType")
                         .HasMaxLength(1)
                         .HasColumnType("character(1)")
-                        .HasColumnName("nominee_type");
+                        .HasColumnName("nominee_type")
+                        .HasComment("1 - Family; 5 - LTA; 6 - Death Gratuity;");
 
                     b.Property<long>("PensionerId")
                         .HasColumnType("bigint")
@@ -1430,7 +1498,8 @@ namespace CTS_BE.Migrations
                     b.Property<char>("Relation")
                         .HasMaxLength(1)
                         .HasColumnType("character(1)")
-                        .HasColumnName("relation");
+                        .HasColumnName("relation")
+                        .HasComment("F - Father; M - Mother; H - Husband; W - Wife; S - Son; D - Daughter; B - Brother; T - Sister; E - Self; I - Brother(Minor); A - Sister(Unmarried); C - Sister(Widowed); O - Other;");
 
                     b.Property<int>("SerialNo")
                         .HasColumnType("integer")
@@ -1767,9 +1836,21 @@ namespace CTS_BE.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
+                    b.Property<string>("AccountHolderName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("account_holder_name");
+
                     b.Property<bool>("ActiveFlag")
                         .HasColumnType("boolean")
                         .HasColumnName("active_flag");
+
+                    b.Property<string>("BankAcNo")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("bank_ac_no");
 
                     b.Property<long>("BillId")
                         .HasColumnType("bigint")
@@ -1785,6 +1866,11 @@ namespace CTS_BE.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("bytransfer_amount");
 
+                    b.Property<char>("CorrectionStatus")
+                        .HasMaxLength(1)
+                        .HasColumnType("character(1)")
+                        .HasColumnName("correction_status");
+
                     b.Property<DateTime?>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
@@ -1795,6 +1881,11 @@ namespace CTS_BE.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("created_by");
 
+                    b.Property<string>("FailedReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("failed_reason");
+
                     b.Property<int>("FinancialYear")
                         .HasColumnType("integer")
                         .HasColumnName("financial_year");
@@ -1803,9 +1894,20 @@ namespace CTS_BE.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("gross_amount");
 
+                    b.Property<string>("IfscCode")
+                        .IsRequired()
+                        .HasMaxLength(11)
+                        .HasColumnType("character varying(11)")
+                        .HasColumnName("ifsc_code");
+
                     b.Property<int>("NetAmount")
                         .HasColumnType("integer")
                         .HasColumnName("net_amount");
+
+                    b.Property<char>("PaymentStatus")
+                        .HasMaxLength(1)
+                        .HasColumnType("character(1)")
+                        .HasColumnName("payment_status");
 
                     b.Property<long>("PensionerId")
                         .HasColumnType("bigint")
@@ -1814,6 +1916,11 @@ namespace CTS_BE.Migrations
                     b.Property<int>("PpoId")
                         .HasColumnType("integer")
                         .HasColumnName("ppo_id");
+
+                    b.Property<string>("Remarks")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("remarks");
 
                     b.Property<string>("TreasuryCode")
                         .IsRequired()
@@ -1934,6 +2041,86 @@ namespace CTS_BE.Migrations
                         {
                             t.HasComment("PensionModuleSchema v1");
                         });
+                });
+
+            modelBuilder.Entity("CTS_BE.DAL.Entities.Pension.PpoBytransfer", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<bool>("ActiveFlag")
+                        .HasColumnType("boolean")
+                        .HasColumnName("active_flag");
+
+                    b.Property<int>("BytransferAmount")
+                        .HasColumnType("integer")
+                        .HasColumnName("bytransfer_amount");
+
+                    b.Property<long>("BytransferHeadId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("bytransfer_head_id");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by");
+
+                    b.Property<int>("FinancialYear")
+                        .HasColumnType("integer")
+                        .HasColumnName("financial_year");
+
+                    b.Property<DateOnly>("FromDate")
+                        .HasColumnType("date")
+                        .HasColumnName("from_date");
+
+                    b.Property<long>("PensionerId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("pensioner_id");
+
+                    b.Property<int>("PpoId")
+                        .HasColumnType("integer")
+                        .HasColumnName("ppo_id");
+
+                    b.Property<string>("Remarks")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("remarks");
+
+                    b.Property<DateOnly>("ToDate")
+                        .HasColumnType("date")
+                        .HasColumnName("to_date");
+
+                    b.Property<string>("TreasuryCode")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)")
+                        .HasColumnName("treasury_code");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by");
+
+                    b.HasKey("Id")
+                        .HasName("ppo_bytransfers_pkey");
+
+                    b.HasIndex("BytransferHeadId");
+
+                    b.HasIndex("PensionerId");
+
+                    b.ToTable("ppo_bytransfers", "cts_pension");
                 });
 
             modelBuilder.Entity("CTS_BE.DAL.Entities.Pension.PpoComponentRevision", b =>
@@ -2057,6 +2244,88 @@ namespace CTS_BE.Migrations
                         .HasName("ppo_id_sequences_pkey");
 
                     b.ToTable("ppo_id_sequences", "cts_pension", t =>
+                        {
+                            t.HasComment("PensionModuleSchema v1");
+                        });
+                });
+
+            modelBuilder.Entity("CTS_BE.DAL.Entities.Pension.PpoPaidAmount", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<bool>("ActiveFlag")
+                        .HasColumnType("boolean")
+                        .HasColumnName("active_flag");
+
+                    b.Property<int>("BreakupAmount")
+                        .HasColumnType("integer")
+                        .HasColumnName("breakup_amount");
+
+                    b.Property<long>("BreakupId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("breakup_id");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by");
+
+                    b.Property<int>("FinancialYear")
+                        .HasColumnType("integer")
+                        .HasColumnName("financial_year");
+
+                    b.Property<DateOnly>("PaidFromDate")
+                        .HasColumnType("date")
+                        .HasColumnName("paid_from_date");
+
+                    b.Property<DateOnly>("PaidToDate")
+                        .HasColumnType("date")
+                        .HasColumnName("paid_to_date");
+
+                    b.Property<long>("PpoBillId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("ppo_bill_id")
+                        .HasComment("BillId is to identify the bill on which the actual payment made");
+
+                    b.Property<int>("PpoId")
+                        .HasColumnType("integer")
+                        .HasColumnName("ppo_id");
+
+                    b.Property<string>("TreasuryCode")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)")
+                        .HasColumnName("treasury_code");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by");
+
+                    b.HasKey("Id")
+                        .HasName("ppo_paid_amounts_pkey");
+
+                    b.HasIndex("BreakupId");
+
+                    b.HasIndex("PpoBillId");
+
+                    b.HasIndex(new[] { "TreasuryCode", "PpoId", "PpoBillId", "BreakupId", "PaidFromDate" }, "ppo_paid_amounts_treasury_code_ppo_id_ppo_bill_id_breakup_i_key")
+                        .IsUnique();
+
+                    b.ToTable("ppo_paid_amounts", "cts_pension", t =>
                         {
                             t.HasComment("PensionModuleSchema v1");
                         });
@@ -2762,6 +3031,25 @@ namespace CTS_BE.Migrations
                     b.Navigation("Branch");
                 });
 
+            modelBuilder.Entity("CTS_BE.DAL.Entities.Pension.BillBytransfer", b =>
+                {
+                    b.HasOne("CTS_BE.DAL.Entities.Pension.BytransferHead", "BytransferHead")
+                        .WithMany("BillBytransfers")
+                        .HasForeignKey("BytransferHeadId")
+                        .IsRequired()
+                        .HasConstraintName("bill_bytransfers_bytransfer_head_id_fkey");
+
+                    b.HasOne("CTS_BE.DAL.Entities.Pension.PpoBill", "PpoBill")
+                        .WithMany("BillBytransfers")
+                        .HasForeignKey("PpoBillId")
+                        .IsRequired()
+                        .HasConstraintName("bill_bytransfers_ppo_bill_id_fkey");
+
+                    b.Navigation("BytransferHead");
+
+                    b.Navigation("PpoBill");
+                });
+
             modelBuilder.Entity("CTS_BE.DAL.Entities.Pension.Branch", b =>
                 {
                     b.HasOne("CTS_BE.DAL.Entities.Pension.Bank", "Bank")
@@ -2773,15 +3061,15 @@ namespace CTS_BE.Migrations
                     b.Navigation("Bank");
                 });
 
-            modelBuilder.Entity("CTS_BE.DAL.Entities.Pension.Bytransfer", b =>
+            modelBuilder.Entity("CTS_BE.DAL.Entities.Pension.BytransferHead", b =>
                 {
-                    b.HasOne("CTS_BE.DAL.Entities.Pension.PpoBill", "PpoBill")
-                        .WithMany("Bytransfers")
-                        .HasForeignKey("PpoBillId")
+                    b.HasOne("CTS_BE.DAL.Entities.Pension.AccountHead", "AccountHead")
+                        .WithMany("BytransferHeads")
+                        .HasForeignKey("AccountHeadId")
                         .IsRequired()
-                        .HasConstraintName("bytransfers_ppo_bill_id_fkey");
+                        .HasConstraintName("bytransfer_heads_account_head_id_fkey");
 
-                    b.Navigation("PpoBill");
+                    b.Navigation("AccountHead");
                 });
 
             modelBuilder.Entity("CTS_BE.DAL.Entities.Pension.Category", b =>
@@ -2997,6 +3285,25 @@ namespace CTS_BE.Migrations
                     b.Navigation("Revision");
                 });
 
+            modelBuilder.Entity("CTS_BE.DAL.Entities.Pension.PpoBytransfer", b =>
+                {
+                    b.HasOne("CTS_BE.DAL.Entities.Pension.BytransferHead", "BytransferHead")
+                        .WithMany("PpoBytransfers")
+                        .HasForeignKey("BytransferHeadId")
+                        .IsRequired()
+                        .HasConstraintName("ppo_bytransfers_bytransfer_head_id_fkey");
+
+                    b.HasOne("CTS_BE.DAL.Entities.Pension.Pensioner", "Pensioner")
+                        .WithMany("PpoBytransfers")
+                        .HasForeignKey("PensionerId")
+                        .IsRequired()
+                        .HasConstraintName("ppo_bytransfers_pensioner_id_fkey");
+
+                    b.Navigation("BytransferHead");
+
+                    b.Navigation("Pensioner");
+                });
+
             modelBuilder.Entity("CTS_BE.DAL.Entities.Pension.PpoComponentRevision", b =>
                 {
                     b.HasOne("CTS_BE.DAL.Entities.Pension.Pensioner", "Pensioner")
@@ -3014,6 +3321,25 @@ namespace CTS_BE.Migrations
                     b.Navigation("Pensioner");
 
                     b.Navigation("Rate");
+                });
+
+            modelBuilder.Entity("CTS_BE.DAL.Entities.Pension.PpoPaidAmount", b =>
+                {
+                    b.HasOne("CTS_BE.DAL.Entities.Pension.Breakup", "Breakup")
+                        .WithMany("PpoPaidAmounts")
+                        .HasForeignKey("BreakupId")
+                        .IsRequired()
+                        .HasConstraintName("ppo_paid_amounts_breakup_id_fkey");
+
+                    b.HasOne("CTS_BE.DAL.Entities.Pension.PpoBill", "PpoBill")
+                        .WithMany("PpoPaidAmounts")
+                        .HasForeignKey("PpoBillId")
+                        .IsRequired()
+                        .HasConstraintName("ppo_paid_amounts_ppo_bill_id_fkey");
+
+                    b.Navigation("Breakup");
+
+                    b.Navigation("PpoBill");
                 });
 
             modelBuilder.Entity("CTS_BE.DAL.Entities.Pension.PpoReceipt", b =>
@@ -3063,6 +3389,8 @@ namespace CTS_BE.Migrations
                 {
                     b.Navigation("Bills");
 
+                    b.Navigation("BytransferHeads");
+
                     b.Navigation("Classifications");
 
                     b.Navigation("PrimaryCategories");
@@ -3090,6 +3418,15 @@ namespace CTS_BE.Migrations
             modelBuilder.Entity("CTS_BE.DAL.Entities.Pension.Breakup", b =>
                 {
                     b.Navigation("ComponentRates");
+
+                    b.Navigation("PpoPaidAmounts");
+                });
+
+            modelBuilder.Entity("CTS_BE.DAL.Entities.Pension.BytransferHead", b =>
+                {
+                    b.Navigation("BillBytransfers");
+
+                    b.Navigation("PpoBytransfers");
                 });
 
             modelBuilder.Entity("CTS_BE.DAL.Entities.Pension.Category", b =>
@@ -3128,6 +3465,8 @@ namespace CTS_BE.Migrations
 
                     b.Navigation("PpoBills");
 
+                    b.Navigation("PpoBytransfers");
+
                     b.Navigation("PpoComponentRevisions");
 
                     b.Navigation("PpoSanctionDetails");
@@ -3137,9 +3476,11 @@ namespace CTS_BE.Migrations
 
             modelBuilder.Entity("CTS_BE.DAL.Entities.Pension.PpoBill", b =>
                 {
-                    b.Navigation("Bytransfers");
+                    b.Navigation("BillBytransfers");
 
                     b.Navigation("PpoBillBreakups");
+
+                    b.Navigation("PpoPaidAmounts");
                 });
 
             modelBuilder.Entity("CTS_BE.DAL.Entities.Pension.PpoComponentRevision", b =>

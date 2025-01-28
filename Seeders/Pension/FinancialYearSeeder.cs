@@ -3,9 +3,9 @@ using CTS_BE.DAL.Entities.Pension;
 
 namespace CTS_BE.Seeders.Pension
 {
-    public class FinancialYearSeeder : ISeeder
+    public class FinancialYearSeeder(PensionDbContext context) : BaseSeeder, ISeeder
     {
-        public void Seed(PensionDbContext context)
+        public void Seed(int count = 10)
         {
             if (context.FinancialYears.Any())
             {
@@ -13,31 +13,17 @@ namespace CTS_BE.Seeders.Pension
             }
 
             context.FinancialYears.AddRange(
-                new FinancialYear
-                {
-                    CurrentYear = 2023,
-                    CreatedBy = 1,
-                    ActiveFlag = false,
-                },
-                new FinancialYear
-                {
-                    CurrentYear = 2024,
-                    CreatedBy = 1,
-                    ActiveFlag = true,
-                },
-                new FinancialYear
-                {
-                    CurrentYear = 2025,
-                    CreatedBy = 1,
-                    ActiveFlag = false,
-                },
-                new FinancialYear
-                {
-                    CurrentYear = 2026,
-                    CreatedBy = 1,
-                    ActiveFlag = false,
-                }
+                Enumerable
+                    .Range(_financialYear - count + 2, count)
+                    .Select(year => new FinancialYear
+                    {
+                        CurrentYear = year,
+                        CreatedBy = 1,
+                        ActiveFlag = year == _financialYear,
+                    })
+                    .ToList()
             );
+            context.SaveChanges();
         }
     }
 }

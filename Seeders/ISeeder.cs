@@ -4,6 +4,6 @@ namespace CTS_BE.Seeders
 {
     public interface ISeeder
     {
-        void Seed(PensionDbContext context);
+        void Seed(int count = 0);
     }
 }

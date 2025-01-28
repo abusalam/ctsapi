@@ -23,5 +23,6 @@ namespace CTS_BE.DAL.Interfaces.Pension
         )
             where T : BaseDTO;
         IQueryable<PpoReceipt> GetQueryablePpoReceipts();
+        public string GenerateTreasuryReceiptNo(short finYear, string treasuryCode);
     }
 }

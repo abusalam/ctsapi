@@ -19,6 +19,13 @@ namespace CTS_BE.DAL.Repositories.Pension
             _mapper = mapper;
         }
 
+        public async Task<SubCategory?> GetSubCategoryById(long subCategoryId)
+        {
+            return await _context
+                .SubCategories.Where(entity => entity.ActiveFlag && entity.Id == subCategoryId)
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<List<T>> GetSubCategoriesAsync<T>()
         {
             return await _context

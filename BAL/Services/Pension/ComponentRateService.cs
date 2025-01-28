@@ -48,8 +48,7 @@ namespace CTS_BE.BAL.Services.Pension
                 // Use AddAsync directly on the DbSet
                 await _context.Set<ComponentRate>().AddAsync(componentRateEntity);
 
-                _dataCount = await _context.SaveChangesAsync();
-                if (_dataCount == 0)
+                if (await _context.SaveChangesAsync() == 0)
                 {
                     response.FillDataSource(componentRateEntity, $"Component Rate not saved!");
                     return response;
@@ -74,10 +73,6 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
-            // Use CountAsync directly on the DbSet
-            _dataCount = await _context
-                .Set<ComponentRate>()
-                .CountAsync(entity => entity.ActiveFlag);
             return await _context
                 .Set<ComponentRate>()
                 .Where(entity => entity.ActiveFlag)
@@ -93,7 +88,6 @@ namespace CTS_BE.BAL.Services.Pension
                 categoryId,
                 entity => _mapper.Map<TResponse>(entity)
             );
-            _dataCount = breakups.Count();
 
             return breakups;
         }

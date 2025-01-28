@@ -9,11 +9,11 @@ namespace CTS_BE.Factories.Pension
         private static readonly long[] BankIds = { 1, 2, 3, 4, 5 };
         private static readonly IDictionary<long, long[]> BranchIds = new Dictionary<long, long[]>
         {
-            { 1, Enumerable.Range(1, 112).Select(i => (long)i).ToArray() }, // Bank ID 1 has branches 1 to 112
+            { 1, Enumerable.Range(1, 20).Select(i => (long)i).ToArray() }, // Bank ID 1 has branches 1 to 20
             { 2, new long[] { 113, 114 } }, // Bank ID 2 has branches 113 to 114
             { 3, new long[] { 115, 116 } }, // Bank ID 3 has branches 115 to 116
-            { 4, Enumerable.Range(117, 35).Select(i => (long)i).ToArray() }, // Bank ID 4 has branches 117 to 151
-            { 5, Enumerable.Range(152, 19).Select(i => (long)i).ToArray() }, // Bank ID 5 has branches 152 to 170
+            { 4, Enumerable.Range(117, 2).Select(i => (long)i).ToArray() }, // Bank ID 4 has branches 117 to 151
+            { 5, Enumerable.Range(152, 2).Select(i => (long)i).ToArray() }, // Bank ID 5 has branches 152 to 170
         };
 
         public PensionerFactory()

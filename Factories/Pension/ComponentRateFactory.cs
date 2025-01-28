@@ -8,7 +8,10 @@ namespace CTS_BE.Factories.Pension
         public ComponentRateFactory()
         {
             _faker = new Faker<ComponentRateEntryDTO>()
-                .RuleFor(x => x.CategoryId, f => f.PickRandom(25, 29, 31))
+                .RuleFor(
+                    x => x.CategoryId,
+                    f => f.PickRandom(25, 26, 29, 30, 31, 58, 59, 136, 138, 139, 140, 48)
+                )
                 .RuleFor(x => x.BreakupId, f => f.Random.Int(1, 8))
                 .RuleFor(
                     x => x.EffectiveFromDate,

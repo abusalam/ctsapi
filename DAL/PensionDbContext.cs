@@ -64,6 +64,8 @@ public partial class PensionDbContext : DbContext
 
     public virtual DbSet<PpoIdSequence> PpoIdSequences { get; set; }
 
+    public virtual DbSet<PpoPaidAmount> PpoPaidAmounts { get; set; }
+
     public virtual DbSet<PpoReceipt> PpoReceipts { get; set; }
 
     public virtual DbSet<PpoReceiptSequence> PpoReceiptSequences { get; set; }
@@ -333,6 +335,10 @@ public partial class PensionDbContext : DbContext
             entity.ToTable("nominees", "cts_pension", tb => tb.HasComment("PensionModuleSchema v1"));
 
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.NomineeAdultMinor).HasComment("A - Adult; M - Minor;");
+            entity.Property(e => e.NomineePriority).HasComment("1 - First; 2 - Second; 3 - Third; 4 - Fourth; 5 - Fifth;");
+            entity.Property(e => e.NomineeType).HasComment("1 - Family; 5 - LTA; 6 - Death Gratuity;");
+            entity.Property(e => e.Relation).HasComment("F - Father; M - Mother; H - Husband; W - Wife; S - Son; D - Daughter; B - Brother; T - Sister; E - Self; I - Brother(Minor); A - Sister(Unmarried); C - Sister(Widowed); O - Other;");
 
             entity.HasOne(d => d.Branch).WithMany(p => p.Nominees).HasConstraintName("nominees_branch_id_fkey");
 
@@ -457,6 +463,24 @@ public partial class PensionDbContext : DbContext
             entity.ToTable("ppo_id_sequences", "cts_pension", tb => tb.HasComment("PensionModuleSchema v1"));
 
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+        });
+
+        modelBuilder.Entity<PpoPaidAmount>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("ppo_paid_amounts_pkey");
+
+            entity.ToTable("ppo_paid_amounts", "cts_pension", tb => tb.HasComment("PensionModuleSchema v1"));
+
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.PpoBillId).HasComment("BillId is to identify the bill on which the actual payment made");
+
+            entity.HasOne(d => d.Breakup).WithMany(p => p.PpoPaidAmounts)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("ppo_paid_amounts_breakup_id_fkey");
+
+            entity.HasOne(d => d.PpoBill).WithMany(p => p.PpoPaidAmounts)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("ppo_paid_amounts_ppo_bill_id_fkey");
         });
 
         modelBuilder.Entity<PpoReceipt>(entity =>

@@ -117,4 +117,7 @@ public partial class PpoBill
 
     [InverseProperty("PpoBill")]
     public virtual ICollection<PpoBillBreakup> PpoBillBreakups { get; set; } = new List<PpoBillBreakup>();
+
+    [InverseProperty("PpoBill")]
+    public virtual ICollection<PpoPaidAmount> PpoPaidAmounts { get; set; } = new List<PpoPaidAmount>();
 }

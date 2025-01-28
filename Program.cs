@@ -14,6 +14,7 @@ using CTS_BE.Helper;
 using CTS_BE.Helper.Authentication;
 using CTS_BE.Middlewares;
 using CTS_BE.PensionEnum;
+using CTS_BE.Seeders.Pension;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -126,6 +127,32 @@ builder.Services.AddTransient<IEPpoReceiptService, EPpoReceiptService>();
 builder.Services.AddTransient<IConvertToFamilyPensionService, ConvertToFamilyPensionService>();
 builder.Services.AddTransient<IByTransferService, ByTransferService>();
 builder.Services.AddTransient<IPpoByTransferService, PpoByTransferService>();
+
+// Register Seeders Assuming it implements ISeeder
+builder.Services.AddTransient<AccountHeadSeeder>();
+builder.Services.AddTransient<BankSeeder>();
+builder.Services.AddTransient<BillSeeder>();
+builder.Services.AddTransient<BranchSeeder>();
+builder.Services.AddTransient<BreakupSeeder>();
+builder.Services.AddTransient<CategorySeeder>();
+builder.Services.AddTransient<ClassificationSeeder>();
+builder.Services.AddTransient<ComponentRateSeeder>();
+builder.Services.AddTransient<EppoReceiptSeeder>();
+builder.Services.AddTransient<EppoAmountSeeder>();
+builder.Services.AddTransient<EppoNomineeSeeder>();
+builder.Services.AddTransient<EppoRevisionSeeder>();
+builder.Services.AddTransient<FinancialYearSeeder>();
+builder.Services.AddTransient<LifeCertificateSeeder>();
+builder.Services.AddTransient<NomineeSeeder>();
+builder.Services.AddTransient<PensionerSeeder>();
+builder.Services.AddTransient<PpoBillSeeder>();
+builder.Services.AddTransient<PPOIdSequencesSeeder>();
+builder.Services.AddTransient<PpoReceiptSeeder>();
+builder.Services.AddTransient<PPOReceiptSequencesSeeder>();
+builder.Services.AddTransient<PpoSanctionDetailsSeeder>();
+builder.Services.AddTransient<PrimaryCategorySeeder>();
+builder.Services.AddTransient<SubCategorySeeder>();
+builder.Services.AddTransient<TreasurySeeder>();
 
 //Automapper
 builder.Services.AddAutoMapper(typeof(Program));

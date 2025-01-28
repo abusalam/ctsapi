@@ -9,7 +9,10 @@ namespace CTS_BE.DAL.Interfaces.Pension
 {
     public interface IPrimaryCategoryRepository : IRepository<PrimaryCategory>
     {
-        public Task<List<PensionPrimaryCategoryResponseDTO>> GetPrimaryCategoriesAsync();
+        public Task<T> SavePrimaryCategoryAsync<T>(PrimaryCategory primaryCategory);
+        public Task<PrimaryCategory?> GetPrimaryCategoryById(long primaryCategoryId);
+        public Task<bool> PrimaryCategoryExists(string primaryCategoryName);
+        public Task<List<PrimaryCategory>> GetPrimaryCategoriesAsync();
         public Task<List<AccountHeadListItemResponseDTO>> GetAccountHeadsAsync(
             short financialYear,
             string treasuryCode

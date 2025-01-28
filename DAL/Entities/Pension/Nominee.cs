@@ -45,6 +45,9 @@ public partial class Nominee
     [StringLength(100)]
     public string NomineeName { get; set; } = null!;
 
+    /// <summary>
+    /// F - Father; M - Mother; H - Husband; W - Wife; S - Son; D - Daughter; B - Brother; T - Sister; E - Self; I - Brother(Minor); A - Sister(Unmarried); C - Sister(Widowed); O - Other;
+    /// </summary>
     [Column("relation")]
     [MaxLength(1)]
     public char Relation { get; set; }
@@ -55,14 +58,23 @@ public partial class Nominee
     [Column("date_of_death")]
     public DateOnly? DateOfDeath { get; set; }
 
+    /// <summary>
+    /// 1 - Family; 5 - LTA; 6 - Death Gratuity;
+    /// </summary>
     [Column("nominee_type")]
     [MaxLength(1)]
     public char? NomineeType { get; set; }
 
+    /// <summary>
+    /// A - Adult; M - Minor;
+    /// </summary>
     [Column("nominee_adult_minor")]
     [MaxLength(1)]
     public char? NomineeAdultMinor { get; set; }
 
+    /// <summary>
+    /// 1 - First; 2 - Second; 3 - Third; 4 - Fourth; 5 - Fifth;
+    /// </summary>
     [Column("nominee_priority")]
     public int? NomineePriority { get; set; }
 

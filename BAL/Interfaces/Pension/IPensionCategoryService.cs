@@ -15,15 +15,7 @@ namespace CTS_BE.BAL.Interfaces.Pension
             string treasuryCode
         );
 
-        public Task<List<PensionPrimaryCategoryResponseDTO>> ListPrimaryCategory(
-            short financialYear,
-            string treasuryCode
-        );
-
-        public Task<List<PensionPrimaryCategoryResponseDTO>> GetPrimaryCategories(
-            short financialYear,
-            string treasuryCode
-        );
+        public Task<List<T>> GetPrimaryCategories<T>(short financialYear, string treasuryCode);
 
         public Task<TResponse> CreatePensionSubCategory<TEntry, TResponse>(
             TEntry pensionSubCategoryEntryDTO,
