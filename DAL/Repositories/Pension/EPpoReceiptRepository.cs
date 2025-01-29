@@ -200,8 +200,6 @@ namespace CTS_BE.DAL.Repositories.Pension
 
         public async Task<T> SaveRevisedEPpoReceipt<T>(
             EppoRevision entity,
-            string treasuryCode,
-            short financialYear,
             Expression<Func<EppoReceipt, T>> selectExpression
         )
         {
@@ -209,9 +207,6 @@ namespace CTS_BE.DAL.Repositories.Pension
 
             try
             {
-                entity.TreasuryCode = treasuryCode;
-                entity.FinancialYear = financialYear;
-
                 _context.EppoRevisions.Add(entity);
 
                 if (await _context.SaveChangesAsync() == 0)
@@ -256,17 +251,6 @@ namespace CTS_BE.DAL.Repositories.Pension
             T? response = _mapper.Map<T>(entity);
             try
             {
-                entity.WithdrawDate = DateOnly.FromDateTime(DateTime.UtcNow);
-                entity.TreasuryCode = treasuryCode;
-                entity.FinancialYear = financialYear;
-
-                if (entity.PpoId == 0)
-                {
-                    entity.PpoId = null;
-                }
-
-                entity.PensionApplnNo = pensionApplnNo;
-
                 _context.EppoReceipts.Update(entity);
 
                 if (await _context.SaveChangesAsync() == 0)

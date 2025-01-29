@@ -1140,7 +1140,7 @@ namespace CTS_BE.DTOs
         }
     }
 
-    public partial class TableHeader : BaseDTO
+    public partial class TableHeader
     {
         public string Name { get; set; } = null!;
         public string FieldName { get; set; } = null!;

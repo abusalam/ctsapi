@@ -6,6 +6,7 @@ using CTS_BE.DAL.Interfaces.Pension;
 using CTS_BE.DTOs;
 using CTS_BE.Helper;
 using CTS_BE.Helper.Authentication;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.BAL.Services.Pension
@@ -30,7 +31,26 @@ namespace CTS_BE.BAL.Services.Pension
             try
             {
                 eppoReceipt.FinancialYear = financialYear;
+                ProcessFiles(eppoReceipt, treasuryCode, financialYear);
                 SetCreatedBy(eppoReceipt);
+
+                // Check if EppoReceipt already exists
+                EppoReceipt? existingEppoReceipt =
+                    await _ePpoReceiptRepository.GetEPpoReceiptByPensionApplnNo(
+                        eppoReceipt.PensionApplnNo,
+                        treasuryCode,
+                        financialYear
+                    );
+
+                if (existingEppoReceipt != null)
+                {
+                    response.FillDataSource(
+                        existingEppoReceipt,
+                        "eppoReceipt already exists for Pension Application No: "
+                            + eppoReceipt.PensionApplnNo
+                    );
+                    return response;
+                }
 
                 response = await _ePpoReceiptRepository.SaveEPpoReceipt<T>(
                     eppoReceipt,
@@ -66,8 +86,6 @@ namespace CTS_BE.BAL.Services.Pension
 
                 response = await _ePpoReceiptRepository.SaveRevisedEPpoReceipt<T>(
                     eppoRevision,
-                    treasuryCode,
-                    financialYear,
                     entity => _mapper.Map<T>(entity)
                 );
             }
@@ -197,8 +215,16 @@ namespace CTS_BE.BAL.Services.Pension
                     return response;
                 }
 
-                eppoEntity.FillFrom(ePpoReceiptWithdrawlEntryDTO);
-                SetUpdatedBy(eppoEntity);
+                eppoEntity.WithdrawDate = DateOnly.FromDateTime(DateTime.UtcNow);
+                eppoEntity.TreasuryCode = treasuryCode;
+                eppoEntity.FinancialYear = financialYear;
+
+                if (eppoEntity.PpoId == 0)
+                {
+                    eppoEntity.PpoId = null;
+                }
+
+                eppoEntity.PensionApplnNo = pensionApplnNo;
 
                 return await _ePpoReceiptRepository.WithdrawEPpoReceipt<T>(
                     pensionApplnNo,
@@ -220,6 +246,35 @@ namespace CTS_BE.BAL.Services.Pension
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );
                 return response;
+            }
+        }
+
+        private void ProcessFiles(EppoReceipt eppoReceipt, string treasuryCode, short financialYear)
+        {
+            var provider = new FileExtensionContentTypeProvider();
+
+            if (eppoReceipt.EppoFile != null)
+            {
+                eppoReceipt.EppoFile.FilePath = treasuryCode + "/" + financialYear + "/";
+                provider.TryGetContentType(eppoReceipt.EppoFile.FileName, out string? mimeType);
+                eppoReceipt.EppoFile.FileMimeType = mimeType ?? "application/octet-stream";
+            }
+
+            if (eppoReceipt.PhotoFile != null)
+            {
+                eppoReceipt.PhotoFile.FilePath = treasuryCode + "/" + financialYear + "/";
+                provider.TryGetContentType(eppoReceipt.PhotoFile.FileName, out string? mimeType);
+                eppoReceipt.PhotoFile.FileMimeType = mimeType ?? "application/octet-stream";
+            }
+
+            if (eppoReceipt.SignatureFile != null)
+            {
+                eppoReceipt.SignatureFile.FilePath = treasuryCode + "/" + financialYear + "/";
+                provider.TryGetContentType(
+                    eppoReceipt.SignatureFile.FileName,
+                    out string? mimeType
+                );
+                eppoReceipt.SignatureFile.FileMimeType = mimeType ?? "application/octet-stream";
             }
         }
     }

@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CTS_BE.Controllers
 {
-    [Route("api/v1/mq")]
     public class MqController : ApiBaseController
     {
         private readonly IMqService _mqService;
@@ -21,8 +20,8 @@ namespace CTS_BE.Controllers
             _cancellationTokenSource = new CancellationTokenSource();
         }
 
-        [HttpPost("message/{queueName}")]
-        [Tags("Message Queue: Worker")]
+        [HttpPost("mq/message/{queueName}")]
+        [Tags("Message Queue")]
         [OpenApi]
         public Task<string> SendMessage(string contents, string queueName)
         {
@@ -59,8 +58,8 @@ namespace CTS_BE.Controllers
             return Task.FromResult(response);
         }
 
-        [HttpGet("message/{queueName}")]
-        [Tags("Message Queue: Worker")]
+        [HttpGet("mq/message/{queueName}")]
+        [Tags("Message Queue")]
         [OpenApi]
         public Task<string> ReceiveSingleMessage(string queueName)
         {
@@ -77,8 +76,8 @@ namespace CTS_BE.Controllers
             return Task.FromResult(response);
         }
 
-        [HttpGet("start-worker/{queueName}")]
-        [Tags("Message Queue: Worker")]
+        [HttpGet("mq/start-worker/{queueName}")]
+        [Tags("Message Queue")]
         [OpenApi]
         public Task<JsonAPIResponse<string>> StartMqComsumer(string queueName)
         {
@@ -109,8 +108,8 @@ namespace CTS_BE.Controllers
             return Task.FromResult(response);
         }
 
-        [HttpGet("stop-worker/{consumerTag}")]
-        [Tags("Message Queue: Worker")]
+        [HttpGet("mq/stop-worker/{consumerTag}")]
+        [Tags("Message Queue")]
         [OpenApi]
         public Task<string> StopMqComsumer(string consumerTag)
         {

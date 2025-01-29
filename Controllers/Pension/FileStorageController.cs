@@ -6,43 +6,33 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CTS_BE.Controllers.Pension
 {
-    [ApiController]
-    [Route("api/v1/storage")]
-    public class FileStorageController : ApiBaseController
+    public class FileStorageController(
+        IFileStorageService ppoReceiptService,
+        IFileStorageService fileStorageService,
+        IClaimService claimService
+    ) : ApiBaseController(claimService)
     {
-        private readonly IFileStorageService _ppoReceiptService;
-        private readonly IFileStorageService _fileStorageService;
+        private readonly IFileStorageService _ppoReceiptService = ppoReceiptService;
+        private readonly IFileStorageService _fileStorageService = fileStorageService;
 
-        public FileStorageController(
-            IFileStorageService ppoReceiptService,
-            IFileStorageService fileStorageService,
-            IClaimService claimService
-        )
-            : base(claimService)
-        {
-            _ppoReceiptService = ppoReceiptService;
-            _fileStorageService = fileStorageService;
-        }
-
-        [HttpPost("file")]
+        [HttpPost("storage/file")]
         [Tags("Pension: File Storage")]
         [OpenApi]
         public async Task<JsonAPIResponse<FileResponseDTO>> StoreFile(FileEntryDTO fileEntryDTO)
         {
-            JsonAPIResponse<FileResponseDTO> response = new();
+            JsonAPIResponse<FileResponseDTO> response = new()
+            {
+                ApiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = $"File Stored Successfully!",
+            };
 
             try
             {
-                response = new()
-                {
-                    ApiResponseStatus = Enum.APIResponseStatus.Success,
-                    Result = await _fileStorageService.CreateFileUpload<FileResponseDTO>(
-                        fileEntryDTO,
-                        GetCurrentFyYear(),
-                        GetTreasuryCode()
-                    ),
-                    Message = $"File Stored Successfully!",
-                };
+                response.Result = await _fileStorageService.CreateFileUpload<FileResponseDTO>(
+                    fileEntryDTO,
+                    GetCurrentFyYear(),
+                    GetTreasuryCode()
+                );
             }
             catch (Exception ex)
             {
@@ -56,7 +46,7 @@ namespace CTS_BE.Controllers.Pension
             return response;
         }
 
-        [HttpGet("file/{fileId}")]
+        [HttpGet("storage/file/{fileId}")]
         [Tags("Pension: File Storage")]
         [OpenApi]
         public async Task<JsonAPIResponse<FileResponseDTO>> GetFileById(int fileId)
@@ -64,7 +54,7 @@ namespace CTS_BE.Controllers.Pension
             JsonAPIResponse<FileResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
-                Message = $"File received sucessfully!",
+                Message = $"File Received Successfully!",
             };
             try
             {
