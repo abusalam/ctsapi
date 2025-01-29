@@ -97,33 +97,53 @@ namespace CTS_BE.Controllers.Pension
             return response;
         }
 
-        //[HttpGet("bytransfer/all")]
-        //[Tags("Pension:By Transfer")]
-        //[OpenApi]
-        //public async Task<JsonAPIResponse<List<ByTransferHeadResponseDTO>>> GetAllByTransferHeads()
-        //{
-        //    JsonAPIResponse<List<ByTransferHeadResponseDTO>> response = new()
-        //    {
-        //        ApiResponseStatus = Enum.APIResponseStatus.Success,
-        //        Message = "All By Transfer Head details retrieved successfully!",
-        //    };
+        [HttpGet("bytransfer/all")]
+        [Tags("Pension:By Transfer")]
+        [OpenApi]
+        public async Task<
+            JsonAPIResponse<TableResponseDTO<ByTransferHeadResponseDTO>>
+        > GetAllByTransferHeads()
+        {
+            JsonAPIResponse<TableResponseDTO<ByTransferHeadResponseDTO>> response = new()
+            {
+                ApiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = "All By Transfer Head details retrieved successfully!",
+            };
 
-        //    try
-        //    {
-        //        response.Result =
-        //            await _byTransferHeadService.GetAllByTransferHeads<ByTransferHeadResponseDTO>();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        FillException(response, ex);
-        //        return response;
-        //    }
-        //    finally
-        //    {
-        //        FillErrorMesageFromDataSource(response);
-        //    }
+            try
+            {
+                var byTransferHeads =
+                    await _byTransferHeadService.GetAllByTransferHeads<ByTransferHeadResponseDTO>();
 
-        //    return response;
-        //}
+                response.Result = new()
+                {
+                    Headers = new()
+                    {
+                        new() { Name = "ID", FieldName = "Id" },
+                        new() { Name = "By Transfer Type", FieldName = "ByTransferType" },
+                        new() { Name = "Account Head ID", FieldName = "AccountHeadId" },
+                        new() { Name = "Description", FieldName = "ByTransferDescription" },
+                        new() { Name = "AG By Transfer", FieldName = "AgBytransfer" },
+                        new()
+                        {
+                            Name = "By Transfer Head Count",
+                            FieldName = "ByTransferHeadCount",
+                        },
+                    },
+                    Data = byTransferHeads,
+                };
+            }
+            catch (Exception ex)
+            {
+                FillException(response, ex);
+                return response;
+            }
+            finally
+            {
+                FillErrorMesageFromDataSource(response);
+            }
+
+            return response;
+        }
     }
 }

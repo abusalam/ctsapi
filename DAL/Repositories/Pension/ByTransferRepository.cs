@@ -67,15 +67,55 @@ namespace CTS_BE.DAL.Repositories.Pension
                 .BytransferHeads.Where(entity => entity.ActiveFlag)
                 .ToListAsync();
 
+            if (!byTransferHeads.Any())
+            {
+                return new List<BytransferHead>();
+            }
+
+            // Eager loading
+            _pensionDbContext
+                .BytransferHeads.Include(entity => entity.AccountHead)
+                .Include(entity => entity.BillBytransfers)
+                .Include(entity => entity.PpoBytransfers)
+                .Load();
+
+            // Explicit loading
             foreach (var byTransferHead in byTransferHeads)
             {
-                await _pensionDbContext
+                _pensionDbContext
                     .Entry(byTransferHead)
                     .Reference(entity => entity.AccountHead)
-                    .LoadAsync();
+                    .Load();
+
+                _pensionDbContext
+                    .Entry(byTransferHead)
+                    .Collection(entity => entity.BillBytransfers)
+                    .Load();
+
+                _pensionDbContext
+                    .Entry(byTransferHead)
+                    .Collection(entity => entity.PpoBytransfers)
+                    .Load();
             }
 
             return byTransferHeads;
         }
+
+        //public async Task<List<BytransferHead>> GetAllByTransferHeadsAsync()
+        //{
+        //    var byTransferHeads = await _pensionDbContext
+        //        .BytransferHeads.Where(entity => entity.ActiveFlag)
+        //        .ToListAsync();
+
+        //    foreach (var byTransferHead in byTransferHeads)
+        //    {
+        //        await _pensionDbContext
+        //            .Entry(byTransferHead)
+        //            .Reference(entity => entity.AccountHead)
+        //            .LoadAsync();
+        //    }
+
+        //    return byTransferHeads;
+        //}
     }
 }

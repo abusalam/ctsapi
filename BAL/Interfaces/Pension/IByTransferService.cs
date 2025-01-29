@@ -7,6 +7,8 @@ namespace CTS_BE.BAL.Interfaces.Pension
         Task<T> SaveByTransferHead<T>(ByTransferHeadEntryDTO byTransferHeadEntryDTO);
 
         Task<T> GetByTransferHeadById<T>(long byTransferHeadId);
-        public Task<List<T>> GetAllByTransferHeads<T>();
+
+        Task<List<T>> GetAllByTransferHeads<T>()
+            where T : BaseDTO;
     }
 }

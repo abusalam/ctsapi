@@ -1331,8 +1331,23 @@ namespace CTS_BE.DTOs
         public bool AgBytransfer { get; set; }
     }
 
-    public partial class ByTransferHeadResponseDTO : ByTransferHeadEntryDTO
+    public partial class ByTransferHeadResponseDTO : BaseDTO
     {
         public long Id { get; set; }
+
+        public char ByTransferType { get; set; }
+
+        public long AccountHeadId { get; set; }
+
+        public string ByTransferDescription { get; set; }
+
+        public bool AgBytransfer { get; set; }
+
+        //public List<ByTransferHeadEntryDTO> ByTransferHeadList { get; set; } = new();
+
+        //public int ByTransferHeadCount
+        //{
+        //    get { return this.ByTransferHeadList?.Count ?? 0; }
+        //}
     }
 }

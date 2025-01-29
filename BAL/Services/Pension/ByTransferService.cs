@@ -145,7 +145,6 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (DbUpdateException ex)
             {
-                // Handle database-specific exceptions
                 response.FillDataSource(
                     new BytransferHead(),
                     $"Database exception occurred: {ex.InnerException?.Message ?? ex.Message}"
@@ -154,7 +153,6 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
-                // Handle general exceptions
                 response.FillDataSource(
                     new BytransferHead(),
                     $"An unexpected error occurred: {ex.InnerException?.Message ?? ex.Message}"
@@ -164,6 +162,7 @@ namespace CTS_BE.BAL.Services.Pension
         }
 
         public async Task<List<T>> GetAllByTransferHeads<T>()
+            where T : BaseDTO
         {
             List<T> responseList = new List<T>();
 
