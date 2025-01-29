@@ -6,20 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CTS_BE.Controllers.Pension
 {
-    [ApiController]
-    [Route("api/v1")]
-    public class BankBranchController : ApiBaseController
+    public class BankBranchController(
+        IClaimService claimService,
+        IBankBranchService bankBranchService
+    ) : ApiBaseController(claimService)
     {
-        private readonly IBankBranchService _bankBranchService;
-
-        public BankBranchController(
-            IClaimService claimService,
-            IBankBranchService bankBranchService
-        )
-            : base(claimService)
-        {
-            _bankBranchService = bankBranchService;
-        }
+        private readonly IBankBranchService _bankBranchService = bankBranchService;
 
         [HttpGet("banks")]
         [Tags("Pension: Bank Branch")]

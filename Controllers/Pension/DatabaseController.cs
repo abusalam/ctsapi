@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.Controllers.Pension
 {
-    public enum Seeders
+    public enum SeederEnums
     {
         DatabaseSeeder,
         AccountHeadSeeder,
@@ -86,23 +86,21 @@ namespace CTS_BE.Controllers.Pension
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status412PreconditionFailed)]
         [ProducesDefaultResponseType]
-        public IActionResult SeedDatabase(Seeders seeder = Seeders.DatabaseSeeder, int count = 5)
+        public IActionResult SeedDatabase(
+            SeederEnums seeder = SeederEnums.DatabaseSeeder,
+            int count = 5
+        )
         {
             try
             {
                 using var scope = _serviceProvider.CreateScope();
                 using var context = scope.ServiceProvider.GetRequiredService<PensionDbContext>();
 
-                var seederName = System.Enum.GetName(typeof(Seeders), seeder);
+                var seederName = System.Enum.GetName(typeof(SeederEnums), seeder);
 
                 if (seederName == null)
                 {
                     return BadRequest("Invalid seeder name.");
-                }
-
-                if (seeder == Seeders.DatabaseSeeder)
-                {
-                    seederName = string.Empty;
                 }
 
                 var (success, errorMessage) = DatabaseSeeder.Initialize(
@@ -113,7 +111,7 @@ namespace CTS_BE.Controllers.Pension
 
                 if (success)
                 {
-                    return Ok($"Database seeded successfully with seeder: {seederName}.");
+                    return Ok($"Database seeded successfully with seeder: {seederName}");
                 }
                 else
                 {

@@ -1,3 +1,4 @@
+using CTS_BE.Controllers.Pension;
 using CTS_BE.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -47,7 +48,14 @@ namespace CTS_BE.Seeders
                     try
                     {
                         // Run all seeders when selectedSeeder is empty or only the seeder name matches
-                        if (t.Name == selectedSeeder || selectedSeeder == string.Empty)
+                        if (
+                            t.Name == selectedSeeder
+                            || selectedSeeder
+                                == System.Enum.GetName(
+                                    typeof(SeederEnums),
+                                    SeederEnums.DatabaseSeeder
+                                )
+                        )
                         {
                             return (ISeeder?)serviceProvider.GetRequiredService(t); // Get from DI
                         }

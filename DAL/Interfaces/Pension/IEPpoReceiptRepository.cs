@@ -13,8 +13,6 @@ namespace CTS_BE.DAL.Interfaces.Pension
         );
         public Task<T> SaveRevisedEPpoReceipt<T>(
             EppoRevision entity,
-            string treasuryCode,
-            short financialYear,
             Expression<Func<EppoReceipt, T>> selectExpression
         );
         public Task<T> WithdrawEPpoReceipt<T>(
