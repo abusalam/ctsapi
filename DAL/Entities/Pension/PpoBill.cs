@@ -61,6 +61,34 @@ public partial class PpoBill
     [Column("net_amount")]
     public int NetAmount { get; set; }
 
+    [Column("account_holder_name")]
+    [StringLength(100)]
+    public string AccountHolderName { get; set; } = null!;
+
+    [Column("bank_ac_no")]
+    [StringLength(30)]
+    public string BankAcNo { get; set; } = null!;
+
+    [Column("ifsc_code")]
+    [StringLength(11)]
+    public string IfscCode { get; set; } = null!;
+
+    [Column("payment_status")]
+    [MaxLength(1)]
+    public char PaymentStatus { get; set; }
+
+    [Column("correction_status")]
+    [MaxLength(1)]
+    public char CorrectionStatus { get; set; }
+
+    [Column("failed_reason")]
+    [StringLength(500)]
+    public string? FailedReason { get; set; }
+
+    [Column("remarks")]
+    [StringLength(500)]
+    public string? Remarks { get; set; }
+
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime? CreatedAt { get; set; }
 
