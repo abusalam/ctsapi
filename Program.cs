@@ -122,6 +122,7 @@ builder.Services.AddTransient<INomineeService, NomineeService>();
 builder.Services.AddTransient<ILifeCertificateService, LifeCertificateService>();
 builder.Services.AddTransient<IEPpoReceiptService, EPpoReceiptService>();
 builder.Services.AddTransient<IConvertToFamilyPensionService, ConvertToFamilyPensionService>();
+builder.Services.AddTransient<IPaymentService, PaymentService>();
 
 //Automapper
 builder.Services.AddAutoMapper(typeof(Program));
