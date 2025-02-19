@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Dynamic;
+using CTS_BE.DAL.Entities.Pension;
 using CTS_BE.DTOs.Validators;
 using CTS_BE.PensionEnum;
 
@@ -1349,5 +1351,27 @@ namespace CTS_BE.DTOs
         //{
         //    get { return this.ByTransferHeadList?.Count ?? 0; }
         //}
+    }
+
+    public partial class PpoByTransferEntryDTO : BaseDTO
+    {
+        public long PensionerId { get; set; }
+
+        public int PpoId { get; set; }
+
+        public DateOnly FromDate { get; set; }
+
+        public DateOnly ToDate { get; set; }
+
+        public long BytransferHeadId { get; set; }
+
+        public int BytransferAmount { get; set; }
+
+        public string? Remarks { get; set; }
+    }
+
+    public partial class PpoByTransferHeadResponseDTO : PpoByTransferEntryDTO
+    {
+        public long Id { get; set; }
     }
 }
