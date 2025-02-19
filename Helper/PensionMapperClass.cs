@@ -81,6 +81,8 @@ namespace CTS_BE.Helper
             CreateMap<EppoNominee, EPpoNomineeEntryDTO>().ReverseMap();
             CreateMap<BytransferHead, ByTransferHeadEntryDTO>().ReverseMap();
             CreateMap<BytransferHead, ByTransferHeadResponseDTO>().ReverseMap();
+            CreateMap<PpoBytransfer, PpoByTransferEntryDTO>().ReverseMap();
+            CreateMap<PpoBytransfer, PpoByTransferHeadResponseDTO>().ReverseMap();
         }
     }
 }

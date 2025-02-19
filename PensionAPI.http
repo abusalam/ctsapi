@@ -196,6 +196,28 @@ Content-Type: application/json
 }
 
 
+### Create Ppo By Transfer Head Mapping
+# @name CreateByTransferHeadMap
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+POST {{PensionAPI_HostAddress}}/api/v1/ppo-by-transfer-headmap
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  
+  "pensionerId": 1,
+  "ppoId": 1,
+  "fromDate": "2024-02-19",
+  "toDate": "2024-02-19",
+  "bytransferHeadId": 9,
+  "bytransferAmount": 12000,
+  "remarks": "INCOME TAX - T.D.S"
+}
+
+
+
+
 
 
 
