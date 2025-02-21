@@ -8,9 +8,11 @@ namespace CTS_BE.Controllers.Pension
 {
     public enum FactoryEntityEnum
     {
+        ByTransferHeadEntryDTO,
         ComponentRateEntryDTO,
         ManualPpoReceiptEntryDTO,
         PensionerEntryDTO,
+        PpoByTransferEntryDTO,
         PpoSanctionDetailsEntryDTO,
         PensionPrimaryCategoryEntryDTO,
         PensionSubCategoryEntryDTO,
@@ -28,9 +30,11 @@ namespace CTS_BE.Controllers.Pension
         {
             _factories = new Dictionary<FactoryEntityEnum, BaseDTO>()
             {
+                { FactoryEntityEnum.ByTransferHeadEntryDTO, new ByTransferHeadFactory().Create() },
                 { FactoryEntityEnum.ComponentRateEntryDTO, new ComponentRateFactory().Create() },
                 { FactoryEntityEnum.ManualPpoReceiptEntryDTO, new PpoReceiptFactory().Create() },
                 { FactoryEntityEnum.PensionerEntryDTO, new PensionerFactory().Create() },
+                { FactoryEntityEnum.PpoByTransferEntryDTO, new PpoByTransferFactory().Create() },
                 {
                     FactoryEntityEnum.PpoSanctionDetailsEntryDTO,
                     new PpoSanctionDetailsFactory().Create()
