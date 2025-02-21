@@ -61,7 +61,10 @@ namespace CTS_BE.BAL.Services.Pension
                 DateOnly today = DateOnly.FromDateTime(DateTime.UtcNow);
                 if (ppoComponentRevision.FromDate < today)
                 {
-                    response.FillDataSource(ppoComponentRevision, $"PPO Component Revision Old Date not allowed.");
+                    response.FillDataSource(
+                        ppoComponentRevision,
+                        $"PPO Component Revision Old Date not allowed."
+                    );
                     return response;
                 }
 
@@ -94,7 +97,10 @@ namespace CTS_BE.BAL.Services.Pension
 
                     if (ppoComponentRevision.FromDate <= newPpoComponentRevisions.FromDate)
                     {
-                        response.FillDataSource(ppoComponentRevision, "PPO Component Revision Date overlap detected!");
+                        response.FillDataSource(
+                            ppoComponentRevision,
+                            "PPO Component Revision Date overlap detected!"
+                        );
                         return response;
                     }
 
