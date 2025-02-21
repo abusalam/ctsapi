@@ -126,6 +126,7 @@ builder.Services.AddTransient<IEPpoReceiptService, EPpoReceiptService>();
 builder.Services.AddTransient<IConvertToFamilyPensionService, ConvertToFamilyPensionService>();
 builder.Services.AddTransient<IByTransferService, ByTransferService>();
 builder.Services.AddTransient<IPpoByTransferService, PpoByTransferService>();
+builder.Services.AddTransient<IPaymentService, PaymentService>();
 
 //Automapper
 builder.Services.AddAutoMapper(typeof(Program));
