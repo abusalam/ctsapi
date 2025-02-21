@@ -58,23 +58,48 @@ namespace CTS_BE.BAL.Services.Pension
             {
                 ppoComponentRevision.FillFrom(ppoComponentRevisionDTO);
 
-                PpoComponentRevision? ppoComponentRevisionFound =
-                    await _pensionDbContext.PpoComponentRevisions.FirstOrDefaultAsync(entity =>
+                DateOnly today = DateOnly.FromDateTime(DateTime.UtcNow);
+                if (ppoComponentRevision.FromDate < today)
+                {
+                    response.FillDataSource(ppoComponentRevision, $"PPO Component Revision Old Date not allowed.");
+                    return response;
+                }
+
+                List<PpoComponentRevision> existingPpocomponentRevisions = await _pensionDbContext
+                    .PpoComponentRevisions.Where(entity =>
                         entity.ActiveFlag
                         // && entity.TreasuryCode == treasuryCode
                         && entity.PpoId == ppoComponentRevision.PpoId
                         && entity.RateId == ppoComponentRevision.RateId
-                        && entity.FromDate == ppoComponentRevision.FromDate
-                    );
+                    )
+                    .OrderByDescending(entity => entity.FromDate)
+                    .ToListAsync();
 
-                if (ppoComponentRevisionFound != null)
+                if (existingPpocomponentRevisions.Any())
                 {
-                    ppoComponentRevision = ppoComponentRevisionFound;
-                    response.FillDataSource(
-                        ppoComponentRevisionFound,
-                        $"PPO Component Revision already exists!"
-                    );
-                    return response;
+                    var newPpoComponentRevisions = existingPpocomponentRevisions.First();
+
+                    if (
+                        existingPpocomponentRevisions.Any(entity =>
+                            entity.FromDate == ppoComponentRevision.FromDate
+                        )
+                    )
+                    {
+                        response.FillDataSource(
+                            ppoComponentRevision,
+                            "PPO Component Revision Same FromDate already exists!"
+                        );
+                        return response;
+                    }
+
+                    if (ppoComponentRevision.FromDate <= newPpoComponentRevisions.FromDate)
+                    {
+                        response.FillDataSource(ppoComponentRevision, "PPO Component Revision Date overlap detected!");
+                        return response;
+                    }
+
+                    newPpoComponentRevisions.ToDate = ppoComponentRevision.FromDate.AddDays(-1);
+                    _pensionDbContext.PpoComponentRevisions.Update(newPpoComponentRevisions);
                 }
 
                 Pensioner? pensionerFound = await _pensionDbContext.Pensioners.FirstOrDefaultAsync(
