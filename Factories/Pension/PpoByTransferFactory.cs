@@ -6,6 +6,7 @@ namespace CTS_BE.Factories.Pension
 {
     public class PpoByTransferFactory : BaseFactory<PpoByTransferEntryDTO>
     {
+        private static readonly long[] BytransferHeadId = [1, 2, 3, 4, 5];
         private static readonly string[] DescriptionPrefixes =
         {
             "INCOME TAX",
@@ -36,6 +37,7 @@ namespace CTS_BE.Factories.Pension
                 )
                 .RuleFor(d => d.ToDate, (f, d) => d.FromDate.AddDays(1))
                 .RuleFor(d => d.BytransferAmount, f => f.Random.Int(1000, 10000))
+                .RuleFor(d => d.BytransferHeadId, f => f.PickRandom(BytransferHeadId))
                 .RuleFor(
                     d => d.Remarks,
                     f =>
