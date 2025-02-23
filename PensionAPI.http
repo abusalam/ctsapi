@@ -249,9 +249,7 @@ Content-Type: application/json
 fromDate<toDate and  date should not be overlaped for same ppoid
 
 
-
 {
-
   "pensionerId": 1,
   "ppoId": 1,
   "fromDate": "2024-02-19",
