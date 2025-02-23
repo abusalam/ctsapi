@@ -237,7 +237,7 @@ Content-Type: application/json
 
 
 {
-  
+
   "pensionerId": pensionerId1,
   "ppoId": ppoId,
   "fromDate": "YYYY-MM-DD",
@@ -249,8 +249,9 @@ Content-Type: application/json
 fromDate<toDate and  date should not be overlaped for same ppoid
 
 
+
 {
-  
+
   "pensionerId": 1,
   "ppoId": 1,
   "fromDate": "2024-02-19",
@@ -274,7 +275,7 @@ Content-Type: application/json
 
 
 {
- 
+
  "id": ppobytransferid,
   "bytransferAmount": bytransferAmount,
   "remarks": "remarks"
@@ -282,14 +283,14 @@ Content-Type: application/json
 
 
 {
- 
+
  "id": 5,
   "bytransferAmount": 400,
   "remarks": "update ppobytransferid"
 }
 
 
-###Delete PPO By Transfer 
+###Delete PPO By Transfer
 # @name DeletePPOByTransfer
 # DELETE {{PensionAPI_HostAddress}}/api/v1/echo
 DELETE {{PensionAPI_HostAddress}}/api/v1/delete-ppo-by-transfer/{ppobytransferid}
