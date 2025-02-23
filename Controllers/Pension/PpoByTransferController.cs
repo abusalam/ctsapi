@@ -1,4 +1,5 @@
 ﻿using System.Data.Common;
+using System.Net.Mime;
 using CTS_BE.BAL.Interfaces;
 using CTS_BE.BAL.Interfaces.Pension;
 using CTS_BE.BAL.Services;
@@ -11,6 +12,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CTS_BE.Controllers.Pension
 {
+    [ApiController]
+    [Produces(MediaTypeNames.Application.Json)]
+    [Route("api/v1")]
     public class PpoByTransferController : ApiBaseController
     {
         private readonly IClaimService _claimService;
@@ -31,8 +35,8 @@ namespace CTS_BE.Controllers.Pension
             _cancellationTokenSource = new CancellationTokenSource();
         }
 
-        [HttpPost("ppo-by-transfer-headmap")]
-        [Tags("Pension:Ppo By Transfer")]
+        [HttpPost("save-ppo-by-transfer-headmap")]
+        [Tags("Pension: PPO By Transfer")]
         [OpenApi]
         public async Task<JsonAPIResponse<PpoByTransferHeadResponseDTO>> CreatePPoByTransferHeadMap(
             PpoByTransferEntryDTO ppobyTransferHeadEntryDTO
@@ -57,6 +61,149 @@ namespace CTS_BE.Controllers.Pension
                 if (response.Result.DataSource != null)
                 {
                     return response;
+                }
+            }
+            catch (Exception ex)
+            {
+                FillException(response, ex);
+                return response;
+            }
+            finally
+            {
+                FillErrorMesageFromDataSource(response);
+            }
+
+            return response;
+        }
+
+        [HttpPut("update-ppo-by-transfer-headmap")]
+        [Tags("Pension: PPO By Transfer")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<PpoByTransferHeadResponseDTO>> UpdatePPOByTransferHeadMap(
+            PpoByTransferUpdateDTO ppoByTransferUpdateDTO
+        )
+        {
+            JsonAPIResponse<PpoByTransferHeadResponseDTO> response = new();
+
+            try
+            {
+                var result =
+                    await _ppobyTransferHeadService.UpdatePPOByTransfer<PpoByTransferHeadResponseDTO>(
+                        ppoByTransferUpdateDTO
+                    );
+
+                if (!string.IsNullOrEmpty((string?)result.Message))
+                {
+                    response.ApiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.Message = (string?)result.Message;
+                    return response;
+                }
+
+                response.Result = result;
+                response.ApiResponseStatus = Enum.APIResponseStatus.Success;
+                response.Message = "PPO By Transfer updated successfully!";
+            }
+            catch (Exception ex)
+            {
+                FillException(response, ex);
+            }
+            finally
+            {
+                FillErrorMesageFromDataSource(response);
+            }
+
+            return response;
+        }
+
+        [HttpDelete("delete-ppo-by-transfer/{ppobytransferid}")]
+        [Tags("Pension: PPO By Transfer")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<PpoByTransferHeadResponseDTO>> DeletePPOByTransfer(
+            long ppobytransferid
+        )
+        {
+            JsonAPIResponse<PpoByTransferHeadResponseDTO> response = new();
+
+            try
+            {
+                var result =
+                    await _ppobyTransferHeadService.DeletePPOByTransfer<PpoByTransferHeadResponseDTO>(
+                        ppobytransferid
+                    );
+
+                // Check if an error message exists in the result
+                if (!string.IsNullOrEmpty((string?)result.Message))
+                {
+                    response.ApiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.Message = (string?)result.Message;
+                    return response;
+                }
+
+                response.Result = result;
+                response.ApiResponseStatus = Enum.APIResponseStatus.Success;
+                response.Message = "PPO By Transfer deleted successfully!";
+            }
+            catch (Exception ex)
+            {
+                FillException(response, ex);
+            }
+            finally
+            {
+                FillErrorMesageFromDataSource(response);
+            }
+
+            return response;
+        }
+
+        [HttpGet("{ppoId}/by-transfer")]
+        [Tags("Pension: PPO By Transfer")]
+        [OpenApi]
+        public async Task<
+            JsonAPIResponse<TableResponseDTO<PpoByTransferHeadResponseList>>
+        > GetPpoByTransferByPpoId(int ppoId)
+        {
+            JsonAPIResponse<TableResponseDTO<PpoByTransferHeadResponseList>> response = new()
+            {
+                ApiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = "PPO By Transfer records received successfully!",
+            };
+
+            try
+            {
+                var result =
+                    await _ppobyTransferHeadService.GetAllPpoByTransferById<PpoByTransferHeadResponseDTO>(
+                        ppoId,
+                        GetCurrentFyYear(),
+                        GetTreasuryCode()
+                    );
+
+                if (result?.Result == null || !result.Result.Any())
+                {
+                    response.ApiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.Message = "No PPO By Transfer records found for the given PPO Id.";
+                }
+                else
+                {
+                    response.Result = new()
+                    {
+                        Headers = new()
+                        {
+                            new() { Name = "ID", FieldName = "id" },
+                            new() { Name = "PPO No", FieldName = "ppoNo" },
+                            new() { Name = "Pensioner Name", FieldName = "pensionerName" },
+                            new() { Name = "From Date", FieldName = "fromDate" },
+                            new() { Name = "To Date", FieldName = "toDate" },
+                            new() { Name = "By Transfer Head ID", FieldName = "bytransferHeadId" },
+                            new() { Name = "By Transfer Amount", FieldName = "bytransferAmount" },
+                            new() { Name = "Remarks", FieldName = "remarks" },
+                            new()
+                            {
+                                Name = "PPO By Transfer Head Count",
+                                FieldName = "PPOByTransferHeadCount",
+                            },
+                        },
+                        Data = result.Result,
+                    };
                 }
             }
             catch (Exception ex)

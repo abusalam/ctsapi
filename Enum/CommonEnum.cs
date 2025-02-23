@@ -6,6 +6,7 @@
         Warning = 2,
         Error = 3,
         Info = 4,
+        Failure = 5,
     }
 
     public enum BillStatus

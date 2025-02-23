@@ -93,6 +93,90 @@ namespace CTS_BE.BAL.Services.Pension
             return responseDTO;
         }
 
+        public async Task<T> UpdateByTransferHead<T>(ByTransferHeadUpdateDTO updateDTO)
+        {
+            try
+            {
+                ByTransferHeadResponseDTO responseDTO = new();
+
+                var existingEntity = await _byTransferHeadRepository.GetByTransferHeadByIdAsync(
+                    updateDTO.Id
+                );
+
+                if (existingEntity == null || !existingEntity.ActiveFlag)
+                {
+                    responseDTO.Message = "ByTransferHead not found or already deleted.";
+                    return _mapper.Map<T>(responseDTO);
+                }
+
+                bool isUsed = await _byTransferHeadRepository.IsUsedInOtherTables(updateDTO.Id);
+                if (isUsed)
+                {
+                    responseDTO.Message =
+                        "Cannot update, as this ByTransferHead is used in other tables.";
+                    return _mapper.Map<T>(responseDTO);
+                }
+
+                existingEntity.BytransferType = updateDTO.BytransferType;
+                existingEntity.AccountHeadId = updateDTO.AccountHeadId;
+                existingEntity.BytransferDescription = updateDTO.BytransferDescription;
+                existingEntity.AgBytransfer = updateDTO.AgBytransfer;
+                existingEntity.UpdatedAt = DateTime.UtcNow.ToLocalTime();
+
+                return await _byTransferHeadRepository.UpdateByTransferHead<T>(existingEntity);
+            }
+            catch (Exception ex)
+            {
+                ByTransferHeadResponseDTO errorResponse = new()
+                {
+                    Message = $"ServiceException: {ex.InnerException?.Message ?? ex.Message}",
+                };
+
+                return _mapper.Map<T>(errorResponse);
+            }
+        }
+
+        //delete
+
+
+        public async Task<T> DeleteByTransferHead<T>(long id)
+        {
+            try
+            {
+                ByTransferHeadResponseDTO responseDTO = new();
+
+                var existingEntity = await _byTransferHeadRepository.GetByTransferHeadByIdAsync(id);
+
+                if (existingEntity == null || !existingEntity.ActiveFlag)
+                {
+                    responseDTO.Message = "ByTransferHead not found or already deleted.";
+                    return _mapper.Map<T>(responseDTO);
+                }
+
+                bool isUsed = await _byTransferHeadRepository.IsUsedInOtherTables(id);
+                if (isUsed)
+                {
+                    responseDTO.Message =
+                        "Cannot delete, as this ByTransferHead is used in other tables.";
+                    return _mapper.Map<T>(responseDTO);
+                }
+
+                existingEntity.ActiveFlag = false;
+                existingEntity.UpdatedAt = DateTime.UtcNow.ToLocalTime();
+
+                return await _byTransferHeadRepository.UpdateByTransferHead<T>(existingEntity);
+            }
+            catch (Exception ex)
+            {
+                ByTransferHeadResponseDTO errorResponse = new()
+                {
+                    Message = $"ServiceException: {ex.InnerException?.Message ?? ex.Message}",
+                };
+
+                return _mapper.Map<T>(errorResponse);
+            }
+        }
+
         public async Task<T> GetByTransferHeadById<T>(long byTransferHeadId)
         {
             T? response = _mapper.Map<T>(new BytransferHead());
