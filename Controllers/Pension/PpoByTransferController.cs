@@ -155,12 +155,12 @@ namespace CTS_BE.Controllers.Pension
             return response;
         }
 
-        [HttpGet("{ppoId}/by-transfer")]
+        [HttpGet("{ppoid}/by-transfer")]
         [Tags("Pension: PPO By Transfer")]
         [OpenApi]
         public async Task<
             JsonAPIResponse<TableResponseDTO<PpoByTransferHeadResponseList>>
-        > GetPpoByTransferByPpoId(int ppoId)
+        > GetPpoByTransferByPpoId(int ppoid)
         {
             JsonAPIResponse<TableResponseDTO<PpoByTransferHeadResponseList>> response = new()
             {
@@ -172,7 +172,7 @@ namespace CTS_BE.Controllers.Pension
             {
                 var result =
                     await _ppobyTransferHeadService.GetAllPpoByTransferById<PpoByTransferHeadResponseDTO>(
-                        ppoId,
+                        ppoid,
                         GetCurrentFyYear(),
                         GetTreasuryCode()
                     );

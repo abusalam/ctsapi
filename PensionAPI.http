@@ -305,7 +305,7 @@ Content-Type: application/json
 
 ### Get PPO ByTransfer By Id
 # @name GetPPOByTransferById
-GET {{PensionAPI_HostAddress}}/api/v1/by-transfer/{{ppoId}}
+GET {{PensionAPI_HostAddress}}/api/v1/by-transfer/{{ppoid}}
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
