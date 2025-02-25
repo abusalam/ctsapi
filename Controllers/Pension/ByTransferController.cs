@@ -143,11 +143,11 @@ namespace CTS_BE.Controllers.Pension
             return response;
         }
 
-        [HttpGet("by-transfer-headmap/{bytransferheadd}")]
+        [HttpGet("by-transfer-headmap/{bytransferheadid}")]
         [Tags("Pension: By Transfer")]
         [OpenApi]
         public async Task<JsonAPIResponse<ByTransferHeadResponseDTO>> GetByTransferHeadById(
-            long bytransferheadd
+            long bytransferheadid
         )
         {
             JsonAPIResponse<ByTransferHeadResponseDTO> response = new()
@@ -160,7 +160,7 @@ namespace CTS_BE.Controllers.Pension
             {
                 response.Result =
                     await _byTransferHeadService.GetByTransferHeadById<ByTransferHeadResponseDTO>(
-                        bytransferheadd
+                        bytransferheadid
                     );
             }
             catch (Exception ex)
@@ -198,21 +198,16 @@ namespace CTS_BE.Controllers.Pension
                 {
                     Headers = new()
                     {
-                        new() { Name = "ID", FieldName = "Id" },
-                        new() { Name = "By Transfer Type", FieldName = "ByTransferType" },
-                        new() { Name = "Account Head ID", FieldName = "AccountHeadId" },
-                        new() { Name = "Description", FieldName = "ByTransferDescription" },
-                        new() { Name = "AG By Transfer", FieldName = "AgBytransfer" },
+                        new() { Name = "ID", FieldName = "id" },
+                        new() { Name = "By Transfer Type", FieldName = "byTransferType" },
+                        new() { Name = "Account Head ID", FieldName = "accountHeadId" },
+                        new() { Name = "Description", FieldName = "byTransferDescription" },
+                        new() { Name = "AG By Transfer", FieldName = "agBytransfer" },
                         new()
                         {
                             Name = "By Transfer Head Count",
                             FieldName = "ByTransferHeadCount",
                         },
-                        new() { Name = "ID", FieldName = "id" },
-                        new() { Name = "Account Head ID", FieldName = "accountHeadId" },
-                        new() { Name = "Description", FieldName = "byTransferDescription" },
-                        new() { Name = "By Transfer Type", FieldName = "byTransferType" },
-                        new() { Name = "AG By Transfer", FieldName = "agBytransfer" },
                     },
                     Data = byTransferHeads,
                 };

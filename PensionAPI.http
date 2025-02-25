@@ -95,6 +95,14 @@ Accept: application/json
 Authorization: Bearer {{accessToken}}
 
 
+### Get all ByTransferHeadById
+# @name GetAllByTransferHeadById
+GET {{PensionAPI_HostAddress}}/api/v1/{{bytransferheadid}}/by-transfer-headmaps
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+
+
 
 
 
