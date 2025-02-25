@@ -6,9 +6,8 @@ namespace CTS_BE.DAL.Interfaces.Pension
     public interface IEPpoReceiptRepository : IRepository<EppoReceipt>
     {
         public Task<T> SaveEPpoReceipt<T>(
-            EppoReceipt entity,
-            string treasuryCode,
-            short financialYear,
+            EppoReceipt eppoReceiptEntity,
+            PpoReceipt ppoReceiptEntity,
             Expression<Func<EppoReceipt, T>> selectExpression
         );
         public Task<T> SaveRevisedEPpoReceipt<T>(

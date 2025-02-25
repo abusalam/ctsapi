@@ -61,16 +61,14 @@ namespace CTS_BE.DAL.Repositories.Pension
 
         public async Task<T> SaveEPpoReceipt<T>(
             EppoReceipt eppoReceiptEntity,
-            string treasuryCode,
-            short financialYear,
+            PpoReceipt ppoReceiptEntity,
             Expression<Func<EppoReceipt, T>> selectExpression
         )
         {
             var response = _mapper.Map<T>(eppoReceiptEntity);
             try
             {
-                eppoReceiptEntity.FinancialYear = financialYear;
-                eppoReceiptEntity.Withdrawn = false;
+                // Check if eppoReceipt already exists
                 EppoReceipt? eppoReceiptExists = await _context.EppoReceipts.FirstOrDefaultAsync(
                     e => e.PensionApplnNo == eppoReceiptEntity.PensionApplnNo
                 );
@@ -85,70 +83,16 @@ namespace CTS_BE.DAL.Repositories.Pension
                     return response;
                 }
 
-                FileExtensionContentTypeProvider provider = new();
-                if (eppoReceiptEntity.EppoFile != null)
-                {
-                    eppoReceiptEntity.EppoFile.FilePath = treasuryCode + "/" + financialYear + "/";
-                    var extension = provider.TryGetContentType(
-                        eppoReceiptEntity.EppoFile.FileName,
-                        out string? mimeType
-                    );
-                    eppoReceiptEntity.EppoFile.FileMimeType =
-                        mimeType ?? "application/octet-stream";
-                }
-
-                if (eppoReceiptEntity.PhotoFile != null)
-                {
-                    eppoReceiptEntity.PhotoFile.FilePath = treasuryCode + "/" + financialYear + "/";
-                    var extension = provider.TryGetContentType(
-                        eppoReceiptEntity.PhotoFile.FileName,
-                        out string? mimeType
-                    );
-                    eppoReceiptEntity.PhotoFile.FileMimeType =
-                        mimeType ?? "application/octet-stream";
-                }
-
-                if (eppoReceiptEntity.SignatureFile != null)
-                {
-                    eppoReceiptEntity.SignatureFile.FilePath =
-                        treasuryCode + "/" + financialYear + "/";
-                    var extension = provider.TryGetContentType(
-                        eppoReceiptEntity.SignatureFile.FileName,
-                        out string? mimeType
-                    );
-                    eppoReceiptEntity.SignatureFile.FileMimeType =
-                        mimeType ?? "application/octet-stream";
-                }
-
                 _context.EppoReceipts.Add(eppoReceiptEntity);
-                await _context.SaveChangesAsync();
+                ppoReceiptEntity.EppoReceipt = eppoReceiptEntity;
+                _context.PpoReceipts.Add(ppoReceiptEntity);
 
-                var dateOfCommencement = eppoReceiptEntity.DateOfRetirement.AddDays(1);
-                var ppoReceipt = new PpoReceipt
-                {
-                    PpoNo = eppoReceiptEntity.PpoNo,
-                    ReceiptType = "EPPO",
-                    TreasuryReceiptNo = eppoReceiptEntity.PensionApplnNo,
-                    PsaCode = 'D',
-                    PpoType = eppoReceiptEntity.PpoTypeCode,
-                    PensionerName = eppoReceiptEntity.PensionerName,
-                    MobileNumber = eppoReceiptEntity.MobileNumber,
-                    DateOfCommencement = dateOfCommencement,
-                    ReceiptDate = dateOfCommencement.AddDays(1),
-                    TreasuryCode = treasuryCode,
-                    FinancialYear = financialYear,
-                    EppoReceiptId = eppoReceiptEntity.Id,
-                    PpoStatus = "EPPO Received",
-                    ActiveFlag = true,
-                };
-
-                _context.PpoReceipts.Add(ppoReceipt);
-
+                // Save everything in one transaction
                 if (await _context.SaveChangesAsync() == 0)
                 {
                     response.FillDataSource(
                         eppoReceiptEntity,
-                        "Failed to save PpoReceipt data. Please try again after sometime."
+                        "Failed to save data. Please try again after sometime."
                     );
                     return response;
                 }

@@ -6,6 +6,7 @@ using CTS_BE.DAL.Interfaces.Pension;
 using CTS_BE.DTOs;
 using CTS_BE.Helper;
 using CTS_BE.Helper.Authentication;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.BAL.Services.Pension
@@ -26,27 +27,85 @@ namespace CTS_BE.BAL.Services.Pension
         )
         {
             EppoReceipt eppoReceipt = _mapper.Map<EppoReceipt>(ePpoReceiptEntryDTO);
-            T response = _mapper.Map<T>(eppoReceipt);
             try
             {
                 eppoReceipt.FinancialYear = financialYear;
+                eppoReceipt.Withdrawn = false;
                 SetCreatedBy(eppoReceipt);
 
-                response = await _ePpoReceiptRepository.SaveEPpoReceipt<T>(
+                // Prepare file paths and MIME types
+                PrepareEppoFiles(eppoReceipt, treasuryCode, financialYear);
+
+                // Create the PpoReceipt entity
+                var dateOfCommencement = eppoReceipt.DateOfRetirement.AddDays(1);
+                var ppoReceipt = new PpoReceipt
+                {
+                    PpoNo = eppoReceipt.PpoNo,
+                    ReceiptType = "EPPO",
+                    TreasuryReceiptNo = eppoReceipt.PensionApplnNo,
+                    PsaCode = 'D',
+                    PpoType = eppoReceipt.PpoTypeCode,
+                    PensionerName = eppoReceipt.PensionerName,
+                    MobileNumber = eppoReceipt.MobileNumber,
+                    DateOfCommencement = dateOfCommencement,
+                    ReceiptDate = dateOfCommencement.AddDays(1),
+                    TreasuryCode = treasuryCode,
+                    FinancialYear = financialYear,
+                    PpoStatus = "EPPO Received",
+                    ActiveFlag = true,
+                    EppoReceipt = eppoReceipt,
+                };
+
+                T response = await _ePpoReceiptRepository.SaveEPpoReceipt<T>(
                     eppoReceipt,
-                    treasuryCode,
-                    financialYear,
+                    ppoReceipt,
                     entity => _mapper.Map<T>(entity)
                 );
+                return response;
             }
             catch (Exception ex)
             {
+                var response = _mapper.Map<T>(eppoReceipt);
                 response.FillDataSource(
                     eppoReceipt,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );
+                return response;
             }
-            return response;
+        }
+
+        private static void PrepareEppoFiles(
+            EppoReceipt eppoReceipt,
+            string treasuryCode,
+            short financialYear
+        )
+        {
+            FileExtensionContentTypeProvider provider = new();
+            string basePath = $"{treasuryCode}/{financialYear}/";
+
+            if (eppoReceipt.EppoFile != null)
+            {
+                eppoReceipt.EppoFile.FilePath = basePath;
+                provider.TryGetContentType(eppoReceipt.EppoFile.FileName, out string? mimeType);
+                eppoReceipt.EppoFile.FileMimeType = mimeType ?? "application/octet-stream";
+            }
+
+            if (eppoReceipt.PhotoFile != null)
+            {
+                eppoReceipt.PhotoFile.FilePath = basePath;
+                provider.TryGetContentType(eppoReceipt.PhotoFile.FileName, out string? mimeType);
+                eppoReceipt.PhotoFile.FileMimeType = mimeType ?? "application/octet-stream";
+            }
+
+            if (eppoReceipt.SignatureFile != null)
+            {
+                eppoReceipt.SignatureFile.FilePath = basePath;
+                provider.TryGetContentType(
+                    eppoReceipt.SignatureFile.FileName,
+                    out string? mimeType
+                );
+                eppoReceipt.SignatureFile.FileMimeType = mimeType ?? "application/octet-stream";
+            }
         }
 
         public async Task<T> CreateEPpoReceiptRevision<T>(
