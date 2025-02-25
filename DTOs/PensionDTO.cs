@@ -1335,6 +1335,8 @@ namespace CTS_BE.DTOs
 
     public partial class ByTransferHeadResponseDTO : BaseDTO
     {
+        internal object Message;
+
         public long Id { get; set; }
 
         public char ByTransferType { get; set; }
@@ -1344,20 +1346,85 @@ namespace CTS_BE.DTOs
         public string ByTransferDescription { get; set; } = null!;
 
         public bool AgBytransfer { get; set; }
-
-        //public List<ByTransferHeadEntryDTO> ByTransferHeadList { get; set; } = new();
-
-        //public int ByTransferHeadCount
-        //{
-        //    get { return this.ByTransferHeadList?.Count ?? 0; }
-        //}
     }
 
-    public partial class PpoByTransferEntryDTO : BaseDTO
+    public class ByTransferHeadUpdateDTO : BaseDTO
     {
-        public long PensionerId { get; set; }
+        [Required]
+        public long Id { get; set; }
 
+        [Required]
+        [RegularExpression(
+            @"[PR]",
+            ErrorMessage = "{0} must be one of the following (P - Payment; R - Recovery)"
+        )]
+        public char BytransferType { get; set; }
+
+        [Required]
+        public long AccountHeadId { get; set; }
+
+        [Required]
+        [StringLength(500)]
+        public string BytransferDescription { get; set; } = null!;
+
+        [Required]
+        public bool AgBytransfer { get; set; }
+    }
+
+    public partial class PpoByTransferEntryDTO : BaseDTO, IValidatableObject
+    {
+        [Required]
         public int PpoId { get; set; }
+
+        [Required]
+        public DateOnly FromDate { get; set; }
+
+        [Required]
+        public DateOnly ToDate { get; set; }
+
+        [Required]
+        public long BytransferHeadId { get; set; }
+
+        [Required]
+        public int BytransferAmount { get; set; }
+
+        public string? Remarks { get; set; }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (FromDate >= ToDate)
+            {
+                yield return new ValidationResult(
+                    "FromDate must be earlier than ToDate.",
+                    new[] { nameof(FromDate), nameof(ToDate) }
+                );
+            }
+        }
+    }
+
+    public partial class PpoByTransferHeadResponseDTO : PpoByTransferEntryDTO
+    {
+        public List<PpoByTransferHeadResponseList> Result { get; set; }
+        internal object Message;
+        public string ApiResponseStatus { get; set; }
+
+        public void FillDataSource(List<PpoByTransferHeadResponseList> data, string message)
+        {
+            Result = data;
+            Message = message;
+            ApiResponseStatus = data.Any() ? "Success" : "Error";
+        }
+
+        public long Id { get; set; }
+    }
+
+    public partial class PpoByTransferHeadResponseList : BaseDTO
+    {
+        public long Id { get; set; }
+
+        public string PpoNo { get; set; } = null!;
+
+        public string PensionerName { get; set; } = null!;
 
         public DateOnly FromDate { get; set; }
 
@@ -1370,8 +1437,23 @@ namespace CTS_BE.DTOs
         public string? Remarks { get; set; }
     }
 
-    public partial class PpoByTransferHeadResponseDTO : PpoByTransferEntryDTO
+    public class PpoByTransferUpdateDTO : BaseDTO
     {
+        [Required]
         public long Id { get; set; }
+
+        //[Required]
+        //public DateOnly FromDate { get; set; }
+
+        //[Required]
+        //public DateOnly ToDate { get; set; }
+
+        //[Required]
+        //public long BytransferHeadId { get; set; }
+
+        [Required]
+        public int BytransferAmount { get; set; }
+
+        public string? Remarks { get; set; }
     }
 }

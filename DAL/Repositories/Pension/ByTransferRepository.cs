@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CTS_BE.DAL.Entities.Pension;
 using CTS_BE.DAL.Interfaces.Pension;
+using CTS_BE.DTOs;
 using CTS_BE.Helper;
 using Microsoft.EntityFrameworkCore;
 
@@ -61,12 +62,49 @@ namespace CTS_BE.DAL.Repositories.Pension
             return responseDTO;
         }
 
+        //update
+        public async Task<T> UpdateByTransferHead<T>(BytransferHead byTransferHeadEntity)
+        {
+            T responseDTO = _mapper.Map<T>(byTransferHeadEntity);
+
+            _pensionDbContext.BytransferHeads.Update(byTransferHeadEntity);
+
+            if (await _pensionDbContext.SaveChangesAsync() == 0)
+            {
+                responseDTO.FillDataSource(byTransferHeadEntity, "Bytransfer head not updated!");
+                return responseDTO;
+            }
+
+            _pensionDbContext
+                .Entry(byTransferHeadEntity)
+                .Reference(entity => entity.AccountHead)
+                .Load();
+
+            responseDTO = _mapper.Map<T>(byTransferHeadEntity);
+
+            return responseDTO;
+        }
+
         public async Task<List<BytransferHead>> GetAllByTransferHeadsAsync()
         {
             return await _pensionDbContext
                 .BytransferHeads.Where(entity => entity.ActiveFlag)
-                .Include(entity => entity.AccountHead) // Eager loading directly in query
+                .Include(entity => entity.AccountHead)
                 .ToListAsync();
+        }
+
+        //IsUsedInOtherTables
+        public async Task<bool> IsUsedInOtherTables(long byTransferHeadId)
+        {
+            bool isUsed =
+                await _pensionDbContext.BillBytransfers.AnyAsync(b =>
+                    b.BytransferHeadId == byTransferHeadId
+                )
+                || await _pensionDbContext.PpoBytransfers.AnyAsync(p =>
+                    p.BytransferHeadId == byTransferHeadId
+                );
+
+            return isUsed;
         }
     }
 }

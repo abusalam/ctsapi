@@ -64,11 +64,90 @@ namespace CTS_BE.Controllers.Pension
             return response;
         }
 
-        [HttpGet("by-transfer-headmap/{byTransferHeadId}")]
+        [HttpPut("update-by-transfer-headmap")]
+        [Tags("Pension: By Transfer")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<ByTransferHeadResponseDTO>> UpdateByTransferHeadMap(
+            ByTransferHeadUpdateDTO byTransferHeadUpdateDTO
+        )
+        {
+            JsonAPIResponse<ByTransferHeadResponseDTO> response = new();
+
+            try
+            {
+                var result =
+                    await _byTransferHeadService.UpdateByTransferHead<ByTransferHeadResponseDTO>(
+                        byTransferHeadUpdateDTO
+                    );
+
+                if (!string.IsNullOrEmpty((string?)result.Message))
+                {
+                    response.ApiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.Message = (string?)result.Message;
+                    return response;
+                }
+
+                response.Result = result;
+                response.ApiResponseStatus = Enum.APIResponseStatus.Success;
+                response.Message = "ByTransfer Head updated successfully!";
+            }
+            catch (Exception ex)
+            {
+                FillException(response, ex);
+            }
+            finally
+            {
+                FillErrorMesageFromDataSource(response);
+            }
+
+            return response;
+        }
+
+        [HttpDelete("delete-by-transfer-headmap/{bytransferheadid}")]
+        [Tags("Pension: By Transfer")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<ByTransferHeadResponseDTO>> DeleteByTransferHead(
+            long bytransferheadid
+        )
+        {
+            JsonAPIResponse<ByTransferHeadResponseDTO> response = new();
+
+            try
+            {
+                var result =
+                    await _byTransferHeadService.DeleteByTransferHead<ByTransferHeadResponseDTO>(
+                        bytransferheadid
+                    );
+
+                // Check if an error message exists in the result
+                if (!string.IsNullOrEmpty((string?)result.Message))
+                {
+                    response.ApiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.Message = (string?)result.Message;
+                    return response;
+                }
+
+                response.Result = result;
+                response.ApiResponseStatus = Enum.APIResponseStatus.Success;
+                response.Message = "By Transfer Head deleted successfully!";
+            }
+            catch (Exception ex)
+            {
+                FillException(response, ex);
+            }
+            finally
+            {
+                FillErrorMesageFromDataSource(response);
+            }
+
+            return response;
+        }
+
+        [HttpGet("by-transfer-headmap/{bytransferheadd}")]
         [Tags("Pension: By Transfer")]
         [OpenApi]
         public async Task<JsonAPIResponse<ByTransferHeadResponseDTO>> GetByTransferHeadById(
-            long byTransferHeadId
+            long bytransferheadd
         )
         {
             JsonAPIResponse<ByTransferHeadResponseDTO> response = new()
@@ -81,7 +160,7 @@ namespace CTS_BE.Controllers.Pension
             {
                 response.Result =
                     await _byTransferHeadService.GetByTransferHeadById<ByTransferHeadResponseDTO>(
-                        byTransferHeadId
+                        bytransferheadd
                     );
             }
             catch (Exception ex)
@@ -129,6 +208,11 @@ namespace CTS_BE.Controllers.Pension
                             Name = "By Transfer Head Count",
                             FieldName = "ByTransferHeadCount",
                         },
+                        new() { Name = "ID", FieldName = "id" },
+                        new() { Name = "Account Head ID", FieldName = "accountHeadId" },
+                        new() { Name = "Description", FieldName = "byTransferDescription" },
+                        new() { Name = "By Transfer Type", FieldName = "byTransferType" },
+                        new() { Name = "AG By Transfer", FieldName = "agBytransfer" },
                     },
                     Data = byTransferHeads,
                 };

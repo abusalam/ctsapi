@@ -24,6 +24,7 @@
 # GET {{PensionAPI_HostAddress}}/api/v1/pension/category
 # GET {{PensionAPI_HostAddress}}/api/v1/pension/component
 # GET {{PensionAPI_HostAddress}}/api/v1/ppo/details
+
 POST {{PensionAPI_HostAddress}}/api/v1/echo
 Accept: application/json
 Authorization: Bearer {{accessToken}}
@@ -196,8 +197,112 @@ Content-Type: application/json
 }
 
 
-### Create Ppo By Transfer Head Mapping
-# @name CreateByTransferHeadMap
+
+
+###Update By Transfer Head Mapping
+# @name UpdateByTransferHeadMap
+# PUT {{PensionAPI_HostAddress}}/api/v1/echo
+PUT {{PensionAPI_HostAddress}}/api/v1/update-by-transfer-headmap
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "byTransferType": "R",
+  "accountHeadId": 69545,
+  "byTransferDescription": "INCOME TAX - T.D.S Update",
+  "agBytransfer": true
+}
+
+
+###Delete By Transfer Head Mapping
+# @name DeleteByTransferHeadMap
+# DELETE {{PensionAPI_HostAddress}}/api/v1/echo
+DELETE {{PensionAPI_HostAddress}}/api/v1/delete-by-transfer-headmap/{bytransferheadid}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+
+@bytransferheadid
+
+
+
+### Create PPO By Transfer Mapping
+# @name Create PPO ByTransferMap
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+POST {{PensionAPI_HostAddress}}/api/v1/save-ppo-by-transfer-headmap
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+
+fromDate<toDate and  date should not be overlaped for same ppoid
+
+
+{
+  "ppoId": 1,
+  "fromDate": "2024-02-19",
+  "toDate": "2024-03-19",
+  "bytransferHeadId": 9,
+  "bytransferAmount": 12000,
+  "remarks": "INCOME TAX - T.D.S"
+}
+
+
+
+### Update PPO By Transfer Mapping
+# @name Update PPO ByTransferMap
+# PUT {{PensionAPI_HostAddress}}/api/v1/echo
+PUT {{PensionAPI_HostAddress}}/api/v1/update-ppo-by-transfer-headmap
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+
+
+
+{
+
+ "id": ppobytransferid,
+  "bytransferAmount": bytransferAmount,
+  "remarks": "remarks"
+}
+
+
+{
+
+ "id": 5,
+  "bytransferAmount": 400,
+  "remarks": "update ppobytransferid"
+}
+
+
+###Delete PPO By Transfer
+# @name DeletePPOByTransfer
+# DELETE {{PensionAPI_HostAddress}}/api/v1/echo
+DELETE {{PensionAPI_HostAddress}}/api/v1/delete-ppo-by-transfer/{ppobytransferid}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+
+@ppobytransferid =8
+
+
+
+@1
+
+### Get PPO ByTransfer By Id
+# @name GetPPOByTransferById
+GET {{PensionAPI_HostAddress}}/api/v1/by-transfer/{{ppoid}}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+
+
+### Create PPO By Transfer Head Mapping
+# @name Create PPOByTransferHeadMap
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
 POST {{PensionAPI_HostAddress}}/api/v1/ppo-by-transfer-headmap
 Accept: application/json
@@ -205,8 +310,7 @@ Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
-  
-  "pensionerId": 1,
+ 
   "ppoId": 1,
   "fromDate": "2024-02-19",
   "toDate": "2024-02-19",
@@ -215,6 +319,54 @@ Content-Type: application/json
   "remarks": "INCOME TAX - T.D.S"
 }
 
+
+### Update PPO By Transfer Mapping
+# @name Update PPO ByTransferMap
+# PUT {{PensionAPI_HostAddress}}/api/v1/echo
+PUT {{PensionAPI_HostAddress}}/api/v1/update-ppo-by-transfer-headmap
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+
+
+
+{
+
+ "id": ppobytransferid,
+  "bytransferAmount": bytransferAmount,
+  "remarks": "remarks"
+}
+
+
+{
+
+ "id": 5,
+  "bytransferAmount": 400,
+  "remarks": "update ppobytransferid"
+}
+
+
+###Delete PPO By Transfer
+# @name DeletePPOByTransfer
+# DELETE {{PensionAPI_HostAddress}}/api/v1/echo
+DELETE {{PensionAPI_HostAddress}}/api/v1/delete-ppo-by-transfer/{ppobytransferid}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+
+@ppobytransferid =8
+
+
+
+@1
+
+### Get PPO ByTransfer By Id
+# @name GetPPOByTransferById
+GET {{PensionAPI_HostAddress}}/api/v1/by-transfer/{{ppoid}}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
 
 
 

@@ -9,5 +9,9 @@ namespace CTS_BE.DAL.Interfaces.Pension
         Task<BytransferHead?> GetByTransferHeadByIdAsync(long id);
 
         Task<List<BytransferHead>> GetAllByTransferHeadsAsync();
+
+        public Task<bool> IsUsedInOtherTables(long byTransferHeadId);
+
+        public Task<T> UpdateByTransferHead<T>(BytransferHead byTransferHeadEntity);
     }
 }
