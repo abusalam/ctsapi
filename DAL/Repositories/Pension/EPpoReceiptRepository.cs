@@ -68,23 +68,7 @@ namespace CTS_BE.DAL.Repositories.Pension
             var response = _mapper.Map<T>(eppoReceiptEntity);
             try
             {
-                // Check if eppoReceipt already exists
-                EppoReceipt? eppoReceiptExists = await _context.EppoReceipts.FirstOrDefaultAsync(
-                    e => e.PensionApplnNo == eppoReceiptEntity.PensionApplnNo
-                );
-
-                if (eppoReceiptExists != null)
-                {
-                    response.FillDataSource(
-                        eppoReceiptExists,
-                        "eppoReceipt already exists for Pension Application No: "
-                            + eppoReceiptEntity.PensionApplnNo
-                    );
-                    return response;
-                }
-
                 _context.EppoReceipts.Add(eppoReceiptEntity);
-                ppoReceiptEntity.EppoReceipt = eppoReceiptEntity;
                 _context.PpoReceipts.Add(ppoReceiptEntity);
 
                 // Save everything in one transaction

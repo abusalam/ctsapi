@@ -53,15 +53,35 @@ namespace CTS_BE.BAL.Services.Pension
                     FinancialYear = financialYear,
                     PpoStatus = "EPPO Received",
                     ActiveFlag = true,
-                    EppoReceipt = eppoReceipt,
                 };
+                eppoReceipt.PpoReceipts = new List<PpoReceipt> { ppoReceipt };
+                ppoReceipt.EppoReceipt = eppoReceipt;
 
-                T response = await _ePpoReceiptRepository.SaveEPpoReceipt<T>(
+                // Check if eppoReceipt already exists
+                EppoReceipt? eppoReceiptExists =
+                    await _ePpoReceiptRepository.GetEPpoReceiptByPensionApplnNo(
+                        eppoReceipt.PensionApplnNo,
+                        treasuryCode,
+                        financialYear
+                    );
+
+                if (eppoReceiptExists != null)
+                {
+                    var response = _mapper.Map<T>(eppoReceipt);
+                    response.FillDataSource(
+                        eppoReceiptExists,
+                        "eppoReceipt already exists for Pension Application No: "
+                            + eppoReceipt.PensionApplnNo
+                    );
+                    return response;
+                }
+
+                T savedResponse = await _ePpoReceiptRepository.SaveEPpoReceipt<T>(
                     eppoReceipt,
                     ppoReceipt,
                     entity => _mapper.Map<T>(entity)
                 );
-                return response;
+                return savedResponse;
             }
             catch (Exception ex)
             {
