@@ -63,7 +63,7 @@ namespace CTS_BE.BAL.Services.Pension
                 {
                     response.FillDataSource(
                         ppoComponentRevision,
-                        $"PPO Component Revision Old Date not allowed."
+                        $"PPO Component Revision  Old Date not allowed."
                     );
                     return response;
                 }
