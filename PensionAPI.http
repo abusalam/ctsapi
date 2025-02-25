@@ -48,7 +48,7 @@ Authorization: Bearer {{accessToken}}
 
 ### Get ByTransferHead By Id
 # @name GetByTransferHeadById
-GET {{PensionAPI_HostAddress}}/api/v1/by-transfer-headmap/{{ByTransferHeadId}}
+GET {{PensionAPI_HostAddress}}/api/v1/by-transfer-headmap/{{bytransferheadid}}
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -95,11 +95,7 @@ Accept: application/json
 Authorization: Bearer {{accessToken}}
 
 
-### Get all ByTransferHeadById
-# @name GetAllByTransferHeadById
-GET {{PensionAPI_HostAddress}}/api/v1/{{bytransferheadid}}/by-transfer-headmaps
-Accept: application/json
-Authorization: Bearer {{accessToken}}
+
 
 
 
@@ -318,7 +314,7 @@ Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
- 
+
   "ppoId": 1,
   "fromDate": "2024-02-19",
   "toDate": "2024-02-19",
