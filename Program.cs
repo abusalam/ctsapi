@@ -150,6 +150,7 @@ builder.Services.AddTransient<PPOIdSequencesSeeder>();
 builder.Services.AddTransient<PpoReceiptSeeder>();
 builder.Services.AddTransient<PPOReceiptSequencesSeeder>();
 builder.Services.AddTransient<PpoSanctionDetailsSeeder>();
+builder.Services.AddTransient<PpoStatusFlagSeeder>();
 builder.Services.AddTransient<PrimaryCategorySeeder>();
 builder.Services.AddTransient<SubCategorySeeder>();
 builder.Services.AddTransient<TreasurySeeder>();

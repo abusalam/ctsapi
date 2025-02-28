@@ -437,18 +437,36 @@ namespace CTS_BE.Seeders.Pension
                 var additionalBranches = new List<Branch>();
                 for (int i = 0; i < count - 28; i++)
                 {
+                    string ifscCode;
+                    if (i < 10)
+                    {
+                        ifscCode = $"ABHYU00{i:D2}";
+                    }
+                    else
+                    {
+                        ifscCode = $"ABHYU00{i.ToString()[0]}0{i.ToString()[1]}";
+                    }
+                    string phoneNumber;
+                    if (i < 10)
+                    {
+                        phoneNumber = $"7{i:D1}0000000";
+                    }
+                    else
+                    {
+                        phoneNumber = $"7{i:D2}000000";
+                    }
                     additionalBranches.Add(
                         new Branch
                         {
-                            Id = 29 + i,
+                            Id = 21 + i,
                             BankId = 1,
-                            IfscCode = $"ABHY00{29 + i}",
-                            BranchName = $"Branch {29 + i}",
-                            BranchAddress = $"Address {29 + i}",
-                            DistrictName = $"District {29 + i}",
-                            CityName = $"City {29 + i}",
-                            StateName = $"State {29 + i}",
-                            PhoneNo = $"9{i:00000000}",
+                            IfscCode = ifscCode,
+                            BranchName = $"Branch {21 + i}",
+                            BranchAddress = $"Address {21 + i}",
+                            DistrictName = $"District {21 + i}",
+                            CityName = $"City {21 + i}",
+                            StateName = $"State {21 + i}",
+                            PhoneNo = phoneNumber,
                             CreatedBy = 1,
                             ActiveFlag = true,
                         }

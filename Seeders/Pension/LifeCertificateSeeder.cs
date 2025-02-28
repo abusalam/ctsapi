@@ -26,27 +26,26 @@ namespace CTS_BE.Seeders.Pension
                 _manualPpoReceiptRepository,
                 _ppoIdSequenceRepository
             );
-            await pensionerSeeder.SeedAsync(count);
+            pensionerSeeder.Seed(count);
 
-            var createdPensioners = pensionerSeeder.GetCreatedPensioners();
+            var pensioners = await context.Pensioners.ToListAsync();
 
             var lifeCertificates = new List<LifeCertificate>();
             for (int i = 0; i < count; i++)
             {
-                if (i >= createdPensioners.Count)
+                if (i >= pensioners.Count)
                 {
                     break; // Exit if there are no more pensioners to assign
                 }
-                var pensioner = createdPensioners[i];
-                var pensionerId = pensioner.Id;
+                var pensioner = pensioners[i];
                 lifeCertificates.Add(
                     new LifeCertificate
                     {
                         Id = i + 1,
                         FinancialYear = _financialYear,
                         TreasuryCode = _treasuryCode,
-                        PensionerId = pensionerId,
-                        PpoId = createdPensioners[i].PpoId,
+                        PensionerId = pensioner.Id,
+                        PpoId = pensioner.PpoId,
                         CreatedBy = 1,
                         ActiveFlag = true,
                     }

@@ -14,8 +14,8 @@ namespace CTS_BE.Seeders.Pension
                 return;
             }
 
-            new PrimaryCategorySeeder(context, mapper).Seed(count + 10);
-            new SubCategorySeeder(context, mapper).Seed(count + 10);
+            new PrimaryCategorySeeder(context, mapper).Seed();
+            new SubCategorySeeder(context, mapper).Seed();
 
             var categories = new[]
             {

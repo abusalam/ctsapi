@@ -225,6 +225,7 @@ namespace CTS_BE.Seeders.Pension
                 newTreasuries.AddRange(treasuries);
                 var additionalTreasuries = new List<Treasury>();
                 Random random = new Random();
+                var treasuryCodeSet = new HashSet<string>(treasuries.Select(t => t.TreasuryCode));
 
                 for (int i = 0; i < count - treasuries.Length; i++)
                 {
@@ -233,22 +234,9 @@ namespace CTS_BE.Seeders.Pension
                     {
                         treasuryCode =
                             $"{(char)random.Next(65, 91)}{(char)random.Next(65, 91)}{(char)random.Next(65, 91)}";
-                        if (
-                            !new[]
-                            {
-                                "JAC",
-                                "HGC",
-                                "BUD",
-                                "DDA",
-                                "NPA",
-                                "SPD",
-                                "MUA",
-                                "MUB",
-                                "BRD",
-                                "DAA",
-                            }.Contains(treasuryCode)
-                        )
+                        if (!treasuryCodeSet.Contains(treasuryCode))
                         {
+                            treasuryCodeSet.Add(treasuryCode);
                             break;
                         }
                     }
@@ -257,8 +245,9 @@ namespace CTS_BE.Seeders.Pension
                         new Treasury
                         {
                             TreasuryCode = treasuryCode,
-                            TreasuryName = $"Treasury {random.Next(1, 100)}",
-                            DistrictCode = $"D{random.Next(1, 10)}",
+                            TreasuryName = $"Treasury {i + 1}",
+                            DistrictCode =
+                                $"{(char)random.Next(65, 91)}{(char)random.Next(65, 91)}",
                             TreasuryAddress = $"Address {random.Next(1, 100)}",
                             Address1 = $"Address 1 {random.Next(1, 100)}",
                             Address2 = $"Address 2 {random.Next(1, 100)}",

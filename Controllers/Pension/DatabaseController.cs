@@ -29,6 +29,7 @@ namespace CTS_BE.Controllers.Pension
         PpoBillSeeder,
         PpoReceiptSeeder,
         PpoSanctionDetailsSeeder,
+        PpoStatusFlagSeeder,
         PrimaryCategorySeeder,
         SubCategorySeeder,
         TreasurySeeder,
