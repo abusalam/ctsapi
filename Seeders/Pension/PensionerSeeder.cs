@@ -14,7 +14,7 @@ namespace CTS_BE.Seeders.Pension
         IPpoIdSequenceRepository _ppoIdSequenceRepository
     ) : BaseSeeder, ISeeder
     {
-        private List<Pensioner> _createdPensioners = new List<Pensioner>();
+        private readonly List<Pensioner> _createdPensioners = [];
 
         public async Task SeedAsync(int count = 10)
         {
@@ -22,15 +22,18 @@ namespace CTS_BE.Seeders.Pension
             {
                 return; // Exit if there are already pensioners in the database
             }
-            new CategorySeeder(context, mapper).Seed(count);
-            new BranchSeeder(context).Seed(count);
-            new PPOReceiptSequencesSeeder(context).Seed(count);
+            if (!await context.Categories.AnyAsync())
+                new CategorySeeder(context, mapper).Seed(count);
+
+            if (!await context.Branches.AnyAsync())
+                new BranchSeeder(context).Seed(count);
 
             var pensioners = new List<Pensioner>();
 
             var pensionerDtos = new PensionerFactory().Make(count);
-            foreach (var dto in pensionerDtos)
+            for (int i = 0; i < pensionerDtos.Count; i++)
             {
+                var dto = pensionerDtos[i];
                 var pensionerEntity = SetCreatedBy(mapper.Map<Pensioner>(dto));
 
                 pensionerEntity.PpoId = await _ppoIdSequenceRepository.GetNextPpoId(
@@ -52,7 +55,9 @@ namespace CTS_BE.Seeders.Pension
 
                 _createdPensioners.Add(pensionerEntity);
                 pensioners.Add(pensionerEntity);
+                new PPOReceiptSequencesSeeder(context).Seed(i);
             }
+            new PPOReceiptSequencesSeeder(context).Seed(count + 1);
 
             context.Pensioners.AddRange(pensioners);
             await context.SaveChangesAsync();

@@ -6,9 +6,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.Seeders.Pension
 {
-    public class BillSeeder(PensionDbContext context, IPpoBillRepository _ppoBillRepository)
-        : BaseSeeder,
-            ISeeder
+    public class BillSeeder(
+        PensionDbContext context,
+        IMapper mapper,
+        IPpoBillRepository _ppoBillRepository,
+        IManualPpoReceiptRepository _manualPpoReceiptRepository,
+        IPpoIdSequenceRepository _ppoIdSequenceRepository
+    ) : BaseSeeder, ISeeder
     {
         public async Task SeedAsync(int count = 1)
         {
@@ -20,7 +24,46 @@ namespace CTS_BE.Seeders.Pension
             new AccountHeadSeeder(context).Seed(count);
             new BranchSeeder(context).Seed(count);
 
+            if (!await context.Pensioners.AnyAsync())
+            {
+                var pensionerSeeder = new PensionerSeeder(
+                    context,
+                    mapper,
+                    _manualPpoReceiptRepository,
+                    _ppoIdSequenceRepository
+                );
+                await pensionerSeeder.SeedAsync(count);
+            }
+
+            var createdPensioners = context.Pensioners.ToList();
             var random = new Random();
+            if (!await context.PpoStatusFlags.AnyAsync())
+            {
+                var ppoStatusFlags = new List<PpoStatusFlag>();
+
+                foreach (var pensioner in createdPensioners)
+                {
+                    var statusWef = DateOnly.FromDateTime(
+                        DateTime.Today.AddDays(-random.Next(0, 365))
+                    );
+
+                    ppoStatusFlags.Add(
+                        new PpoStatusFlag
+                        {
+                            FinancialYear = _financialYear,
+                            TreasuryCode = _treasuryCode,
+                            PensionerId = pensioner.Id,
+                            PpoId = pensioner.PpoId,
+                            StatusWef = statusWef,
+                            CreatedBy = 1,
+                            ActiveFlag = true,
+                        }
+                    );
+                }
+
+                context.Set<PpoStatusFlag>().AddRange(ppoStatusFlags);
+                await context.SaveChangesAsync();
+            }
             var accountHeadIds = new[]
             {
                 7415,
@@ -69,31 +112,33 @@ namespace CTS_BE.Seeders.Pension
             for (int i = 0; i < count; i++)
             {
                 var billNo = await _ppoBillRepository.GetNextBillNo(_financialYear, _treasuryCode);
-                var billDate = DateOnly.FromDateTime(DateTime.Today.AddDays(random.Next(1, 365))); // any future date
-                var fromDate = billDate.AddMonths(1).AddDays(1 - billDate.Day); // 01. next month
-                var toDate = fromDate.AddMonths(1).AddDays(-1); // last day of next month
-                bills.Add(
-                    new Bill
-                    {
-                        FinancialYear = _financialYear,
-                        TreasuryCode = _treasuryCode,
-                        AccountHeadId = accountHeadIds[random.Next(accountHeadIds.Length)],
-                        BranchId = branchIds[random.Next(branchIds.Length)],
-                        BillNo = billNo,
-                        BillDate = billDate,
-                        TreasuryVoucherNo = $"{_treasuryCode}-{billNo}",
-                        TreasuryVoucherDate = billDate,
-                        FromDate = fromDate,
-                        ToDate = toDate,
-                        GrossAmount = 10,
-                        NetAmount = 10,
-                        CreatedBy = 1,
-                        ActiveFlag = true,
-                    }
-                );
+                var billDate = DateOnly.FromDateTime(DateTime.Today.AddDays(random.Next(1, 365)));
+                var fromDate = billDate.AddMonths(1).AddDays(1 - billDate.Day);
+                var toDate = fromDate.AddMonths(1).AddDays(-1);
+
+                var bill = new Bill
+                {
+                    FinancialYear = _financialYear,
+                    TreasuryCode = _treasuryCode,
+                    AccountHeadId = accountHeadIds[random.Next(accountHeadIds.Length)],
+                    BranchId = branchIds[random.Next(branchIds.Length)],
+                    BillNo = billNo,
+                    BillDate = billDate,
+                    TreasuryVoucherNo = $"{_treasuryCode}-{billNo}",
+                    TreasuryVoucherDate = billDate,
+                    FromDate = fromDate,
+                    ToDate = toDate,
+                    GrossAmount = 10,
+                    NetAmount = 10,
+                    CreatedBy = 1,
+                    ActiveFlag = true,
+                };
+
+                await context.Bills.AddAsync(bill);
+                await context.SaveChangesAsync();
+
+                bills.Add(bill);
             }
-            await context.Bills.AddRangeAsync(bills);
-            await context.SaveChangesAsync();
         }
 
         public void Seed(int count = 1)

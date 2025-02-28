@@ -218,7 +218,8 @@ namespace CTS_BE.Seeders.Pension
                     312596,
                     332019,
                 };
-
+                char[] dueDrawFlag = ['P', 'D', 'M'];
+                char[] classificationFlag = ['O', 'P', 'D'];
                 for (int i = 0; i < count - classifications.Length; i++)
                 {
                     additionalClassifications.Add(
@@ -227,11 +228,13 @@ namespace CTS_BE.Seeders.Pension
                             Id = classifications.Max(x => x.Id) + i + 1,
                             ClassificationName = "Additional Classification " + (i + 1),
                             AccountHeadId = accountHeadIds[random.Next(accountHeadIds.Length)],
-                            DueDrawFlag = 'P',
-                            ClassificationFlag = 'P',
+                            DueDrawFlag = dueDrawFlag[random.Next(dueDrawFlag.Length)],
+                            ClassificationFlag = classificationFlag[
+                                random.Next(classificationFlag.Length)
+                            ],
                             ActiveFlag = true,
                             CreatedBy = 1,
-                            CommutedValuePension = false,
+                            CommutedValuePension = random.Next(2) == 0,
                         }
                     );
                 }
