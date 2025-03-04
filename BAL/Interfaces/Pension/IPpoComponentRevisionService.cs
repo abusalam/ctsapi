@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using CTS_BE.DTOs;
-
 namespace CTS_BE.BAL.Interfaces.Pension
 {
     public interface IPpoComponentRevisionService : IBaseService
@@ -26,7 +20,7 @@ namespace CTS_BE.BAL.Interfaces.Pension
             string treasuryCode
         );
 
-        public Task<IEnumerable<TResponse>> GetPpoComponentRevisionsByPpoId<TResponse>(
+        public Task<List<TResponse>> GetPpoComponentRevisionsByPpoId<TResponse>(
             int ppoId,
             short financialYear,
             string treasuryCode

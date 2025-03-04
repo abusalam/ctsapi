@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using CTS_BE.BAL.Interfaces.Pension;
 using CTS_BE.DTOs;
 using CTS_BE.Helper;
@@ -11,29 +7,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.Controllers.Pension
 {
-    [Route("api/v1/ppo")]
-    public class PpoComponentRevisionController : ApiBaseController
+    public class PpoComponentRevisionController(
+        IPpoComponentRevisionService ppoComponentRevisionService,
+        IClaimService claimService
+    ) : ApiBaseController(claimService)
     {
-        private readonly IPpoComponentRevisionService _ppoComponentRevisionService;
+        private readonly IPpoComponentRevisionService _ppoComponentRevisionService =
+            ppoComponentRevisionService;
 
-        // Initializes a new instance of the PpoComponentRevisionController class.
-        //
-        // Parameters:
-        //   ppoComponentRevisionService (IPpoComponentRevisionService): The PPO component rate service.
-        //   claimService (IClaimService): The claim service.
-        //
-        // Returns:
-        //   PpoComponentRevisionController: A new instance of the PpoComponentRevisionController class.
-        public PpoComponentRevisionController(
-            IPpoComponentRevisionService ppoComponentRevisionService,
-            IClaimService claimService
-        )
-            : base(claimService)
-        {
-            _ppoComponentRevisionService = ppoComponentRevisionService;
-        }
-
-        [HttpGet("component-revision/ppos")]
+        [HttpGet("ppo-component-revision/ppos")]
         [Tags("Pension: Component Revision")]
         [OpenApi]
         public async Task<
@@ -48,41 +30,31 @@ namespace CTS_BE.Controllers.Pension
 
             try
             {
-                response.Result = new TableResponseDTO<PpoComponentRevisionPpoListItemDTO>()
+                response.Result = new()
                 {
-                    Headers = new()
-                    {
+                    Headers =
+                    [
                         new() { Name = "PPO ID", FieldName = "ppoId" },
                         new() { Name = "PPO No", FieldName = "ppoNo" },
                         new() { Name = "Pensioner Name", FieldName = "pensionerName" },
                         new() { Name = "Category Description", FieldName = "categoryDescription" },
                         new() { Name = "Bank", FieldName = "bankBranchName" },
-                    },
+                    ],
                     Data =
                         await _ppoComponentRevisionService.GetPposForComponentRevisions<PpoComponentRevisionPpoListItemDTO>(
                             GetCurrentFyYear(),
                             GetTreasuryCode()
                         ),
                 };
-                response.Result.Data.ForEach(item =>
-                {
-                    item.BankBranchName =
-                        item.Branch?.Bank?.BankName + "-" + item.Branch?.BranchName;
-                    item.CategoryDescription = item.Category?.CategoryName ?? "";
-                    item.Branch = null;
-                    item.Category = null;
-                });
             }
-            catch (DbUpdateException e)
+            catch (Exception ex)
             {
-                // StackFrame CallStack = new(1, true);
-                response = new()
-                {
-                    ApiResponseStatus = Enum.APIResponseStatus.Error,
-                    Result = null,
-                    Message = e.ToString(),
-                    //   $"{e.GetType()}=>File:{CallStack.GetFileName()}({CallStack.GetFileLineNumber()}): {e.Message}"
-                };
+                FillException(response, ex);
+                return response;
+            }
+            finally
+            {
+                FillErrorMesageFromDataSource(response);
             }
             return response;
         }
@@ -94,7 +66,7 @@ namespace CTS_BE.Controllers.Pension
         //
         // Returns:
         //   JsonAPIResponse<PpoComponentRevisionResponseDTO>: A JSON API response containing a PPO component rate response DTO.
-        [HttpPost("{ppoId}/component-revision")]
+        [HttpPost("ppo/{ppoId}/component-revision")]
         [Tags("Pension: Component Revision")]
         [OpenApi]
         public async Task<
@@ -108,7 +80,6 @@ namespace CTS_BE.Controllers.Pension
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = $"PPO Component Revision saved sucessfully!",
-                Result = new() { Id = 0 },
             };
             try
             {
@@ -127,43 +98,6 @@ namespace CTS_BE.Controllers.Pension
             {
                 FillErrorMesageFromDataSource(response);
             }
-
-            return response;
-        }
-
-        [HttpPost("{ppoId}/component-revisions")]
-        [Tags("Pension: Component Revision")]
-        [OpenApi]
-        [Obsolete("Use CreateSinglePpoComponentRevision instead")]
-        public async Task<
-            JsonAPIResponse<List<PpoComponentRevisionResponseDTO>>
-        > CreatePpoComponentRevisions(
-            int ppoId,
-            List<PpoComponentRevisionEntryDTO> ppoComponentRevisionEntryDTOs
-        )
-        {
-            JsonAPIResponse<List<PpoComponentRevisionResponseDTO>> response = new()
-            {
-                ApiResponseStatus = Enum.APIResponseStatus.Success,
-                Message = $"PPO Component Revision saved sucessfully!",
-                Result = new(),
-            };
-            try
-            {
-                response.Result = await _ppoComponentRevisionService.CreatePpoComponentRevisions<
-                    PpoComponentRevisionEntryDTO,
-                    PpoComponentRevisionResponseDTO
-                >(ppoId, ppoComponentRevisionEntryDTOs, GetCurrentFyYear(), GetTreasuryCode());
-            }
-            finally
-            {
-                if (response.Result.Count == 0)
-                {
-                    response.ApiResponseStatus = Enum.APIResponseStatus.Error;
-                    response.Message = $"C-Error: Component Revision not saved!";
-                }
-            }
-
             return response;
         }
 
@@ -174,43 +108,56 @@ namespace CTS_BE.Controllers.Pension
         //
         // Returns:
         //   JsonAPIResponse<IEnumerable<PpoComponentRevisionResponseDTO>>: A JSON API response containing a list of PPO component rate response DTOs.
-        [HttpGet("{ppoId}/component-revision")]
+        [HttpGet("ppo/{ppoId}/component-revisions")]
         [Tags("Pension: Component Revision")]
         [OpenApi]
         public async Task<
-            JsonAPIResponse<IEnumerable<PpoComponentRevisionResponseDTO>>
+            JsonAPIResponse<TableResponseDTO<PpoComponentRevisionResponseDTO>>
         > GetPpoComponentRevisionsByPpoId(int ppoId)
         {
-            JsonAPIResponse<IEnumerable<PpoComponentRevisionResponseDTO>> response;
+            JsonAPIResponse<TableResponseDTO<PpoComponentRevisionResponseDTO>> response = new()
+            {
+                ApiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = $"All Component Revision Details Received Successfully!",
+            };
             try
             {
-                response = new()
+                response.Result = new()
                 {
-                    ApiResponseStatus = Enum.APIResponseStatus.Success,
-                    Result =
+                    Headers =
+                    [
+                        new() { Name = "Revision ID", FieldName = "id" },
+                        new() { Name = "Rate ID", FieldName = "rateId" },
+                        new()
+                        {
+                            Name = "Component Description",
+                            FieldName = "componentDescription",
+                        },
+                        new() { Name = "From", FieldName = "fromDate" },
+                        new() { Name = "To", FieldName = "toDate" },
+                        new() { Name = "Amount/Month", FieldName = "amountPerMonth" },
+                    ],
+                    Data =
                         await _ppoComponentRevisionService.GetPpoComponentRevisionsByPpoId<PpoComponentRevisionResponseDTO>(
                             ppoId,
                             GetCurrentFyYear(),
                             GetTreasuryCode()
                         ),
-                    Message = $"All Component Revision Details Received Successfully!",
                 };
             }
-            catch (DbUpdateException e)
+            catch (Exception ex)
             {
-                // StackFrame CallStack = new(1, true);
-                response = new()
-                {
-                    ApiResponseStatus = Enum.APIResponseStatus.Error,
-                    Result = null,
-                    Message = e.ToString(),
-                    //   $"{e.GetType()}=>File:{CallStack.GetFileName()}({CallStack.GetFileLineNumber()}): {e.Message}"
-                };
+                FillException(response, ex);
+                return response;
+            }
+            finally
+            {
+                FillErrorMesageFromDataSource(response);
             }
             return response;
         }
 
-        [HttpPut("{revisionId}/component-revision")]
+        [HttpPut("ppo-component-revision/{revisionId}")]
         [Tags("Pension: Component Revision")]
         [OpenApi]
         public async Task<
@@ -224,7 +171,6 @@ namespace CTS_BE.Controllers.Pension
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = $"Component Revision saved sucessfully!",
-                Result = new() { Id = 0 },
             };
             try
             {
@@ -245,7 +191,7 @@ namespace CTS_BE.Controllers.Pension
             return response;
         }
 
-        [HttpDelete("{revisionId}/component-revision")]
+        [HttpDelete("ppo-component-revision/{revisionId}")]
         [Tags("Pension: Component Revision")]
         [OpenApi]
         public async Task<
@@ -256,21 +202,15 @@ namespace CTS_BE.Controllers.Pension
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = $"Component Revision deleted sucessfully!",
-                Result = new() { Id = 0 },
             };
             try
             {
-                response = new()
-                {
-                    ApiResponseStatus = Enum.APIResponseStatus.Success,
-                    Result =
-                        await _ppoComponentRevisionService.DeletePpoComponentRevisionById<PpoComponentRevisionResponseDTO>(
-                            revisionId,
-                            GetCurrentFyYear(),
-                            GetTreasuryCode()
-                        ),
-                    Message = $"Component Revision deleted successfully!",
-                };
+                response.Result =
+                    await _ppoComponentRevisionService.DeletePpoComponentRevisionById<PpoComponentRevisionResponseDTO>(
+                        revisionId,
+                        GetCurrentFyYear(),
+                        GetTreasuryCode()
+                    );
             }
             catch (Exception ex)
             {

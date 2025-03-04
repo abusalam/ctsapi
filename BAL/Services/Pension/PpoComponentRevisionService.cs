@@ -3,45 +3,46 @@ using CTS_BE.BAL.Interfaces.Pension;
 using CTS_BE.DAL;
 using CTS_BE.DAL.Entities.Pension;
 using CTS_BE.DAL.Interfaces.Pension;
+using CTS_BE.DTOs;
 using CTS_BE.Helper;
 using CTS_BE.Helper.Authentication;
 using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.BAL.Services.Pension
 {
-    public class PpoComponentRevisionService : BaseService, IPpoComponentRevisionService
+    public class PpoComponentRevisionService(
+        IPpoComponentRevisionRepository ppoComponentRevisionRepository,
+        IMapper mapper,
+        PensionDbContext pensionDbContext,
+        IClaimService claimService
+    ) : BaseService(claimService), IPpoComponentRevisionService
     {
-        private readonly IPpoComponentRevisionRepository _ppoComponentRevisionRepository;
-        private readonly IPensionerDetailsRepository _pensionerDetailsRepository;
-        private readonly IMapper _mapper;
-        private readonly PensionDbContext _pensionDbContext;
+        private readonly IPpoComponentRevisionRepository _ppoComponentRevisionRepository =
+            ppoComponentRevisionRepository;
+        private readonly IMapper _mapper = mapper;
+        private readonly PensionDbContext _pensionDbContext = pensionDbContext;
 
-        public PpoComponentRevisionService(
-            IPpoComponentRevisionRepository ppoComponentRevisionRepository,
-            IPensionerDetailsRepository pensionerDetailsRepository,
-            IMapper mapper,
-            IClaimService claimService,
-            PensionDbContext pensionDbContext
-        )
-            : base(claimService)
-        {
-            _mapper = mapper;
-            _ppoComponentRevisionRepository = ppoComponentRevisionRepository;
-            _pensionerDetailsRepository = pensionerDetailsRepository;
-            _pensionDbContext = pensionDbContext;
-        }
-
-        public async Task<List<TResponse>> GetPposForComponentRevisions<TResponse>(
+        public async Task<List<T>> GetPposForComponentRevisions<T>(
             short financialYear,
             string treasuryCode
         )
         {
             var revisions = await _ppoComponentRevisionRepository.GetAllPpos(
-                entity => _mapper.Map<TResponse>(entity),
+                entity => _mapper.Map<T>(entity),
                 financialYear,
                 treasuryCode
             );
-            return revisions;
+            List<PpoComponentRevisionPpoListItemDTO> revisionsList = _mapper.Map<
+                List<PpoComponentRevisionPpoListItemDTO>
+            >(revisions);
+            revisionsList.ForEach(item =>
+            {
+                item.BankBranchName = item.Branch?.Bank?.BankName + "-" + item.Branch?.BranchName;
+                item.CategoryDescription = item.Category?.CategoryName ?? "";
+                item.Branch = null;
+                item.Category = null;
+            });
+            return _mapper.Map<List<T>>(revisionsList);
         }
 
         public async Task<TResponse> CreateSinglePpoComponentRevision<TEntry, TResponse>(
@@ -240,7 +241,7 @@ namespace CTS_BE.BAL.Services.Pension
             return response;
         }
 
-        public async Task<IEnumerable<TResponse>> GetPpoComponentRevisionsByPpoId<TResponse>(
+        public async Task<List<TResponse>> GetPpoComponentRevisionsByPpoId<TResponse>(
             int ppoId,
             short financialYear,
             string treasuryCode
