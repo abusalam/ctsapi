@@ -851,7 +851,10 @@ namespace CTS_BE.DTOs
         /// </summary>
         [DataType(DataType.Date)]
         public DateOnly? ToDate { get; set; }
-
+        public string ComponentDescription
+        {
+            get { return Rate?.ComponentName ?? "--"; }
+        }
         public ComponentRateResponseDTO? Rate { get; set; }
     }
 

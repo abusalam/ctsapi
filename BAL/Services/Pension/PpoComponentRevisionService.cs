@@ -100,6 +100,17 @@ namespace CTS_BE.BAL.Services.Pension
                     response.FillDataSource(ppoComponentRevision, $"PPO Component Rate not saved!");
                     return response;
                 }
+                await _pensionDbContext
+                    .Entry(ppoComponentRevision)
+                    .Reference(entity => entity.Rate)
+                    .LoadAsync();
+
+                await _pensionDbContext
+                    .Entry(ppoComponentRevision.Rate)
+                    .Reference(entity => entity.Breakup)
+                    .LoadAsync();
+
+                response = _mapper.Map<TResponse>(ppoComponentRevision);
             }
             catch (DbUpdateException ex)
             {
@@ -107,10 +118,6 @@ namespace CTS_BE.BAL.Services.Pension
                     ppoComponentRevision,
                     $"DbUpdateException: {ex.InnerException?.Message}"
                 );
-            }
-            finally
-            {
-                response.FillFrom(ppoComponentRevision);
             }
             return response;
         }
