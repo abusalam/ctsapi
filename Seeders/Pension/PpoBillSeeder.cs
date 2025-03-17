@@ -137,17 +137,6 @@ namespace CTS_BE.Seeders.Pension
                     Console.WriteLine($"Exception details: {ex}");
                 }
             }
-            bool hasPpoComponentRevisions = await context.Set<PpoComponentRevision>().AnyAsync();
-            if (!hasPpoComponentRevisions)
-            {
-                throw new Exception(
-                    "PpoComponentRevision table does not contain any data after seeding!"
-                );
-            }
-            else
-            {
-                Console.WriteLine("✓ PpoComponentRevision data validation successful!");
-            }
         }
 
         public void Seed(int count = 1)

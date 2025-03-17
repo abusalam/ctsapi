@@ -17,7 +17,7 @@ namespace CTS_BE.Seeders.Pension
             // Create the "Basic Pension" component first with id=1
             var basicPensionBreakup = new Breakup
             {
-                ComponentName = "BASIC PENSION",
+                ComponentName = "Basic Pension",
                 ComponentType = 'P',
                 ReliefFlag = false,
                 CreatedBy = 1,
@@ -25,19 +25,9 @@ namespace CTS_BE.Seeders.Pension
             };
 
             context.Breakups.Add(basicPensionBreakup);
-
-            var amountCommutedBreakup = new Breakup
-            {
-                ComponentName = "AMOUNT COMMUTED",
-                ComponentType = 'D',
-                ReliefFlag = false,
-                CreatedBy = 39,
-                ActiveFlag = true,
-            };
-            context.Breakups.Add(amountCommutedBreakup);
             context.SaveChanges();
 
-            int additionalCount = 6;
+            int additionalCount = Math.Max(count - 1, 7);
 
             var breakups = new ComponentFactory()
                 .Make(additionalCount)
