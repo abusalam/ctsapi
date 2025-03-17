@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Dynamic;
+using System.Text.Json.Serialization;
 using CTS_BE.DAL.Entities.Pension;
 using CTS_BE.DTOs.Validators;
 using CTS_BE.PensionEnum;
@@ -1315,8 +1316,6 @@ namespace CTS_BE.DTOs
         public short CurrentYear { get; set; }
     }
 
-    //new added
-
     public partial class ByTransferHeadEntryDTO : BaseDTO
     {
         [Required]
@@ -1332,49 +1331,71 @@ namespace CTS_BE.DTOs
         [Required]
         [StringLength(500)]
         public string ByTransferDescription { get; set; } = null!;
-
-        public bool AgBytransfer { get; set; }
     }
 
-    public partial class ByTransferHeadResponseDTO : BaseDTO
+    public partial class ByTransferHeadResponseDTO : ByTransferHeadEntryDTO
     {
         public long Id { get; set; }
-
-        public char ByTransferType { get; set; }
-
-        public long AccountHeadId { get; set; }
-
-        public string ByTransferDescription { get; set; } = null!;
-
-        public bool AgBytransfer { get; set; }
-
-        //public List<ByTransferHeadEntryDTO> ByTransferHeadList { get; set; } = new();
-
-        //public int ByTransferHeadCount
-        //{
-        //    get { return this.ByTransferHeadList?.Count ?? 0; }
-        //}
     }
 
-    public partial class PpoByTransferEntryDTO : BaseDTO
+    public class ByTransferHeadUpdateDTO : BaseDTO
     {
-        public long PensionerId { get; set; }
+        [Required]
+        [RegularExpression(
+            @"[PR]",
+            ErrorMessage = "{0} must be one of the following (P - Payment; R - Recovery)"
+        )]
+        public char BytransferType { get; set; }
 
-        public int PpoId { get; set; }
+        [Required]
+        public long AccountHeadId { get; set; }
 
+        [Required]
+        [StringLength(500)]
+        public string BytransferDescription { get; set; } = null!;
+    }
+
+    public partial class PpoByTransferAmountEntryDTO : BaseDTO
+    {
+        [Required]
         public DateOnly FromDate { get; set; }
 
+        [Required]
         public DateOnly ToDate { get; set; }
 
+        [Required]
         public long BytransferHeadId { get; set; }
 
+        [Required]
         public int BytransferAmount { get; set; }
 
         public string? Remarks { get; set; }
     }
 
-    public partial class PpoByTransferHeadResponseDTO : PpoByTransferEntryDTO
+    public partial class PpoByTransferAmountResponseDTO : PpoByTransferAmountEntryDTO
     {
         public long Id { get; set; }
+    }
+
+    public partial class PpoByTransferAmountResponseListDTO : PpoByTransferAmountEntryDTO
+    {
+        [Required]
+        public long Id { get; set; }
+
+        [JsonIgnore]
+        public PensionerListItemDTO? Pensioner { get; set; } = null;
+
+        public string PpoNo => Pensioner?.PpoNo ?? "";
+
+        public string PensionerName => Pensioner?.PensionerName ?? "";
+    }
+
+    public class PpoByTransferAmountUpdateDTO : BaseDTO
+    {
+        [Required]
+        public int BytransferAmount { get; set; }
+
+        [Required]
+        public string? Remarks { get; set; }
     }
 }
