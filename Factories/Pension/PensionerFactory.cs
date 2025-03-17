@@ -35,7 +35,10 @@ namespace CTS_BE.Factories.Pension
                     d => d.PpoSubType,
                     f => f.PickRandom('E', 'L', 'U', 'V', 'N', 'R', 'P', 'G', 'J', 'K', 'H', 'W')
                 )
-                .RuleFor(d => d.CategoryId, f => f.PickRandom(30, 48))
+                .RuleFor(
+                    d => d.CategoryId,
+                    f => f.PickRandom(25, 26, 30, 48, 31, 138, 58, 59, 136, 139, 140)
+                )
                 .RuleFor(d => d.PayMode, f => f.PickRandom('Q', 'B'))
                 .RuleFor(d => d.BankAcNo, f => f.Random.Replace("################"))
                 .RuleFor(d => d.BankId, f => f.PickRandom(BankIds))

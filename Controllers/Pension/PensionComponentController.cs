@@ -161,5 +161,47 @@ namespace CTS_BE.Controllers.Pension
             }
             return response;
         }
+
+        [HttpGet("pension-component/categories")]
+        [Tags("Pension: Component Rate")]
+        [OpenApi]
+        public async Task<
+            JsonAPIResponse<TableResponseDTO<PensionCategoryListDTO>>
+        > GetCategoriesWithRates()
+        {
+            JsonAPIResponse<TableResponseDTO<PensionCategoryListDTO>> response = new()
+            {
+                ApiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = $"All Pension Categories With Component Rates Received Successfully!",
+            };
+            try
+            {
+                response.Result = new()
+                {
+                    Headers =
+                    [
+                        new() { Name = "Category ID", FieldName = "id" },
+                        new() { Name = "Primary Category ID", FieldName = "primaryCategoryId" },
+                        new() { Name = "Sub Category ID", FieldName = "subCategoryId" },
+                        new() { Name = "Category Name", FieldName = "categoryName" },
+                    ],
+                    Data =
+                        await _pensionRateService.GetPensionCategoriesWithRates<PensionCategoryListDTO>(
+                            GetCurrentFyYear(),
+                            GetTreasuryCode()
+                        ),
+                };
+            }
+            catch (Exception ex)
+            {
+                FillException(response, ex);
+                return response;
+            }
+            finally
+            {
+                FillErrorMesageFromDataSource(response);
+            }
+            return response;
+        }
     }
 }

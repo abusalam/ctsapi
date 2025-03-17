@@ -19,5 +19,10 @@ namespace CTS_BE.BAL.Interfaces.Pension
         );
 
         public Task<List<TResponse>> ListComponentRatesByCategoryId<TResponse>(long categoryId);
+
+        public Task<List<TResponse>> GetPensionCategoriesWithRates<TResponse>(
+            short financialYear,
+            string treasuryCode
+        );
     }
 }

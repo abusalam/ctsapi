@@ -3,23 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using AutoMapper;
 using CTS_BE.DAL.Entities.Pension;
 using CTS_BE.DAL.Interfaces.Pension;
 using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Repositories.Pension
 {
-    public class ComponentRateRepository
-        : Repository<ComponentRate, PensionDbContext>,
+    public class ComponentRateRepository(PensionDbContext context, IMapper mapper)
+        : Repository<ComponentRate, PensionDbContext>(context),
             IComponentRateRepository
     {
-        private readonly PensionDbContext _context;
-
-        public ComponentRateRepository(PensionDbContext context)
-            : base(context)
-        {
-            _context = context;
-        }
+        private readonly PensionDbContext _context = context;
+        private readonly IMapper _mapper = mapper;
 
         public async Task<List<T>> GetComponentRatesByCategoryId<T>(
             long categoryId,
@@ -32,6 +28,17 @@ namespace CTS_BE.DAL.Repositories.Pension
                 )
                 .Include(entity => entity.Breakup)
                 .Select(selectExpression)
+                .ToListAsync();
+        }
+
+        public async Task<List<T>> GetPensionCategoriesWithRatesAsync<T>()
+        {
+            return await _context
+                .Categories.Where(entity =>
+                    entity.ActiveFlag
+                    && _context.ComponentRates.Any(cr => cr.CategoryId == entity.Id)
+                )
+                .Select(entity => _mapper.Map<T>(entity))
                 .ToListAsync();
         }
     }

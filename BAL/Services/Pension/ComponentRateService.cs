@@ -91,5 +91,13 @@ namespace CTS_BE.BAL.Services.Pension
 
             return breakups;
         }
+
+        public async Task<List<TResponse>> GetPensionCategoriesWithRates<TResponse>(
+            short financialYear,
+            string treasuryCode
+        )
+        {
+            return await _pensionRateRepository.GetPensionCategoriesWithRatesAsync<TResponse>();
+        }
     }
 }

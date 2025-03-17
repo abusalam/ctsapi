@@ -17,7 +17,7 @@ namespace CTS_BE.Seeders.Pension
             new PrimaryCategorySeeder(context, mapper).Seed();
             new SubCategorySeeder(context, mapper).Seed();
 
-            var categories = new[]
+            var predefinedCategories = new[]
             {
                 new Category
                 {
@@ -129,61 +129,69 @@ namespace CTS_BE.Seeders.Pension
                 },
             };
 
-            var newCategories = new List<Category>(categories);
+            var allCategories = new List<Category>(predefinedCategories);
 
-            if (count > categories.Length)
+            if (count > predefinedCategories.Length)
             {
-                var additionalCategories = new List<Category>();
+                var maxId = predefinedCategories.Max(x => x.Id);
+                var random = new Random();
+
                 var existingCombinations = new HashSet<(long, long)>();
-
-                // Populate existing combinations
-                foreach (var category in context.Categories)
+                foreach (var category in predefinedCategories)
                 {
                     existingCombinations.Add((category.PrimaryCategoryId, category.SubCategoryId));
                 }
 
-                // Add predefined categories to the existing combinations
-                foreach (var category in categories)
+                var availableCombinations = new List<(long primaryId, long subId)>();
+                for (long primaryId = 1; primaryId <= 9; primaryId++)
                 {
-                    existingCombinations.Add((category.PrimaryCategoryId, category.SubCategoryId));
-                }
-
-                Random random = new Random();
-                for (int i = 0; i < count - categories.Length; i++)
-                {
-                    long primaryCategoryId;
-                    long subCategoryId;
-
-                    do
+                    for (long subId = 1; subId <= 9; subId++)
                     {
-                        primaryCategoryId = random.Next(1, 10);
-                        subCategoryId = random.Next(1, 10);
-                    } while (existingCombinations.Contains((primaryCategoryId, subCategoryId)));
+                        if (!existingCombinations.Contains((primaryId, subId)))
+                        {
+                            availableCombinations.Add((primaryId, subId));
+                        }
+                    }
+                }
 
-                    existingCombinations.Add((primaryCategoryId, subCategoryId));
+                for (int i = availableCombinations.Count - 1; i > 0; i--)
+                {
+                    int j = random.Next(i + 1);
+                    (availableCombinations[i], availableCombinations[j]) = (
+                        availableCombinations[j],
+                        availableCombinations[i]
+                    );
+                }
 
-                    var categoryId = categories.Max(x => x.Id) + i + 1;
+                int additionalNeeded = count - predefinedCategories.Length;
+                int combinationIndex = 0;
 
-                    additionalCategories.Add(
+                while (additionalNeeded > 0 && combinationIndex < availableCombinations.Count)
+                {
+                    var (primaryId, subId) = availableCombinations[combinationIndex];
+
+                    allCategories.Add(
                         new Category
                         {
-                            Id = categoryId,
-                            PrimaryCategoryId = primaryCategoryId,
-                            SubCategoryId = subCategoryId,
-                            CategoryName = "Category " + categoryId,
+                            Id = maxId + combinationIndex + 1,
+                            PrimaryCategoryId = primaryId,
+                            SubCategoryId = subId,
+                            CategoryName = "Category " + (maxId + combinationIndex + 1),
                             CreatedBy = 1,
                             ActiveFlag = true,
                         }
                     );
+
+                    additionalNeeded--;
+                    combinationIndex++;
                 }
-                newCategories.AddRange(additionalCategories);
             }
 
-            context.Categories.AddRange(newCategories);
+            context.Categories.AddRange(allCategories);
             context.SaveChanges();
             context.Database.ExecuteSqlRaw(
                 "SELECT setval('cts_pension.categories_id_seq', {0}, true)",
-                newCategories.Max(c => c.Id) + 1
+                allCategories.Max(c => c.Id) + 1
             );
         }
     }

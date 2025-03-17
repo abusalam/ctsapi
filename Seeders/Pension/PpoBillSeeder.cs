@@ -16,7 +16,6 @@ namespace CTS_BE.Seeders.Pension
 {
     public class PpoBillSeeder(
         PensionDbContext context,
-        IPpoBillRepository _ppoBillRepository,
         IMapper mapper,
         IManualPpoReceiptRepository _manualPpoReceiptRepository,
         IPpoIdSequenceRepository _ppoIdSequenceRepository,
@@ -33,14 +32,12 @@ namespace CTS_BE.Seeders.Pension
 
             new AccountHeadSeeder(context).Seed(count);
             new BranchSeeder(context).Seed(count);
-            var billSeeder = new BillSeeder(
-                context,
-                mapper,
-                _ppoBillRepository,
-                _manualPpoReceiptRepository,
-                _ppoIdSequenceRepository
-            );
-            await billSeeder.SeedAsync(count);
+            new ComponentRateSeeder(context, mapper).Seed(count);
+
+            if (context.Bills.Any())
+            {
+                context.Bills.RemoveRange(context.Bills);
+            }
 
             // Get the bill IDs
             var billIds = await context.Bills.Select(b => b.Id).ToListAsync();
@@ -136,6 +133,17 @@ namespace CTS_BE.Seeders.Pension
                     Console.WriteLine($"Error processing pensioner at index {i}: {ex.Message}");
                     Console.WriteLine($"Exception details: {ex}");
                 }
+            }
+            bool hasPpoComponentRevisions = await context.Set<PpoComponentRevision>().AnyAsync();
+            if (!hasPpoComponentRevisions)
+            {
+                throw new Exception(
+                    "PpoComponentRevision table does not contain any data after seeding!"
+                );
+            }
+            else
+            {
+                Console.WriteLine("✓ PpoComponentRevision data validation successful!");
             }
         }
 

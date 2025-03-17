@@ -5,16 +5,24 @@ using CTS_BE.Factories.Pension;
 
 namespace CTS_BE.Seeders.Pension
 {
-    public class ComponentRateSeeder : ISeeder
+    public class ComponentRateSeeder(PensionDbContext context, IMapper mapper) : ISeeder
     {
-        private readonly PensionDbContext context;
-        private readonly IMapper mapper;
-
-        public ComponentRateSeeder(PensionDbContext context, IMapper mapper)
-        {
-            this.context = context;
-            this.mapper = mapper;
-        }
+        private readonly PensionDbContext context = context;
+        private readonly IMapper mapper = mapper;
+        private readonly long[] desiredCategoryIds =
+        [
+            25,
+            26,
+            30,
+            48,
+            31,
+            138,
+            58,
+            59,
+            136,
+            139,
+            140,
+        ];
 
         public void Seed(int count = 10)
         {
@@ -26,95 +34,95 @@ namespace CTS_BE.Seeders.Pension
             new BreakupSeeder(context).Seed();
             new CategorySeeder(context, mapper).Seed(count);
 
-            var desiredCategoryIds = new HashSet<long> { 30, 48, 31, 138 };
             var componentRates = new List<ComponentRate>();
             var factory = new ComponentRateFactory().Make(count);
+            var rateEntries = factory.ToList();
 
-            // Track existing combinations to avoid duplicates
-            var existingCombinations =
-                new HashSet<(long CategoryId, long BreakupId, DateOnly EffectiveFromDate)>();
+            DateOnly effectiveDate = factory.First().EffectiveFromDate;
 
-            // Populate existing combinations from the database
-            foreach (var existingRate in context.ComponentRates)
+            for (int i = 0; i < desiredCategoryIds.Length; i++)
             {
-                existingCombinations.Add(
-                    (
-                        existingRate.CategoryId,
-                        existingRate.BreakupId,
-                        existingRate.EffectiveFromDate
-                    )
-                );
-            }
-
-            // Ensure at least one ComponentRate with CategoryId 30
-            if (!context.ComponentRates.Any(cr => cr.CategoryId == 30))
-            {
-                var firstRateEntry = factory.FirstOrDefault();
-                if (firstRateEntry != null)
-                {
-                    var componentRate30 = new ComponentRate
-                    {
-                        CategoryId = 30,
-                        BreakupId = firstRateEntry.BreakupId,
-                        EffectiveFromDate = firstRateEntry.EffectiveFromDate,
-                        RateAmount = firstRateEntry.RateAmount,
-                        RateType = firstRateEntry.RateType,
-                        CreatedBy = 1,
-                        ActiveFlag = true,
-                    };
-
-                    // Add the entry for CategoryId 30 if it doesn't already exist
-                    if (
-                        !existingCombinations.Contains(
-                            (30, firstRateEntry.BreakupId, firstRateEntry.EffectiveFromDate)
-                        )
-                    )
-                    {
-                        componentRates.Add(componentRate30);
-                        existingCombinations.Add(
-                            (30, firstRateEntry.BreakupId, firstRateEntry.EffectiveFromDate)
-                        );
-                    }
-                }
-            }
-
-            foreach (var rateEntry in factory)
-            {
-                var categoryId = desiredCategoryIds.ElementAt(
-                    new Random().Next(desiredCategoryIds.Count)
-                );
-
-                // Check if the combination already exists in the database
-                if (
-                    existingCombinations.Contains(
-                        (categoryId, rateEntry.BreakupId, rateEntry.EffectiveFromDate)
-                    )
-                )
-                {
-                    continue; // Skip this entry if it already exists
-                }
-
-                // Add the new component rate
                 componentRates.Add(
                     new ComponentRate
                     {
-                        CategoryId = categoryId,
-                        BreakupId = rateEntry.BreakupId,
-                        EffectiveFromDate = rateEntry.EffectiveFromDate,
-                        RateAmount = rateEntry.RateAmount,
-                        RateType = rateEntry.RateType,
+                        CategoryId = desiredCategoryIds[i],
+                        BreakupId = 1,
+                        EffectiveFromDate = effectiveDate,
+                        RateAmount = rateEntries[i % rateEntries.Count].RateAmount,
+                        RateType = rateEntries[i % rateEntries.Count].RateType,
                         CreatedBy = 1,
                         ActiveFlag = true,
                     }
                 );
+            }
 
-                existingCombinations.Add(
-                    (categoryId, rateEntry.BreakupId, rateEntry.EffectiveFromDate)
+            if (count > desiredCategoryIds.Length)
+            {
+                var random = new Random();
+                var existingCombinations = new HashSet<(long CategoryId, long BreakupId)>(
+                    componentRates.Select(r => (r.CategoryId, r.BreakupId))
                 );
 
-                if (componentRates.Count >= count)
+                while (
+                    componentRates.Count < count
+                    && existingCombinations.Count < desiredCategoryIds.Length * 7
+                )
                 {
-                    break;
+                    long categoryId = desiredCategoryIds[random.Next(desiredCategoryIds.Length)];
+
+                    long breakupId = random.Next(2, 9);
+
+                    if (!existingCombinations.Contains((categoryId, breakupId)))
+                    {
+                        componentRates.Add(
+                            new ComponentRate
+                            {
+                                CategoryId = categoryId,
+                                BreakupId = breakupId,
+                                EffectiveFromDate = effectiveDate,
+                                RateAmount = rateEntries[
+                                    componentRates.Count % rateEntries.Count
+                                ].RateAmount,
+                                RateType = rateEntries[
+                                    componentRates.Count % rateEntries.Count
+                                ].RateType,
+                                CreatedBy = 1,
+                                ActiveFlag = true,
+                            }
+                        );
+
+                        existingCombinations.Add((categoryId, breakupId));
+                    }
+                }
+                if (componentRates.Count < count)
+                {
+                    var dayOffset = 1;
+                    while (componentRates.Count < count)
+                    {
+                        foreach (var categoryId in desiredCategoryIds)
+                        {
+                            if (componentRates.Count >= count)
+                                break;
+
+                            componentRates.Add(
+                                new ComponentRate
+                                {
+                                    CategoryId = categoryId,
+                                    BreakupId = 1,
+                                    EffectiveFromDate = effectiveDate.AddDays(dayOffset),
+                                    RateAmount = rateEntries[
+                                        componentRates.Count % rateEntries.Count
+                                    ].RateAmount,
+                                    RateType = rateEntries[
+                                        componentRates.Count % rateEntries.Count
+                                    ].RateType,
+                                    CreatedBy = 1,
+                                    ActiveFlag = true,
+                                }
+                            );
+                        }
+                        dayOffset++;
+                    }
                 }
             }
 
