@@ -25,6 +25,11 @@ namespace CTS_BE.Seeders.Pension
                 return; // Exit if there are already PpoStatusFlags
             }
 
+            if (!await context.ComponentRates.AnyAsync())
+            {
+                new ComponentRateSeeder(context, mapper).Seed(count);
+            }
+
             if (!await context.Pensioners.AnyAsync())
             {
                 var pensionerSeeder = new PensionerSeeder(
