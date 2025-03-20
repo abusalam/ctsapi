@@ -49,7 +49,7 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (accountHead == null)
                 {
-                    responseDTO.FillDataSource(
+                    responseDTO.FillErrorInDataSource(
                         byTransferHeadEntity,
                         "Account head not found! Please check Account Head ID."
                     );
@@ -68,7 +68,7 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (existingByTransferHead != null)
                 {
-                    responseDTO.FillDataSource(
+                    responseDTO.FillErrorInDataSource(
                         existingByTransferHead,
                         "ByTransferHead already exists! Please check the description and type."
                     );
@@ -84,7 +84,7 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
-                responseDTO.FillDataSource(
+                responseDTO.FillErrorInDataSource(
                     _mapper.Map<T>(byTransferHeadEntity),
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );
@@ -105,7 +105,7 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (!isByTransferHeadIdExists)
                 {
-                    response.FillDataSource(
+                    response.FillErrorInDataSource(
                         new BytransferHead(),
                         "ByTransferHead ID does not exist or is inactive. Please check the ID and try again."
                     );
@@ -118,7 +118,7 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (byTransferHead == null)
                 {
-                    response.FillDataSource(
+                    response.FillErrorInDataSource(
                         new BytransferHead(),
                         "ByTransferHead not found! Please check the ID and try again."
                     );
@@ -133,7 +133,7 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (accountHead == null)
                 {
-                    response.FillDataSource(
+                    response.FillErrorInDataSource(
                         new BytransferHead(),
                         "AccountHead not found or inactive! Please check the AccountHead ID."
                     );
@@ -145,7 +145,7 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (DbUpdateException ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     new BytransferHead(),
                     $"Database exception occurred: {ex.InnerException?.Message ?? ex.Message}"
                 );
@@ -153,7 +153,7 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     new BytransferHead(),
                     $"An unexpected error occurred: {ex.InnerException?.Message ?? ex.Message}"
                 );
@@ -172,7 +172,7 @@ namespace CTS_BE.BAL.Services.Pension
                 if (byTransferHeads == null || !byTransferHeads.Any())
                 {
                     var emptyResponse = _mapper.Map<T>(new BytransferHead());
-                    emptyResponse.FillDataSource(
+                    emptyResponse.FillErrorInDataSource(
                         new BytransferHead(),
                         "No active ByTransferHead records found."
                     );
@@ -189,7 +189,7 @@ namespace CTS_BE.BAL.Services.Pension
             catch (Exception ex)
             {
                 var errorResponse = _mapper.Map<T>(new BytransferHead());
-                errorResponse.FillDataSource(
+                errorResponse.FillErrorInDataSource(
                     new BytransferHead(),
                     $"An unexpected error occurred: {ex.InnerException?.Message ?? ex.Message}"
                 );

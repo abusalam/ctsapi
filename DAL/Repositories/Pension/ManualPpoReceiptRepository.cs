@@ -96,19 +96,22 @@ namespace CTS_BE.DAL.Repositories.Pension
                     $"{treasuryCode}{finYear}{paddedNextSequenceValue}";
                 _context.PpoReceipts.Add(ppoReceiptEntity);
 
-                if (_context.SaveChanges() == 0)
+                if (await _context.SaveChangesAsync() == 0)
                 {
-                    result.FillDataSource(ppoReceiptEntity, "Failed to add PPO Receipt");
-                    return await Task.FromResult(result);
+                    result.FillErrorInDataSource(ppoReceiptEntity, "Failed to add PPO Receipt");
+                    return result;
                 }
                 result = _mapper.Map<T>(ppoReceiptEntity);
             }
             catch (Exception ex)
             {
-                result.FillDataSource(ppoReceiptEntity, ex.InnerException?.Message ?? ex.Message);
-                return await Task.FromResult(result);
+                result.FillErrorInDataSource(
+                    ppoReceiptEntity,
+                    "Repository Exception: " + ex.InnerException?.Message ?? ex.Message
+                );
+                return result;
             }
-            return await Task.FromResult(result);
+            return result;
         }
 
         public IQueryable<PpoReceipt> GetQueryablePpoReceipts()

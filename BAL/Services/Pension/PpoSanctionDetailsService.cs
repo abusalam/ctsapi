@@ -9,39 +9,33 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.BAL.Services.Pension
 {
-    public class PpoSanctionDetailsService : BaseService, IPpoSanctionDetailsService
+    public class PpoSanctionDetailsService(
+        IMapper mapper,
+        IPensionerDetailsRepository pensionerDetailsRepository,
+        IPpoSanctionDetailsRepository ppoSanctionDetailsRepository,
+        IClaimService claimService
+    ) : BaseService(claimService), IPpoSanctionDetailsService
     {
-        private readonly IMapper _mapper;
-        private readonly IPensionerDetailsRepository _pensionerDetailsRepository;
-        private readonly IPpoSanctionDetailsRepository _ppoSanctionDetailsRepository;
-
-        public PpoSanctionDetailsService(
-            IMapper mapper,
-            IPensionerDetailsRepository pensionerDetailsRepository,
-            IPpoSanctionDetailsRepository ppoSanctionDetailsRepository,
-            IClaimService claimService
-        )
-            : base(claimService)
-        {
-            _mapper = mapper;
-            _pensionerDetailsRepository = pensionerDetailsRepository;
-            _ppoSanctionDetailsRepository = ppoSanctionDetailsRepository;
-        }
+        private readonly IMapper _mapper = mapper;
+        private readonly IPensionerDetailsRepository _pensionerDetailsRepository =
+            pensionerDetailsRepository;
+        private readonly IPpoSanctionDetailsRepository _ppoSanctionDetailsRepository =
+            ppoSanctionDetailsRepository;
 
         public async Task<T> GetSanctionDetailsById<T>(long sanctionDetailsId, string treasuryCode)
         {
-            T? response = _mapper.Map<T>(new PpoSanctionDetail());
+            PpoSanctionDetail? sanctionDetails = new();
+            T? response = _mapper.Map<T>(sanctionDetails);
             try
             {
-                PpoSanctionDetail? sanctionDetails =
-                    await _ppoSanctionDetailsRepository.GetSanctionDetailsByIdAsync(
-                        sanctionDetailsId,
-                        treasuryCode
-                    );
+                sanctionDetails = await _ppoSanctionDetailsRepository.GetSanctionDetailsByIdAsync(
+                    sanctionDetailsId,
+                    treasuryCode
+                );
 
                 if (sanctionDetails is null)
                 {
-                    response.FillDataSource(
+                    response.FillErrorInDataSource(
                         sanctionDetails,
                         "Sanction details does not exist. Please check Id. and try again."
                     );
@@ -51,18 +45,10 @@ namespace CTS_BE.BAL.Services.Pension
                 response = _mapper.Map<T>(sanctionDetails);
                 return response;
             }
-            catch (DbUpdateException ex)
-            {
-                response.FillDataSource(
-                    new PpoSanctionDetail(),
-                    $"DbException: {ex.InnerException?.Message ?? ex.Message}"
-                );
-                return response;
-            }
             catch (Exception ex)
             {
-                response.FillDataSource(
-                    new PpoSanctionDetail(),
+                response.FillErrorInDataSource(
+                    sanctionDetails,
                     $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
                 );
                 return response;
@@ -75,9 +61,10 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
-            T? response = _mapper.Map<T>(ppoSanctionDetailsEntryDTO);
-
-            PpoSanctionDetail sanctionDetailsEntity = new();
+            PpoSanctionDetail sanctionDetailsEntity = _mapper.Map<PpoSanctionDetail>(
+                ppoSanctionDetailsEntryDTO
+            );
+            T? response = _mapper.Map<T>(sanctionDetailsEntity);
             try
             {
                 Pensioner? pensioner =
@@ -90,7 +77,7 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (pensioner is null)
                 {
-                    response.FillDataSource(
+                    response.FillErrorInDataSource(
                         pensioner,
                         "Pensioner not found. Please check PPO Id. and try again."
                     );
@@ -105,7 +92,7 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (sanctionDetails is not null)
                 {
-                    response.FillDataSource(
+                    response.FillErrorInDataSource(
                         sanctionDetails,
                         "Sanction details already exist. Please check PPO Id. and try again."
                     );
@@ -121,17 +108,9 @@ namespace CTS_BE.BAL.Services.Pension
                     treasuryCode
                 );
             }
-            catch (DbUpdateException ex)
-            {
-                response.FillDataSource(
-                    sanctionDetailsEntity,
-                    $"DbException: {ex.InnerException?.Message}"
-                );
-                return response;
-            }
             catch (Exception ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     sanctionDetailsEntity,
                     $"ServiceException: {ex.InnerException?.Message}"
                 );
@@ -146,9 +125,10 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
-            T? response = _mapper.Map<T>(ppoSanctionDetailsEntryDTO);
-
-            PpoSanctionDetail sanctionDetailsEntity = new();
+            PpoSanctionDetail sanctionDetailsEntity = _mapper.Map<PpoSanctionDetail>(
+                ppoSanctionDetailsEntryDTO
+            );
+            T? response = _mapper.Map<T>(sanctionDetailsEntity);
             try
             {
                 PpoSanctionDetail? sanctionDetails =
@@ -159,7 +139,7 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (sanctionDetails is null)
                 {
-                    response.FillDataSource(
+                    response.FillErrorInDataSource(
                         sanctionDetails,
                         "Sanction details does not exist. Please check Id. and try again."
                     );
@@ -176,7 +156,7 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (pensioner is null)
                 {
-                    response.FillDataSource(
+                    response.FillErrorInDataSource(
                         pensioner,
                         "Pensioner not found. Please check PPO Id. and try again."
                     );
@@ -192,17 +172,9 @@ namespace CTS_BE.BAL.Services.Pension
                     treasuryCode
                 );
             }
-            catch (DbUpdateException ex)
-            {
-                response.FillDataSource(
-                    sanctionDetailsEntity,
-                    $"DbException: {ex.InnerException?.Message}"
-                );
-                return response;
-            }
             catch (Exception ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     sanctionDetailsEntity,
                     $"ServiceException: {ex.InnerException?.Message}"
                 );

@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Dynamic;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using CTS_BE.Adapters;
@@ -10,6 +11,7 @@ using CTS_BE.DAL;
 using CTS_BE.DAL.Interfaces.Pension;
 using CTS_BE.DAL.Repositories.Pension;
 using CTS_BE.Enum;
+using CTS_BE.Filters;
 using CTS_BE.Helper;
 using CTS_BE.Helper.Authentication;
 using CTS_BE.Middlewares;
@@ -113,7 +115,6 @@ builder.Services.AddTransient<IFileStorageService, FileStorageService>();
 builder.Services.AddTransient<IPpoReceiptService, PpoReceiptService>();
 builder.Services.AddTransient<IPensionStatusService, PensionStatusService>();
 builder.Services.AddTransient<IPensionerDetailsService, PensionerDetailsService>();
-builder.Services.AddTransient<IPensionBillService, PensionBillService>();
 builder.Services.AddTransient<IPensionCategoryService, PensionCategoryService>();
 builder.Services.AddTransient<IPensionBreakupService, PensionBreakupService>();
 builder.Services.AddTransient<IComponentRateService, ComponentRateService>();
@@ -181,6 +182,9 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "CTS-BE", Version = "v1" });
     c.MapType<DateOnly>(() => new OpenApiSchema { Type = "string", Format = "date-only" });
+    c.MapType<ExpandoObject>(() => new OpenApiSchema { Type = "object" });
+    c.SchemaFilter<SwaggerExcludeFilter>();
+    // c.DocumentFilter<SwaggerExcludeFilter>();
 
     c.AddSecurityDefinition(
         "Bearer",

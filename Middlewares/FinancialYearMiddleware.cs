@@ -60,7 +60,8 @@ namespace CTS_BE.Middlewares
                     new JsonAPIResponse<object>
                     {
                         ApiResponseStatus = APIResponseStatus.Error,
-                        Message = "An error occurred while retrieving the current financial year.",
+                        Message =
+                            $"An error occurred while retrieving the current financial year. {ex.Message} {ex.StackTrace}",
                     },
                     StatusCodes.Status412PreconditionFailed
                 );

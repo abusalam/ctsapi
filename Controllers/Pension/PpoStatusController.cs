@@ -39,11 +39,12 @@ namespace CTS_BE.Controllers.Pension
                 {
                     ApiResponseStatus = Enum.APIResponseStatus.Success,
                     Message = "PPO Status Flag Set Successfully",
-                    Result = await _pensionStatusService.SetPensionStatusFlag(
-                        pensionStatusEntryDTO,
-                        GetCurrentFyYear(),
-                        GetTreasuryCode()
-                    ),
+                    Result =
+                        await _pensionStatusService.SetPensionStatusFlag<PensionStatusEntryDTO>(
+                            pensionStatusEntryDTO,
+                            GetCurrentFyYear(),
+                            GetTreasuryCode()
+                        ),
                 };
                 // if(System.Enum.TryParse<PensionStatusFlag>(
                 //         $"{pensionStatusEntryDTO.StatusFlag}",
@@ -75,7 +76,7 @@ namespace CTS_BE.Controllers.Pension
             }
             finally
             {
-                FillErrorMesageFromDataSource(response);
+                FillErrorMessageFromDataSource(response);
             }
             return response;
         }
@@ -133,7 +134,7 @@ namespace CTS_BE.Controllers.Pension
             }
             finally
             {
-                FillErrorMesageFromDataSource(response);
+                FillErrorMessageFromDataSource(response);
             }
 
             return response;
@@ -192,7 +193,7 @@ namespace CTS_BE.Controllers.Pension
             }
             finally
             {
-                FillErrorMesageFromDataSource(response);
+                FillErrorMessageFromDataSource(response);
             }
             return response;
         }

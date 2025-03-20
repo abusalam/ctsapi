@@ -9,31 +9,23 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.BAL.Services.Pension
 {
-    public class NomineeService : BaseService, INomineeService
+    public class NomineeService(
+        IMapper mapper,
+        IPensionerDetailsRepository pensionerDetailsRepository,
+        IBankBranchRepository bankBranchRepository,
+        INomineeRepository nomineeRepository,
+        IClaimService claimService
+    ) : BaseService(claimService), INomineeService
     {
-        private readonly IMapper _mapper;
-        private readonly IPensionerDetailsRepository _pensionerDetailsRepository;
-        private readonly IBankBranchRepository _bankBranchRepository;
-        private readonly INomineeRepository _nomineeRepository;
-
-        public NomineeService(
-            IMapper mapper,
-            IPensionerDetailsRepository pensionerDetailsRepository,
-            IBankBranchRepository bankBranchRepository,
-            INomineeRepository nomineeRepository,
-            IClaimService claimService
-        )
-            : base(claimService)
-        {
-            _mapper = mapper;
-            _pensionerDetailsRepository = pensionerDetailsRepository;
-            _bankBranchRepository = bankBranchRepository;
-            _nomineeRepository = nomineeRepository;
-        }
+        private readonly IMapper _mapper = mapper;
+        private readonly IPensionerDetailsRepository _pensionerDetailsRepository =
+            pensionerDetailsRepository;
+        private readonly IBankBranchRepository _bankBranchRepository = bankBranchRepository;
+        private readonly INomineeRepository _nomineeRepository = nomineeRepository;
 
         public async Task<NomineeListResponseDTO> GetNomineeByPpoId(int ppoId, string treasuryCode)
         {
-            List<Nominee>? nomineeList = new();
+            List<Nominee>? nomineeList = [];
             NomineeListResponseDTO response = new();
             try
             {
@@ -46,21 +38,16 @@ namespace CTS_BE.BAL.Services.Pension
                 response.Nominees = _mapper.Map<List<NomineeResponseDTO>>(nomineeList);
                 if (response.NomineeCount == 0)
                 {
-                    response.FillDataSource(nomineeList, "No Nominees has been registered yet.");
+                    response.FillErrorInDataSource(
+                        nomineeList,
+                        "No Nominees has been registered yet."
+                    );
                 }
-                return response;
-            }
-            catch (DbUpdateException ex)
-            {
-                response.FillDataSource(
-                    nomineeList,
-                    $"DbException: {ex.InnerException?.Message ?? ex.Message}"
-                );
                 return response;
             }
             catch (Exception ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     nomineeList,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );
@@ -74,8 +61,8 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
-            Nominee nomineeEntity = new();
-            T? response = _mapper.Map<T>(nomineeEntryDTO);
+            Nominee nomineeEntity = _mapper.Map<Nominee>(nomineeEntryDTO);
+            T? response = _mapper.Map<T>(nomineeEntity);
             try
             {
                 Pensioner? pensioner =
@@ -88,7 +75,7 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (pensioner is null)
                 {
-                    response.FillDataSource(
+                    response.FillErrorInDataSource(
                         pensioner,
                         "Pensioner not found. Please check PPO Id. and try again."
                     );
@@ -104,7 +91,7 @@ namespace CTS_BE.BAL.Services.Pension
                     );
                     if (branch is null)
                     {
-                        response.FillDataSource(
+                        response.FillErrorInDataSource(
                             nomineeEntity,
                             "Branch not found. Please check branch Id. and try again."
                         );
@@ -118,17 +105,9 @@ namespace CTS_BE.BAL.Services.Pension
                 SetCreatedBy(nomineeEntity);
                 return await _nomineeRepository.SaveNomineeDetails<T>(nomineeEntity, treasuryCode);
             }
-            catch (DbUpdateException ex)
-            {
-                response.FillDataSource(
-                    nomineeEntity,
-                    $"DbException: {ex.InnerException?.Message ?? ex.Message}"
-                );
-                return response;
-            }
             catch (Exception ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     nomineeEntity,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );
@@ -156,7 +135,7 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (nomineeEntity is null)
                 {
-                    response.FillDataSource(
+                    response.FillErrorInDataSource(
                         nomineeEntity,
                         "Nominee details does not exist. Please check Id. and try again."
                     );
@@ -172,7 +151,7 @@ namespace CTS_BE.BAL.Services.Pension
                     );
                     if (branch is null)
                     {
-                        response.FillDataSource(
+                        response.FillErrorInDataSource(
                             nomineeEntity,
                             "Branch not found. Please check branch Id. and try again."
                         );
@@ -188,17 +167,9 @@ namespace CTS_BE.BAL.Services.Pension
                     treasuryCode
                 );
             }
-            catch (DbUpdateException ex)
-            {
-                response.FillDataSource(
-                    nomineeEntity,
-                    $"DbException: {ex.InnerException?.Message ?? ex.Message}"
-                );
-                return response;
-            }
             catch (Exception ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     nomineeEntity,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );
@@ -208,10 +179,11 @@ namespace CTS_BE.BAL.Services.Pension
 
         public async Task<T> GetNomineeDetailsByNomineeId<T>(long nomineeId, string treasuryCode)
         {
-            T? response = _mapper.Map<T>(new Nominee());
+            Nominee? nomineeDetails = new();
+            T? response = _mapper.Map<T>(nomineeDetails);
             try
             {
-                Nominee? nomineeDetails = await _nomineeRepository.GetNomineeDetailsByIdAsync(
+                nomineeDetails = await _nomineeRepository.GetNomineeDetailsByIdAsync(
                     nomineeId,
                     treasuryCode,
                     entity => _mapper.Map<Nominee>(entity)
@@ -219,7 +191,7 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (nomineeDetails is null)
                 {
-                    response.FillDataSource(
+                    response.FillErrorInDataSource(
                         nomineeDetails,
                         "Nominee details does not exist. Please check Id. and try again."
                     );
@@ -229,18 +201,10 @@ namespace CTS_BE.BAL.Services.Pension
                 response = _mapper.Map<T>(nomineeDetails);
                 return response;
             }
-            catch (DbUpdateException ex)
-            {
-                response.FillDataSource(
-                    new Nominee(),
-                    $"DbException: {ex.InnerException?.Message ?? ex.Message}"
-                );
-                return response;
-            }
             catch (Exception ex)
             {
-                response.FillDataSource(
-                    new Nominee(),
+                response.FillErrorInDataSource(
+                    nomineeDetails,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );
                 return response;
@@ -249,8 +213,8 @@ namespace CTS_BE.BAL.Services.Pension
 
         public async Task<T> DeleteNomineeDetailsById<T>(long nomineeId, string treasuryCode)
         {
-            T? response = _mapper.Map<T>(new NomineeEntryDTO());
             Nominee? nomineeDetails = new();
+            T? response = _mapper.Map<T>(nomineeDetails);
 
             try
             {
@@ -262,7 +226,7 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (nomineeDetails is null)
                 {
-                    response.FillDataSource(
+                    response.FillErrorInDataSource(
                         nomineeDetails,
                         "Nominee details does not exist. Please check Id. and try again."
                     );
@@ -277,17 +241,9 @@ namespace CTS_BE.BAL.Services.Pension
                     treasuryCode
                 );
             }
-            catch (DbUpdateException ex)
-            {
-                response.FillDataSource(
-                    nomineeDetails,
-                    $"DbException: {ex.InnerException?.Message ?? ex.Message}"
-                );
-                return response;
-            }
             catch (Exception ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     nomineeDetails,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );

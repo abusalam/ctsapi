@@ -37,13 +37,16 @@ namespace CTS_BE.DAL.Repositories.Pension
                 _context.PrimaryCategories.Add(primaryCategory);
                 if (await _context.SaveChangesAsync() == 0)
                 {
-                    response.FillDataSource(primaryCategory, "Failed to add Primary Category!");
+                    response.FillErrorInDataSource(
+                        primaryCategory,
+                        "Failed to add Primary Category!"
+                    );
                     return response;
                 }
             }
             catch (Exception ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     primaryCategory,
                     $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
                 );
@@ -56,6 +59,7 @@ namespace CTS_BE.DAL.Repositories.Pension
         {
             return await _context
                 .PrimaryCategories.Where(entity => entity.ActiveFlag)
+                .Include(entity => entity.AccountHead)
                 .ToListAsync();
         }
 

@@ -49,7 +49,7 @@ namespace CTS_BE.BAL.Services.Pension
             {
                 ManualPpoReceiptResponseDTO errorResponse =
                     _mapper.Map<ManualPpoReceiptResponseDTO>(null);
-                errorResponse.FillDataSource(
+                errorResponse.FillErrorInDataSource(
                     new PpoReceipt(),
                     ex.InnerException?.Message ?? ex.Message
                 );
@@ -73,7 +73,7 @@ namespace CTS_BE.BAL.Services.Pension
             {
                 ManualPpoReceiptResponseDTO errorResponse =
                     _mapper.Map<ManualPpoReceiptResponseDTO>(null);
-                errorResponse.FillDataSource(
+                errorResponse.FillErrorInDataSource(
                     new PpoReceipt(),
                     ex.InnerException?.Message ?? ex.Message
                 );
@@ -90,7 +90,7 @@ namespace CTS_BE.BAL.Services.Pension
         {
             PpoReceipt manualPpoReceiptEntity = _mapper.Map<PpoReceipt>(manualPpoReceiptDTO);
             ManualPpoReceiptResponseDTO manualPpoReceiptDTOResponse =
-                _mapper.Map<ManualPpoReceiptResponseDTO>(manualPpoReceiptDTO);
+                _mapper.Map<ManualPpoReceiptResponseDTO>(manualPpoReceiptEntity);
             try
             {
                 manualPpoReceiptEntity = _mapper.Map<PpoReceipt>(manualPpoReceiptDTO);
@@ -107,7 +107,10 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
-                manualPpoReceiptDTOResponse.FillDataSource(manualPpoReceiptEntity, ex.Message);
+                manualPpoReceiptDTOResponse.FillErrorInDataSource(
+                    manualPpoReceiptEntity,
+                    ex.Message
+                );
                 return manualPpoReceiptDTOResponse;
             }
             return manualPpoReceiptDTOResponse;
@@ -167,8 +170,8 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (manualPpoReceiptEntity is null)
                 {
-                    manualPpoReceiptDTOResponse.FillDataSource(
-                        manualPpoReceiptDTO,
+                    manualPpoReceiptDTOResponse.FillErrorInDataSource(
+                        manualPpoReceiptEntity,
                         "Treasury Receipt No does not exist!"
                     );
                     return manualPpoReceiptDTOResponse;
@@ -181,7 +184,7 @@ namespace CTS_BE.BAL.Services.Pension
                     PensionStatusDTO pensionStatusDTO = _mapper.Map<PensionStatusDTO>(
                         manualPpoReceiptEntity
                     );
-                    manualPpoReceiptDTOResponse.FillDataSource(
+                    manualPpoReceiptDTOResponse.FillErrorInDataSource(
                         manualPpoReceiptEntity,
                         "Status Flag is not cleared."
                     );
@@ -192,8 +195,8 @@ namespace CTS_BE.BAL.Services.Pension
             {
                 ManualPpoReceiptResponseDTO errorResponse =
                     _mapper.Map<ManualPpoReceiptResponseDTO>(null);
-                errorResponse.FillDataSource(
-                    new PpoReceipt(),
+                errorResponse.FillErrorInDataSource(
+                    manualPpoReceiptEntity,
                     ex.InnerException?.Message ?? ex.Message
                 );
                 return errorResponse;
@@ -218,8 +221,8 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (manualPpoReceiptEntity is null)
                 {
-                    manualPpoReceiptDTOResponse.FillDataSource(
-                        manualPpoReceiptDTO,
+                    manualPpoReceiptDTOResponse.FillErrorInDataSource(
+                        manualPpoReceiptEntity,
                         "Receipt does not exist! or has been deleted"
                     );
                     return manualPpoReceiptDTOResponse;
@@ -229,18 +232,18 @@ namespace CTS_BE.BAL.Services.Pension
                 _pensionDbContext.PpoReceipts.Update(manualPpoReceiptEntity);
                 if (await _pensionDbContext.SaveChangesAsync() == 0)
                 {
-                    manualPpoReceiptDTOResponse.FillDataSource(
+                    manualPpoReceiptDTOResponse.FillErrorInDataSource(
                         manualPpoReceiptEntity,
                         "Update Failed!"
                     );
                     return manualPpoReceiptDTOResponse;
                 }
             }
-            catch (DbUpdateException ex)
+            catch (Exception ex)
             {
                 ManualPpoReceiptResponseDTO errorResponse =
                     _mapper.Map<ManualPpoReceiptResponseDTO>(null);
-                errorResponse.FillDataSource(
+                errorResponse.FillErrorInDataSource(
                     new PpoReceipt(),
                     ex.InnerException?.Message ?? ex.Message
                 );

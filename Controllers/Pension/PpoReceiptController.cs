@@ -6,21 +6,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CTS_BE.Controllers.Pension
 {
-    [Route("api/v1/manual-ppo")]
-    public class PpoReceiptController : ApiBaseController
+    public class PpoReceiptController(
+        IPpoReceiptService ppoReceiptService,
+        IClaimService claimService
+    ) : ApiBaseController(claimService)
     {
-        private readonly IPpoReceiptService _ppoReceiptService;
+        private readonly IPpoReceiptService _ppoReceiptService = ppoReceiptService;
 
-        public PpoReceiptController(
-            IPpoReceiptService ppoReceiptService,
-            IClaimService claimService
-        )
-            : base(claimService)
-        {
-            _ppoReceiptService = ppoReceiptService;
-        }
-
-        [HttpPost("receipts")]
+        [HttpPost("manual-ppo-receipt")]
         [Tags("Pension: Manual PPO Receipt")]
         [OpenApi]
         public async Task<JsonAPIResponse<ManualPpoReceiptResponseDTO>> CreatePpoReceipt(
@@ -39,7 +32,7 @@ namespace CTS_BE.Controllers.Pension
                         GetCurrentFyYear(),
                         GetTreasuryCode()
                     ),
-                    Message = $"PPO Received Successfully!",
+                    Message = $"PPO Receipt Created Successfully!",
                 };
             }
             catch (Exception ex)
@@ -49,12 +42,12 @@ namespace CTS_BE.Controllers.Pension
             }
             finally
             {
-                FillErrorMesageFromDataSource(response);
+                FillErrorMessageFromDataSource(response);
             }
             return response;
         }
 
-        [HttpGet("receipts/{treasuryReceiptNo}")]
+        [HttpGet("manual-ppo-receipt/trid/{treasuryReceiptNo}")]
         [Tags("Pension: Manual PPO Receipt")]
         [OpenApi]
         public async Task<
@@ -69,7 +62,7 @@ namespace CTS_BE.Controllers.Pension
                 {
                     ApiResponseStatus = Enum.APIResponseStatus.Success,
                     Result = await _ppoReceiptService.GetPpoReceipt(treasuryReceiptNo),
-                    Message = $"PPO Received Successfully!",
+                    Message = $"PPO Receipt Received Successfully!",
                 };
             }
             catch (Exception ex)
@@ -79,12 +72,12 @@ namespace CTS_BE.Controllers.Pension
             }
             finally
             {
-                FillErrorMesageFromDataSource(response);
+                FillErrorMessageFromDataSource(response);
             }
             return response;
         }
 
-        [HttpGet("receipt/{receiptId}")]
+        [HttpGet("manual-ppo-receipt/{receiptId}")]
         [Tags("Pension: Manual PPO Receipt")]
         [OpenApi]
         public async Task<JsonAPIResponse<ManualPpoReceiptResponseDTO>> GetPpoReceiptById(
@@ -99,7 +92,7 @@ namespace CTS_BE.Controllers.Pension
                 {
                     ApiResponseStatus = Enum.APIResponseStatus.Success,
                     Result = await _ppoReceiptService.GetPpoReceipt(receiptId),
-                    Message = $"PPO Received Successfully!",
+                    Message = $"PPO Receipt Received Successfully!",
                 };
             }
             catch (Exception ex)
@@ -109,55 +102,12 @@ namespace CTS_BE.Controllers.Pension
             }
             finally
             {
-                FillErrorMesageFromDataSource(response);
+                FillErrorMessageFromDataSource(response);
             }
             return response;
         }
 
-        [HttpPatch("receipts")]
-        [Tags("Pension: Manual PPO Receipt")]
-        [OpenApi]
-        [Obsolete("Use GetPpoReceipts instead")]
-        public async Task<
-            JsonAPIResponse<TableResponseDTO<ListAllPpoReceiptsResponseDTO>>
-        > GetAllPpoReceipts()
-        {
-            JsonAPIResponse<TableResponseDTO<ListAllPpoReceiptsResponseDTO>> response = new();
-            try
-            {
-                response = new()
-                {
-                    ApiResponseStatus = Enum.APIResponseStatus.Success,
-                    Result = new()
-                    {
-                        Headers = new()
-                        {
-                            new() { Name = "Treasury Receipt No", FieldName = "treasuryReceiptNo" },
-                            new() { Name = "PPO No", FieldName = "ppoNo" },
-                            new() { Name = "Name of Pensioner", FieldName = "pensionerName" },
-                            new() { Name = "Date of Receipt", FieldName = "receiptDate" },
-                        },
-                        Data = await _ppoReceiptService.GetAllPpoReceipts(
-                            GetCurrentFyYear(),
-                            GetTreasuryCode()
-                        ),
-                    },
-                    Message = $"All PPO Receipts Received Successfully!",
-                };
-            }
-            catch (Exception ex)
-            {
-                FillException(response, ex);
-                return response;
-            }
-            finally
-            {
-                FillErrorMesageFromDataSource(response);
-            }
-            return response;
-        }
-
-        [HttpGet("receipts")]
+        [HttpGet("manual-ppo-receipts")]
         [Tags("Pension: Manual PPO Receipt")]
         [OpenApi]
         public async Task<
@@ -172,13 +122,13 @@ namespace CTS_BE.Controllers.Pension
                     ApiResponseStatus = Enum.APIResponseStatus.Success,
                     Result = new()
                     {
-                        Headers = new()
-                        {
+                        Headers =
+                        [
                             new() { Name = "Treasury Receipt No", FieldName = "treasuryReceiptNo" },
                             new() { Name = "PPO No", FieldName = "ppoNo" },
                             new() { Name = "Name of Pensioner", FieldName = "pensionerName" },
                             new() { Name = "Date of Receipt", FieldName = "receiptDate" },
-                        },
+                        ],
                         Data =
                             await _ppoReceiptService.GetPpoReceipts<ListAllPpoReceiptsResponseDTO>(
                                 GetCurrentFyYear(),
@@ -195,12 +145,12 @@ namespace CTS_BE.Controllers.Pension
             }
             finally
             {
-                FillErrorMesageFromDataSource(response);
+                FillErrorMessageFromDataSource(response);
             }
             return response;
         }
 
-        [HttpPut("receipts/{treasuryReceiptNo}")]
+        [HttpPut("manual-ppo-receipt/trid/{treasuryReceiptNo}")]
         [Tags("Pension: Manual PPO Receipt")]
         [OpenApi]
         public async Task<
@@ -210,19 +160,18 @@ namespace CTS_BE.Controllers.Pension
             ManualPpoReceiptEntryDTO manualPpoReceiptEntryDTO
         )
         {
-            JsonAPIResponse<ManualPpoReceiptResponseDTO> response = new();
+            JsonAPIResponse<ManualPpoReceiptResponseDTO> response = new()
+            {
+                ApiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = $"PPO Receipt Updated Successfully!",
+            };
 
             try
             {
-                response = new()
-                {
-                    ApiResponseStatus = Enum.APIResponseStatus.Success,
-                    Result = await _ppoReceiptService.UpdatePpoReceipt(
-                        treasuryReceiptNo,
-                        manualPpoReceiptEntryDTO
-                    ),
-                    Message = $"PPO Receipt Updated Successfully!",
-                };
+                response.Result = await _ppoReceiptService.UpdatePpoReceipt(
+                    treasuryReceiptNo,
+                    manualPpoReceiptEntryDTO
+                );
             }
             catch (Exception ex)
             {
@@ -231,12 +180,12 @@ namespace CTS_BE.Controllers.Pension
             }
             finally
             {
-                FillErrorMesageFromDataSource(response);
+                FillErrorMessageFromDataSource(response);
             }
             return response;
         }
 
-        [HttpPut("receipt/{receiptId}")]
+        [HttpPut("manual-ppo-receipt/{receiptId}")]
         [Tags("Pension: Manual PPO Receipt")]
         [OpenApi]
         public async Task<JsonAPIResponse<ManualPpoReceiptResponseDTO>> UpdatePpoReceipt(
@@ -265,12 +214,12 @@ namespace CTS_BE.Controllers.Pension
             }
             finally
             {
-                FillErrorMesageFromDataSource(response);
+                FillErrorMessageFromDataSource(response);
             }
             return response;
         }
 
-        [HttpGet("receipts/unused")]
+        [HttpGet("manual-ppo-receipts/unused")]
         [Tags("Pension: Manual PPO Receipt")]
         [OpenApi]
         public async Task<
@@ -285,8 +234,8 @@ namespace CTS_BE.Controllers.Pension
                     ApiResponseStatus = Enum.APIResponseStatus.Success,
                     Result = new()
                     {
-                        Headers = new()
-                        {
+                        Headers =
+                        [
                             new() { Name = "Treasury Receipt No", FieldName = "treasuryReceiptNo" },
                             new() { Name = "PPO No", FieldName = "ppoNo" },
                             new() { Name = "Name of Pensioner", FieldName = "pensionerName" },
@@ -297,7 +246,7 @@ namespace CTS_BE.Controllers.Pension
                                 Name = "Date of Commencement",
                                 FieldName = "dateOfCommencement",
                             },
-                        },
+                        ],
                         Data =
                             await _ppoReceiptService.GetAllUnusedPpoReceipts<ManualPpoReceiptResponseDTO>(
                                 GetCurrentFyYear(),
@@ -314,7 +263,7 @@ namespace CTS_BE.Controllers.Pension
             }
             finally
             {
-                FillErrorMesageFromDataSource(response);
+                FillErrorMessageFromDataSource(response);
             }
             return response;
         }

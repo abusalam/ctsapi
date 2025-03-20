@@ -51,7 +51,7 @@ namespace CTS_BE.BAL.Services.Pension
                 var treasury = await _treasuryRepository.GetTreasuryNameAsync(treasuryCode);
                 if (treasury == null)
                 {
-                    responseDTO.FillDataSource(
+                    responseDTO.FillErrorInDataSource(
                         ppoByTransferEntity,
                         "Treasury code not found! Please check Treasury Code."
                     );
@@ -70,7 +70,7 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (existingPpoByTransfer != null)
                 {
-                    responseDTO.FillDataSource(
+                    responseDTO.FillErrorInDataSource(
                         existingPpoByTransfer,
                         "PpoByTransfer already exists!"
                     );
@@ -86,7 +86,7 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
-                responseDTO.FillDataSource(
+                responseDTO.FillErrorInDataSource(
                     _mapper.Map<T>(ppoByTransferEntity),
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );

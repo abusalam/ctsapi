@@ -1,21 +1,19 @@
-using System;
-using System.Collections.Generic;
 using System.Dynamic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CTS_BE.Helper
 {
     public static class PensionExtensions
     {
-        public static void FillDataSource<TResponse, TEntity>(
+        public static void FillErrorInDataSource<TResponse, TEntity>(
             this TResponse response,
             TEntity entity,
-            string message
+            string message,
+            Exception? exception = null
         )
         {
             dynamic dataSource = new ExpandoObject() { };
-            dataSource.Message = $"{message}";
+            dataSource.Message =
+                $"{message} {exception?.InnerException?.Message ?? exception?.Message} {exception?.StackTrace}";
             dataSource.Entity = entity;
             response?.GetType().GetProperty("DataSource")?.SetValue(response, dataSource, null);
         }

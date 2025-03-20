@@ -46,7 +46,7 @@ namespace CTS_BE.DAL.Repositories.Pension
                 _context.Nominees.Add(nominee);
                 if (await _context.SaveChangesAsync() == 0)
                 {
-                    response.FillDataSource(
+                    response.FillErrorInDataSource(
                         nominee,
                         "Failed to save data. Please try again after sometime."
                     );
@@ -56,7 +56,7 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             catch (DbUpdateException ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     nominee,
                     $"DbException: {ex.InnerException?.Message ?? ex.Message}"
                 );
@@ -64,7 +64,7 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             catch (Exception ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     nominee,
                     $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
                 );
@@ -81,7 +81,7 @@ namespace CTS_BE.DAL.Repositories.Pension
                 _context.Nominees.Update(nomineeEntity);
                 if (await _context.SaveChangesAsync() == 0)
                 {
-                    response.FillDataSource(
+                    response.FillErrorInDataSource(
                         nomineeEntity,
                         "Failed to save data. Please try again after sometime."
                     );
@@ -91,7 +91,7 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             catch (DbUpdateException ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     nomineeEntity,
                     $"DbException: {ex.InnerException?.Message ?? ex.Message}"
                 );
@@ -99,7 +99,7 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             catch (Exception ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     nomineeEntity,
                     $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
                 );
@@ -116,7 +116,7 @@ namespace CTS_BE.DAL.Repositories.Pension
                 _context.Nominees.Update(nomineeEntity);
                 if (await _context.SaveChangesAsync() == 0)
                 {
-                    response.FillDataSource(
+                    response.FillErrorInDataSource(
                         nomineeEntity,
                         "Failed to delete data. Please try again after sometime."
                     );
@@ -126,7 +126,7 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             catch (DbUpdateException ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     nomineeEntity,
                     $"DbException: {ex.InnerException?.Message ?? ex.Message}"
                 );
@@ -134,7 +134,7 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             catch (Exception ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     nomineeEntity,
                     $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
                 );

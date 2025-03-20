@@ -3,7 +3,6 @@ using CTS_BE.DTOs;
 using CTS_BE.Helper;
 using CTS_BE.Helper.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.Controllers.Pension
 {
@@ -30,6 +29,11 @@ namespace CTS_BE.Controllers.Pension
 
             try
             {
+                TableResponseDTO<PpoComponentRevisionPpoListItemDTO>? tableResponse =
+                    await _ppoComponentRevisionService.GetPposForComponentRevisions<
+                        TableResponseDTO<PpoComponentRevisionPpoListItemDTO>
+                    >(GetCurrentFyYear(), GetTreasuryCode());
+
                 response.Result = new()
                 {
                     Headers =
@@ -40,11 +44,7 @@ namespace CTS_BE.Controllers.Pension
                         new() { Name = "Category Description", FieldName = "categoryDescription" },
                         new() { Name = "Bank", FieldName = "bankBranchName" },
                     ],
-                    Data =
-                        await _ppoComponentRevisionService.GetPposForComponentRevisions<PpoComponentRevisionPpoListItemDTO>(
-                            GetCurrentFyYear(),
-                            GetTreasuryCode()
-                        ),
+                    Data = tableResponse.Data,
                 };
             }
             catch (Exception ex)
@@ -54,7 +54,7 @@ namespace CTS_BE.Controllers.Pension
             }
             finally
             {
-                FillErrorMesageFromDataSource(response);
+                FillErrorMessageFromDataSource(response);
             }
             return response;
         }
@@ -84,10 +84,12 @@ namespace CTS_BE.Controllers.Pension
             try
             {
                 response.Result =
-                    await _ppoComponentRevisionService.CreateSinglePpoComponentRevision<
-                        PpoComponentRevisionEntryDTO,
-                        PpoComponentRevisionResponseDTO
-                    >(ppoId, ppoComponentRevisionEntryDTO, GetCurrentFyYear(), GetTreasuryCode());
+                    await _ppoComponentRevisionService.CreateSinglePpoComponentRevision<PpoComponentRevisionResponseDTO>(
+                        ppoId,
+                        ppoComponentRevisionEntryDTO,
+                        GetCurrentFyYear(),
+                        GetTreasuryCode()
+                    );
             }
             catch (Exception ex)
             {
@@ -96,7 +98,7 @@ namespace CTS_BE.Controllers.Pension
             }
             finally
             {
-                FillErrorMesageFromDataSource(response);
+                FillErrorMessageFromDataSource(response);
             }
             return response;
         }
@@ -133,9 +135,9 @@ namespace CTS_BE.Controllers.Pension
                             Name = "Component Description",
                             FieldName = "componentDescription",
                         },
+                        new() { Name = "Amount/Month", FieldName = "amountPerMonth" },
                         new() { Name = "From", FieldName = "fromDate" },
                         new() { Name = "To", FieldName = "toDate" },
-                        new() { Name = "Amount/Month", FieldName = "amountPerMonth" },
                     ],
                     Data =
                         await _ppoComponentRevisionService.GetPpoComponentRevisionsByPpoId<PpoComponentRevisionResponseDTO>(
@@ -152,7 +154,7 @@ namespace CTS_BE.Controllers.Pension
             }
             finally
             {
-                FillErrorMesageFromDataSource(response);
+                FillErrorMessageFromDataSource(response);
             }
             return response;
         }
@@ -174,10 +176,13 @@ namespace CTS_BE.Controllers.Pension
             };
             try
             {
-                response.Result = await _ppoComponentRevisionService.UpdatePpoComponentRevisionById<
-                    PpoComponentRevisionUpdateDTO,
-                    PpoComponentRevisionResponseDTO
-                >(revisionId, ppoComponentRevisionUpdateDTO, GetCurrentFyYear(), GetTreasuryCode());
+                response.Result =
+                    await _ppoComponentRevisionService.UpdatePpoComponentRevisionById<PpoComponentRevisionResponseDTO>(
+                        revisionId,
+                        ppoComponentRevisionUpdateDTO,
+                        GetCurrentFyYear(),
+                        GetTreasuryCode()
+                    );
             }
             catch (Exception ex)
             {
@@ -186,7 +191,7 @@ namespace CTS_BE.Controllers.Pension
             }
             finally
             {
-                FillErrorMesageFromDataSource(response);
+                FillErrorMessageFromDataSource(response);
             }
             return response;
         }
@@ -219,7 +224,7 @@ namespace CTS_BE.Controllers.Pension
             }
             finally
             {
-                FillErrorMesageFromDataSource(response);
+                FillErrorMessageFromDataSource(response);
             }
             return response;
         }

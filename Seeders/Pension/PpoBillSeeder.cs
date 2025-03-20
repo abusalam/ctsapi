@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using CTS_BE.BAL.Interfaces.Pension;
-using CTS_BE.BAL.Services.Pension;
 using CTS_BE.DAL;
 using CTS_BE.DAL.Entities.Pension;
 using CTS_BE.DAL.Interfaces.Pension;
@@ -19,7 +14,6 @@ namespace CTS_BE.Seeders.Pension
         IMapper mapper,
         IManualPpoReceiptRepository _manualPpoReceiptRepository,
         IPpoIdSequenceRepository _ppoIdSequenceRepository,
-        IPensionBillService _pensionBillService,
         IPpoBillService _ppoBillService
     ) : BaseSeeder, ISeeder
     {
@@ -100,7 +94,7 @@ namespace CTS_BE.Seeders.Pension
                         await context.SaveChangesAsync();
                     }
 
-                    var initiateFirstPensionBillDTO = new InitiateFirstPensionBillDTO
+                    var initiateFirstPensionBillDTO = new InitiateFirstPensionBillEntryDTO
                     {
                         PpoId = pensioner.PpoId,
                         ToDate = DateOnly.FromDateTime(
@@ -115,18 +109,18 @@ namespace CTS_BE.Seeders.Pension
                     };
 
                     PensionerFirstBillResponseDTO bill =
-                        await _pensionBillService.SavePensionBill<PensionerFirstBillResponseDTO>(
+                        await _ppoBillService.SaveFirstPensionBill<PensionerFirstBillResponseDTO>(
                             initiateFirstPensionBillDTO,
-                            BillType.FirstBill,
                             _financialYear,
                             _treasuryCode
                         );
 
-                    var ppoBillResponse = await _ppoBillService.SavePpoBill<PpoBillSaveResponseDTO>(
-                        bill,
-                        _financialYear,
-                        _treasuryCode
-                    );
+                    var ppoBillResponse =
+                        await _ppoBillService.SaveFirstPensionBill<PpoBillSaveResponseDTO>(
+                            bill,
+                            _financialYear,
+                            _treasuryCode
+                        );
                 }
                 catch (Exception ex)
                 {

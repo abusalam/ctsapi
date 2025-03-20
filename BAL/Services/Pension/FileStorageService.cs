@@ -46,14 +46,14 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (DbUpdateException ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     fileEntity,
                     $"DbException: {ex.InnerException?.Message ?? ex.Message}"
                 );
             }
             catch (Exception ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     fileEntity,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );
@@ -77,14 +77,14 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (DbUpdateException ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     uploadedFile,
                     $"DbException: {ex.InnerException?.Message ?? ex.Message}"
                 );
             }
             catch (Exception ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     uploadedFile,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );

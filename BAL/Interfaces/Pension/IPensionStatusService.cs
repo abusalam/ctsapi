@@ -9,7 +9,7 @@ namespace CTS_BE.BAL.Interfaces.Pension
 {
     public interface IPensionStatusService : IBaseService
     {
-        public Task<PensionStatusEntryDTO> SetPensionStatusFlag(
+        public Task<T> SetPensionStatusFlag<T>(
             PensionStatusEntryDTO pensionStatusEntryDTO,
             short financialYear,
             string treasuryCode

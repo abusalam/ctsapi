@@ -6,7 +6,7 @@ namespace CTS_BE.DAL.Interfaces.Pension
 {
     public interface IPensionerDetailsRepository : IRepository<Pensioner>
     {
-        public Task<IEnumerable<PensionerResponseDTO>> GetAllPensionerDetailsAsync(
+        public Task<List<PensionerResponseDTO>> GetAllPensionerDetailsAsync(
             short financialYear,
             string treasuryCode,
             Expression<Func<Pensioner, PensionerResponseDTO>> selectExpression
@@ -27,7 +27,7 @@ namespace CTS_BE.DAL.Interfaces.Pension
             Expression<Func<Pensioner, T>> selectExpression
         );
 
-        public Task<IEnumerable<PensionerListItemDTO>> GetAllNotApprovedPensionerDetailsAsync(
+        public Task<List<PensionerListItemDTO>> GetAllNotApprovedPensionerDetailsAsync(
             short financialYear,
             string treasuryCode,
             Expression<Func<Pensioner, PensionerListItemDTO>> selectExpression

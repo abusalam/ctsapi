@@ -1,14 +1,14 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Dynamic;
-using CTS_BE.DAL.Entities.Pension;
 using CTS_BE.DTOs.Validators;
+using CTS_BE.Filters;
 using CTS_BE.PensionEnum;
 
 namespace CTS_BE.DTOs
 {
     public class BaseDTO
     {
+        [SwaggerExclude]
         public ExpandoObject? DataSource { get; set; }
     }
 
@@ -733,20 +733,20 @@ namespace CTS_BE.DTOs
         public PensionBreakupResponseDTO? Breakup { get; set; }
     }
 
-    public partial class InitiateFirstPensionBillDTO : BaseDTO
+    public partial class InitiateFirstPensionBillEntryDTO : BaseDTO
     {
         [Required]
         public virtual int PpoId { get; set; }
 
         [Required]
-        [CurrentOrFutureDateUptoYears(
-            1,
-            ErrorMessage = "Date of bill should be within 1 years from today"
-        )]
+        // [CurrentOrFutureDateUptoYears(
+        //     1,
+        //     ErrorMessage = "Date of bill should be today or within next 1 year from today"
+        // )]
         public virtual DateOnly ToDate { get; set; }
     }
 
-    public partial class PensionerFirstBillResponseDTO : InitiateFirstPensionBillDTO
+    public partial class PensionerFirstBillResponseDTO : InitiateFirstPensionBillEntryDTO
     {
         public long Id { get; set; }
 
@@ -855,6 +855,7 @@ namespace CTS_BE.DTOs
         {
             get { return Rate?.ComponentName ?? "--"; }
         }
+
         public ComponentRateResponseDTO? Rate { get; set; }
     }
 
@@ -880,7 +881,7 @@ namespace CTS_BE.DTOs
         public int PpoId { get; set; }
 
         [Required]
-        [Range(1, 12, ErrorMessage = "Month should be between 1 and 12")]
+        [Range(1, 12, ErrorMessage = "Month should be between 1 and 12 without leading 0s")]
         public int Month { get; set; }
 
         [Required]
@@ -904,10 +905,26 @@ namespace CTS_BE.DTOs
 
         [DataType(DataType.Date)]
         public DateOnly FromDate { get; set; }
+
+        // {
+        //     get { return Bill.FromDate; }
+        // }
         public DateOnly ToDate { get; set; }
+
+        // {
+        //     get { return Bill.ToDate; }
+        // }
         public char BillType { get; set; }
         public int BillNo { get; set; }
+
+        // {
+        //     get { return Bill.BillNo; }
+        // }
         public DateOnly BillDate { get; set; }
+
+        // {
+        //     get { return Bill.BillDate; }
+        // }
         public int GrossAmount { get; set; }
         public int ByTransferAmount { get; set; }
         public int NetAmount { get; set; }
@@ -915,9 +932,19 @@ namespace CTS_BE.DTOs
         public virtual List<PpoBillBreakupEntryDTO> Breakups { get; set; } = null!;
         public long DrawnAmount { get; set; } = 0;
         public string? TreasuryVoucherNo { get; set; }
+
+        // {
+        //     get { return $"TV-{Bill.Id}-{Id}"; }
+        // }
         public DateOnly? TreasuryVoucherDate { get; set; }
+
+        // {
+        //     get { return Bill.BillDate; }
+        // }
         public PensionerResponseDTO Pensioner { get; set; } = null!;
         public List<PpoBillBreakupResponseDTO> PpoBillBreakups { get; set; } = null!;
+
+        // public BillResponseDTO Bill { get; set; } = null!;
         public string PreparedBy { get; set; } = null!;
         public DateOnly PreparedOn { get; set; }
     }
@@ -1044,7 +1071,6 @@ namespace CTS_BE.DTOs
 
     public partial class PpoBillSaveResponseDTO : BaseDTO
     {
-        public long Id { get; set; }
         public int PpoId { get; set; }
         public DateOnly BillDate { get; set; }
         public char BillType { get; set; }

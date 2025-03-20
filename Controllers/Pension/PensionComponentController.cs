@@ -41,7 +41,7 @@ namespace CTS_BE.Controllers.Pension
             }
             finally
             {
-                FillErrorMesageFromDataSource(response);
+                FillErrorMessageFromDataSource(response);
             }
 
             return response;
@@ -57,7 +57,7 @@ namespace CTS_BE.Controllers.Pension
             JsonAPIResponse<TableResponseDTO<PensionBreakupResponseDTO>> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
-                Message = $"All Bill Breakups Received Successfully!",
+                Message = $"All Components/Breakups Received Successfully!",
             };
             try
             {
@@ -65,7 +65,7 @@ namespace CTS_BE.Controllers.Pension
                 {
                     Headers =
                     [
-                        new() { Name = "Bill Component ID", FieldName = "id" },
+                        new() { Name = "Component ID", FieldName = "id" },
                         new() { Name = "Component Name", FieldName = "componentName" },
                         new() { Name = "Component Type", FieldName = "componentType" },
                         new() { Name = "Relief Allowed", FieldName = "reliefFlag" },
@@ -83,7 +83,7 @@ namespace CTS_BE.Controllers.Pension
             }
             finally
             {
-                FillErrorMesageFromDataSource(response);
+                FillErrorMessageFromDataSource(response);
             }
             return response;
         }
@@ -114,7 +114,7 @@ namespace CTS_BE.Controllers.Pension
             }
             finally
             {
-                FillErrorMesageFromDataSource(response);
+                FillErrorMessageFromDataSource(response);
             }
 
             return response;
@@ -157,7 +157,7 @@ namespace CTS_BE.Controllers.Pension
             }
             finally
             {
-                FillErrorMesageFromDataSource(response);
+                FillErrorMessageFromDataSource(response);
             }
             return response;
         }
@@ -199,7 +199,7 @@ namespace CTS_BE.Controllers.Pension
             }
             finally
             {
-                FillErrorMesageFromDataSource(response);
+                FillErrorMessageFromDataSource(response);
             }
             return response;
         }

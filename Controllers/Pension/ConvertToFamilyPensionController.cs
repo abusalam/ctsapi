@@ -53,7 +53,7 @@ namespace CTS_BE.Controllers.Pension
             }
             finally
             {
-                FillErrorMesageFromDataSource(response);
+                FillErrorMessageFromDataSource(response);
             }
             return response;
         }

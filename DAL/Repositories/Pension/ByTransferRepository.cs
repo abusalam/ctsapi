@@ -47,7 +47,10 @@ namespace CTS_BE.DAL.Repositories.Pension
 
             if (await _pensionDbContext.SaveChangesAsync() == 0)
             {
-                responseDTO.FillDataSource(byTransferHeadEntity, "Bytransfer head not saved!");
+                responseDTO.FillErrorInDataSource(
+                    byTransferHeadEntity,
+                    "Bytransfer head not saved!"
+                );
                 return responseDTO;
             }
 

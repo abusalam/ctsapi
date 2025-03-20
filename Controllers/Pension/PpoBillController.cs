@@ -8,32 +8,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CTS_BE.Controllers.Pension
 {
-    [Route("api/v1/ppo")]
-    public class PpoBillController : ApiBaseController
+    public class PpoBillController(
+        IPpoBillService ppoBillService,
+        IMqService mqService,
+        IClaimService claimService
+    ) : ApiBaseController(claimService)
     {
-        private readonly IPensionerDetailsService _pensionerDetailsService;
-        private readonly IPensionBillService _pensionBillService;
-        private readonly IPpoBillService _ppoBillService;
-        private readonly IMqService _mqService;
-        private readonly CancellationTokenSource _cancellationTokenSource;
-        private readonly IClaimService _claimService;
-
-        public PpoBillController(
-            IPensionerDetailsService pensionerDetailsService,
-            IPensionBillService pensionBillService,
-            IPpoBillService ppoBillService,
-            IMqService mqService,
-            IClaimService claimService
-        )
-            : base(claimService)
-        {
-            _pensionBillService = pensionBillService;
-            _ppoBillService = ppoBillService;
-            _mqService = mqService;
-            _pensionerDetailsService = pensionerDetailsService;
-            _cancellationTokenSource = new CancellationTokenSource();
-            _claimService = claimService;
-        }
+        private readonly IPpoBillService _ppoBillService = ppoBillService;
+        private readonly IMqService _mqService = mqService;
 
         [HttpGet("first-bill/ppos")]
         [Tags("Pension: First Bill")]
@@ -50,14 +32,14 @@ namespace CTS_BE.Controllers.Pension
             try
             {
                 var ppoList =
-                    await _ppoBillService.GetAllPposForFirstBillGeneration<PpoListResponseDTO>(
+                    await _ppoBillService.GetPposForFirstBillGeneration<PpoListResponseDTO>(
                         GetCurrentFyYear(),
                         GetTreasuryCode()
                     );
                 response.Result = new()
                 {
-                    Headers = new()
-                    {
+                    Headers =
+                    [
                         new() { Name = "PPO ID", FieldName = "ppoId" },
                         new() { Name = "PPO Number", FieldName = "ppoNo" },
                         new() { Name = "Pensioner Name", FieldName = "pensionerName" },
@@ -66,7 +48,7 @@ namespace CTS_BE.Controllers.Pension
                         new() { Name = "Date of Commencement", FieldName = "dateOfCommencement" },
                         new() { Name = "Date of Retirement", FieldName = "dateOfRetirement" },
                         new() { Name = "Date of Commencement", FieldName = "dateOfCommencement" },
-                    },
+                    ],
                     Data = ppoList.PpoList,
                 };
             }
@@ -77,7 +59,7 @@ namespace CTS_BE.Controllers.Pension
             }
             finally
             {
-                FillErrorMesageFromDataSource(response);
+                FillErrorMessageFromDataSource(response);
             }
 
             return response;
@@ -97,14 +79,14 @@ namespace CTS_BE.Controllers.Pension
             };
             try
             {
-                var ppoList = await _ppoBillService.GetAllPposForFirstBillPrint<PpoListResponseDTO>(
+                var ppoList = await _ppoBillService.GetPposForFirstBillPrint<PpoListResponseDTO>(
                     GetCurrentFyYear(),
                     GetTreasuryCode()
                 );
                 response.Result = new()
                 {
-                    Headers = new()
-                    {
+                    Headers =
+                    [
                         new() { Name = "PPO ID", FieldName = "ppoId" },
                         new() { Name = "PPO Number", FieldName = "ppoNo" },
                         new() { Name = "Pensioner Name", FieldName = "pensionerName" },
@@ -113,7 +95,7 @@ namespace CTS_BE.Controllers.Pension
                         new() { Name = "Date of Commencement", FieldName = "dateOfCommencement" },
                         new() { Name = "Date of Retirement", FieldName = "dateOfRetirement" },
                         new() { Name = "Date of Commencement", FieldName = "dateOfCommencement" },
-                    },
+                    ],
                     Data = ppoList.PpoList,
                 };
             }
@@ -124,7 +106,7 @@ namespace CTS_BE.Controllers.Pension
             }
             finally
             {
-                FillErrorMesageFromDataSource(response);
+                FillErrorMessageFromDataSource(response);
             }
 
             return response;
@@ -135,20 +117,18 @@ namespace CTS_BE.Controllers.Pension
         [OpenApi]
         public async Task<
             JsonAPIResponse<InitiateFirstPensionBillResponseDTO>
-        > GenerateFirstPensionBill(InitiateFirstPensionBillDTO initiateFirstPensionBillDTO)
+        > GenerateFirstPensionBill(InitiateFirstPensionBillEntryDTO initiateFirstPensionBillDTO)
         {
             JsonAPIResponse<InitiateFirstPensionBillResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = $"First Pension Bill generated sucessfully!",
-                // Result = new(){}
             };
             try
             {
                 response.Result =
-                    await _pensionBillService.GenerateFirstPensionBill<InitiateFirstPensionBillResponseDTO>(
+                    await _ppoBillService.GenerateFirstPensionBill<InitiateFirstPensionBillResponseDTO>(
                         initiateFirstPensionBillDTO,
-                        BillType.FirstBill,
                         GetCurrentFyYear(),
                         GetTreasuryCode()
                     );
@@ -160,7 +140,7 @@ namespace CTS_BE.Controllers.Pension
             }
             finally
             {
-                FillErrorMesageFromDataSource(response);
+                FillErrorMessageFromDataSource(response);
             }
 
             return response;
@@ -170,38 +150,22 @@ namespace CTS_BE.Controllers.Pension
         [Tags("Pension: First Bill")]
         [OpenApi]
         public async Task<JsonAPIResponse<PpoBillSaveResponseDTO>> SaveFirstPensionBill(
-            InitiateFirstPensionBillDTO ppoBillEntryDTO
+            InitiateFirstPensionBillEntryDTO initiateFirstPensionBillEntryDTO
         )
         {
             JsonAPIResponse<PpoBillSaveResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = $"First Pension Bill saved sucessfully!",
-                Result = new() { DataSource = new() },
             };
             try
             {
-                PensionerFirstBillResponseDTO firstBill =
-                    await _pensionBillService.SavePensionBill<PensionerFirstBillResponseDTO>(
-                        new InitiateFirstPensionBillDTO
-                        {
-                            PpoId = ppoBillEntryDTO.PpoId,
-                            ToDate = ppoBillEntryDTO.ToDate,
-                        },
-                        BillType.FirstBill,
+                response.Result =
+                    await _ppoBillService.SaveFirstPensionBill<PpoBillSaveResponseDTO>(
+                        initiateFirstPensionBillEntryDTO,
                         GetCurrentFyYear(),
                         GetTreasuryCode()
                     );
-                if (firstBill.DataSource != null)
-                {
-                    response.Result.DataSource = firstBill.DataSource;
-                    return response;
-                }
-                response.Result = await _ppoBillService.SavePpoBill<PpoBillSaveResponseDTO>(
-                    firstBill,
-                    GetCurrentFyYear(),
-                    GetTreasuryCode()
-                );
             }
             catch (Exception ex)
             {
@@ -210,9 +174,8 @@ namespace CTS_BE.Controllers.Pension
             }
             finally
             {
-                FillErrorMesageFromDataSource(response);
+                FillErrorMessageFromDataSource(response);
             }
-            response.Result.BillDate = ppoBillEntryDTO.ToDate;
             return response;
         }
 
@@ -241,46 +204,12 @@ namespace CTS_BE.Controllers.Pension
             }
             finally
             {
-                FillErrorMesageFromDataSource(response);
+                FillErrorMessageFromDataSource(response);
             }
             return response;
         }
 
-        [HttpPost("send-bill")]
-        [Tags("Pension: First Bill")]
-        [OpenApi]
-        public Task<string> SendFirstPensionBill(string message)
-        {
-            string response = "";
-            try
-            {
-                int messagesToSend = 0;
-                try
-                {
-                    messagesToSend = Int32.Parse(message);
-                }
-                catch (FormatException)
-                {
-                    Console.WriteLine("Trying to send single messsage");
-                }
-                if (messagesToSend > 0)
-                {
-                    for (int i = 0; i < messagesToSend; i++)
-                    {
-                        _mqService.Despatch(GetTreasuryCode(), $"Bill {i + 1}");
-                    }
-                    response = $"Dispatched {messagesToSend} messages";
-                }
-                else
-                {
-                    response = _mqService.Despatch(GetTreasuryCode(), message);
-                }
-            }
-            finally { }
-            return Task.FromResult(response);
-        }
-
-        [HttpGet("pension-bill/{year}/{month}/ppos")]
+        [HttpGet("regular-bill/{year}/{month}/ppos")]
         [Tags("Pension: Regular Bill")]
         [OpenApi]
         public async Task<JsonAPIResponse<PpoListResponseDTO>> GetAllPposForRegularBill(
@@ -296,7 +225,7 @@ namespace CTS_BE.Controllers.Pension
             try
             {
                 response.Result =
-                    await _ppoBillService.GetAllPposForBillGeneration<PpoListResponseDTO>(
+                    await _ppoBillService.GetPposForBillGeneration<PpoListResponseDTO>(
                         year,
                         month,
                         BillType.RegularBill,
@@ -311,13 +240,13 @@ namespace CTS_BE.Controllers.Pension
             }
             finally
             {
-                FillErrorMesageFromDataSource(response);
+                FillErrorMessageFromDataSource(response);
             }
 
             return response;
         }
 
-        [HttpPost("pension-bill")]
+        [HttpPost("regular-bill")]
         [Tags("Pension: Regular Bill")]
         [OpenApi]
         public async Task<JsonAPIResponse<PpoBillSaveResponseDTO>> SaveRegularPensionBill(
@@ -328,33 +257,15 @@ namespace CTS_BE.Controllers.Pension
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = $"Regular Pension Bill saved sucessfully!",
-                Result = new() { DataSource = null },
             };
             try
             {
-                PensionerFirstBillResponseDTO ppoRegularBill =
-                    await _pensionBillService.SavePensionBill<PensionerFirstBillResponseDTO>(
-                        new InitiateFirstPensionBillDTO
-                        {
-                            PpoId = ppoBillEntryDTO.PpoId,
-                            ToDate = ppoBillEntryDTO.ToDate,
-                        },
-                        BillType.RegularBill,
+                response.Result =
+                    await _ppoBillService.SaveRegularPensionBill<PpoBillSaveResponseDTO>(
+                        ppoBillEntryDTO,
                         GetCurrentFyYear(),
                         GetTreasuryCode()
                     );
-                if (ppoRegularBill.DataSource != null)
-                {
-                    response.Result.DataSource = ppoRegularBill.DataSource;
-                    return response;
-                }
-                response.Result = await _ppoBillService.SavePpoBill<PpoBillSaveResponseDTO>(
-                    ppoRegularBill,
-                    GetCurrentFyYear(),
-                    GetTreasuryCode()
-                );
-                // response.Result.PreparedBy = _claimService.GetUserName();
-                // response.Result.PreparedOn = DateOnly.FromDateTime(DateTime.Now);
             }
             catch (Exception ex)
             {
@@ -363,13 +274,12 @@ namespace CTS_BE.Controllers.Pension
             }
             finally
             {
-                FillErrorMesageFromDataSource(response);
+                FillErrorMessageFromDataSource(response);
             }
-            response.Result.BillDate = ppoBillEntryDTO.ToDate;
             return response;
         }
 
-        [HttpGet("pension-bill/{year}/{month}/regular-bills")]
+        [HttpGet("regular-bill/{year}/{month}/bills")]
         [Tags("Pension: Regular Bill")]
         [OpenApi]
         public async Task<JsonAPIResponse<RegularBillListResponseDTO>> GetAllRegularPensionBills(
@@ -404,7 +314,7 @@ namespace CTS_BE.Controllers.Pension
             }
             finally
             {
-                FillErrorMesageFromDataSource(response);
+                FillErrorMessageFromDataSource(response);
             }
             return response;
         }

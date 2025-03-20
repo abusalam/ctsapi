@@ -27,7 +27,7 @@ namespace CTS_BE.DAL.Repositories.Pension
 
             if (await _pensionDbContext.SaveChangesAsync() == 0)
             {
-                responseDTO.FillDataSource(
+                responseDTO.FillErrorInDataSource(
                     ppobyTransferHeadEntity,
                     "Ppo Bytransfer amount not saved!"
                 );

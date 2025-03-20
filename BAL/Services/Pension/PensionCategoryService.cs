@@ -53,7 +53,7 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (PrimaryCategoryExists)
                 {
-                    response.FillDataSource(
+                    response.FillErrorInDataSource(
                         primaryCategoryEntity,
                         $"Primary Category '{primaryCategoryEntity.PrimaryCategoryName}' already exists!"
                     );
@@ -67,7 +67,7 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     primaryCategoryEntity,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );
@@ -94,7 +94,7 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     primaryCategories,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );
@@ -123,7 +123,10 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (subCategory != null)
                 {
-                    response.FillDataSource(subCategoryEntity, $"Sub Category already exists!");
+                    response.FillErrorInDataSource(
+                        subCategoryEntity,
+                        $"Sub Category already exists!"
+                    );
                     return response;
                 }
 
@@ -134,13 +137,13 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (await _pensionDbContext.SaveChangesAsync() == 0)
                 {
-                    response.FillDataSource(subCategoryEntity, $"Sub Category not saved!");
+                    response.FillErrorInDataSource(subCategoryEntity, $"Sub Category not saved!");
                     return response;
                 }
             }
             catch (DbUpdateException ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     subCategoryEntity,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );
@@ -188,7 +191,7 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (categoryExists)
                 {
-                    response.FillDataSource(categoryEntity, $"Category already exists!");
+                    response.FillErrorInDataSource(categoryEntity, $"Category already exists!");
                     return response;
                 }
 
@@ -199,7 +202,10 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (primaryCategoryEntity == null)
                 {
-                    response.FillDataSource(categoryEntity, $"Primary Category does not exists!");
+                    response.FillErrorInDataSource(
+                        categoryEntity,
+                        $"Primary Category does not exists!"
+                    );
                     return response;
                 }
 
@@ -209,7 +215,10 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (subCategoryEntity == null)
                 {
-                    response.FillDataSource(categoryEntity, $"Sub Category does not exists!");
+                    response.FillErrorInDataSource(
+                        categoryEntity,
+                        $"Sub Category does not exists!"
+                    );
                     return response;
                 }
 
@@ -224,7 +233,7 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     categoryEntity,
                     $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
                 );
@@ -250,8 +259,13 @@ namespace CTS_BE.BAL.Services.Pension
                 );
                 if (pensionCategoryEntity == null)
                 {
-                    PensionCategoryDTO.FillDataSource(
-                        pensionCategoryEntity,
+                    PensionCategoryDTO.FillErrorInDataSource(
+                        new
+                        {
+                            categoryId,
+                            financialYear,
+                            treasuryCode,
+                        },
                         $"Category not found! Please check category id: {categoryId}"
                     );
                     return PensionCategoryDTO;
@@ -261,7 +275,7 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (DbUpdateException ex)
             {
-                PensionCategoryDTO.FillDataSource(
+                PensionCategoryDTO.FillErrorInDataSource(
                     _mapper.Map<T>(pensionCategoryEntity),
                     $"DbException: {ex.InnerException?.Message} {this.ToString()}"
                 );
@@ -269,7 +283,7 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
-                PensionCategoryDTO.FillDataSource(
+                PensionCategoryDTO.FillErrorInDataSource(
                     _mapper.Map<T>(pensionCategoryEntity),
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message} {this.ToString()}"
                 );

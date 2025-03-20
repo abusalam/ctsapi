@@ -50,13 +50,16 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (await _context.SaveChangesAsync() == 0)
                 {
-                    response.FillDataSource(componentRateEntity, $"Component Rate not saved!");
+                    response.FillErrorInDataSource(
+                        componentRateEntity,
+                        $"Component Rate not saved!"
+                    );
                     return response;
                 }
             }
             catch (DbUpdateException ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     componentRateEntity,
                     $"ServiceException: {ex.InnerException?.Message}"
                 );

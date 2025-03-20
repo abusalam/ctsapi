@@ -3,7 +3,6 @@ using CTS_BE.BAL.Interfaces.Pension;
 using CTS_BE.DAL;
 using CTS_BE.DAL.Entities.Pension;
 using CTS_BE.DAL.Interfaces.Pension;
-using CTS_BE.DAL.Repositories.Pension;
 using CTS_BE.DTOs;
 using CTS_BE.Helper;
 using CTS_BE.Helper.Authentication;
@@ -56,7 +55,7 @@ namespace CTS_BE.BAL.Services.Pension
                 if (pensionStatusDTO is null)
                 {
                     pensionStatusDTO = new() { StatusFlag = pensionStatusFlag };
-                    pensionStatusDTO.FillDataSource(
+                    pensionStatusDTO.FillErrorInDataSource(
                         pensionStatusFlag,
                         "Status Flag is not set. Please check PPO ID and Status Flag"
                     );
@@ -66,19 +65,20 @@ namespace CTS_BE.BAL.Services.Pension
             catch (DbUpdateException ex)
             {
                 var message = ex.InnerException?.Message ?? ex.Message;
-                pensionStatusDTO.FillDataSource(new PpoStatusFlag(), message);
+                pensionStatusDTO.FillErrorInDataSource(new PpoStatusFlag(), message);
                 return pensionStatusDTO;
             }
             return pensionStatusDTO;
         }
 
-        public async Task<PensionStatusEntryDTO> SetPensionStatusFlag(
+        public async Task<T> SetPensionStatusFlag<T>(
             PensionStatusEntryDTO pensionStatusEntryDTO,
             short financialYear,
             string treasuryCode
         )
         {
-            PpoStatusFlag? ppoStatusEntity = new();
+            PpoStatusFlag? ppoStatusEntity = _mapper.Map<PpoStatusFlag>(pensionStatusEntryDTO);
+            T result = _mapper.Map<T>(ppoStatusEntity);
             try
             {
                 Pensioner? pensioner = await _pensionDbContext.Pensioners.FirstOrDefaultAsync(
@@ -90,40 +90,49 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (pensioner is null)
                 {
-                    pensionStatusEntryDTO.FillDataSource(
-                        pensioner,
+                    result.FillErrorInDataSource(
+                        ppoStatusEntity,
                         "Pensioner does not exist, please check PPO ID"
                     );
-                    return pensionStatusEntryDTO;
+                    return result;
                 }
 
-                ppoStatusEntity = await _pensionDbContext.PpoStatusFlags.FirstOrDefaultAsync(
-                    entity =>
+                PpoStatusFlag? ppoStatusEntityExists =
+                    await _pensionDbContext.PpoStatusFlags.FirstOrDefaultAsync(entity =>
                         entity.ActiveFlag
                         && entity.TreasuryCode == treasuryCode
                         && entity.PpoId == pensionStatusEntryDTO.PpoId
                         && entity.StatusFlag == pensionStatusEntryDTO.StatusFlag
-                );
+                    );
 
-                if (ppoStatusEntity is null)
+                if (ppoStatusEntityExists is not null)
                 {
-                    ppoStatusEntity = _mapper.Map<PpoStatusFlag>(pensionStatusEntryDTO);
-                    ppoStatusEntity.PensionerId = pensioner.Id;
-                    ppoStatusEntity.TreasuryCode = treasuryCode;
-                    ppoStatusEntity.FinancialYear = financialYear;
-                    SetCreatedBy(ppoStatusEntity);
+                    result.FillErrorInDataSource(ppoStatusEntity, "Status Flag is already set");
+                    return result;
+                }
 
-                    await _pensionDbContext.PpoStatusFlags.AddAsync(ppoStatusEntity);
-                    await _pensionDbContext.SaveChangesAsync();
+                ppoStatusEntity.PensionerId = pensioner.Id;
+                ppoStatusEntity.TreasuryCode = treasuryCode;
+                ppoStatusEntity.FinancialYear = financialYear;
+                ppoStatusEntity.StatusWef = DateOnly.FromDateTime(DateTime.Now);
+                SetCreatedBy(ppoStatusEntity);
+
+                await _pensionDbContext.PpoStatusFlags.AddAsync(ppoStatusEntity);
+
+                if (await _pensionDbContext.SaveChangesAsync() == 0)
+                {
+                    result.FillErrorInDataSource(ppoStatusEntity, "Unable to set Status Flag");
+                    return result;
                 }
             }
-            catch (DbUpdateException ex)
+            catch (Exception ex)
             {
-                var message = ex.InnerException?.Message ?? ex.Message;
-                pensionStatusEntryDTO.FillDataSource(ppoStatusEntity, message);
-                return pensionStatusEntryDTO;
+                pensionStatusEntryDTO.FillErrorInDataSource(
+                    ppoStatusEntity,
+                    "ServiceException: " + ex.InnerException?.Message ?? ex.Message
+                );
             }
-            return _mapper.Map<PensionStatusEntryDTO>(ppoStatusEntity);
+            return _mapper.Map<T>(ppoStatusEntity);
         }
 
         public async Task<PensionStatusDTO> ClearPensionStatusFlag(
@@ -155,7 +164,7 @@ namespace CTS_BE.BAL.Services.Pension
                         PensionStatusDTO pensionStatusDTO = _mapper.Map<PensionStatusDTO>(
                             ppoStatusEntity
                         );
-                        pensionStatusDTO.FillDataSource(
+                        pensionStatusDTO.FillErrorInDataSource(
                             ppoStatusEntity,
                             "Status Flag is not cleared."
                         );
@@ -171,7 +180,7 @@ namespace CTS_BE.BAL.Services.Pension
                     PensionStatusDTO pensionStatusDTO = _mapper.Map<PensionStatusDTO>(
                         ppoStatusEntity
                     );
-                    pensionStatusDTO.FillDataSource(
+                    pensionStatusDTO.FillErrorInDataSource(
                         ppoStatusEntity,
                         "Status Flag is not found. Please check PPO ID and Status Flag"
                     );
@@ -182,7 +191,7 @@ namespace CTS_BE.BAL.Services.Pension
             {
                 PensionStatusDTO pensionStatusDTO = _mapper.Map<PensionStatusDTO>(ppoStatusEntity);
                 var message = ex.InnerException?.Message ?? ex.Message;
-                pensionStatusDTO.FillDataSource(ppoStatusEntity, message);
+                pensionStatusDTO.FillErrorInDataSource(ppoStatusEntity, message);
                 return pensionStatusDTO;
             }
             return _mapper.Map<PensionStatusDTO>(ppoStatusEntity);

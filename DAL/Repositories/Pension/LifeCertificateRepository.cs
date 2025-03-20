@@ -66,7 +66,7 @@ namespace CTS_BE.DAL.Repositories.Pension
                 _context.LifeCertificates.Add(lifeCertificate);
                 if (await _context.SaveChangesAsync() == 0)
                 {
-                    response.FillDataSource(
+                    response.FillErrorInDataSource(
                         lifeCertificate,
                         "Failed to save data. Please try again after sometime."
                     );
@@ -76,7 +76,7 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             catch (DbUpdateException ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     lifeCertificate,
                     $"DbException: {ex.InnerException?.Message ?? ex.Message}"
                 );
@@ -84,7 +84,7 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             catch (Exception ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     lifeCertificate,
                     $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
                 );
@@ -107,7 +107,7 @@ namespace CTS_BE.DAL.Repositories.Pension
 
                 if (existingEntity == null)
                 {
-                    response.FillDataSource(
+                    response.FillErrorInDataSource(
                         lifeCertificateDetailEntity,
                         "Life Certificate not found for update."
                     );
@@ -125,7 +125,7 @@ namespace CTS_BE.DAL.Repositories.Pension
 
                 if (await _context.SaveChangesAsync() == 0)
                 {
-                    response.FillDataSource(
+                    response.FillErrorInDataSource(
                         lifeCertificateDetailEntity,
                         "Failed to save data. Please try again after sometime."
                     );
@@ -135,7 +135,7 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             catch (DbUpdateException ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     lifeCertificateDetailEntity,
                     $"DbException: {ex.InnerException?.Message ?? ex.Message}"
                 );
@@ -143,7 +143,7 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             catch (Exception ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     lifeCertificateDetailEntity,
                     $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
                 );

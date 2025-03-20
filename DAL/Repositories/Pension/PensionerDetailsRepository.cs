@@ -23,13 +23,13 @@ namespace CTS_BE.DAL.Repositories.Pension
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<PensionerResponseDTO>> GetAllPensionerDetailsAsync(
+        public async Task<List<PensionerResponseDTO>> GetAllPensionerDetailsAsync(
             short financialYear,
             string treasuryCode,
             Expression<Func<Pensioner, PensionerResponseDTO>> selectExpression
         )
         {
-            var pensioners = await _context
+            return await _context
                 .Pensioners.Where(entity =>
                     entity.ActiveFlag && entity.TreasuryCode == treasuryCode
                 )
@@ -37,8 +37,6 @@ namespace CTS_BE.DAL.Repositories.Pension
                 .Include(entity => entity.Receipt)
                 .Select(selectExpression)
                 .ToListAsync();
-
-            return pensioners;
         }
 
         public async Task<List<T>> GetPensionerListAsync<T>(
@@ -57,13 +55,13 @@ namespace CTS_BE.DAL.Repositories.Pension
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<PensionerListItemDTO>> GetAllNotApprovedPensionerDetailsAsync(
+        public async Task<List<PensionerListItemDTO>> GetAllNotApprovedPensionerDetailsAsync(
             short financialYear,
             string treasuryCode,
             Expression<Func<Pensioner, PensionerListItemDTO>> selectExpression
         )
         {
-            var pensioners = await _context
+            return await _context
                 .Pensioners.Where(entity =>
                     entity.ActiveFlag && entity.TreasuryCode == treasuryCode
                 )
@@ -77,8 +75,6 @@ namespace CTS_BE.DAL.Repositories.Pension
                 )
                 .Select(selectExpression)
                 .ToListAsync();
-
-            return pensioners;
         }
 
         public async Task<T?> GetPensionerDetailsByPpoIdAsync<T>(
@@ -88,7 +84,7 @@ namespace CTS_BE.DAL.Repositories.Pension
             Expression<Func<Pensioner, T>> selectExpression
         )
         {
-            T? pensioner = await _context
+            return await _context
                 .Pensioners.Where(entity =>
                     entity.ActiveFlag
                     && entity.PpoId == ppoId
@@ -105,7 +101,6 @@ namespace CTS_BE.DAL.Repositories.Pension
                 .Include(entity => entity.PpoStatusFlags)
                 .Select(selectExpression)
                 .FirstOrDefaultAsync();
-            return pensioner;
         }
 
         public async Task<T> UpdatePensionerDetails<T>(
@@ -120,7 +115,7 @@ namespace CTS_BE.DAL.Repositories.Pension
                 _context.Pensioners.Update(pensionerEntity);
                 if (await _context.SaveChangesAsync() == 0)
                 {
-                    response.FillDataSource(
+                    response.FillErrorInDataSource(
                         pensionerEntity,
                         "Failed to save data. Please try again after sometime."
                     );
@@ -130,7 +125,7 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             catch (DbUpdateException ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     pensionerEntity,
                     $"DbException: {ex.InnerException?.Message ?? ex.Message}"
                 );
@@ -138,7 +133,7 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             catch (Exception ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     pensionerEntity,
                     $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
                 );

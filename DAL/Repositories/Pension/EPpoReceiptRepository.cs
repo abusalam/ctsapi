@@ -77,7 +77,7 @@ namespace CTS_BE.DAL.Repositories.Pension
 
                 if (eppoReceiptExists != null)
                 {
-                    response.FillDataSource(
+                    response.FillErrorInDataSource(
                         eppoReceiptExists,
                         "eppoReceipt already exists for Pension Application No: "
                             + eppoReceiptEntity.PensionApplnNo
@@ -146,7 +146,7 @@ namespace CTS_BE.DAL.Repositories.Pension
 
                 if (await _context.SaveChangesAsync() == 0)
                 {
-                    response.FillDataSource(
+                    response.FillErrorInDataSource(
                         eppoReceiptEntity,
                         "Failed to save PpoReceipt data. Please try again after sometime."
                     );
@@ -157,14 +157,14 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             catch (DbUpdateException ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     eppoReceiptEntity,
                     $"DbException: {ex.InnerException?.Message ?? ex.Message}"
                 );
             }
             catch (Exception ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     eppoReceiptEntity,
                     $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
                 );
@@ -211,7 +211,7 @@ namespace CTS_BE.DAL.Repositories.Pension
 
                 if (await _context.SaveChangesAsync() == 0)
                 {
-                    response.FillDataSource(
+                    response.FillErrorInDataSource(
                         entity,
                         "Failed to save revised PPO. Please try again."
                     );
@@ -222,14 +222,14 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             catch (DbUpdateException ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     entity,
                     $"DbException: {ex.InnerException?.Message ?? ex.Message}"
                 );
             }
             catch (Exception ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     entity,
                     $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
                 );
@@ -255,7 +255,7 @@ namespace CTS_BE.DAL.Repositories.Pension
 
                 if (await _context.SaveChangesAsync() == 0)
                 {
-                    response.FillDataSource(
+                    response.FillErrorInDataSource(
                         entity,
                         "Failed to save data. Please try again after sometime."
                     );
@@ -266,7 +266,7 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             catch (DbUpdateException ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     entity,
                     $"DbException: {ex.InnerException?.Message ?? ex.Message}"
                 );
@@ -274,7 +274,7 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             catch (Exception ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     entity,
                     $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
                 );

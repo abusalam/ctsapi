@@ -45,7 +45,7 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (lifeCertificateDetails is null)
                 {
-                    response.FillDataSource(
+                    response.FillErrorInDataSource(
                         lifeCertificateDetails,
                         "Life Certificate does not exist. Please check PPOId. and try again."
                     );
@@ -57,7 +57,7 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (DbUpdateException ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     new LifeCertificate(),
                     $"DbException: {ex.InnerException?.Message ?? ex.Message}"
                 );
@@ -65,7 +65,7 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     new LifeCertificate(),
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );
@@ -88,7 +88,7 @@ namespace CTS_BE.BAL.Services.Pension
                 var branch = await _bankBranchRepository.GetBranchById(treasuryCode, branchId);
                 if (branch is null)
                 {
-                    response.FillDataSource(
+                    response.FillErrorInDataSource(
                         branchId,
                         $"Branch not found. Please check branch Id: {branchId} and try again."
                     );
@@ -130,7 +130,7 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     lifeCertificates,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message} {ex.StackTrace}"
                 );
@@ -160,7 +160,7 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (pensioner is null)
                 {
-                    response.FillDataSource(
+                    response.FillErrorInDataSource(
                         pensioner,
                         "Pensioner not found. Please check PPO Id. and try again."
                     );
@@ -176,7 +176,7 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (lc is not null)
                 {
-                    response.FillDataSource(
+                    response.FillErrorInDataSource(
                         lc,
                         "Life Certificate already exists for this Pensioner. Please check PPO Id. and try again."
                     );
@@ -194,7 +194,7 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (DbUpdateException ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     lifeCertificateEntity,
                     $"DbException: {ex.InnerException?.Message ?? ex.Message}"
                 );
@@ -202,7 +202,7 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     lifeCertificateEntity,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );
@@ -231,7 +231,7 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (lifeCertificateEntity is null)
                 {
-                    response.FillDataSource(
+                    response.FillErrorInDataSource(
                         lifeCertificateEntity,
                         " Life Certificate does not exist. Please check PPO Id. and try again."
                     );
@@ -248,7 +248,7 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (pensioner is null)
                 {
-                    response.FillDataSource(
+                    response.FillErrorInDataSource(
                         pensioner,
                         "Pensioner not found. Please check PPO Id. and try again."
                     );
@@ -264,7 +264,7 @@ namespace CTS_BE.BAL.Services.Pension
                     );
                     if (branch is null)
                     {
-                        response.FillDataSource(
+                        response.FillErrorInDataSource(
                             lifeCertificateEntity,
                             "Branch not found. Please check branch Id. and try again."
                         );
@@ -283,7 +283,7 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (DbUpdateException ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     lifeCertificateEntity,
                     $"DbException: {ex.InnerException?.Message ?? ex.Message}"
                 );
@@ -291,7 +291,7 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     lifeCertificateEntity,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );

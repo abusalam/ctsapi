@@ -68,7 +68,7 @@ namespace CTS_BE.BAL.Services.Pension
                             BaseAmount = baseAmount,
                             AmountPerMonth = CalculatePerMonthBreakupAmount(
                                 CalculateEffectiveRate(
-                                    componentRates.ToList(),
+                                    [.. componentRates],
                                     componentRate.Breakup.Id,
                                     calculatedPeriodStartDate
                                 ),
@@ -76,7 +76,7 @@ namespace CTS_BE.BAL.Services.Pension
                             ),
                             FromDate = CalculatePeriodStartFromDate(
                                 CalculateEffectiveRate(
-                                    componentRates.ToList(),
+                                    [.. componentRates],
                                     componentRate.Breakup.Id,
                                     calculatedPeriodStartDate.AddDays(-1)
                                 ).EffectiveFromDate,
@@ -108,10 +108,12 @@ namespace CTS_BE.BAL.Services.Pension
                 );
                 ppoPayment.NetAmount = ppoPayment.DueAmount - ppoPayment.DrawnAmount;
             });
-            return ppoPayments
-                .OrderBy(entity => entity.ComponentName)
-                .ThenBy(entity => entity.FromDate)
-                .ToList();
+            return
+            [
+                .. ppoPayments
+                    .OrderBy(entity => entity.ComponentName)
+                    .ThenBy(entity => entity.FromDate),
+            ];
         }
 
         /// <summary>
@@ -125,19 +127,19 @@ namespace CTS_BE.BAL.Services.Pension
         public static int CalculateBaseAmount(
             string componentName,
             char rateType,
-            long basicPensionAmount,
-            long commutedPensionAmount
+            int basicPensionAmount,
+            int commutedPensionAmount
         )
         {
             return rateType switch
             {
-                BreakupRateType.Percentage => (int)basicPensionAmount,
+                BreakupRateType.Percentage => basicPensionAmount,
                 BreakupRateType.Amount => componentName switch
                 {
-                    "AMOUNT COMMUTED" => (int)commutedPensionAmount,
-                    _ => (int)basicPensionAmount,
+                    "AMOUNT COMMUTED" => commutedPensionAmount,
+                    _ => basicPensionAmount,
                 },
-                _ => (int)basicPensionAmount,
+                _ => basicPensionAmount,
             };
         }
 
@@ -338,6 +340,20 @@ namespace CTS_BE.BAL.Services.Pension
                 fromDate.Year,
                 fromDate.Month,
                 DateTime.DaysInMonth(fromDate.Year, fromDate.Month)
+            );
+        }
+
+        public static DateOnly CalculatePeriodStartDateForRegularBill(int? month, int? year)
+        {
+            return new DateOnly(year ?? 1111, month ?? 1, 1);
+        }
+
+        public static DateOnly CalculatePeriodEndDateForRegularBill(int? month, int? year)
+        {
+            return new DateOnly(
+                year ?? 9999,
+                month ?? 12,
+                DateTime.DaysInMonth(year ?? 9999, month ?? 12)
             );
         }
 

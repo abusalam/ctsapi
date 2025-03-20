@@ -8,84 +8,92 @@ namespace CTS_BE.Helper
     {
         public PensionMapperClass()
         {
-            CreateMap<ManualPpoReceiptEntryDTO, PpoReceipt>().ReverseMap();
-            CreateMap<ManualPpoReceiptResponseDTO, PpoReceipt>().ReverseMap();
-            CreateMap<ManualPpoReceiptResponseDTO, ManualPpoReceiptEntryDTO>().ReverseMap();
-            CreateMap<ListAllPpoReceiptsResponseDTO, PpoReceipt>().ReverseMap();
-            CreateMap<PensionStatusEntryDTO, PpoStatusFlag>().ReverseMap();
-            CreateMap<PensionStatusDTO, PpoStatusFlag>().ReverseMap();
-            CreateMap<PensionerEntryDTO, Pensioner>();
-            CreateMap<PensionerResponseDTO, Pensioner>().ReverseMap();
-            CreateMap<PensionerListItemDTO, Pensioner>().ReverseMap();
-            CreateMap<PpoComponentRevisionPpoListItemDTO, Pensioner>().ReverseMap();
-            CreateMap<PensionerResponseDTO, PensionerEntryDTO>().ReverseMap();
-            CreateMap<PensionPrimaryCategoryResponseDTO, PrimaryCategory>().ReverseMap();
-            CreateMap<PensionPrimaryCategoryEntryDTO, PrimaryCategory>().ReverseMap();
-            CreateMap<PensionPrimaryCategoryResponseDTO, PensionPrimaryCategoryEntryDTO>()
+            // Format mappings like this => CreateMap<Entity, DTO>().ReverseMap();
+            // Keep the order of mappings consistent and avoid mapping DTOs to DTOs
+
+            CreateMap<PpoReceipt, ManualPpoReceiptEntryDTO>()
                 .ReverseMap();
-            CreateMap<PensionPrimaryCategoryEntryDTO, PrimaryCategory>().ReverseMap();
-            CreateMap<PensionSubCategoryResponseDTO, SubCategory>().ReverseMap();
-            CreateMap<PensionSubCategoryEntryDTO, SubCategory>().ReverseMap();
-            CreateMap<PensionSubCategoryResponseDTO, PensionSubCategoryEntryDTO>().ReverseMap();
-            CreateMap<PensionSubCategoryEntryDTO, SubCategory>().ReverseMap();
-            CreateMap<PensionCategoryResponseDTO, Category>().ReverseMap();
-            CreateMap<PensionCategoryListDTO, Category>().ReverseMap();
-            CreateMap<PensionCategoryResponseDTO, PensionCategoryEntryDTO>().ReverseMap();
-            CreateMap<PensionBreakupResponseDTO, Breakup>().ReverseMap();
+            CreateMap<PpoReceipt, ManualPpoReceiptResponseDTO>().ReverseMap();
+            CreateMap<PpoReceipt, ListAllPpoReceiptsResponseDTO>().ReverseMap();
+
+            CreateMap<Pensioner, PensionerEntryDTO>().ReverseMap();
+            CreateMap<Pensioner, PensionerResponseDTO>().ReverseMap();
+            CreateMap<Pensioner, PensionerListItemDTO>().ReverseMap();
+            CreateMap<Pensioner, PpoComponentRevisionPpoListItemDTO>().ReverseMap();
+
+            CreateMap<PpoStatusFlag, PensionStatusEntryDTO>().ReverseMap();
+            CreateMap<PpoStatusFlag, PensionStatusDTO>().ReverseMap();
+
+            CreateMap<PrimaryCategory, PensionPrimaryCategoryResponseDTO>().ReverseMap();
+            CreateMap<PrimaryCategory, PensionPrimaryCategoryEntryDTO>().ReverseMap();
+
+            CreateMap<SubCategory, PensionSubCategoryResponseDTO>().ReverseMap();
+            CreateMap<SubCategory, PensionSubCategoryEntryDTO>().ReverseMap();
+
+            CreateMap<Category, PensionCategoryResponseDTO>().ReverseMap();
+            CreateMap<Category, PensionCategoryListDTO>().ReverseMap();
+
+            CreateMap<Breakup, PensionBreakupResponseDTO>().ReverseMap();
             CreateMap<Breakup, PensionBreakupEntryDTO>().ReverseMap();
-            CreateMap<ComponentRateResponseDTO, ComponentRate>().ReverseMap();
-            CreateMap<ComponentRateResponseDTO, ComponentRateEntryDTO>().ReverseMap();
-            CreateMap<ComponentRateEntryDTO, ComponentRate>().ReverseMap();
-            CreateMap<PpoComponentRevisionResponseDTO, PpoComponentRevision>().ReverseMap();
-            CreateMap<PpoComponentRevisionResponseDTO, PpoComponentRevisionEntryDTO>().ReverseMap();
-            CreateMap<PpoBillEntryDTO, PpoBill>().ReverseMap();
-            CreateMap<PpoBillEntryDTO, PpoBillResponseDTO>().ReverseMap();
-            CreateMap<PpoBillResponseDTO, PpoBill>().ReverseMap();
-            CreateMap<PpoPaymentListItemDTO, PpoComponentRevision>().ReverseMap();
-            CreateMap<PpoBillBreakupResponseDTO, PpoBillBreakupEntryDTO>().ReverseMap();
-            CreateMap<PpoBillBreakupResponseDTO, PpoBillBreakup>().ReverseMap();
-            CreateMap<PpoBillBreakupEntryDTO, PpoBillBreakup>().ReverseMap();
+
+            CreateMap<ComponentRate, ComponentRateResponseDTO>().ReverseMap();
+            CreateMap<ComponentRate, ComponentRateEntryDTO>().ReverseMap();
+
+            CreateMap<PpoComponentRevision, PpoComponentRevisionResponseDTO>().ReverseMap();
+            CreateMap<PpoComponentRevision, PpoComponentRevisionEntryDTO>().ReverseMap();
+            CreateMap<PpoComponentRevision, PpoPaymentListItemDTO>().ReverseMap();
+
+            CreateMap<PpoBill, PpoBillEntryDTO>().ReverseMap();
+            CreateMap<PpoBill, PpoBillResponseDTO>().ReverseMap();
             CreateMap<PpoBill, InitiateFirstPensionBillResponseDTO>().ReverseMap();
             CreateMap<PpoBill, PpoBillResponseDTO>().ReverseMap();
-            CreateMap<PpoBillResponseDTO, InitiateFirstPensionBillResponseDTO>().ReverseMap();
-            CreateMap<PpoBillEntryDTO, InitiateFirstPensionBillResponseDTO>().ReverseMap();
-            CreateMap<PpoPaymentListItemDTO, PpoBillBreakup>().ReverseMap();
-            CreateMap<PpoPaymentListItemDTO, PpoBillBreakupResponseDTO>().ReverseMap();
-            CreateMap<PensionerListItemDTO, PensionerResponseDTO>().ReverseMap();
-            CreateMap<PpoBillEntryDTO, PpoBillResponseDTO>().ReverseMap();
-            CreateMap<PpoBillSaveResponseDTO, PpoBill>().ReverseMap();
-            CreateMap<PpoRegularBillDetailsDTO, PpoBill>().ReverseMap();
+            CreateMap<PpoBill, PpoBillSaveResponseDTO>().ReverseMap();
+            CreateMap<PpoBill, PpoRegularBillDetailsDTO>().ReverseMap();
+
+            CreateMap<PpoBillBreakup, PpoBillBreakupResponseDTO>().ReverseMap();
+            CreateMap<PpoBillBreakup, PpoBillBreakupEntryDTO>().ReverseMap();
+            CreateMap<PpoBillBreakup, PpoPaymentListItemDTO>().ReverseMap();
+
             CreateMap<Bill, RegularBillResponseDTO>().ReverseMap();
+            CreateMap<Bill, BillResponseDTO>().ReverseMap();
+
+            CreateMap<Bank, BankResponseDTO>().ReverseMap();
+
             CreateMap<Branch, BranchResponseDTO>().ReverseMap();
             CreateMap<Branch, BranchListItemResponseDTO>().ReverseMap();
-            CreateMap<Bank, BankResponseDTO>().ReverseMap();
+
             CreateMap<PpoSanctionDetail, PpoSanctionDetailsResponseDTO>().ReverseMap();
             CreateMap<PpoSanctionDetail, PpoSanctionDetailsEntryDTO>().ReverseMap();
-            CreateMap<PpoSanctionDetailsEntryDTO, PpoSanctionDetailsResponseDTO>().ReverseMap();
+
             CreateMap<Nominee, NomineeResponseDTO>().ReverseMap();
             CreateMap<Nominee, NomineeEntryDTO>().ReverseMap();
-            CreateMap<NomineeEntryDTO, NomineeResponseDTO>().ReverseMap();
+
             CreateMap<LifeCertificate, LifeCertificateResponseDTO>().ReverseMap();
             CreateMap<LifeCertificate, LifeCertificateEntryDTO>().ReverseMap();
+
             CreateMap<UploadedFile, FileEntryDTO>().ReverseMap();
             CreateMap<UploadedFile, FileResponseDTO>().ReverseMap();
-            CreateMap<FileResponseDTO, FileEntryDTO>().ReverseMap();
-            CreateMap<EPpoReceiptEntryDTO, EppoReceipt>().ReverseMap();
+
+            CreateMap<EppoReceipt, EPpoReceiptEntryDTO>().ReverseMap();
             CreateMap<EppoReceipt, EPpoReceiptResponseDTO>().ReverseMap();
-            CreateMap<EPpoReceiptRevisionEntryDTO, EppoRevision>().ReverseMap();
-            CreateMap<EPpoReceiptRevisionEntryDTO, EPpoReceiptRevisionResponseDTO>().ReverseMap();
-            CreateMap<EppoRevision, EPpoReceiptRevisionResponseDTO>().ReverseMap();
-            CreateMap<EPpoReceiptWithdrawlEntryDTO, EppoReceipt>().ReverseMap();
+            CreateMap<EppoReceipt, EPpoReceiptWithdrawlEntryDTO>().ReverseMap();
             CreateMap<EppoReceipt, EPpoReceiptWithdrawlResponseDTO>().ReverseMap();
-            CreateMap<EPpoReceiptWithdrawlEntryDTO, EPpoReceiptWithdrawlResponseDTO>().ReverseMap();
             CreateMap<EppoReceipt, EPpoReceiptPpoIdResponseDTO>().ReverseMap();
             CreateMap<EppoReceipt, EPpoReceiptDetailDTO>().ReverseMap();
             CreateMap<EppoReceipt, EPpoReceiptListDTO>().ReverseMap();
-            CreateMap<AccountHead, AccountHeadResponseDTO>().ReverseMap();
+
+            CreateMap<EppoRevision, EPpoReceiptRevisionEntryDTO>().ReverseMap();
+            CreateMap<EppoRevision, EPpoReceiptRevisionResponseDTO>().ReverseMap();
+
             CreateMap<EppoAmount, EPpoAmountEntryDTO>().ReverseMap();
+
             CreateMap<EppoNominee, EPpoNomineeEntryDTO>().ReverseMap();
+
+            CreateMap<AccountHead, AccountHeadResponseDTO>().ReverseMap();
+
             CreateMap<BytransferHead, ByTransferHeadEntryDTO>().ReverseMap();
             CreateMap<BytransferHead, ByTransferHeadResponseDTO>().ReverseMap();
+
             CreateMap<PpoBytransfer, PpoByTransferEntryDTO>().ReverseMap();
             CreateMap<PpoBytransfer, PpoByTransferHeadResponseDTO>().ReverseMap();
         }

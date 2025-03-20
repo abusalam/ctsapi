@@ -51,7 +51,7 @@ namespace CTS_BE.DAL.Repositories.Pension
 
                 if (uploadedFile != null)
                 {
-                    response.FillDataSource(uploadedFile, "File already exists");
+                    response.FillErrorInDataSource(uploadedFile, "File already exists");
                     return response;
                 }
                 fileEntity.FilePath = treasuryCode + "/" + financialYear + "/";
@@ -66,7 +66,7 @@ namespace CTS_BE.DAL.Repositories.Pension
                 if (await _context.SaveChangesAsync() == 0)
                 {
                     fileEntity.Contents = null!;
-                    response.FillDataSource(
+                    response.FillErrorInDataSource(
                         fileEntity,
                         "Failed to upload file. Please try again after sometime."
                     );
@@ -76,12 +76,18 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             catch (DbUpdateException ex)
             {
-                response.FillDataSource(fileEntity, ex.InnerException?.Message ?? ex.Message);
+                response.FillErrorInDataSource(
+                    fileEntity,
+                    ex.InnerException?.Message ?? ex.Message
+                );
                 return response;
             }
             catch (Exception ex)
             {
-                response.FillDataSource(fileEntity, ex.InnerException?.Message ?? ex.Message);
+                response.FillErrorInDataSource(
+                    fileEntity,
+                    ex.InnerException?.Message ?? ex.Message
+                );
                 return response;
             }
             return response;

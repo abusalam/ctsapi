@@ -51,7 +51,7 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (breakup != null)
                 {
-                    response.FillDataSource(breakupEntity, $"Breakup already exists!");
+                    response.FillErrorInDataSource(breakupEntity, $"Breakup already exists!");
                     return response;
                 }
 
@@ -60,13 +60,13 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (await _pensionDbContext.SaveChangesAsync() == 0)
                 {
-                    response.FillDataSource(breakupEntity, $"Breakup not saved!");
+                    response.FillErrorInDataSource(breakupEntity, $"Breakup not saved!");
                     return response;
                 }
             }
             catch (DbUpdateException ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     breakupEntity,
                     $"ServiceException: {ex.InnerException?.Message}"
                 );

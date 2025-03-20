@@ -6,17 +6,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Repositories.Pension
 {
-    public class CategoryRepository : Repository<Category, PensionDbContext>, ICategoryRepository
+    public class CategoryRepository(PensionDbContext context, IMapper mapper)
+        : Repository<Category, PensionDbContext>(context),
+            ICategoryRepository
     {
-        private readonly PensionDbContext _context;
-        private readonly IMapper _mapper;
-
-        public CategoryRepository(PensionDbContext context, IMapper mapper)
-            : base(context)
-        {
-            _context = context;
-            _mapper = mapper;
-        }
+        private readonly PensionDbContext _context = context;
+        private readonly IMapper _mapper = mapper;
 
         public async Task<List<T>> GetPensionCategoriesAsync<T>()
         {
@@ -35,7 +30,9 @@ namespace CTS_BE.DAL.Repositories.Pension
             return await _context
                 .Categories.Where(entity => entity.ActiveFlag && entity.Id == categoryId)
                 .Include(entity => entity.PrimaryCategory)
+                .ThenInclude(entity => entity.AccountHead)
                 .Include(entity => entity.SubCategory)
+                // .AsSplitQuery()
                 .FirstOrDefaultAsync();
         }
 
@@ -57,14 +54,17 @@ namespace CTS_BE.DAL.Repositories.Pension
 
                 if (await _context.SaveChangesAsync() == 0)
                 {
-                    response.FillDataSource(categoryEntity, "Failed to add Pension Category!");
+                    response.FillErrorInDataSource(
+                        categoryEntity,
+                        "Failed to add Pension Category!"
+                    );
                     return response;
                 }
                 response = _mapper.Map<T>(categoryEntity);
             }
             catch (Exception ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     categoryEntity,
                     $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
                 );

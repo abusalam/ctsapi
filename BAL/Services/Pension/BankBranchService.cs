@@ -57,7 +57,7 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
-                bankListDTO.FillDataSource(
+                bankListDTO.FillErrorInDataSource(
                     bankEntityList,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );
@@ -88,7 +88,7 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
-                branchListResponseDTO.FillDataSource(
+                branchListResponseDTO.FillErrorInDataSource(
                     branchEntityList,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );

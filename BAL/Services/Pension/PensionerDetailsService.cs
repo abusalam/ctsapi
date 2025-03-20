@@ -42,10 +42,8 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
-            Pensioner pensionerEntity = new() { PpoId = 0 };
-            PensionerResponseDTO pensionerResponseDTO = _mapper.Map<PensionerResponseDTO>(
-                pensionerEntity
-            );
+            Pensioner pensionerEntity = _mapper.Map<Pensioner>(pensionerEntryDTO);
+            PensionerResponseDTO response = _mapper.Map<PensionerResponseDTO>(pensionerEntity);
             try
             {
                 Category? category = await _pensionDbContext
@@ -56,14 +54,11 @@ namespace CTS_BE.BAL.Services.Pension
                     .FirstOrDefaultAsync();
                 if (category == null)
                 {
-                    PensionerResponseDTO errResponse = _mapper.Map<PensionerResponseDTO>(
-                        pensionerEntryDTO
-                    );
-                    errResponse.FillDataSource(
+                    response.FillErrorInDataSource(
                         category,
                         "Pension category not found. Please check category Id. and try again."
                     );
-                    return errResponse;
+                    return response;
                 }
 
                 Branch? branch = await _pensionDbContext
@@ -74,14 +69,11 @@ namespace CTS_BE.BAL.Services.Pension
                     .FirstOrDefaultAsync();
                 if (branch == null)
                 {
-                    PensionerResponseDTO errResponse = _mapper.Map<PensionerResponseDTO>(
-                        pensionerEntryDTO
-                    );
-                    errResponse.FillDataSource(
+                    response.FillErrorInDataSource(
                         branch,
                         "Bank branch not found. Please check branch Id. and try again."
                     );
-                    return errResponse;
+                    return response;
                 }
 
                 PpoReceipt? ppoReceipt = await _pensionDbContext
@@ -89,26 +81,20 @@ namespace CTS_BE.BAL.Services.Pension
                     .FirstOrDefaultAsync();
                 if (ppoReceipt == null)
                 {
-                    PensionerResponseDTO errResponse = _mapper.Map<PensionerResponseDTO>(
-                        pensionerEntryDTO
-                    );
-                    errResponse.FillDataSource(
+                    response.FillErrorInDataSource(
                         ppoReceipt,
                         "PPO Receipt not found. Please check PPO No. and try again."
                     );
-                    return errResponse;
+                    return response;
                 }
-                pensionerEntity = _mapper.Map<Pensioner>(pensionerEntryDTO);
+
                 if (pensionerEntity.DateOfCommencement != ppoReceipt.DateOfCommencement)
                 {
-                    PensionerResponseDTO errResponse = _mapper.Map<PensionerResponseDTO>(
-                        pensionerEntryDTO
-                    );
-                    errResponse.FillDataSource(
+                    response.FillErrorInDataSource(
                         ppoReceipt,
                         "Date of Commencement does not match with PPO Receipt. Please check PPO No. and try again."
                     );
-                    return errResponse;
+                    return response;
                 }
                 pensionerEntity.PpoId = await _ppoIdSequenceRepository.GetNextPpoId(
                     financialYear,
@@ -126,24 +112,22 @@ namespace CTS_BE.BAL.Services.Pension
                         pensionerEntity.PpoId = 0;
                     }
                 }
+                response = _mapper.Map<PensionerResponseDTO>(pensionerEntity);
             }
-            finally
+            catch (Exception ex)
             {
-                if (pensionerEntity.PpoId == 0)
-                {
-                    pensionerResponseDTO = _mapper.Map<PensionerResponseDTO>(pensionerEntryDTO);
-                }
-                else
-                {
-                    pensionerResponseDTO = _mapper.Map<PensionerResponseDTO>(pensionerEntity);
-                }
+                response.FillErrorInDataSource(
+                    pensionerEntity,
+                    $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
+                );
+                return response;
             }
-            return pensionerResponseDTO;
+            return response;
         }
 
         public async Task<T> GetPensioner<T>(int ppoId, short financialYear, string treasuryCode)
         {
-            Pensioner pensionerEntity = new() { PpoId = 0 };
+            Pensioner pensionerEntity = new();
             T pensionerResponseDTO = _mapper.Map<T>(pensionerEntity);
             try
             {
@@ -157,7 +141,7 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (pensioner == null)
                 {
-                    pensionerResponseDTO.FillDataSource(
+                    pensionerResponseDTO.FillErrorInDataSource(
                         pensioner,
                         "Pensioner not found. Please check PPO Id and try again."
                     );
@@ -189,7 +173,10 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
-                pensionerResponseDTO.FillDataSource(pensionerEntity, ex.Message);
+                pensionerResponseDTO.FillErrorInDataSource(
+                    pensionerEntity,
+                    ex.InnerException?.Message ?? ex.Message
+                );
             }
 
             return pensionerResponseDTO;
@@ -215,7 +202,7 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (pensionerEntity is null)
                 {
-                    response.FillDataSource(
+                    response.FillErrorInDataSource(
                         pensionerEntity,
                         "Pensioner not found. Please check PPO Id. and try again."
                     );
@@ -251,17 +238,9 @@ namespace CTS_BE.BAL.Services.Pension
 
                 return response;
             }
-            catch (DbUpdateException ex)
-            {
-                response.FillDataSource(
-                    pensionerEntity,
-                    $"DbException: {ex.InnerException?.Message ?? ex.Message}"
-                );
-                return response;
-            }
             catch (Exception ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     pensionerEntity,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );

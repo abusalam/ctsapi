@@ -1,38 +1,30 @@
+using CTS_BE.DTOs;
+
 namespace CTS_BE.BAL.Interfaces.Pension
 {
     public interface IPpoComponentRevisionService : IBaseService
     {
-        public Task<List<TResponse>> GetPposForComponentRevisions<TResponse>(
-            short financialYear,
-            string treasuryCode
-        );
-        public Task<TResponse> CreateSinglePpoComponentRevision<TEntry, TResponse>(
+        public Task<T> GetPposForComponentRevisions<T>(short financialYear, string treasuryCode);
+        public Task<T> CreateSinglePpoComponentRevision<T>(
             int ppoId,
-            TEntry ppoComponentRevisionDTO,
+            PpoComponentRevisionEntryDTO ppoComponentRevisionDTO,
             short financialYear,
             string treasuryCode
         );
 
-        public Task<List<TResponse>> CreatePpoComponentRevisions<TEntry, TResponse>(
-            int ppoId,
-            List<TEntry> ppoComponentRevisionDTOs,
-            short financialYear,
-            string treasuryCode
-        );
-
-        public Task<List<TResponse>> GetPpoComponentRevisionsByPpoId<TResponse>(
+        public Task<List<T>> GetPpoComponentRevisionsByPpoId<T>(
             int ppoId,
             short financialYear,
             string treasuryCode
         );
 
-        public Task<TResponse> UpdatePpoComponentRevisionById<TEntry, TResponse>(
+        public Task<T> UpdatePpoComponentRevisionById<T>(
             long revisionId,
-            TEntry ppoComponentRevisionUpdateDTO,
+            PpoComponentRevisionUpdateDTO ppoComponentRevisionUpdateDTO,
             short financialYear,
             string treasuryCode
         );
-        public Task<TResponse> DeletePpoComponentRevisionById<TResponse>(
+        public Task<T> DeletePpoComponentRevisionById<T>(
             long revisionId,
             short financialYear,
             string treasuryCode

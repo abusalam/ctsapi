@@ -52,7 +52,7 @@ namespace CTS_BE.DAL.Repositories.Pension
                 _context.PpoSanctionDetails.Add(ppoSanctionDetail);
                 if (await _context.SaveChangesAsync() == 0)
                 {
-                    response.FillDataSource(
+                    response.FillErrorInDataSource(
                         ppoSanctionDetail,
                         "Failed to save data. Please try again after sometime."
                     );
@@ -62,7 +62,7 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             catch (DbUpdateException ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     ppoSanctionDetail,
                     $"DbException: {ex.InnerException?.Message ?? ex.Message}"
                 );
@@ -70,7 +70,7 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             catch (Exception ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     ppoSanctionDetail,
                     $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
                 );
@@ -90,7 +90,7 @@ namespace CTS_BE.DAL.Repositories.Pension
                 _context.PpoSanctionDetails.Update(ppoSanctionDetailEntity);
                 if (await _context.SaveChangesAsync() == 0)
                 {
-                    response.FillDataSource(
+                    response.FillErrorInDataSource(
                         ppoSanctionDetailEntity,
                         "Failed to save data. Please try again after sometime."
                     );
@@ -100,7 +100,7 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             catch (DbUpdateException ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     ppoSanctionDetailEntity,
                     $"DbException: {ex.InnerException?.Message ?? ex.Message}"
                 );
@@ -108,7 +108,7 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             catch (Exception ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     ppoSanctionDetailEntity,
                     $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
                 );

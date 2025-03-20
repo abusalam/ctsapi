@@ -44,7 +44,7 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (existingEppoReceipt != null)
                 {
-                    response.FillDataSource(
+                    response.FillErrorInDataSource(
                         existingEppoReceipt,
                         "eppoReceipt already exists for Pension Application No: "
                             + eppoReceipt.PensionApplnNo
@@ -61,7 +61,7 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     eppoReceipt,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );
@@ -91,7 +91,7 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     eppoRevision,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );
@@ -117,7 +117,7 @@ namespace CTS_BE.BAL.Services.Pension
                 if (eppoReceipt is null)
                 {
                     response = _mapper.Map<T>(new EPpoReceiptDetailDTO());
-                    response.FillDataSource(
+                    response.FillErrorInDataSource(
                         eppoReceipt,
                         $"No record found for Receipt ID: {receiptId}"
                     );
@@ -130,7 +130,7 @@ namespace CTS_BE.BAL.Services.Pension
             catch (Exception ex)
             {
                 response = _mapper.Map<T>(new EPpoReceiptDetailDTO());
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     new EppoReceipt(),
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );
@@ -156,7 +156,7 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (eppoReceipt is null)
                 {
-                    response.FillDataSource(
+                    response.FillErrorInDataSource(
                         eppoReceipt,
                         "No record found for Pension Application No: " + pensionApplnNo
                     );
@@ -168,7 +168,7 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     new EppoReceipt(),
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );
@@ -208,7 +208,7 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (eppoEntity is null)
                 {
-                    response.FillDataSource(
+                    response.FillErrorInDataSource(
                         eppoEntity,
                         "No record found for Pension Application No: " + pensionApplnNo
                     );
@@ -241,7 +241,7 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
-                response.FillDataSource(
+                response.FillErrorInDataSource(
                     eppoReceipt,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );
