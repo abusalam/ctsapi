@@ -197,5 +197,48 @@ namespace CTS_BE.Controllers.Pension
             }
             return response;
         }
+
+        [HttpGet("ppo/{PpoId}/payment-history")]
+        [Tags("Pension: Payment History")]
+        [OpenApi]
+        public async Task<
+            JsonAPIResponse<TableResponseDTO<PaymentHistoryResponseDTO>>
+        > GetPensionerPaymentHistoryByPpoId(int PpoId)
+        {
+            JsonAPIResponse<TableResponseDTO<PaymentHistoryResponseDTO>> response = new()
+            {
+                ApiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = $"PPO Payment History Received Successfully!",
+            };
+            try
+            {
+                response.Result = new()
+                {
+                    Headers =
+                    [
+                        new() { Name = "Component ID", FieldName = "componentId" },
+                        new() { Name = "Component Name", FieldName = "componentName" },
+                        new() { Name = "Breakup Amount", FieldName = "breakupAmount" },
+                        new() { Name = "From Date", FieldName = "fromDate" },
+                        new() { Name = "To Date", FieldName = "toDate" },
+                    ],
+                    Data = await _pensionerDetailsService.GetPensionerPaymentHistoryByPpoId(
+                        PpoId,
+                        GetCurrentFyYear(),
+                        GetTreasuryCode()
+                    ),
+                };
+            }
+            catch (Exception ex)
+            {
+                FillException(response, ex);
+                return response;
+            }
+            finally
+            {
+                FillErrorMessageFromDataSource(response);
+            }
+            return response;
+        }
     }
 }

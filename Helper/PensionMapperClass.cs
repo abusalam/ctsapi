@@ -96,6 +96,8 @@ namespace CTS_BE.Helper
 
             CreateMap<PpoBytransfer, PpoByTransferEntryDTO>().ReverseMap();
             CreateMap<PpoBytransfer, PpoByTransferHeadResponseDTO>().ReverseMap();
+
+            CreateMap<PpoBillBreakup, PaymentHistoryResponseDTO>().ReverseMap();
         }
     }
 }

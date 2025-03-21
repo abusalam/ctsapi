@@ -292,5 +292,18 @@ namespace CTS_BE.BAL.Services.Pension
         {
             return a + b;
         }
+
+        public async Task<List<PaymentHistoryResponseDTO>> GetPensionerPaymentHistoryByPpoId(
+            int ppoId,
+            short financialYear,
+            string treasuryCode
+        )
+        {
+            return await _pensionerDetailsRepository.GetPensionerPaymentHistoryByPpoIdAsync(
+                ppoId,
+                financialYear,
+                treasuryCode
+            );
+        }
     }
 }

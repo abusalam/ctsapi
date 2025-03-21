@@ -30,5 +30,10 @@ namespace CTS_BE.BAL.Interfaces.Pension
             short financialYear,
             string treasuryCode
         );
+        public Task<List<PaymentHistoryResponseDTO>> GetPensionerPaymentHistoryByPpoId(
+            int ppoId,
+            short financialYear,
+            string treasuryCode
+        );
     }
 }

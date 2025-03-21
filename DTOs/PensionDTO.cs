@@ -1403,4 +1403,13 @@ namespace CTS_BE.DTOs
     {
         public long Id { get; set; }
     }
+
+    public class PaymentHistoryResponseDTO : BaseDTO
+    {
+        public long ComponentId { get; set; }
+        public string ComponentName { get; set; } = null!;
+        public int BreakupAmount { get; set; }
+        public DateOnly FromDate { get; set; }
+        public DateOnly ToDate { get; set; }
+    }
 }
