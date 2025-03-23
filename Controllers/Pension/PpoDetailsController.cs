@@ -202,10 +202,10 @@ namespace CTS_BE.Controllers.Pension
         [Tags("Pension: Payment History")]
         [OpenApi]
         public async Task<
-            JsonAPIResponse<TableResponseDTO<PaymentHistoryResponseDTO>>
+            JsonAPIResponse<TableResponseDTO<PpoPaymentHistoryResponseDTO>>
         > GetPensionerPaymentHistoryByPpoId(int PpoId)
         {
-            JsonAPIResponse<TableResponseDTO<PaymentHistoryResponseDTO>> response = new()
+            JsonAPIResponse<TableResponseDTO<PpoPaymentHistoryResponseDTO>> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
                 Message = $"PPO Payment History Received Successfully!",

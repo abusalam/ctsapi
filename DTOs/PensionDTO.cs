@@ -1404,7 +1404,7 @@ namespace CTS_BE.DTOs
         public long Id { get; set; }
     }
 
-    public class PaymentHistoryResponseDTO : BaseDTO
+    public class PpoPaymentHistoryResponseDTO : BaseDTO
     {
         public long ComponentId { get; set; }
         public string ComponentName { get; set; } = null!;

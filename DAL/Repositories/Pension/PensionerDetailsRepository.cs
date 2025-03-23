@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Linq.Expressions;
 using AutoMapper;
 using CTS_BE.DAL.Entities.Pension;
@@ -142,7 +141,9 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
         }
 
-        public async Task<List<PaymentHistoryResponseDTO>> GetPensionerPaymentHistoryByPpoIdAsync(
+        public async Task<
+            List<PpoPaymentHistoryResponseDTO>
+        > GetPensionerPaymentHistoryByPpoIdAsync(
             int ppoId,
             short financialYear,
             string treasuryCode
@@ -152,10 +153,10 @@ namespace CTS_BE.DAL.Repositories.Pension
                 .PpoBillBreakups.Include(b => b.Revision.Rate.Breakup)
                 .Where(b =>
                     b.PpoId == ppoId
-                    && b.FinancialYear == financialYear
+                    // && b.FinancialYear == financialYear
                     && b.TreasuryCode == treasuryCode
                 )
-                .Select(b => new PaymentHistoryResponseDTO
+                .Select(b => new PpoPaymentHistoryResponseDTO
                 {
                     ComponentId = b.Revision.Rate.Breakup.Id,
                     ComponentName = b.Revision.Rate.Breakup.ComponentName,

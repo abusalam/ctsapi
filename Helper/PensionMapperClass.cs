@@ -53,6 +53,7 @@ namespace CTS_BE.Helper
             CreateMap<PpoBillBreakup, PpoBillBreakupResponseDTO>().ReverseMap();
             CreateMap<PpoBillBreakup, PpoBillBreakupEntryDTO>().ReverseMap();
             CreateMap<PpoBillBreakup, PpoPaymentListItemDTO>().ReverseMap();
+            CreateMap<PpoBillBreakup, PpoPaymentHistoryResponseDTO>().ReverseMap();
 
             CreateMap<Bill, RegularBillResponseDTO>().ReverseMap();
             CreateMap<Bill, BillResponseDTO>().ReverseMap();
@@ -96,8 +97,6 @@ namespace CTS_BE.Helper
 
             CreateMap<PpoBytransfer, PpoByTransferEntryDTO>().ReverseMap();
             CreateMap<PpoBytransfer, PpoByTransferHeadResponseDTO>().ReverseMap();
-
-            CreateMap<PpoBillBreakup, PaymentHistoryResponseDTO>().ReverseMap();
         }
     }
 }

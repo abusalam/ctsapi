@@ -33,7 +33,7 @@ namespace CTS_BE.DAL.Interfaces.Pension
             Expression<Func<Pensioner, PensionerListItemDTO>> selectExpression
         );
 
-        public Task<List<PaymentHistoryResponseDTO>> GetPensionerPaymentHistoryByPpoIdAsync(
+        public Task<List<PpoPaymentHistoryResponseDTO>> GetPensionerPaymentHistoryByPpoIdAsync(
             int ppoId,
             short financialYear,
             string treasuryCode
