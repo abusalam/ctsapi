@@ -1,13 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using CTS_BE.DAL.Entities.Pension;
 using CTS_BE.DTOs;
 
 namespace CTS_BE.BAL.Interfaces.Pension
 {
-    public interface IPensionCategoryService : IBaseService
+    public interface IPensionCategoryService
     {
         public Task<TResponse> CreatePensionPrimaryCategory<TEntry, TResponse>(
             TEntry pensionPrimaryCategoryEntryDTO,

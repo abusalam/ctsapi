@@ -2,7 +2,7 @@ using CTS_BE.DTOs;
 
 namespace CTS_BE.BAL.Interfaces.Pension
 {
-    public interface IPpoReceiptService : IBaseService
+    public interface IPpoReceiptService
     {
         public Task<ManualPpoReceiptResponseDTO> CreatePpoReceipt(
             ManualPpoReceiptEntryDTO manualPpoReceiptDTO,

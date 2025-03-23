@@ -6,14 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Repositories.Pension
 {
-    public class PpoIdSequenceRepository
-        : Repository<PpoIdSequence, PensionDbContext>,
-            IPpoIdSequenceRepository
+    public class PpoIdSequenceRepository(PensionDbContext context) : IPpoIdSequenceRepository
     {
-        private readonly PensionDbContext _context;
-
-        public PpoIdSequenceRepository(PensionDbContext context)
-            : base(context) => _context = context;
+        private readonly PensionDbContext _context = context;
 
         public async Task<int> GetNextPpoId(short financialYear, string treasuryCode)
         {

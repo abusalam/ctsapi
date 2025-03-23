@@ -2,7 +2,6 @@ using AutoMapper;
 using CTS_BE.BAL.Interfaces.Pension;
 using CTS_BE.DAL;
 using CTS_BE.DAL.Entities.Pension;
-using CTS_BE.DAL.Interfaces.Pension;
 using CTS_BE.DTOs;
 using CTS_BE.Helper;
 using CTS_BE.Helper.Authentication;
@@ -11,27 +10,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.BAL.Services.Pension
 {
-    public class PensionStatusService : BaseService, IPensionStatusService
+    public class PensionStatusService(
+        PensionDbContext pensionDbContext,
+        IClaimService claimService,
+        IMapper mapper
+    ) : BaseService(claimService), IPensionStatusService
     {
-        private readonly IClaimService _claimService;
-        private readonly PensionDbContext _pensionDbContext;
-        protected IPensionStatusRepository _pensionStatusRepository;
-        protected IMapper _mapper;
-
-        public PensionStatusService(
-            PensionDbContext pensionDbContext,
-            IPensionStatusRepository pensionStatusRepository,
-            IClaimService claimService,
-            IMapper mapper
-        )
-            : base(claimService)
-        {
-            _pensionStatusRepository = pensionStatusRepository;
-            _pensionDbContext = pensionDbContext;
-            _claimService = claimService;
-            _mapper = mapper;
-            _userId = _claimService.GetUserId();
-        }
+        private readonly PensionDbContext _pensionDbContext = pensionDbContext;
+        protected IMapper _mapper = mapper;
 
         public async Task<PensionStatusDTO> CheckPensionStatusFlag(
             int ppoId,

@@ -5,19 +5,11 @@ using CTS_BE.Helper;
 
 namespace CTS_BE.DAL.Repositories.Pension
 {
-    public class PpoByTransferRepository
-        : Repository<PpoBytransfer, PensionDbContext>,
-            IPpoByTransferRepository
+    public class PpoByTransferRepository(PensionDbContext context, IMapper mapper)
+        : IPpoByTransferRepository
     {
-        private readonly PensionDbContext _pensionDbContext;
-        private readonly IMapper _mapper;
-
-        public PpoByTransferRepository(PensionDbContext context, IMapper mapper)
-            : base(context)
-        {
-            _pensionDbContext = context;
-            _mapper = mapper;
-        }
+        private readonly PensionDbContext _pensionDbContext = context;
+        private readonly IMapper _mapper = mapper;
 
         public async Task<T> SavePpoByTransferHead<T>(PpoBytransfer ppobyTransferHeadEntity)
         {

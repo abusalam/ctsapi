@@ -6,19 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Repositories.Pension
 {
-    public class ByTransferRepository
-        : Repository<BytransferHead, PensionDbContext>,
-            IByTransferRepository
+    public class ByTransferRepository(PensionDbContext context, IMapper mapper)
+        : IByTransferRepository
     {
-        private readonly PensionDbContext _pensionDbContext;
-        private readonly IMapper _mapper;
-
-        public ByTransferRepository(PensionDbContext context, IMapper mapper)
-            : base(context)
-        {
-            _pensionDbContext = context;
-            _mapper = mapper;
-        }
+        private readonly PensionDbContext _pensionDbContext = context;
+        private readonly IMapper _mapper = mapper;
 
         public async Task<BytransferHead?> GetByTransferHeadByIdAsync(long id)
         {

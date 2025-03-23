@@ -8,19 +8,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Repositories.Pension
 {
-    public class ManualPpoReceiptRepository
-        : Repository<PpoReceipt, PensionDbContext>,
-            IManualPpoReceiptRepository
+    public class ManualPpoReceiptRepository(IMapper mapper, PensionDbContext context)
+        : IManualPpoReceiptRepository
     {
-        protected readonly PensionDbContext _context;
-        protected readonly IMapper _mapper;
-
-        public ManualPpoReceiptRepository(IMapper mapper, PensionDbContext context)
-            : base(context)
-        {
-            _mapper = mapper;
-            _context = context;
-        }
+        protected readonly PensionDbContext _context = context;
+        protected readonly IMapper _mapper = mapper;
 
         public async Task<List<T>> GetAllUnusedPpoReceipts<T>(
             short financialYear,

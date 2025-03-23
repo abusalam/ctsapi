@@ -4,7 +4,7 @@ using CTS_BE.DTOs;
 
 namespace CTS_BE.DAL.Interfaces.Pension
 {
-    public interface IManualPpoReceiptRepository : IRepository<PpoReceipt>
+    public interface IManualPpoReceiptRepository
     {
         public Task<List<T>> GetAllUnusedPpoReceipts<T>(
             short financialYear,

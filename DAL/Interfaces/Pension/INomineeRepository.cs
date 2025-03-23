@@ -3,7 +3,7 @@ using CTS_BE.DAL.Entities.Pension;
 
 namespace CTS_BE.DAL.Interfaces.Pension
 {
-    public interface INomineeRepository : IRepository<Nominee>
+    public interface INomineeRepository
     {
         public Task<T> SaveNomineeDetails<T>(Nominee nominee, string treasuryCode);
         public Task<List<T>?> GetNomineeByPpoIdAsync<T>(

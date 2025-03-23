@@ -6,17 +6,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Repositories.Pension
 {
-    public class BreakupRepository : Repository<Breakup, PensionDbContext>, IBreakupRepository
+    public class BreakupRepository(IMapper mapper, PensionDbContext context) : IBreakupRepository
     {
-        private readonly PensionDbContext _context;
-        private readonly IMapper _mapper;
-
-        public BreakupRepository(IMapper mapper, PensionDbContext context)
-            : base(context)
-        {
-            _mapper = mapper;
-            _context = context;
-        }
+        private readonly PensionDbContext _context = context;
+        private readonly IMapper _mapper = mapper;
 
         public async Task<List<T>> GetBreakupsAsync<T>(
             Expression<Func<Breakup, T>> selectExpression

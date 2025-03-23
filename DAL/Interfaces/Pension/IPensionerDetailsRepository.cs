@@ -4,7 +4,7 @@ using CTS_BE.DTOs;
 
 namespace CTS_BE.DAL.Interfaces.Pension
 {
-    public interface IPensionerDetailsRepository : IRepository<Pensioner>
+    public interface IPensionerDetailsRepository
     {
         public Task<List<PensionerResponseDTO>> GetAllPensionerDetailsAsync(
             short financialYear,

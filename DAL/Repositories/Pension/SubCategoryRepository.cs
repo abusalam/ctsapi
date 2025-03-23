@@ -5,19 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Repositories.Pension
 {
-    public class SubCategoryRepository
-        : Repository<SubCategory, PensionDbContext>,
-            ISubCategoryRepository
+    public class SubCategoryRepository(IMapper mapper, PensionDbContext context)
+        : ISubCategoryRepository
     {
-        private readonly IMapper _mapper;
-        private readonly PensionDbContext _context;
-
-        public SubCategoryRepository(IMapper mapper, PensionDbContext context)
-            : base(context)
-        {
-            _context = context;
-            _mapper = mapper;
-        }
+        private readonly IMapper _mapper = mapper;
+        private readonly PensionDbContext _context = context;
 
         public async Task<SubCategory?> GetSubCategoryById(long subCategoryId)
         {

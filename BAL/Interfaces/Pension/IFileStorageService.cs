@@ -2,7 +2,7 @@ using CTS_BE.DTOs;
 
 namespace CTS_BE.BAL.Interfaces.Pension
 {
-    public interface IFileStorageService : IBaseService
+    public interface IFileStorageService
     {
         public Task<T> CreateFileUpload<T>(
             FileEntryDTO fileEntryDTO,

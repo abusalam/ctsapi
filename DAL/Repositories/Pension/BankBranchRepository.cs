@@ -4,15 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Repositories.Pension
 {
-    public class BankBranchRepository : Repository<Branch, PensionDbContext>, IBankBranchRepository
+    public class BankBranchRepository(PensionDbContext context) : IBankBranchRepository
     {
-        private readonly PensionDbContext _context;
-
-        public BankBranchRepository(PensionDbContext context)
-            : base(context)
-        {
-            _context = context;
-        }
+        private readonly PensionDbContext _context = context;
 
         public async Task<Bank?> GetBankById(string treasuryCode, long bankId)
         {

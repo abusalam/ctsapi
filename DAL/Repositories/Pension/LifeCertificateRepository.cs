@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 using AutoMapper;
 using CTS_BE.DAL.Entities.Pension;
 using CTS_BE.DAL.Interfaces.Pension;
@@ -11,19 +7,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Repositories.Pension
 {
-    public class LifeCertificateRepository
-        : Repository<LifeCertificate, PensionDbContext>,
-            ILifeCertificateRepository
+    public class LifeCertificateRepository(IMapper mapper, PensionDbContext context)
+        : ILifeCertificateRepository
     {
-        private readonly IMapper _mapper;
-        private readonly PensionDbContext _context;
-
-        public LifeCertificateRepository(IMapper mapper, PensionDbContext context)
-            : base(context)
-        {
-            _mapper = mapper;
-            _context = context;
-        }
+        private readonly IMapper _mapper = mapper;
+        private readonly PensionDbContext _context = context;
 
         public async Task<T?> GetLifeCertificateByPpoIdAsync<T>(
             long ppoId,

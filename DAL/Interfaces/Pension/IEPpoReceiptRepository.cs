@@ -3,7 +3,7 @@ using CTS_BE.DAL.Entities.Pension;
 
 namespace CTS_BE.DAL.Interfaces.Pension
 {
-    public interface IEPpoReceiptRepository : IRepository<EppoReceipt>
+    public interface IEPpoReceiptRepository
     {
         public Task<T> SaveEPpoReceipt<T>(
             EppoReceipt entity,

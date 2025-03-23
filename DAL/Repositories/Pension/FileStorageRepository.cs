@@ -8,19 +8,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Repositories.Pension
 {
-    public class FileStorageRepository
-        : Repository<UploadedFile, PensionDbContext>,
-            IFileStorageRepository
+    public class FileStorageRepository(IMapper mapper, PensionDbContext context)
+        : IFileStorageRepository
     {
-        private readonly IMapper _mapper;
-        private readonly PensionDbContext _context;
-
-        public FileStorageRepository(IMapper mapper, PensionDbContext context)
-            : base(context)
-        {
-            _mapper = mapper;
-            _context = context;
-        }
+        private readonly IMapper _mapper = mapper;
+        private readonly PensionDbContext _context = context;
 
         public async Task<T?> GetFileById<T>(
             long fileId,

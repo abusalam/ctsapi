@@ -1,13 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using CTS_BE.DTOs;
 using CTS_BE.PensionEnum;
 
 namespace CTS_BE.BAL.Interfaces.Pension
 {
-    public interface IPensionStatusService : IBaseService
+    public interface IPensionStatusService
     {
         public Task<T> SetPensionStatusFlag<T>(
             PensionStatusEntryDTO pensionStatusEntryDTO,

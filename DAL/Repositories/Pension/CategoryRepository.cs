@@ -6,9 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Repositories.Pension
 {
-    public class CategoryRepository(PensionDbContext context, IMapper mapper)
-        : Repository<Category, PensionDbContext>(context),
-            ICategoryRepository
+    public class CategoryRepository(PensionDbContext context, IMapper mapper) : ICategoryRepository
     {
         private readonly PensionDbContext _context = context;
         private readonly IMapper _mapper = mapper;

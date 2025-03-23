@@ -1,13 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using CTS_BE.BAL.Services.Pension;
 using CTS_BE.DTOs;
 
 namespace CTS_BE.BAL.Interfaces.Pension
 {
-    public interface ILifeCertificateService : IBaseService
+    public interface ILifeCertificateService
     {
         public Task<T> GetLifeCertificateByPpoId<T>(long ppoId, string treasuryCode);
         public Task<LifeCertificateListResponseDTO> GetLifeCertificatesByBranchId(

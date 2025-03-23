@@ -2,7 +2,7 @@ using CTS_BE.DTOs;
 
 namespace CTS_BE.BAL.Interfaces.Pension
 {
-    public interface INomineeService : IBaseService
+    public interface INomineeService
     {
         public Task<NomineeListResponseDTO> GetNomineeByPpoId(int ppoId, string treasuryCode);
         public Task<T> CreateNomineeDetails<T>(

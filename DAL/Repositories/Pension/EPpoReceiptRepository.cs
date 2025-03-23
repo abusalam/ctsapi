@@ -8,19 +8,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Repositories.Pension
 {
-    public class EPpoReceiptRepository
-        : Repository<EppoReceipt, PensionDbContext>,
-            IEPpoReceiptRepository
+    public class EPpoReceiptRepository(IMapper mapper, PensionDbContext context)
+        : IEPpoReceiptRepository
     {
-        private readonly IMapper _mapper;
-        private readonly PensionDbContext _context;
-
-        public EPpoReceiptRepository(IMapper mapper, PensionDbContext context)
-            : base(context)
-        {
-            _mapper = mapper;
-            _context = context;
-        }
+        private readonly IMapper _mapper = mapper;
+        private readonly PensionDbContext _context = context;
 
         public async Task<EppoReceipt?> GetEPpoReceiptById(
             long receiptId,

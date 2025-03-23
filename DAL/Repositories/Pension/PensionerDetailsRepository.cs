@@ -9,19 +9,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Repositories.Pension
 {
-    public class PensionerDetailsRepository
-        : Repository<Pensioner, PensionDbContext>,
-            IPensionerDetailsRepository
+    public class PensionerDetailsRepository(PensionDbContext context, IMapper mapper)
+        : IPensionerDetailsRepository
     {
-        private readonly PensionDbContext _context;
-        private readonly IMapper _mapper;
-
-        public PensionerDetailsRepository(PensionDbContext context, IMapper mapper)
-            : base(context)
-        {
-            _context = context;
-            _mapper = mapper;
-        }
+        private readonly PensionDbContext _context = context;
+        private readonly IMapper _mapper = mapper;
 
         public async Task<List<PensionerResponseDTO>> GetAllPensionerDetailsAsync(
             short financialYear,

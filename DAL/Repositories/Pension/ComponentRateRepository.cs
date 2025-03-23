@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 using AutoMapper;
 using CTS_BE.DAL.Entities.Pension;
 using CTS_BE.DAL.Interfaces.Pension;
@@ -11,8 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.DAL.Repositories.Pension
 {
     public class ComponentRateRepository(PensionDbContext context, IMapper mapper)
-        : Repository<ComponentRate, PensionDbContext>(context),
-            IComponentRateRepository
+        : IComponentRateRepository
     {
         private readonly PensionDbContext _context = context;
         private readonly IMapper _mapper = mapper;

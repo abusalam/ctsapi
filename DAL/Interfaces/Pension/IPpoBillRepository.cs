@@ -3,7 +3,7 @@ using CTS_BE.DTOs;
 
 namespace CTS_BE.DAL.Interfaces.Pension
 {
-    public interface IPpoBillRepository : IRepository<PpoBill>
+    public interface IPpoBillRepository
     {
         public Task<int> GetNextBillNo(short financialYear, string treasuryCode);
 
@@ -13,30 +13,7 @@ namespace CTS_BE.DAL.Interfaces.Pension
             string treasuryCode
         );
 
-        public Task<T> GetPpoFirstBillByPpoId<T>(
-            int ppoId,
-            short financialYear,
-            string treasuryCode
-        );
-
         public Task<T> SavePpoBill<T>(PpoBill firstBill, short financialYear, string treasuryCode);
-
-        public T GeneratePensionBill<T>(
-            Pensioner pensioner,
-            PpoBillEntryDTO ppoBillEntryDTO,
-            char billType,
-            short financialYear,
-            string treasuryCode
-        );
-
-        public Task<Bill?> GetExistingBillForRegularBill(
-            long hoaId,
-            long branchId,
-            DateOnly fromDate,
-            DateOnly toDate,
-            short financialYear,
-            string treasuryCode
-        );
 
         public Task<long> GetHoaIdByPpoId(long ppoId, short financialYear, string treasuryCode);
 
@@ -62,32 +39,5 @@ namespace CTS_BE.DAL.Interfaces.Pension
         );
 
         public Task<Pensioner?> GetPensionerByPpoId(int ppoId, string treasuryCode);
-
-        public Task<List<Bill>> GetSavedRegularPensionBills(
-            short year,
-            short month,
-            short financialYear,
-            string treasuryCode,
-            long? categoryId = null,
-            long? bankId = null,
-            long[]? branchIds = null
-        );
-
-        public Task<List<Pensioner>> GetAvailablePensionersForBillGeneration(
-            short year,
-            short month,
-            char billType,
-            short financialYear,
-            string treasuryCode
-        );
-
-        public Task<List<Pensioner>> GetPensionersForFirstBillGeneration(
-            short financialYear,
-            string treasuryCode
-        );
-        public Task<List<Pensioner>> GetPensionersForFirstBillPrint(
-            short financialYear,
-            string treasuryCode
-        );
     }
 }

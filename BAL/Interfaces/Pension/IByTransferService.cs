@@ -2,7 +2,7 @@
 
 namespace CTS_BE.BAL.Interfaces.Pension
 {
-    public interface IByTransferService : IBaseService
+    public interface IByTransferService
     {
         Task<T> SaveByTransferHead<T>(ByTransferHeadEntryDTO byTransferHeadEntryDTO);
 

@@ -6,19 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Repositories.Pension
 {
-    public class PpoSanctionDetailsRepository
-        : Repository<PpoSanctionDetail, PensionDbContext>,
-            IPpoSanctionDetailsRepository
+    public class PpoSanctionDetailsRepository(IMapper mapper, PensionDbContext context)
+        : IPpoSanctionDetailsRepository
     {
-        private readonly IMapper _mapper;
-        private readonly PensionDbContext _context;
-
-        public PpoSanctionDetailsRepository(IMapper mapper, PensionDbContext context)
-            : base(context)
-        {
-            _mapper = mapper;
-            _context = context;
-        }
+        private readonly IMapper _mapper = mapper;
+        private readonly PensionDbContext _context = context;
 
         public async Task<PpoSanctionDetail?> GetSanctionDetailsByPpoIdAsync(
             int ppoId,

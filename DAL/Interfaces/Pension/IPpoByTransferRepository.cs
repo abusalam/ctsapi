@@ -2,7 +2,7 @@
 
 namespace CTS_BE.DAL.Interfaces.Pension
 {
-    public interface IPpoByTransferRepository : IRepository<PpoBytransfer>
+    public interface IPpoByTransferRepository
     {
         public Task<T> SavePpoByTransferHead<T>(PpoBytransfer ppobyTransferHeadEntity);
     }

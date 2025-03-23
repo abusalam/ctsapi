@@ -8,8 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CTS_BE.DAL.Repositories.Pension
 {
     public class PpoComponentRevisionRepository(IMapper mapper, PensionDbContext context)
-        : Repository<PpoComponentRevision, PensionDbContext>(context),
-            IPpoComponentRevisionRepository
+        : IPpoComponentRevisionRepository
     {
         private readonly PensionDbContext _context = context;
         private readonly IMapper _mapper = mapper;

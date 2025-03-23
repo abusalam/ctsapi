@@ -14,8 +14,9 @@ namespace CTS_BE.BAL.Services.Pension
         /// <param name="commencementDate">Date when the pension is commencing.</param>
         /// <param name="toDate">Date till which the pension payment is to be calculated.</param>
         /// <param name="basicPensionAmount">The basic pension amount.</param>
+        /// <param name="commutedPensionAmount">The commuted pension amount.</param>
         /// <returns>List of pension payments.</returns>
-        public static List<PpoPaymentListItemDTO> CalculatePpoPayments(
+        public static List<PpoPaymentListItemDTO> CalculatePpoPaymentsForFirstBill(
             ICollection<ComponentRate> componentRates,
             DateOnly commencementDate,
             DateOnly toDate,
@@ -23,7 +24,7 @@ namespace CTS_BE.BAL.Services.Pension
             int commutedPensionAmount
         )
         {
-            List<PpoPaymentListItemDTO>? ppoPayments = new();
+            List<PpoPaymentListItemDTO>? ppoPayments = [];
             DateOnly calculatedPeriodStartDate = toDate;
             long prevBreakupId = 0;
 
@@ -41,6 +42,7 @@ namespace CTS_BE.BAL.Services.Pension
                     {
                         calculatedPeriodStartDate = toDate;
                     }
+
                     if (commencementDate > calculatedPeriodStartDate)
                     {
                         return;
@@ -114,6 +116,48 @@ namespace CTS_BE.BAL.Services.Pension
                     .OrderBy(entity => entity.ComponentName)
                     .ThenBy(entity => entity.FromDate),
             ];
+        }
+
+        /// <summary>
+        /// Calculates pension payments for a given period from a list of component rates.
+        /// </summary>
+        /// <param name="componentRates">List of component rates.</param>
+        /// <param name="fromDate">Date from which the pension bill is being calculated.</param>
+        /// <param name="toDate">Date till which the pension bill is to be calculated.</param>
+        /// <returns>List of pension payments.</returns>
+        public static List<PpoBillBreakupResponseDTO> CalculatePpoBillBreakupsForRegularBill(
+            ICollection<PpoComponentRevision> ppoComponentRevisions,
+            DateOnly fromDate,
+            DateOnly toDate
+        )
+        {
+            List<PpoBillBreakupResponseDTO>? ppoBillBreakups = [];
+
+            ppoComponentRevisions
+                .ToList()
+                .ForEach(componentRevision =>
+                {
+                    if (componentRevision.ToDate != null && componentRevision.ToDate < fromDate)
+                    {
+                        return;
+                    }
+
+                    ppoBillBreakups.Add(
+                        new()
+                        {
+                            FromDate = fromDate,
+                            ToDate = toDate,
+                            AmountPerMonth = componentRevision.AmountPerMonth,
+                            Revision = new()
+                            {
+                                Id = componentRevision.Id,
+                                RateId = componentRevision.RateId,
+                            },
+                        }
+                    );
+                });
+
+            return ppoBillBreakups;
         }
 
         /// <summary>

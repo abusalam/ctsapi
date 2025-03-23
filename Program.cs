@@ -90,7 +90,7 @@ catch (Exception ex)
 //Pension Repositories
 builder.Services.AddTransient<IFileStorageRepository, FileStorageRepository>();
 builder.Services.AddTransient<IManualPpoReceiptRepository, ManualPpoReceiptRepository>();
-builder.Services.AddTransient<IPensionStatusRepository, PensionStatusRepository>();
+
 builder.Services.AddTransient<IPensionerDetailsRepository, PensionerDetailsRepository>();
 builder.Services.AddTransient<IPpoIdSequenceRepository, PpoIdSequenceRepository>();
 builder.Services.AddTransient<IPrimaryCategoryRepository, PrimaryCategoryRepository>();
@@ -100,6 +100,8 @@ builder.Services.AddTransient<IBreakupRepository, BreakupRepository>();
 builder.Services.AddTransient<IComponentRateRepository, ComponentRateRepository>();
 builder.Services.AddTransient<IPpoComponentRevisionRepository, PpoComponentRevisionRepository>();
 builder.Services.AddTransient<IPpoBillRepository, PpoBillRepository>();
+builder.Services.AddTransient<IPpoFirstBillRepository, PpoFirstBillRepository>();
+builder.Services.AddTransient<IPpoRegularBillRepository, PpoRegularBillRepository>();
 builder.Services.AddTransient<IBankBranchRepository, BankBranchRepository>();
 builder.Services.AddTransient<IPpoSanctionDetailsRepository, PpoSanctionDetailsRepository>();
 builder.Services.AddTransient<INomineeRepository, NomineeRepository>();
@@ -119,7 +121,8 @@ builder.Services.AddTransient<IPensionCategoryService, PensionCategoryService>()
 builder.Services.AddTransient<IPensionBreakupService, PensionBreakupService>();
 builder.Services.AddTransient<IComponentRateService, ComponentRateService>();
 builder.Services.AddTransient<IPpoComponentRevisionService, PpoComponentRevisionService>();
-builder.Services.AddTransient<IPpoBillService, PpoBillService>();
+builder.Services.AddTransient<IPpoFirstBillService, PpoFirstBillService>();
+builder.Services.AddTransient<IPpoRegularBillService, PpoRegularBillService>();
 builder.Services.AddTransient<IBankBranchService, BankBranchService>();
 builder.Services.AddTransient<IPpoSanctionDetailsService, PpoSanctionDetailsService>();
 builder.Services.AddTransient<INomineeService, NomineeService>();

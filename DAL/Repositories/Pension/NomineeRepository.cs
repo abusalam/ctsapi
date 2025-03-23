@@ -7,17 +7,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Repositories.Pension
 {
-    public class NomineeRepository : Repository<Nominee, PensionDbContext>, INomineeRepository
+    public class NomineeRepository(IMapper mapper, PensionDbContext context) : INomineeRepository
     {
-        private readonly IMapper _mapper;
-        private readonly PensionDbContext _context;
-
-        public NomineeRepository(IMapper mapper, PensionDbContext context)
-            : base(context)
-        {
-            _mapper = mapper;
-            _context = context;
-        }
+        private readonly IMapper _mapper = mapper;
+        private readonly PensionDbContext _context = context;
 
         public async Task<List<T>?> GetNomineeByPpoIdAsync<T>(
             int ppoId,

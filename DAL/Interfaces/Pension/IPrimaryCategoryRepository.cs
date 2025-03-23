@@ -1,13 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using CTS_BE.DAL.Entities.Pension;
 using CTS_BE.DTOs;
 
 namespace CTS_BE.DAL.Interfaces.Pension
 {
-    public interface IPrimaryCategoryRepository : IRepository<PrimaryCategory>
+    public interface IPrimaryCategoryRepository
     {
         public Task<T> SavePrimaryCategoryAsync<T>(PrimaryCategory primaryCategory);
         public Task<PrimaryCategory?> GetPrimaryCategoryById(long primaryCategoryId);

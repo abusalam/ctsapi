@@ -3,7 +3,7 @@ using CTS_BE.DAL.Entities.Pension;
 
 namespace CTS_BE.DAL.Interfaces.Pension
 {
-    public interface IPpoComponentRevisionRepository : IRepository<PpoComponentRevision>
+    public interface IPpoComponentRevisionRepository
     {
         public Task<List<T>> GetAllPpos<T>(
             Expression<Func<Pensioner, T>> selectExpression,

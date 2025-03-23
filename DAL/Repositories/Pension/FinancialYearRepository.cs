@@ -1,12 +1,9 @@
-using CTS_BE.DAL.Entities.Pension;
 using CTS_BE.DAL.Interfaces.Pension;
 using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Repositories.Pension
 {
-    public class FinancialYearRepository(PensionDbContext context)
-        : Repository<SubCategory, PensionDbContext>(context),
-            IFinancialYearRepository
+    public class FinancialYearRepository(PensionDbContext context) : IFinancialYearRepository
     {
         private readonly PensionDbContext _context = context;
 

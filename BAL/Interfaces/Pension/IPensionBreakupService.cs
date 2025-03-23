@@ -2,7 +2,7 @@ using CTS_BE.DTOs;
 
 namespace CTS_BE.BAL.Interfaces.Pension
 {
-    public interface IPensionBreakupService : IBaseService
+    public interface IPensionBreakupService
     {
         public Task<TResponse> CreatePensionBreakup<TEntry, TResponse>(
             TEntry pensionBreakupEntryDTO,

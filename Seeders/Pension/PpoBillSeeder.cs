@@ -14,7 +14,7 @@ namespace CTS_BE.Seeders.Pension
         IMapper mapper,
         IManualPpoReceiptRepository _manualPpoReceiptRepository,
         IPpoIdSequenceRepository _ppoIdSequenceRepository,
-        IPpoBillService _ppoBillService
+        IPpoFirstBillService _ppoFirstBillService
     ) : BaseSeeder, ISeeder
     {
         public async Task SeedAsync(int count = 1)
@@ -109,14 +109,14 @@ namespace CTS_BE.Seeders.Pension
                     };
 
                     PensionerFirstBillResponseDTO bill =
-                        await _ppoBillService.SaveFirstPensionBill<PensionerFirstBillResponseDTO>(
+                        await _ppoFirstBillService.SaveFirstPensionBill<PensionerFirstBillResponseDTO>(
                             initiateFirstPensionBillDTO,
                             _financialYear,
                             _treasuryCode
                         );
 
                     var ppoBillResponse =
-                        await _ppoBillService.SaveFirstPensionBill<PpoBillSaveResponseDTO>(
+                        await _ppoFirstBillService.SaveFirstPensionBill<PpoBillSaveResponseDTO>(
                             bill,
                             _financialYear,
                             _treasuryCode

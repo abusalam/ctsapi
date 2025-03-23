@@ -1,12 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using CTS_BE.DTOs;
 
 namespace CTS_BE.BAL.Interfaces.Pension
 {
-    public interface IComponentRateService : IBaseService
+    public interface IComponentRateService
     {
         public Task<TResponse> CreateComponentRates<TEntry, TResponse>(
             TEntry pensionRateEntryDTO,

@@ -2,7 +2,7 @@
 
 namespace CTS_BE.DAL.Interfaces.Pension
 {
-    public interface IByTransferRepository : IRepository<BytransferHead>
+    public interface IByTransferRepository
     {
         Task<T> SaveByTransferHead<T>(BytransferHead byTransferHeadEntity);
 

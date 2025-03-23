@@ -2,7 +2,7 @@ using CTS_BE.DTOs;
 
 namespace CTS_BE.BAL.Interfaces.Pension
 {
-    public interface IPpoComponentRevisionService : IBaseService
+    public interface IPpoComponentRevisionService
     {
         public Task<T> GetPposForComponentRevisions<T>(short financialYear, string treasuryCode);
         public Task<T> CreateSinglePpoComponentRevision<T>(

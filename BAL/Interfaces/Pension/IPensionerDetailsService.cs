@@ -1,13 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using CTS_BE.DTOs;
-using CTS_BE.Helper;
 
 namespace CTS_BE.BAL.Interfaces.Pension
 {
-    public interface IPensionerDetailsService : IBaseService
+    public interface IPensionerDetailsService
     {
         public Task<PensionerResponseDTO> CreatePensioner(
             PensionerEntryDTO pensionerEntryDTO,
