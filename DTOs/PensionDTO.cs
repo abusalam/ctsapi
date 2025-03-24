@@ -1412,4 +1412,34 @@ namespace CTS_BE.DTOs
         public DateOnly FromDate { get; set; }
         public DateOnly ToDate { get; set; }
     }
+
+    public class PpoArrearBillEntryDTO : BaseDTO
+    {
+        [Required]
+        public int PpoId { get; set; }
+
+        [Required]
+        public DateOnly PeriodFrom { get; set; }
+
+        [Required]
+        public DateOnly PeriodTo { get; set; }
+    }
+
+    public class PpoArrearBillResponseDTO : BaseDTO
+    {
+        public long Id { get; set; }
+        public string PpoNo { get; set; } = null!;
+        public string PensionerName { get; set; } = null!;
+        public string BankName { get; set; } = null!;
+        public string BankAcNo { get; set; } = null!;
+    }
+
+    public partial class PpoArrearBillListResponseDTO : BaseDTO
+    {
+        public List<PpoArrearBillResponseDTO> PpoList { get; set; } = null!;
+        public int PpoCount
+        {
+            get { return this.PpoList?.Count ?? 0; }
+        }
+    }
 }

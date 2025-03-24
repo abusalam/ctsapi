@@ -111,6 +111,7 @@ builder.Services.AddTransient<ITreasuryRepository, TreasuryRepository>();
 builder.Services.AddTransient<IFinancialYearRepository, FinancialYearRepository>();
 builder.Services.AddTransient<IByTransferRepository, ByTransferRepository>();
 builder.Services.AddTransient<IPpoByTransferRepository, PpoByTransferRepository>();
+builder.Services.AddTransient<IPpoArrearBillRepository, PpoArrearBillRepository>();
 
 // Pension Services
 builder.Services.AddTransient<IFileStorageService, FileStorageService>();
@@ -131,6 +132,7 @@ builder.Services.AddTransient<IEPpoReceiptService, EPpoReceiptService>();
 builder.Services.AddTransient<IConvertToFamilyPensionService, ConvertToFamilyPensionService>();
 builder.Services.AddTransient<IByTransferService, ByTransferService>();
 builder.Services.AddTransient<IPpoByTransferService, PpoByTransferService>();
+builder.Services.AddTransient<IPpoArrearBillService, PpoArrearBillService>();
 
 // Register Seeders Assuming it implements ISeeder
 builder.Services.AddTransient<AccountHeadSeeder>();
