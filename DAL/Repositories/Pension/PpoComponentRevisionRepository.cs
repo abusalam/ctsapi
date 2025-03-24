@@ -81,6 +81,65 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
         }
 
+        public async Task<T> CreateSinglePpoComponentRevision<T>(
+            PpoComponentRevision ppoComponentRevisionEntity
+        )
+        {
+            T responseDTO = _mapper.Map<T>(ppoComponentRevisionEntity);
+
+            try
+            {
+                await _context.PpoComponentRevisions.AddAsync(ppoComponentRevisionEntity);
+
+                if (await _context.SaveChangesAsync() == 0)
+                {
+                    responseDTO.FillErrorInDataSource(
+                        ppoComponentRevisionEntity,
+                        "Failed to add PPO Component Revision record!"
+                    );
+                    return responseDTO;
+                }
+
+                // Load Rate and Breakup
+                await _context
+                    .Entry(ppoComponentRevisionEntity)
+                    .Reference(entity => entity.Rate)
+                    .LoadAsync();
+
+                if (ppoComponentRevisionEntity.Rate != null)
+                {
+                    await _context
+                        .Entry(ppoComponentRevisionEntity.Rate)
+                        .Reference(rate => rate.Breakup)
+                        .LoadAsync();
+                }
+
+                // Load Pensioner
+                await _context
+                    .Entry(ppoComponentRevisionEntity)
+                    .Reference(entity => entity.Pensioner)
+                    .LoadAsync();
+
+                // Load PpoBillBreakups collection
+                await _context
+                    .Entry(ppoComponentRevisionEntity)
+                    .Collection(entity => entity.PpoBillBreakups)
+                    .LoadAsync();
+
+                // Map updated entity with all related data to DTO
+                responseDTO = _mapper.Map<T>(ppoComponentRevisionEntity);
+            }
+            catch (Exception ex)
+            {
+                responseDTO.FillErrorInDataSource(
+                    responseDTO,
+                    $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
+                );
+            }
+
+            return responseDTO;
+        }
+
         public async Task<T> DeletePpoComponentRevisionById<T>(
             PpoComponentRevision ppoComponentRevision,
             short financialYear,
@@ -157,6 +216,19 @@ namespace CTS_BE.DAL.Repositories.Pension
                 .Include(entity => entity.Rate)
                 .ThenInclude(entity => entity.Breakup)
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<List<PpoComponentRevision>> GetRevisionsByPpoIdAndRateId(
+            int ppoId,
+            long rateId
+        )
+        {
+            return await _context
+                .PpoComponentRevisions.Where(entity =>
+                    entity.ActiveFlag && entity.PpoId == ppoId && entity.RateId == rateId
+                )
+                .OrderByDescending(entity => entity.FromDate)
+                .ToListAsync();
         }
 
         public async Task<T> UpdatePpoComponentRevision<T>(

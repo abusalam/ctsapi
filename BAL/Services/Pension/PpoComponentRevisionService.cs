@@ -78,40 +78,34 @@ namespace CTS_BE.BAL.Services.Pension
             PpoComponentRevision ppoComponentRevision = _mapper.Map<PpoComponentRevision>(
                 ppoComponentRevisionDTO
             );
-            T? response = _mapper.Map<T>(ppoComponentRevision);
+            ppoComponentRevision.PpoId = ppoId;
+
+            T response = _mapper.Map<T>(ppoComponentRevision);
 
             try
             {
                 ppoComponentRevision.FillFrom(ppoComponentRevisionDTO);
+                // var today = DateOnly.FromDateTime(DateTime.UtcNow);
 
-                if (
-                    await _ppoComponentRevisionRepository.CheckPpoComponentRevisionExists(
-                        ppoComponentRevision,
-                        financialYear,
-                        treasuryCode
-                    )
-                )
+                // if (ppoComponentRevision.FromDate < today)
+                // {
+                //     response.FillErrorInDataSource(ppoComponentRevision, "Old date not allowed.");
+                //     return response;
+                // }
+
+                var rateExists = await _ppoComponentRevisionRepository.CheckRateExists(
+                    ppoComponentRevision.RateId,
+                    financialYear,
+                    treasuryCode
+                );
+
+                if (!rateExists)
                 {
-                    response.FillErrorInDataSource(
-                        ppoComponentRevision,
-                        $"PPO Component Revision already exists!"
-                    );
+                    response.FillErrorInDataSource(ppoComponentRevision, "Rate not found.");
                     return response;
                 }
 
-                if (
-                    !await _ppoComponentRevisionRepository.CheckRateExists(
-                        ppoComponentRevision.RateId,
-                        financialYear,
-                        treasuryCode
-                    )
-                )
-                {
-                    response.FillErrorInDataSource(ppoComponentRevision, $"Rate not found!");
-                    return response;
-                }
-
-                Pensioner? pensionerFound =
+                var pensionerFound =
                     await _pensionerDetailsRepository.GetPensionerDetailsByPpoIdAsync(
                         ppoId,
                         financialYear,
@@ -121,45 +115,65 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (pensionerFound is null)
                 {
-                    response.FillErrorInDataSource(
-                        ppoComponentRevisionDTO,
-                        $"Pensioner not found!"
-                    );
+                    response.FillErrorInDataSource(ppoComponentRevisionDTO, "Pensioner not found.");
                     return response;
+                }
+
+                var existingRevisions =
+                    await _ppoComponentRevisionRepository.GetRevisionsByPpoIdAndRateId(
+                        ppoId,
+                        ppoComponentRevision.RateId
+                    );
+
+                if (existingRevisions.Any())
+                {
+                    var latestEntry = existingRevisions.First();
+
+                    if (ppoComponentRevision.FromDate <= latestEntry.FromDate)
+                    {
+                        response.FillErrorInDataSource(
+                            ppoComponentRevision,
+                            "Date overlap detected."
+                        );
+                        return response;
+                    }
+
+                    if (
+                        latestEntry.ToDate.HasValue
+                        && ppoComponentRevision.FromDate != latestEntry.ToDate.Value.AddDays(1)
+                    )
+                    {
+                        response.FillErrorInDataSource(
+                            ppoComponentRevision,
+                            $"Date gap detected, New FromDate must be {latestEntry.ToDate.Value.AddDays(1)}."
+                        );
+                        return response;
+                    }
+
+                    latestEntry.ToDate = ppoComponentRevision.FromDate.AddDays(-1);
+                    await _ppoComponentRevisionRepository.UpdatePpoComponentRevision<T>(
+                        latestEntry,
+                        financialYear,
+                        treasuryCode
+                    );
                 }
 
                 SetCreatedBy(ppoComponentRevision);
-                // ppoComponentRevision.TreasuryCode = treasuryCode;
                 ppoComponentRevision.PensionerId = pensionerFound.Id;
-                await _pensionDbContext.Set<PpoComponentRevision>().AddAsync(ppoComponentRevision);
 
-                if (await _pensionDbContext.SaveChangesAsync() == 0)
-                {
-                    response.FillErrorInDataSource(
-                        ppoComponentRevision,
-                        $"PPO Component Rate not saved!"
+                response =
+                    await _ppoComponentRevisionRepository.CreateSinglePpoComponentRevision<T>(
+                        ppoComponentRevision
                     );
-                    return response;
-                }
-                await _pensionDbContext
-                    .Entry(ppoComponentRevision)
-                    .Reference(entity => entity.Rate)
-                    .LoadAsync();
-
-                await _pensionDbContext
-                    .Entry(ppoComponentRevision.Rate)
-                    .Reference(entity => entity.Breakup)
-                    .LoadAsync();
-
-                response = _mapper.Map<T>(ppoComponentRevision);
             }
             catch (Exception ex)
             {
                 response.FillErrorInDataSource(
                     ppoComponentRevision,
-                    $"DbUpdateException: {ex.InnerException?.Message}"
+                    $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );
             }
+
             return response;
         }
 

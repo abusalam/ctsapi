@@ -24,6 +24,11 @@ namespace CTS_BE.DAL.Interfaces.Pension
             string treasuryCode
         );
 
+        public Task<List<PpoComponentRevision>> GetRevisionsByPpoIdAndRateId(
+            int ppoId,
+            long rateId
+        );
+
         public Task<T> DeletePpoComponentRevisionById<T>(
             PpoComponentRevision ppoComponentRevision,
             short financialYear,
@@ -48,6 +53,9 @@ namespace CTS_BE.DAL.Interfaces.Pension
             PpoComponentRevision ppoComponentRevision,
             short financialYear,
             string treasuryCode
+        );
+        public Task<T> CreateSinglePpoComponentRevision<T>(
+            PpoComponentRevision ppoComponentRevisionEntity
         );
     }
 }
