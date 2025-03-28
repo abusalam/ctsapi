@@ -1,11 +1,13 @@
 using CTS_BE.BAL.Interfaces.Pension;
 using CTS_BE.DTOs;
+using CTS_BE.Filters;
 using CTS_BE.Helper;
 using CTS_BE.Helper.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CTS_BE.Controllers.Pension
 {
+    // [Authorize("roles:clerk|permissions:can-receive-bill")]
     public class PpoRegularBillController(
         IPpoRegularBillService ppoRegularBillService,
         IClaimService claimService
@@ -13,6 +15,7 @@ namespace CTS_BE.Controllers.Pension
     {
         private readonly IPpoRegularBillService _ppoRegularBillService = ppoRegularBillService;
 
+        [Authorize("roles:Accountant,Admin|permissions:can-bill-check")]
         [HttpGet("regular-bill/{year}/{month}/ppos")]
         [Tags("Pension: Regular Bill")]
         [OpenApi]
@@ -82,6 +85,7 @@ namespace CTS_BE.Controllers.Pension
             return response;
         }
 
+        [Authorize("roles:Accountant,Admin|permissions:can-bill-check")]
         [HttpGet("regular-bill/{year}/{month}/bills")]
         [Tags("Pension: Regular Bill")]
         [OpenApi]

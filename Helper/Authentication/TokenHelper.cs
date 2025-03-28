@@ -81,7 +81,7 @@ namespace CTS_BE.Helper.Authentication
             AuthClaimModel? authClaimModel = new()
             {
                 RefreshedAccessToken = string.Empty,
-                Claims = [],
+                claims = [],
             };
 
             if (validToken != null)
@@ -91,7 +91,7 @@ namespace CTS_BE.Helper.Authentication
 
                 if (tokenHandler.ReadToken(token) is JwtSecurityToken authToken)
                 {
-                    authClaimModel.Claims = [.. authToken.Claims];
+                    authClaimModel.claims = [.. authToken.Claims];
                 }
             }
             return authClaimModel;

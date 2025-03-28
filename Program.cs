@@ -17,8 +17,10 @@ using CTS_BE.Helper.Authentication;
 using CTS_BE.Middlewares;
 using CTS_BE.PensionEnum;
 using CTS_BE.Seeders.Pension;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Npgsql;
@@ -132,6 +134,8 @@ builder.Services.AddTransient<IConvertToFamilyPensionService, ConvertToFamilyPen
 builder.Services.AddTransient<IByTransferHeadService, ByTransferHeadService>();
 builder.Services.AddTransient<IPpoByTransferAmountService, PpoByTransferAmountService>();
 
+//builder.Services.AddScoped<IAuthService, AuthService>();
+
 // Register Seeders Assuming it implements ISeeder
 builder.Services.AddTransient<AccountHeadSeeder>();
 builder.Services.AddTransient<BankSeeder>();
@@ -162,20 +166,29 @@ builder.Services.AddTransient<TreasurySeeder>();
 //Automapper
 builder.Services.AddAutoMapper(typeof(Program));
 
+// Add JWT and Token Services
 builder.Services.AddTransient<ITokenHelper, TokenHelper>();
 
-// builder.Services.AddSingleton<ITokencache, Tokencache>();
-
 builder.Services.AddTransient<IClaimService, ClaimService>();
+builder.Services.AddHttpContextAccessor();
 
 builder
     .Services.AddControllers()
     .AddJsonOptions(options =>
     {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.WriteIndented = true;
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-        // options.JsonSerializerOptions.Converters.Add(new JsonStringDateOnlyConverter("yyyy-MM-dd"));
-        // options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
     });
+
+//builder
+//    .Services.AddControllers()
+//    .AddJsonOptions(options =>
+//    {
+//        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+//        // options.JsonSerializerOptions.Converters.Add(new JsonStringDateOnlyConverter("yyyy-MM-dd"));
+//        // options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+//    });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -187,8 +200,6 @@ builder.Services.AddSwaggerGen(c =>
     c.MapType<DateOnly>(() => new OpenApiSchema { Type = "string", Format = "date-only" });
     c.MapType<ExpandoObject>(() => new OpenApiSchema { Type = "object" });
     c.SchemaFilter<SwaggerExcludeFilter>();
-    // c.DocumentFilter<SwaggerExcludeFilter>();
-
     c.AddSecurityDefinition(
         "Bearer",
         new OpenApiSecurityScheme()
@@ -198,9 +209,11 @@ builder.Services.AddSwaggerGen(c =>
             Scheme = "Bearer",
             BearerFormat = "JWT",
             In = ParameterLocation.Header,
-            Description = "JWT Authorization header using the Bearer scheme.",
+            Description =
+                "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 1safsfsdfdfd\"",
         }
     );
+
     c.AddSecurityRequirement(
         new OpenApiSecurityRequirement
         {
@@ -213,7 +226,7 @@ builder.Services.AddSwaggerGen(c =>
                         Id = "Bearer",
                     },
                 },
-                Array.Empty<string>()
+                new string[] { }
             },
         }
     );
@@ -249,13 +262,18 @@ if (app.Environment.IsDevelopment())
         options.DocExpansion(DocExpansion.None);
     });
 }
-app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+app.UseCors(x =>
+    x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().WithExposedHeaders("Remainingtime")
+);
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+app.UseAuthentication();
 app.UseStaticFiles();
 
 app.UseAuthTokenMiddleware();
+
+//app.UseJwtTokenMiddleware();
 
 // Conditional middleware based on route pattern
 app.UseWhen(

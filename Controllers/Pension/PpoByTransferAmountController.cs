@@ -1,5 +1,6 @@
 ﻿using CTS_BE.BAL.Interfaces.Pension;
 using CTS_BE.DTOs;
+using CTS_BE.Filters;
 using CTS_BE.Helper;
 using CTS_BE.Helper.Authentication;
 using Microsoft.AspNetCore.Mvc;
@@ -19,6 +20,9 @@ namespace CTS_BE.Controllers.Pension
             _ppobyTransferHeadService = ppobyTransferHeadService;
         }
 
+        [Authorize(
+            "roles:Treasury Officer,Admin|permissions:can-bill-check,can-return-memo-generate"
+        )]
         [HttpPost("ppo/{ppoId}/by-transfer")]
         [Tags("Pension: PPO By-Transfer")]
         [OpenApi]
@@ -56,6 +60,9 @@ namespace CTS_BE.Controllers.Pension
             return response;
         }
 
+        [Authorize(
+            "roles:Treasury Officer,Admin|permissions:can-bill-check,can-return-memo-generate"
+        )]
         [HttpPut("ppo-by-transfer/{ppoByTransferId}")]
         [Tags("Pension: PPO By-Transfer")]
         [OpenApi]
@@ -92,6 +99,9 @@ namespace CTS_BE.Controllers.Pension
             return response;
         }
 
+        [Authorize(
+            "roles:Treasury Officer,Admin|permissions:can-bill-check,can-return-memo-generate"
+        )]
         [HttpDelete("ppo-by-transfer/{ppoByTransferId}")]
         [Tags("Pension: PPO By-Transfer")]
         [OpenApi]
@@ -122,6 +132,7 @@ namespace CTS_BE.Controllers.Pension
             return response;
         }
 
+        [Authorize("roles:Accountant,Admin|permissions:can-bill-check")]
         [HttpGet("ppo/{ppoId}/by-transfers")]
         [Tags("Pension: PPO By-Transfer")]
         [OpenApi]

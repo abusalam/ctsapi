@@ -1418,4 +1418,14 @@ namespace CTS_BE.DTOs
         [Required]
         public string? Remarks { get; set; }
     }
+
+    public class PermissionDTO : BaseDTO
+    {
+        public List<string> PermissionNames { get; set; } = new();
+    }
+
+    public class RoleDTO : BaseDTO
+    {
+        public required string RoleName { get; set; }
+    }
 }

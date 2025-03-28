@@ -1,5 +1,6 @@
 ﻿using CTS_BE.BAL.Interfaces.Pension;
 using CTS_BE.DTOs;
+using CTS_BE.Filters;
 using CTS_BE.Helper;
 using CTS_BE.Helper.Authentication;
 using Microsoft.AspNetCore.Mvc;
@@ -119,6 +120,7 @@ namespace CTS_BE.Controllers.Pension
             return response;
         }
 
+        [Authorize("roles:Treasury Officer,Admin|permissions:can-receive-bill,can-bill-check")]
         [HttpGet("by-transfer-headmap/{byTransferHeadId}")]
         [Tags("Pension: By-Transfer Head")]
         [OpenApi]
@@ -152,6 +154,8 @@ namespace CTS_BE.Controllers.Pension
             return response;
         }
 
+        //  [Authorize(Policy = "CanManageUsers")]
+        [Authorize("roles:Treasury Officer,Admin|permissions:can-receive-bill,can-bill-check")]
         [HttpGet("by-transfer-headmaps")]
         [Tags("Pension: By-Transfer Head")]
         [OpenApi]

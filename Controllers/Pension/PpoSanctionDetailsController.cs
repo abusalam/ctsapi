@@ -4,12 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using CTS_BE.BAL.Interfaces.Pension;
 using CTS_BE.DTOs;
+using CTS_BE.Filters;
 using CTS_BE.Helper;
 using CTS_BE.Helper.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CTS_BE.Controllers.Pension
 {
+    // [Authorize("roles:clerk|permissions:can-receive-bill")]
     [Route("api/v1/ppo")]
     public class PpoSanctionDetailsController : ApiBaseController
     {

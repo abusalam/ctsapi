@@ -458,4 +458,5 @@ obj/*
 
 wwwroot/uploads/*
 
-.gitlab-ci.yml
+appsettings.*.json
+*.tar.*

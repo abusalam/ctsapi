@@ -1,11 +1,13 @@
 using CTS_BE.BAL.Interfaces.Pension;
 using CTS_BE.DTOs;
+using CTS_BE.Filters;
 using CTS_BE.Helper;
 using CTS_BE.Helper.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CTS_BE.Controllers.Pension
 {
+    // [Authorize("roles:clerk|permissions:can-receive-bill")]
     public class PpoReceiptController(
         IPpoReceiptService ppoReceiptService,
         IClaimService claimService
@@ -13,6 +15,9 @@ namespace CTS_BE.Controllers.Pension
     {
         private readonly IPpoReceiptService _ppoReceiptService = ppoReceiptService;
 
+        [Authorize(
+            "roles:Treasury Officer,Admin|permissions:can-bill-check,can-return-memo-generate"
+        )]
         [HttpPost("manual-ppo-receipt")]
         [Tags("Pension: Manual PPO Receipt")]
         [OpenApi]
@@ -150,6 +155,9 @@ namespace CTS_BE.Controllers.Pension
             return response;
         }
 
+        [Authorize(
+            "roles:Treasury Officer,Admin|permissions:can-bill-check,can-return-memo-generate"
+        )]
         [HttpPut("manual-ppo-receipt/trid/{treasuryReceiptNo}")]
         [Tags("Pension: Manual PPO Receipt")]
         [OpenApi]

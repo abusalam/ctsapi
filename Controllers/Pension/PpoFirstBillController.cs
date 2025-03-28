@@ -1,11 +1,13 @@
 using CTS_BE.BAL.Interfaces.Pension;
 using CTS_BE.DTOs;
+using CTS_BE.Filters;
 using CTS_BE.Helper;
 using CTS_BE.Helper.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CTS_BE.Controllers.Pension
 {
+    // [Authorize("roles:clerk|permissions:can-receive-bill")]
     public class PpoFirstBillController(
         IPpoFirstBillService ppoFirstBillService,
         IClaimService claimService
@@ -61,6 +63,7 @@ namespace CTS_BE.Controllers.Pension
             return response;
         }
 
+        [Authorize("roles:Accountant,Admin|permissions:can-bill-check")]
         [HttpGet("first-bill-print/ppos")]
         [Tags("Pension: First Bill")]
         [OpenApi]
@@ -109,6 +112,9 @@ namespace CTS_BE.Controllers.Pension
             return response;
         }
 
+        [Authorize(
+            "roles:Treasury Officer,Admin|permissions:can-bill-check,can-return-memo-generate"
+        )]
         [HttpPost("first-bill-generate")]
         [Tags("Pension: First Bill")]
         [OpenApi]
@@ -143,6 +149,9 @@ namespace CTS_BE.Controllers.Pension
             return response;
         }
 
+        [Authorize(
+            "roles:Treasury Officer,Admin|permissions:can-bill-check,can-return-memo-generate"
+        )]
         [HttpPost("first-bill")]
         [Tags("Pension: First Bill")]
         [OpenApi]
@@ -176,6 +185,7 @@ namespace CTS_BE.Controllers.Pension
             return response;
         }
 
+        [Authorize("roles:Accountant,Admin|permissions:can-bill-check")]
         [HttpGet("first-bill/{ppoId}")]
         [Tags("Pension: First Bill")]
         [OpenApi]
