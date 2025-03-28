@@ -90,5 +90,39 @@ namespace CTS_BE.Controllers.Pension
             }
             return response;
         }
+
+        [HttpPost("arrear-bill-generate")]
+        [Tags("Pension: Arrear Bill")]
+        [OpenApi]
+        public async Task<
+            JsonAPIResponse<InitiateFirstPensionBillResponseDTO>
+        > GenerateArrearPensionBill(PpoArrearBillEntryDTO ppoArrearBillEntryDTO)
+        {
+            JsonAPIResponse<InitiateFirstPensionBillResponseDTO> response = new()
+            {
+                ApiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = $"Arrear Pension Bill generated sucessfully!",
+            };
+            try
+            {
+                response.Result =
+                    await _ppoArrearBillService.GenerateArrearPensionBill<InitiateFirstPensionBillResponseDTO>(
+                        ppoArrearBillEntryDTO,
+                        GetCurrentFyYear(),
+                        GetTreasuryCode()
+                    );
+            }
+            catch (Exception ex)
+            {
+                FillException(response, ex);
+                return response;
+            }
+            finally
+            {
+                FillErrorMessageFromDataSource(response);
+            }
+
+            return response;
+        }
     }
 }

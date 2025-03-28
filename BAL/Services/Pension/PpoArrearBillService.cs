@@ -12,10 +12,12 @@ namespace CTS_BE.BAL.Services.Pension
     public class PpoArrearBillService(
         IClaimService claimService,
         IMapper mapper,
+        IPpoFirstBillRepository ppoFirstBillRepository,
         IPpoArrearBillRepository ppoArrearBillRepository
     ) : BaseService(claimService), IPpoArrearBillService
     {
         private readonly IMapper _mapper = mapper;
+        private readonly IPpoFirstBillRepository _ppoFirstBillRepository = ppoFirstBillRepository;
         private readonly IPpoArrearBillRepository _ppoArrearBillRepository =
             ppoArrearBillRepository;
 
@@ -124,6 +126,101 @@ namespace CTS_BE.BAL.Services.Pension
                 ppoBillResponseDTO.FillErrorInDataSource(ppoId, $"ServiceException: {ex.Message}");
                 return ppoBillResponseDTO;
             }
+        }
+
+        public async Task<T> GenerateArrearPensionBill<T>(
+            PpoArrearBillEntryDTO ppoArrearBillEntryDTO,
+            short financialYear,
+            string treasuryCode
+        )
+        {
+            InitiateFirstPensionBillResponseDTO response = new();
+            try
+            {
+                Pensioner? pensioner = await _ppoFirstBillRepository.GetPensionerByPpoId(
+                    ppoArrearBillEntryDTO.PpoId,
+                    treasuryCode
+                );
+
+                if (pensioner == null)
+                {
+                    response.FillErrorInDataSource(
+                        new
+                        {
+                            ppoArrearBillEntryDTO.PpoId,
+                            treasuryCode,
+                            financialYear,
+                        },
+                        "Pensioner not found! Please check PPO ID."
+                    );
+                    return _mapper.Map<T>(response);
+                }
+
+                if (
+                    !await _ppoFirstBillRepository.IsPpoApproved(
+                        ppoArrearBillEntryDTO.PpoId,
+                        financialYear,
+                        treasuryCode
+                    )
+                )
+                {
+                    response.FillErrorInDataSource(
+                        new
+                        {
+                            ppoArrearBillEntryDTO.PpoId,
+                            treasuryCode,
+                            financialYear,
+                        },
+                        "PPO is not Approved! Please check PPO ID or approve PPO."
+                    );
+                    return _mapper.Map<T>(response);
+                }
+
+                if (
+                    !await _ppoFirstBillRepository.IsFirstBillAlreadyGenerated(
+                        ppoArrearBillEntryDTO.PpoId,
+                        financialYear,
+                        treasuryCode
+                    )
+                )
+                {
+                    response.FillErrorInDataSource(
+                        new
+                        {
+                            ppoArrearBillEntryDTO.PpoId,
+                            treasuryCode,
+                            financialYear,
+                        },
+                        $"First Bill not generated! Please check PPO ID: {ppoArrearBillEntryDTO.PpoId}"
+                    );
+                    return _mapper.Map<T>(response);
+                }
+
+                response =
+                    _ppoArrearBillRepository.GenerateArrearPensionBill<InitiateFirstPensionBillResponseDTO>(
+                        pensioner,
+                        ppoArrearBillEntryDTO,
+                        financialYear,
+                        treasuryCode
+                    );
+
+                response.BillDate = ppoArrearBillEntryDTO.PeriodTo;
+            }
+            catch (Exception ex)
+            {
+                response.FillErrorInDataSource(
+                    new
+                    {
+                        ppoArrearBillEntryDTO.PpoId,
+                        treasuryCode,
+                        financialYear,
+                    },
+                    $"ServiceException-GenerateArrearPensionBill: ",
+                    ex
+                );
+                return _mapper.Map<T>(response);
+            }
+            return _mapper.Map<T>(response);
         }
     }
 }

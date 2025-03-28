@@ -15,5 +15,12 @@ namespace CTS_BE.DAL.Interfaces.Pension
             short financialYear,
             string treasuryCode
         );
+
+        public T GenerateArrearPensionBill<T>(
+            Pensioner pensioner,
+            PpoArrearBillEntryDTO ppoArrearBillEntryDTO,
+            short financialYear,
+            string treasuryCode
+        );
     }
 }
