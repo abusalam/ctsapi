@@ -17,5 +17,13 @@ namespace CTS_BE.BAL.Interfaces.Pension
             short financialYear,
             string treasuryCode
         );
+
+        public Task<T> SaveArrearPensionBill<T>(
+            PpoArrearBillEntryDTO ppoArrearBillEntryDTO,
+            short financialYear,
+            string treasuryCode
+        );
+
+        public Task<T> GetPposForArrearBillPrint<T>(short financialYear, string treasuryCode);
     }
 }

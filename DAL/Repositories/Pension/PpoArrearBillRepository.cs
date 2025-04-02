@@ -56,6 +56,34 @@ namespace CTS_BE.DAL.Repositories.Pension
                 .ToListAsync();
         }
 
+        public async Task<List<Pensioner>> GetPensionersForArrearBillPrint(
+            short financialYear,
+            string treasuryCode
+        )
+        {
+            return await _pensionDbContext
+                .Pensioners.Where(entity =>
+                    entity.ActiveFlag
+                    && entity.TreasuryCode == treasuryCode
+                    && entity.PpoStatusFlags.Any(entity =>
+                        entity.ActiveFlag && entity.StatusFlag == PensionStatusFlag.PpoRunning
+                    )
+                    && entity.PpoBills.Any(entity =>
+                        entity.ActiveFlag && entity.BillType == BillType.ArrearBill
+                    )
+                )
+                .Include(entity => entity.PpoStatusFlags.Where(entity => entity.ActiveFlag))
+                .Include(entity =>
+                    entity.PpoBills.Where(entity =>
+                        entity.ActiveFlag && entity.BillType == BillType.ArrearBill
+                    )
+                )
+                .Include(entity => entity.Branch)
+                .ThenInclude(entity => entity.Bank)
+                .AsSplitQuery()
+                .ToListAsync();
+        }
+
         public T GenerateArrearPensionBill<T>(
             Pensioner pensioner,
             PpoArrearBillEntryDTO ppoArrearBillEntryDTO,
@@ -69,8 +97,8 @@ namespace CTS_BE.DAL.Repositories.Pension
                 response = new()
                 {
                     PpoId = ppoArrearBillEntryDTO.PpoId,
-                    //BillType = BillType.FirstBill,
-                    FromDate = pensioner.DateOfCommencement,
+                    BillType = BillType.ArrearBill,
+                    FromDate = ppoArrearBillEntryDTO.PeriodFrom,
                     BranchId = pensioner.BranchId,
                     BillGeneratedUptoDate = ppoArrearBillEntryDTO.PeriodTo,
                     TreasuryVoucherNo = "N/A",
@@ -131,7 +159,7 @@ namespace CTS_BE.DAL.Repositories.Pension
                         treasuryCode,
                         financialYear,
                     },
-                    "RepositoryException-GeneratePensionBill:",
+                    "RepositoryException-GenerateArrearPensionBill:",
                     ex
                 );
             }

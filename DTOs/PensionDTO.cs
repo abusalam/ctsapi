@@ -1428,6 +1428,7 @@ namespace CTS_BE.DTOs
     public class PpoArrearBillResponseDTO : BaseDTO
     {
         public long Id { get; set; }
+        public int PpoId { get; set; }
         public string PpoNo { get; set; } = null!;
         public string PensionerName { get; set; } = null!;
         public string BankName { get; set; } = null!;

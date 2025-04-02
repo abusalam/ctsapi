@@ -31,6 +31,7 @@ namespace CTS_BE.PensionEnum
     {
         public const char FirstBill = 'F';
         public const char RegularBill = 'R';
+        public const char ArrearBill = 'A';
     }
 
     /// <summary>

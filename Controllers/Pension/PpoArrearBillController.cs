@@ -124,5 +124,84 @@ namespace CTS_BE.Controllers.Pension
 
             return response;
         }
+
+        [HttpPost("arrear-bill")]
+        [Tags("Pension: Arrear Bill")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<PpoBillSaveResponseDTO>> SaveArrearPensionBill(
+            PpoArrearBillEntryDTO ppoArrearBillEntryDTO
+        )
+        {
+            JsonAPIResponse<PpoBillSaveResponseDTO> response = new()
+            {
+                ApiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = $"Arrear Pension Bill saved sucessfully!",
+            };
+            try
+            {
+                response.Result =
+                    await _ppoArrearBillService.SaveArrearPensionBill<PpoBillSaveResponseDTO>(
+                        ppoArrearBillEntryDTO,
+                        GetCurrentFyYear(),
+                        GetTreasuryCode()
+                    );
+            }
+            catch (Exception ex)
+            {
+                FillException(response, ex);
+                return response;
+            }
+            finally
+            {
+                FillErrorMessageFromDataSource(response);
+            }
+            return response;
+        }
+
+        [HttpGet("arrear-bill-print/ppos")]
+        [Tags("Pension: Arrear Bill")]
+        [OpenApi]
+        public async Task<
+            JsonAPIResponse<TableResponseDTO<PpoArrearBillResponseDTO>>
+        > GetPposForArrearBillPrint()
+        {
+            JsonAPIResponse<TableResponseDTO<PpoArrearBillResponseDTO>> response = new()
+            {
+                ApiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = $"PPO List for arrear bill received sucessfully!",
+            };
+            try
+            {
+                var ppoList =
+                    await _ppoArrearBillService.GetPposForArrearBillPrint<PpoArrearBillListResponseDTO>(
+                        GetCurrentFyYear(),
+                        GetTreasuryCode()
+                    );
+                response.Result = new()
+                {
+                    Headers =
+                    [
+                        new() { Name = "PPO ID", FieldName = "ppoId" },
+                        new() { Name = "PPO Number", FieldName = "ppoNo" },
+                        new() { Name = "Pensioner Name", FieldName = "pensionerName" },
+                        new() { Name = "PPO Sl No", FieldName = "id" },
+                        new() { Name = "Bank Name", FieldName = "bankName" },
+                        new() { Name = "Bank Account No", FieldName = "bankAcNo" },
+                    ],
+                    Data = ppoList.PpoList,
+                };
+            }
+            catch (Exception ex)
+            {
+                FillException(response, ex);
+                return response;
+            }
+            finally
+            {
+                FillErrorMessageFromDataSource(response);
+            }
+
+            return response;
+        }
     }
 }

@@ -22,5 +22,10 @@ namespace CTS_BE.DAL.Interfaces.Pension
             short financialYear,
             string treasuryCode
         );
+
+        public Task<List<Pensioner>> GetPensionersForArrearBillPrint(
+            short financialYear,
+            string treasuryCode
+        );
     }
 }
