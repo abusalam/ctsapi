@@ -62,29 +62,23 @@ namespace CTS_BE.DAL.Repositories.Pension
         )
         {
             return await _pensionDbContext
-                .Pensioners.Where(entity =>
-                    entity.ActiveFlag
-                    && entity.TreasuryCode == treasuryCode
-                    && entity.PpoStatusFlags.Any(entity =>
-                        entity.ActiveFlag && entity.StatusFlag == PensionStatusFlag.PpoRunning
-                    )
-                    && entity.PpoBills.Any(entity =>
-                        entity.ActiveFlag && entity.BillType == BillType.ArrearBill
+                .Pensioners.Where(p => p.ActiveFlag && p.TreasuryCode == treasuryCode)
+                .Where(p =>
+                    p.PpoStatusFlags.Any(s =>
+                        s.ActiveFlag && s.StatusFlag == PensionStatusFlag.PpoRunning
                     )
                 )
-                .Include(entity => entity.PpoStatusFlags.Where(entity => entity.ActiveFlag))
-                .Include(entity =>
-                    entity.PpoBills.Where(entity =>
-                        entity.ActiveFlag && entity.BillType == BillType.ArrearBill
-                    )
+                .Where(p => p.PpoBills.Any(b => b.ActiveFlag && b.BillType == BillType.ArrearBill))
+                .Include(p => p.PpoStatusFlags.Where(s => s.ActiveFlag))
+                .Include(p =>
+                    p.PpoBills.Where(b => b.ActiveFlag && b.BillType == BillType.ArrearBill)
                 )
-                .Include(entity => entity.Branch)
-                .ThenInclude(entity => entity.Bank)
+                .Include(p => p.Branch.Bank)
                 .AsSplitQuery()
                 .ToListAsync();
         }
 
-        public T GenerateArrearPensionBill<T>(
+        public async Task<T> GenerateArrearPensionBill<T>(
             Pensioner pensioner,
             PpoArrearBillEntryDTO ppoArrearBillEntryDTO,
             short financialYear,
@@ -103,18 +97,20 @@ namespace CTS_BE.DAL.Repositories.Pension
                     BillGeneratedUptoDate = ppoArrearBillEntryDTO.PeriodTo,
                     TreasuryVoucherNo = "N/A",
                     BillDate = ppoArrearBillEntryDTO.PeriodTo,
-                    Id = 0,
+                    Id = pensioner.Id,
                     GrossAmount = 0,
                     NetAmount = 0,
                     Pensioner = _mapper.Map<PensionerResponseDTO>(pensioner),
-                    PensionerPayments = PensionCalculator.CalculatePpoPaymentsForFirstBill(
+                    PensionerPayments = await PensionCalculator.CalculatePpoPaymentsForArrearBill(
                         pensioner.Category.ComponentRates,
                         pensioner.DateOfCommencement,
                         PensionCalculator
                             .CalculatePeriodEndDate(ppoArrearBillEntryDTO.PeriodTo)
                             .AddDays(1),
                         pensioner.BasicPensionAmount,
-                        pensioner.CommutedPensionAmount
+                        pensioner.CommutedPensionAmount,
+                        ppoArrearBillEntryDTO.PpoId,
+                        this
                     ),
                 };
 
@@ -159,12 +155,124 @@ namespace CTS_BE.DAL.Repositories.Pension
                         treasuryCode,
                         financialYear,
                     },
-                    "RepositoryException-GenerateArrearPensionBill:",
+                    "RepositoryException- GenerateArrearPensionBill:",
                     ex
                 );
             }
 
             return _mapper.Map<T>(response);
+        }
+
+        public async Task<T> GetArrearBillByPpoIdForPrintAsync<T>(
+            int ppoId,
+            short financialYear,
+            string treasuryCode
+        )
+        {
+            T response = _mapper.Map<T>(new PpoBill());
+            try
+            {
+                PpoBill ppoBill = await _pensionDbContext
+                    .PpoBills.Where(entity =>
+                        entity.ActiveFlag
+                        && entity.BillType == BillType.ArrearBill
+                        && entity.PpoId == ppoId
+                        && entity.FinancialYear == financialYear
+                        && entity.TreasuryCode == treasuryCode
+                    )
+                    .FirstAsync();
+
+                _pensionDbContext
+                    .PpoBills.Include(entity => entity.Bill)
+                    .Include(entity => entity.PpoBillBreakups)
+                    .ThenInclude(entity => entity.Revision)
+                    .ThenInclude(entity => entity.Rate)
+                    .ThenInclude(entity => entity.Breakup)
+                    .Load();
+
+                _pensionDbContext.Entry(ppoBill).Reference(entity => entity.Pensioner).Load();
+
+                _pensionDbContext
+                    .Entry(ppoBill)
+                    .Collection(entity => entity.PpoBillBreakups)
+                    .Load();
+
+                _pensionDbContext
+                    .Entry(ppoBill.Pensioner)
+                    .Reference(entity => entity.Category)
+                    .Load();
+                _pensionDbContext
+                    .Entry(ppoBill.Pensioner.Category)
+                    .Reference(entity => entity.PrimaryCategory)
+                    .Load();
+                _pensionDbContext
+                    .Entry(ppoBill.Pensioner.Category.PrimaryCategory)
+                    .Reference(entity => entity.AccountHead)
+                    .Load();
+                _pensionDbContext
+                    .Entry(ppoBill.Pensioner)
+                    .Reference(entity => entity.Receipt)
+                    .Load();
+
+                response = _mapper.Map<T>(ppoBill);
+            }
+            catch (Exception ex)
+            {
+                response.FillErrorInDataSource(
+                    new
+                    {
+                        ppoId,
+                        financialYear,
+                        treasuryCode,
+                    },
+                    $"RepositoryException- GetArrearBillByPpoIdForPrintAsync: ",
+                    ex
+                );
+            }
+            return response;
+        }
+
+        public async Task<BreakupAmountDto> GetBreakupAmountForPeriodAndComponent(
+            int ppoId,
+            DateOnly fromDate,
+            DateOnly toDate,
+            string componentName
+        )
+        {
+            var response = new BreakupAmountDto();
+            int? breakupAmount = null;
+
+            try
+            {
+                breakupAmount = await _pensionDbContext
+                    .PpoBillBreakups.Where(ppb =>
+                        ppb.PpoId == ppoId
+                        && ppb.ActiveFlag
+                        && ppb.FromDate <= toDate
+                        && ppb.ToDate >= fromDate
+                        && ppb.Revision.Rate.Breakup.ComponentName == componentName
+                        && ppb.Revision.ActiveFlag
+                        && ppb.Revision.Rate.ActiveFlag
+                        && ppb.Revision.Rate.Breakup.ActiveFlag
+                    )
+                    .OrderByDescending(ppb => ppb.CreatedAt)
+                    .Select(ppb => ppb.BreakupAmount)
+                    .FirstOrDefaultAsync();
+
+                response.Amount = breakupAmount;
+                response.IsSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                response.FillErrorInDataSource(
+                    breakupAmount,
+                    $"Error retrieving breakup amount for PPO {ppoId}, component {componentName}:",
+                    ex
+                );
+                response.IsSuccess = false;
+            }
+
+            return response;
         }
     }
 }

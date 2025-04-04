@@ -203,5 +203,37 @@ namespace CTS_BE.Controllers.Pension
 
             return response;
         }
+
+        [HttpGet("arrear-bill-print/{ppoId}")]
+        [Tags("Pension: Arrear Bill")]
+        [OpenApi]
+        public async Task<JsonAPIResponse<PpoBillResponseDTO>> GetArrearPensionBillByPpoIdForPrint(
+            int ppoId
+        )
+        {
+            JsonAPIResponse<PpoBillResponseDTO> response = new()
+            {
+                ApiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = $"Arrear Pension Bill retrieved sucessfully!",
+            };
+            try
+            {
+                response.Result = await _ppoArrearBillService.GetArrearBillByPpoIdForPrint(
+                    ppoId,
+                    GetCurrentFyYear(),
+                    GetTreasuryCode()
+                );
+            }
+            catch (Exception ex)
+            {
+                FillException(response, ex);
+                return response;
+            }
+            finally
+            {
+                FillErrorMessageFromDataSource(response);
+            }
+            return response;
+        }
     }
 }

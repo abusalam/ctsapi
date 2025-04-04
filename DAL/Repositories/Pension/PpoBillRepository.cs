@@ -179,6 +179,23 @@ namespace CTS_BE.DAL.Repositories.Pension
                 .AnyAsync();
         }
 
+        public async Task<bool> IsArrearBillAlreadyGenerated(
+            long ppoId,
+            short financialYear,
+            string treasuryCode
+        )
+        {
+            return await _pensionDbContext
+                .PpoBills.Where(entity =>
+                    entity.ActiveFlag
+                    && entity.PpoId == ppoId
+                    && entity.BillType == BillType.ArrearBill
+                    // && entity.FinancialYear == financialYear
+                    && entity.TreasuryCode == treasuryCode
+                )
+                .AnyAsync();
+        }
+
         public async Task<DateOnly> LastBillGeneratedUpTo(long ppoId, string treasuryCode)
         {
             return await _pensionDbContext

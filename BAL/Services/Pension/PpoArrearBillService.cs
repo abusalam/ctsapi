@@ -13,13 +13,18 @@ namespace CTS_BE.BAL.Services.Pension
         IClaimService claimService,
         IMapper mapper,
         IPpoFirstBillRepository ppoFirstBillRepository,
-        IPpoArrearBillRepository ppoArrearBillRepository
+        IPpoArrearBillRepository ppoArrearBillRepository,
+        ITreasuryRepository treasuryRepository,
+        IBankBranchRepository bankBranchRepository
     ) : PpoBillService(claimService), IPpoArrearBillService
     {
         private readonly IMapper _mapper = mapper;
         private readonly IPpoFirstBillRepository _ppoFirstBillRepository = ppoFirstBillRepository;
         private readonly IPpoArrearBillRepository _ppoArrearBillRepository =
             ppoArrearBillRepository;
+
+        private readonly ITreasuryRepository _treasuryRepository = treasuryRepository;
+        private readonly IBankBranchRepository _bankBranchRepository = bankBranchRepository;
 
         public async Task<T> GetPposForArrearBillGeneration<T>(
             short financialYear,
@@ -52,7 +57,11 @@ namespace CTS_BE.BAL.Services.Pension
             catch (Exception ex)
             {
                 T? ppoBillResponseDTO = _mapper.Map<T>(ppoListResponseDTO);
-                ppoBillResponseDTO.FillErrorInDataSource(new { }, "ServiceException: ", ex);
+                ppoBillResponseDTO.FillErrorInDataSource(
+                    new { },
+                    "ServiceException- GetPposForArrearBillGeneration: ",
+                    ex
+                );
                 return ppoBillResponseDTO;
             }
         }
@@ -124,7 +133,10 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
-                ppoBillResponseDTO.FillErrorInDataSource(ppoId, $"ServiceException: {ex.Message}");
+                ppoBillResponseDTO.FillErrorInDataSource(
+                    ppoId,
+                    $"ServiceException- GetArrearBillByPpoId: {ex.Message}"
+                );
                 return ppoBillResponseDTO;
             }
         }
@@ -198,7 +210,7 @@ namespace CTS_BE.BAL.Services.Pension
                 }
 
                 response =
-                    _ppoArrearBillRepository.GenerateArrearPensionBill<InitiateFirstPensionBillResponseDTO>(
+                    await _ppoArrearBillRepository.GenerateArrearPensionBill<InitiateFirstPensionBillResponseDTO>(
                         pensioner,
                         ppoArrearBillEntryDTO,
                         financialYear,
@@ -216,7 +228,7 @@ namespace CTS_BE.BAL.Services.Pension
                         treasuryCode,
                         financialYear,
                     },
-                    $"ServiceException-GenerateArrearPensionBill: ",
+                    $"ServiceException- GenerateArrearPensionBill: ",
                     ex
                 );
                 return _mapper.Map<T>(response);
@@ -306,12 +318,13 @@ namespace CTS_BE.BAL.Services.Pension
                     return _mapper.Map<T>(response);
                 }
 
-                PpoBill ppoBillEntity = _ppoArrearBillRepository.GenerateArrearPensionBill<PpoBill>(
-                    pensioner,
-                    ppoArrearBillEntryDTO,
-                    financialYear,
-                    treasuryCode
-                );
+                PpoBill ppoBillEntity =
+                    await _ppoArrearBillRepository.GenerateArrearPensionBill<PpoBill>(
+                        pensioner,
+                        ppoArrearBillEntryDTO,
+                        financialYear,
+                        treasuryCode
+                    );
 
                 SetCreatedBy(ppoBillEntity);
 
@@ -323,7 +336,7 @@ namespace CTS_BE.BAL.Services.Pension
                     BillDate = ppoArrearBillEntryDTO.PeriodTo,
                     TreasuryCode = treasuryCode,
                     FinancialYear = financialYear,
-                    FromDate = pensioner.DateOfCommencement,
+                    FromDate = ppoArrearBillEntryDTO.PeriodFrom,
                     ToDate = ppoArrearBillEntryDTO.PeriodTo,
                     AccountHeadId = await _ppoFirstBillRepository.GetHoaIdByPpoId(
                         ppoArrearBillEntryDTO.PpoId,
@@ -337,19 +350,19 @@ namespace CTS_BE.BAL.Services.Pension
                     ),
                 };
 
-                pensioner.PpoStatusFlags.Add(
-                    new PpoStatusFlag()
-                    {
-                        ActiveFlag = true,
-                        TreasuryCode = treasuryCode,
-                        FinancialYear = financialYear,
-                        StatusFlag = PensionStatusFlag.PpoRunning,
-                        PpoId = pensioner.PpoId,
-                        StatusWef = DateOnly.FromDateTime(DateTime.Now),
-                        CreatedAt = DateTime.Now,
-                        CreatedBy = ppoBillEntity.CreatedBy,
-                    }
-                );
+                // pensioner.PpoStatusFlags.Add(
+                //     new PpoStatusFlag()
+                //     {
+                //         ActiveFlag = true,
+                //         TreasuryCode = treasuryCode,
+                //         FinancialYear = financialYear,
+                //         StatusFlag = PensionStatusFlag.PpoRunning,
+                //         PpoId = pensioner.PpoId,
+                //         StatusWef = DateOnly.FromDateTime(DateTime.Now),
+                //         CreatedAt = DateTime.Now,
+                //         CreatedBy = ppoBillEntity.CreatedBy,
+                //     }
+                // );
 
                 ppoBillEntity.Pensioner = pensioner;
 
@@ -436,7 +449,7 @@ namespace CTS_BE.BAL.Services.Pension
                         treasuryCode,
                         financialYear,
                     },
-                    $"ServiceException-SaveArrearPensionBill: ",
+                    $"ServiceException- SaveArrearPensionBill: ",
                     ex
                 );
                 return _mapper.Map<T>(response);
@@ -471,13 +484,80 @@ namespace CTS_BE.BAL.Services.Pension
                 T? ppoBillResponseDTO = _mapper.Map<T>(ppoListResponseDTO);
                 ppoBillResponseDTO.FillErrorInDataSource(
                     ppoBillResponseDTO,
-                    $"ServiceException:",
+                    $"ServiceException- GetPposForArrearBillPrint:",
                     ex
                 );
                 return ppoBillResponseDTO;
             }
 
             return _mapper.Map<T>(ppoListResponseDTO);
+        }
+
+        public async Task<PpoBillResponseDTO> GetArrearBillByPpoIdForPrint(
+            int ppoId,
+            short financialYear,
+            string treasuryCode
+        )
+        {
+            PpoBillResponseDTO ppoBillResponseDTO = new();
+            try
+            {
+                if (
+                    !await _ppoFirstBillRepository.IsArrearBillAlreadyGenerated(
+                        ppoId,
+                        financialYear,
+                        treasuryCode
+                    )
+                )
+                {
+                    ppoBillResponseDTO.FillErrorInDataSource(
+                        ppoId,
+                        $"Arrear Pension Bill not found! Please generate arrear pension bill or check PPO id: {ppoId}."
+                    );
+                }
+
+                var ppoBillEntity =
+                    await _ppoArrearBillRepository.GetArrearBillByPpoIdForPrintAsync<PpoBill>(
+                        ppoId,
+                        financialYear,
+                        treasuryCode
+                    );
+
+                ppoBillResponseDTO = _mapper.Map<PpoBillResponseDTO>(ppoBillEntity);
+
+                ppoBillResponseDTO.BillNo = ppoBillEntity.Bill.BillNo;
+                ppoBillResponseDTO.BillDate = ppoBillEntity.Bill.BillDate;
+                ppoBillResponseDTO.FromDate = ppoBillEntity.Bill.FromDate;
+                ppoBillResponseDTO.ToDate = ppoBillEntity.Bill.ToDate;
+                ppoBillResponseDTO.TreasuryVoucherNo =
+                    $"TV-{ppoBillEntity.Bill.Id}-{ppoBillEntity.Id}";
+                ppoBillResponseDTO.TreasuryVoucherDate = ppoBillEntity.Bill.BillDate;
+
+                ppoBillResponseDTO.BankBranchName =
+                    await _bankBranchRepository.GetBankBranchNameByPpoId(treasuryCode, ppoId);
+
+                ppoBillResponseDTO.TreasuryName = await _treasuryRepository.GetTreasuryNameAsync(
+                    treasuryCode
+                );
+
+                ppoBillResponseDTO.AmountInWords = PensionCalculator.InWords(
+                    ppoBillResponseDTO.NetAmount
+                );
+
+                ppoBillResponseDTO.PreparedBy = GetUserName();
+                ppoBillResponseDTO.PreparedOn = DateOnly.FromDateTime(DateTime.Now);
+
+                return ppoBillResponseDTO;
+            }
+            catch (Exception ex)
+            {
+                ppoBillResponseDTO.FillErrorInDataSource(
+                    ppoId,
+                    $"ServiceException- GetArrearBillByPpoIdForPrint:",
+                    ex
+                );
+                return ppoBillResponseDTO;
+            }
         }
     }
 }

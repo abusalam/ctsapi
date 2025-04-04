@@ -1,4 +1,5 @@
 using CTS_BE.DAL.Entities.Pension;
+using CTS_BE.DAL.Interfaces.Pension;
 using CTS_BE.DTOs;
 using CTS_BE.Helper;
 using CTS_BE.PensionEnum;
@@ -110,6 +111,53 @@ namespace CTS_BE.BAL.Services.Pension
                 );
                 ppoPayment.NetAmount = ppoPayment.DueAmount - ppoPayment.DrawnAmount;
             });
+            return
+            [
+                .. ppoPayments
+                    .OrderBy(entity => entity.ComponentName)
+                    .ThenBy(entity => entity.FromDate),
+            ];
+        }
+
+        public static async Task<List<PpoPaymentListItemDTO>> CalculatePpoPaymentsForArrearBill(
+            ICollection<ComponentRate> componentRates,
+            DateOnly commencementDate,
+            DateOnly toDate,
+            int basicPensionAmount,
+            int commutedPensionAmount,
+            int ppoId,
+            IPpoArrearBillRepository ppoArrearBillRepository
+        )
+        {
+            List<PpoPaymentListItemDTO> ppoPayments = CalculatePpoPaymentsForFirstBill(
+                componentRates,
+                commencementDate,
+                toDate,
+                basicPensionAmount,
+                commutedPensionAmount
+            );
+
+            foreach (var ppoPayment in ppoPayments)
+            {
+                var result = await ppoArrearBillRepository.GetBreakupAmountForPeriodAndComponent(
+                    ppoId,
+                    ppoPayment.FromDate,
+                    ppoPayment.ToDate,
+                    ppoPayment.ComponentName
+                );
+
+                if (!result.IsSuccess || result.Amount == null || result.Amount == 0)
+                {
+                    ppoPayment.DrawnAmount = 0;
+                }
+                else
+                {
+                    ppoPayment.DrawnAmount = result.Amount.Value;
+                }
+
+                ppoPayment.NetAmount = ppoPayment.DueAmount - ppoPayment.DrawnAmount;
+            }
+
             return
             [
                 .. ppoPayments

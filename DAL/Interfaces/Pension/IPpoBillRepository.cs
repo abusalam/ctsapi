@@ -32,6 +32,12 @@ namespace CTS_BE.DAL.Interfaces.Pension
             short financialYear,
             string treasuryCode
         );
+
+        public Task<bool> IsArrearBillAlreadyGenerated(
+            long ppoId,
+            short financialYear,
+            string treasuryCode
+        );
         public Task<DateOnly> LastBillGeneratedUpTo(long ppoId, string treasuryCode);
 
         public Task<List<PpoComponentRevision>> GetPpoComponentRevisionsByPensionerId(

@@ -1443,4 +1443,11 @@ namespace CTS_BE.DTOs
             get { return this.PpoList?.Count ?? 0; }
         }
     }
+
+    public class BreakupAmountDto
+    {
+        public int? Amount { get; set; }
+        public bool IsSuccess { get; set; }
+        public dynamic? DataSource { get; set; }
+    }
 }
