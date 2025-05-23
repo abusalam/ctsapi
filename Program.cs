@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Diagnostics;
 using System.Dynamic;
 using System.Reflection;
 using System.Text.Json.Serialization;
@@ -56,9 +57,12 @@ builder.Services.AddMvc(c => c.Conventions.Add(new OpenApiConvention()));
 
 builder.Services.AddSwaggerGen(c =>
 {
-    c.AddServer(new() { Url = "http://api.docker.test" });
-    c.AddServer(new() { Url = "https://localhost:7249" });
-    c.AddServer(new() { Url = "http://localhost:7249" });
+    string ApiBaseUrl =
+        builder.Configuration.GetValue<string>("ApiBaseUrl") ?? "http://api.docker.test";
+    Uri parsedBaseUrl = new(ApiBaseUrl);
+    c.AddServer(new() { Url = ApiBaseUrl });
+    c.AddServer(new() { Url = $"https://localhost:7249/api/v1/" });
+    c.AddServer(new() { Url = $"https://localhost:7249/api/v1/" });
     // Use method name as operationId
     c.CustomOperationIds(apiDesc =>
     {
@@ -262,6 +266,29 @@ if (app.Environment.IsDevelopment())
         options.DocExpansion(DocExpansion.None);
     });
 }
+
+app.MapGet(
+    "/get-version",
+    () =>
+    {
+        Assembly assembly = Assembly.GetExecutingAssembly();
+        FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
+        Process process = Process.GetCurrentProcess();
+        return JsonConvert.SerializeObject(
+            new
+            {
+                Version = fileVersionInfo.ProductVersion,
+                MemoryUsage = FileSizeFormatter.FormatSize(
+                    process.WorkingSet64
+                        + process.PagedSystemMemorySize64
+                        + GC.GetGCMemoryInfo().TotalCommittedBytes
+                        + GC.GetTotalMemory(false)
+                ),
+            }
+        );
+    }
+);
+
 app.UseCors(x =>
     x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().WithExposedHeaders("Remainingtime")
 );
