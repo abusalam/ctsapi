@@ -9,11 +9,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Repositories.Pension
 {
-    public class PensionerDetailsRepository(PensionDbContext context, IMapper mapper)
-        : IPensionerDetailsRepository
+    public class PensionerDetailsRepository(
+        PensionDbContext context,
+        IMapper mapper,
+        ILogger<PensionerDetailsRepository> logger
+    ) : IPensionerDetailsRepository
     {
         private readonly PensionDbContext _context = context;
         private readonly IMapper _mapper = mapper;
+        private readonly ILogger<PensionerDetailsRepository> _logger = logger;
 
         public async Task<List<PensionerResponseDTO>> GetAllPensionerDetailsAsync(
             short financialYear,
@@ -21,6 +25,11 @@ namespace CTS_BE.DAL.Repositories.Pension
             Expression<Func<Pensioner, PensionerResponseDTO>> selectExpression
         )
         {
+            _logger.LogInformation(
+                "Fetching all pensioner details for financial year: {FinancialYear}, treasury code: {TreasuryCode}",
+                financialYear,
+                treasuryCode
+            );
             return await _context
                 .Pensioners.Where(entity =>
                     entity.ActiveFlag && entity.TreasuryCode == treasuryCode
@@ -37,6 +46,11 @@ namespace CTS_BE.DAL.Repositories.Pension
             Expression<Func<Pensioner, T>> selectExpression
         )
         {
+            _logger.LogInformation(
+                "Fetching pensioner list for financial year: {FinancialYear}, treasury code: {TreasuryCode}",
+                financialYear,
+                treasuryCode
+            );
             return await _context
                 .Pensioners.Where(entity =>
                     entity.ActiveFlag && entity.TreasuryCode == treasuryCode
@@ -53,6 +67,11 @@ namespace CTS_BE.DAL.Repositories.Pension
             Expression<Func<Pensioner, PensionerListItemDTO>> selectExpression
         )
         {
+            _logger.LogInformation(
+                "Fetching not approved pensioner details for financial year: {FinancialYear}, treasury code: {TreasuryCode}",
+                financialYear,
+                treasuryCode
+            );
             return await _context
                 .Pensioners.Where(entity =>
                     entity.ActiveFlag && entity.TreasuryCode == treasuryCode
@@ -76,6 +95,12 @@ namespace CTS_BE.DAL.Repositories.Pension
             Expression<Func<Pensioner, T>> selectExpression
         )
         {
+            _logger.LogInformation(
+                "Fetching pensioner details for PPO ID: {PpoId}, financial year: {FinancialYear}, treasury code: {TreasuryCode}",
+                ppoId,
+                financialYear,
+                treasuryCode
+            );
             return await _context
                 .Pensioners.Where(entity =>
                     entity.ActiveFlag
@@ -100,6 +125,11 @@ namespace CTS_BE.DAL.Repositories.Pension
             string treasuryCode
         )
         {
+            _logger.LogInformation(
+                "Updating pensioner details for PPO ID: {PpoId}, treasury code: {TreasuryCode}",
+                pensionerEntity.PpoId,
+                treasuryCode
+            );
             T? response = _mapper.Map<T>(pensionerEntity);
             try
             {
@@ -107,16 +137,29 @@ namespace CTS_BE.DAL.Repositories.Pension
                 _context.Pensioners.Update(pensionerEntity);
                 if (await _context.SaveChangesAsync() == 0)
                 {
+                    _logger.LogError(
+                        "Failed to save pensioner details for PPO ID: {PpoId}",
+                        pensionerEntity.PpoId
+                    );
                     response.FillErrorInDataSource(
                         pensionerEntity,
                         "Failed to save data. Please try again after sometime."
                     );
                     return response;
                 }
+                _logger.LogInformation(
+                    "Successfully updated pensioner details for PPO ID: {PpoId}",
+                    pensionerEntity.PpoId
+                );
                 return _mapper.Map<T>(pensionerEntity);
             }
             catch (DbUpdateException ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Database update exception occurred while updating pensioner details for PPO ID: {PpoId}",
+                    pensionerEntity.PpoId
+                );
                 response.FillErrorInDataSource(
                     pensionerEntity,
                     $"DbException: {ex.InnerException?.Message ?? ex.Message}"
@@ -125,6 +168,11 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "An error occurred while updating pensioner details for PPO ID: {PpoId}",
+                    pensionerEntity.PpoId
+                );
                 response.FillErrorInDataSource(
                     pensionerEntity,
                     $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
@@ -141,6 +189,12 @@ namespace CTS_BE.DAL.Repositories.Pension
             string treasuryCode
         )
         {
+            _logger.LogInformation(
+                "Fetching payment history for PPO ID: {PpoId}, financial year: {FinancialYear}, treasury code: {TreasuryCode}",
+                ppoId,
+                financialYear,
+                treasuryCode
+            );
             return await _context
                 .PpoBillBreakups.Include(b => b.Revision.Rate.Breakup)
                 .Where(b =>

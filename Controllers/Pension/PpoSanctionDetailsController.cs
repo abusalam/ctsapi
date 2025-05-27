@@ -16,14 +16,17 @@ namespace CTS_BE.Controllers.Pension
     public class PpoSanctionDetailsController : ApiBaseController
     {
         private readonly IPpoSanctionDetailsService _ppoSanctionDetailsService;
+        private readonly ILogger<PpoSanctionDetailsController> _logger;
 
         public PpoSanctionDetailsController(
             IPpoSanctionDetailsService ppoSanctionDetailsService,
-            IClaimService claimService
+            IClaimService claimService,
+            ILogger<PpoSanctionDetailsController> logger
         )
             : base(claimService)
         {
             _ppoSanctionDetailsService = ppoSanctionDetailsService;
+            _logger = logger;
         }
 
         [HttpPost("sanction")]
@@ -33,6 +36,10 @@ namespace CTS_BE.Controllers.Pension
             PpoSanctionDetailsEntryDTO ppoSanctionDetailsEntryDTO
         )
         {
+            _logger.LogInformation(
+                "Received request to create PPO Sanction Details with data: {Data}",
+                ppoSanctionDetailsEntryDTO
+            );
             JsonAPIResponse<PpoSanctionDetailsResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -49,6 +56,11 @@ namespace CTS_BE.Controllers.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while creating PPO Sanction Details with data: {Data}",
+                    ppoSanctionDetailsEntryDTO
+                );
                 FillException(response, ex);
                 return response;
             }
@@ -68,6 +80,11 @@ namespace CTS_BE.Controllers.Pension
             PpoSanctionDetailsEntryDTO ppoSanctionDetailsEntryDTO
         )
         {
+            _logger.LogInformation(
+                "Received request to update PPO Sanction Details with ID: {SanctionDetailsId} and data: {Data}",
+                sanctionDetailsId,
+                ppoSanctionDetailsEntryDTO
+            );
             JsonAPIResponse<PpoSanctionDetailsResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -85,6 +102,12 @@ namespace CTS_BE.Controllers.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while updating PPO Sanction Details with ID: {SanctionDetailsId} and data: {Data}",
+                    sanctionDetailsId,
+                    ppoSanctionDetailsEntryDTO
+                );
                 FillException(response, ex);
                 return response;
             }
@@ -103,6 +126,10 @@ namespace CTS_BE.Controllers.Pension
             long sanctionDetailsId
         )
         {
+            _logger.LogInformation(
+                "Received request to get PPO Sanction Details by ID: {SanctionDetailsId}",
+                sanctionDetailsId
+            );
             JsonAPIResponse<PpoSanctionDetailsResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -118,6 +145,11 @@ namespace CTS_BE.Controllers.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while fetching PPO Sanction Details for ID: {SanctionDetailsId}",
+                    sanctionDetailsId
+                );
                 FillException(response, ex);
                 return response;
             }

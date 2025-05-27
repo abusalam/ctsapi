@@ -16,12 +16,14 @@ namespace CTS_BE.BAL.Services.Pension
         private readonly IClaimService _claimService;
         private readonly IMapper _mapper;
         private readonly PensionDbContext _pensionDbContext;
+        private readonly ILogger<PpoReceiptService> _logger;
 
         public PpoReceiptService(
             IManualPpoReceiptRepository manualPpoReceiptRepository,
             IClaimService claimService,
             IMapper mapper,
-            PensionDbContext pensionDbContext
+            PensionDbContext pensionDbContext,
+            ILogger<PpoReceiptService> logger
         )
             : base(claimService)
         {
@@ -30,6 +32,7 @@ namespace CTS_BE.BAL.Services.Pension
             _mapper = mapper;
             _userId = _claimService.GetUserId();
             _pensionDbContext = pensionDbContext;
+            _logger = logger;
         }
 
         public async Task<ManualPpoReceiptResponseDTO> GetPpoReceipt(string treasuryReceiptNo)
@@ -47,6 +50,11 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (DbUpdateException ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while fetching PPO receipt for Treasury Receipt No: {TreasuryReceiptNo}",
+                    treasuryReceiptNo
+                );
                 ManualPpoReceiptResponseDTO errorResponse =
                     _mapper.Map<ManualPpoReceiptResponseDTO>(null);
                 errorResponse.FillErrorInDataSource(
@@ -55,11 +63,17 @@ namespace CTS_BE.BAL.Services.Pension
                 );
                 return errorResponse;
             }
+            _logger.LogInformation(
+                "PPO receipt for Treasury Receipt No: {TreasuryReceiptNo} fetched successfully",
+                treasuryReceiptNo
+            );
+
             return manualPpoReceiptResponseDTO;
         }
 
         public async Task<ManualPpoReceiptResponseDTO> GetPpoReceipt(long receiptId)
         {
+            _logger.LogInformation("Fetching PPO receipt with ID: {ReceiptId}", receiptId);
             ManualPpoReceiptResponseDTO manualPpoReceiptResponseDTO;
             try
             {
@@ -71,6 +85,11 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (DbUpdateException ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while fetching PPO receipt with ID: {ReceiptId}",
+                    receiptId
+                );
                 ManualPpoReceiptResponseDTO errorResponse =
                     _mapper.Map<ManualPpoReceiptResponseDTO>(null);
                 errorResponse.FillErrorInDataSource(
@@ -79,6 +98,10 @@ namespace CTS_BE.BAL.Services.Pension
                 );
                 return errorResponse;
             }
+            _logger.LogInformation(
+                "PPO receipt with ID: {ReceiptId} fetched successfully",
+                receiptId
+            );
             return manualPpoReceiptResponseDTO;
         }
 
@@ -88,6 +111,11 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
+            _logger.LogInformation(
+                "Creating PPO receipt with Treasury Code: {TreasuryCode} and Financial Year: {FinancialYear}",
+                treasuryCode,
+                financialYear
+            );
             PpoReceipt manualPpoReceiptEntity = _mapper.Map<PpoReceipt>(manualPpoReceiptDTO);
             ManualPpoReceiptResponseDTO manualPpoReceiptDTOResponse =
                 _mapper.Map<ManualPpoReceiptResponseDTO>(manualPpoReceiptEntity);
@@ -107,12 +135,23 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while creating PPO receipt with Treasury Code: {TreasuryCode} and Financial Year: {FinancialYear}",
+                    treasuryCode,
+                    financialYear
+                );
                 manualPpoReceiptDTOResponse.FillErrorInDataSource(
                     manualPpoReceiptEntity,
                     ex.Message
                 );
                 return manualPpoReceiptDTOResponse;
             }
+            _logger.LogInformation(
+                "PPO receipt created successfully with Treasury Code: {TreasuryCode} and Financial Year: {FinancialYear}",
+                treasuryCode,
+                financialYear
+            );
             return manualPpoReceiptDTOResponse;
         }
 
@@ -121,6 +160,11 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
+            _logger.LogInformation(
+                "Fetching all PPO receipts for Financial Year: {FinancialYear} and Treasury Code: {TreasuryCode}",
+                financialYear,
+                treasuryCode
+            );
             return await _manualPpoReceiptRepository
                 .GetQueryablePpoReceipts()
                 .Where(entity =>
@@ -158,6 +202,10 @@ namespace CTS_BE.BAL.Services.Pension
             ManualPpoReceiptEntryDTO manualPpoReceiptDTO
         )
         {
+            _logger.LogInformation(
+                "Updating PPO receipt with Treasury Receipt No: {TreasuryReceiptNo}",
+                treasuryReceiptNo
+            );
             PpoReceipt? manualPpoReceiptEntity = new();
 
             ManualPpoReceiptResponseDTO manualPpoReceiptDTOResponse =
@@ -170,6 +218,10 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (manualPpoReceiptEntity is null)
                 {
+                    _logger.LogWarning(
+                        "PPO receipt with Treasury Receipt No: {TreasuryReceiptNo} does not exist",
+                        treasuryReceiptNo
+                    );
                     manualPpoReceiptDTOResponse.FillErrorInDataSource(
                         manualPpoReceiptEntity,
                         "Treasury Receipt No does not exist!"
@@ -184,6 +236,10 @@ namespace CTS_BE.BAL.Services.Pension
                     PensionStatusDTO pensionStatusDTO = _mapper.Map<PensionStatusDTO>(
                         manualPpoReceiptEntity
                     );
+                    _logger.LogWarning(
+                        "Failed to update PPO receipt with Treasury Receipt No: {TreasuryReceiptNo}. Status Flag is not cleared.",
+                        treasuryReceiptNo
+                    );
                     manualPpoReceiptDTOResponse.FillErrorInDataSource(
                         manualPpoReceiptEntity,
                         "Status Flag is not cleared."
@@ -193,6 +249,11 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (DbUpdateException ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while updating PPO receipt with Treasury Receipt No: {TreasuryReceiptNo}",
+                    treasuryReceiptNo
+                );
                 ManualPpoReceiptResponseDTO errorResponse =
                     _mapper.Map<ManualPpoReceiptResponseDTO>(null);
                 errorResponse.FillErrorInDataSource(
@@ -201,6 +262,10 @@ namespace CTS_BE.BAL.Services.Pension
                 );
                 return errorResponse;
             }
+            _logger.LogInformation(
+                "PPO receipt with Treasury Receipt No: {TreasuryReceiptNo} updated successfully",
+                treasuryReceiptNo
+            );
             return _mapper.Map<ManualPpoReceiptResponseDTO>(manualPpoReceiptEntity);
         }
 
@@ -209,6 +274,7 @@ namespace CTS_BE.BAL.Services.Pension
             ManualPpoReceiptEntryDTO manualPpoReceiptDTO
         )
         {
+            _logger.LogInformation("Updating PPO receipt with ID: {ReceiptId}", receiptId);
             PpoReceipt? manualPpoReceiptEntity = new();
 
             ManualPpoReceiptResponseDTO manualPpoReceiptDTOResponse =
@@ -221,6 +287,10 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (manualPpoReceiptEntity is null)
                 {
+                    _logger.LogWarning(
+                        "PPO receipt with ID: {ReceiptId} does not exist or has been deleted",
+                        receiptId
+                    );
                     manualPpoReceiptDTOResponse.FillErrorInDataSource(
                         manualPpoReceiptEntity,
                         "Receipt does not exist! or has been deleted"
@@ -232,6 +302,10 @@ namespace CTS_BE.BAL.Services.Pension
                 _pensionDbContext.PpoReceipts.Update(manualPpoReceiptEntity);
                 if (await _pensionDbContext.SaveChangesAsync() == 0)
                 {
+                    _logger.LogWarning(
+                        "Failed to update PPO receipt with ID: {ReceiptId}. Update operation did not affect any rows.",
+                        receiptId
+                    );
                     manualPpoReceiptDTOResponse.FillErrorInDataSource(
                         manualPpoReceiptEntity,
                         "Update Failed!"
@@ -241,6 +315,11 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while updating PPO receipt with ID: {ReceiptId}",
+                    receiptId
+                );
                 ManualPpoReceiptResponseDTO errorResponse =
                     _mapper.Map<ManualPpoReceiptResponseDTO>(null);
                 errorResponse.FillErrorInDataSource(
@@ -249,6 +328,11 @@ namespace CTS_BE.BAL.Services.Pension
                 );
                 return errorResponse;
             }
+
+            _logger.LogInformation(
+                "PPO receipt with ID: {ReceiptId} updated successfully",
+                receiptId
+            );
             return _mapper.Map<ManualPpoReceiptResponseDTO>(manualPpoReceiptEntity);
         }
     }

@@ -14,7 +14,8 @@ namespace CTS_BE.BAL.Services.Pension
         IPensionerDetailsRepository pensionerDetailsRepository,
         IBankBranchRepository bankBranchRepository,
         INomineeRepository nomineeRepository,
-        IClaimService claimService
+        IClaimService claimService,
+        ILogger<NomineeService> logger
     ) : BaseService(claimService), INomineeService
     {
         private readonly IMapper _mapper = mapper;
@@ -22,6 +23,7 @@ namespace CTS_BE.BAL.Services.Pension
             pensionerDetailsRepository;
         private readonly IBankBranchRepository _bankBranchRepository = bankBranchRepository;
         private readonly INomineeRepository _nomineeRepository = nomineeRepository;
+        private readonly ILogger<NomineeService> _logger = logger;
 
         public async Task<NomineeListResponseDTO> GetNomineeByPpoId(int ppoId, string treasuryCode)
         {
@@ -47,6 +49,11 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while fetching nominee details for PPO ID: {PpoId}",
+                    ppoId
+                );
                 response.FillErrorInDataSource(
                     nomineeList,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
@@ -107,6 +114,12 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while creating nominee details for PPO ID: {PpoId} with data: {Data}",
+                    nomineeEntryDTO.PpoId,
+                    nomineeEntryDTO
+                );
                 response.FillErrorInDataSource(
                     nomineeEntity,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
@@ -169,6 +182,12 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while updating nominee details for ID: {NomineeId} with data: {Data}",
+                    nomineeId,
+                    nomineeEntryDTO
+                );
                 response.FillErrorInDataSource(
                     nomineeEntity,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
@@ -203,6 +222,11 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while fetching nominee details for ID: {NomineeId}",
+                    nomineeId
+                );
                 response.FillErrorInDataSource(
                     nomineeDetails,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
@@ -243,6 +267,11 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while deleting nominee details for ID: {NomineeId}",
+                    nomineeId
+                );
                 response.FillErrorInDataSource(
                     nomineeDetails,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"

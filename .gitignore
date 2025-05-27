@@ -460,3 +460,4 @@ wwwroot/uploads/*
 
 appsettings.*.json
 *.tar.*
+/DAL/Repositories/Pension/PpoFirstBillRepository.cs

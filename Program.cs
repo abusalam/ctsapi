@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Dynamic;
 using System.Reflection;
 using System.Text.Json.Serialization;
@@ -24,6 +24,10 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Npgsql;
+using OpenTelemetry.Logs;
+using OpenTelemetry.Resources;
+using Serilog;
+using Serilog.Enrichers.OpenTelemetry;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Swashbuckle.AspNetCore.SwaggerUI;
 
@@ -88,6 +92,48 @@ catch (Exception ex)
     builder.Services.AddSingleton<MqAdapter, RabbitMqAdapter>();
     builder.Services.AddSingleton<IMqService, MqService>();
 }
+builder.Logging.ClearProviders();
+builder.Logging.AddOpenTelemetry(options =>
+{
+    options.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("CTS-BE"));
+
+    options.IncludeFormattedMessage = true;
+    options.IncludeScopes = true;
+    options.ParseStateValues = true;
+
+    options.AddOtlpExporter(otlpOptions =>
+    {
+        otlpOptions.Endpoint = new Uri("https://localhost:7249/api/v1");
+        otlpOptions.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.HttpProtobuf;
+
+        otlpOptions.Headers = "X-Seq-ApiKey=8U0BKFloWCNWyADLV2zZ";
+    });
+
+    options.AddConsoleExporter();
+});
+
+//// 🔹 Add Serilog early in the pipeline
+//Log.Logger = new LoggerConfiguration()
+//    .Enrich.FromLogContext()
+//    .Enrich.WithEnvironmentName()
+//    .Enrich.WithMachineName()
+//    .Enrich.WithProcessId()
+//    .Enrich.WithThreadId()
+//    .Enrich.WithOpenTelemetry() // links logs to OTel trace/span IDs
+//    .WriteTo.Console()
+//    .WriteTo.Seq("http://localhost:5341") // 🔸 Change to your Seq URL
+//    .CreateLogger();
+
+//builder.Host.UseSerilog(); // 🔹 Tell ASP.NET to use Serilog
+
+//// 🔸 Configure OpenTelemetry Resources
+//builder.Services.AddOpenTelemetry()
+//    .ConfigureResource(resource =>
+//    {
+//        resource
+//            .AddService("CTS-BE-PensionModule")
+//            .AddEnvironmentVariableDetector();
+//    });
 
 //Pension Repositories
 builder.Services.AddTransient<IFileStorageRepository, FileStorageRepository>();
@@ -285,6 +331,15 @@ app.UseWhen(
 );
 
 app.MapControllers();
+
+app.MapGet(
+    "/",
+    () =>
+    {
+        Log.Information("Hello from Pension Module!");
+        return "Hello, Seq!";
+    }
+);
 
 app.Run();
 

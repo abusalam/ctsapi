@@ -7,11 +7,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Repositories.Pension
 {
-    public class PpoComponentRevisionRepository(IMapper mapper, PensionDbContext context)
-        : IPpoComponentRevisionRepository
+    public class PpoComponentRevisionRepository(
+        IMapper mapper,
+        PensionDbContext context,
+        ILogger<PpoComponentRevisionRepository> logger
+    ) : IPpoComponentRevisionRepository
     {
         private readonly PensionDbContext _context = context;
         private readonly IMapper _mapper = mapper;
+        private readonly ILogger<PpoComponentRevisionRepository> _logger = logger;
 
         public async Task<bool> CheckPpoComponentRevisionExists(
             PpoComponentRevision ppoComponentRevision,
@@ -73,6 +77,11 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while creating PPO Component Revision with data: {Data}",
+                    ppoComponentRevision
+                );
                 response.FillErrorInDataSource(
                     ppoComponentRevision,
                     $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
@@ -102,6 +111,11 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while deleting PPO Component Revision with data: {Data}",
+                    ppoComponentRevision
+                );
                 response.FillErrorInDataSource(
                     ppoComponentRevision,
                     $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
@@ -172,6 +186,10 @@ namespace CTS_BE.DAL.Repositories.Pension
 
                 if (await _context.SaveChangesAsync() == 0)
                 {
+                    _logger.LogWarning(
+                        "Failed to update PPO Component Revision with data: {Data}",
+                        ppoComponentRevision
+                    );
                     response.FillErrorInDataSource(
                         ppoComponentRevision,
                         $"PPO Component Rate not saved!"
@@ -181,6 +199,11 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while updating PPO Component Revision with data: {Data}",
+                    ppoComponentRevision
+                );
                 response.FillErrorInDataSource(
                     ppoComponentRevision,
                     $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"

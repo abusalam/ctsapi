@@ -14,16 +14,19 @@ namespace CTS_BE.BAL.Services.Pension
     {
         private readonly IFileStorageRepository _fileStorageRepository;
         private readonly IMapper _mapper;
+        private readonly ILogger<FileStorageService> _logger;
 
         public FileStorageService(
             IFileStorageRepository fileStorageRepository,
             IMapper mapper,
-            IClaimService claimService
+            IClaimService claimService,
+            ILogger<FileStorageService> logger
         )
             : base(claimService)
         {
             _fileStorageRepository = fileStorageRepository;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<T> CreateFileUpload<T>(
@@ -46,6 +49,11 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (DbUpdateException ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Database update exception occurred while saving file with details: {FileEntryDTO}",
+                    fileEntryDTO
+                );
                 response.FillErrorInDataSource(
                     fileEntity,
                     $"DbException: {ex.InnerException?.Message ?? ex.Message}"
@@ -53,6 +61,11 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Service exception occurred while saving file with details: {FileEntryDTO}",
+                    fileEntryDTO
+                );
                 response.FillErrorInDataSource(
                     fileEntity,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
@@ -77,6 +90,11 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (DbUpdateException ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Database update exception occurred while retrieving file with ID: {FileId}",
+                    fileId
+                );
                 response.FillErrorInDataSource(
                     uploadedFile,
                     $"DbException: {ex.InnerException?.Message ?? ex.Message}"
@@ -84,6 +102,11 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Service exception occurred while retrieving file with ID: {FileId}",
+                    fileId
+                );
                 response.FillErrorInDataSource(
                     uploadedFile,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"

@@ -10,10 +10,12 @@ namespace CTS_BE.Controllers.Pension
     // [Authorize("roles:clerk|permissions:can-receive-bill")]
     public class PpoRegularBillController(
         IPpoRegularBillService ppoRegularBillService,
-        IClaimService claimService
+        IClaimService claimService,
+        ILogger<PpoRegularBillController> logger
     ) : ApiBaseController(claimService)
     {
         private readonly IPpoRegularBillService _ppoRegularBillService = ppoRegularBillService;
+        private readonly ILogger<PpoRegularBillController> _logger = logger;
 
         [Authorize("roles:Accountant,Admin|permissions:can-bill-check")]
         [HttpGet("regular-bill/{year}/{month}/ppos")]
@@ -24,6 +26,11 @@ namespace CTS_BE.Controllers.Pension
             short month
         )
         {
+            _logger.LogInformation(
+                "Received request to get PPOs for regular bill generation for year: {Year}, month: {Month}",
+                year,
+                month
+            );
             JsonAPIResponse<PpoListResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -41,6 +48,12 @@ namespace CTS_BE.Controllers.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while fetching PPOs for regular bill generation for year: {Year}, month: {Month}",
+                    year,
+                    month
+                );
                 FillException(response, ex);
                 return response;
             }
@@ -59,6 +72,10 @@ namespace CTS_BE.Controllers.Pension
             PpoBillEntryDTO ppoBillEntryDTO
         )
         {
+            _logger.LogInformation(
+                "Received request to save regular pension bill with data: {PpoBillEntryDTO}",
+                ppoBillEntryDTO
+            );
             JsonAPIResponse<PpoBillSaveResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -75,6 +92,11 @@ namespace CTS_BE.Controllers.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while saving regular pension bill with data: {Data}",
+                    ppoBillEntryDTO
+                );
                 FillException(response, ex);
                 return response;
             }
@@ -97,6 +119,14 @@ namespace CTS_BE.Controllers.Pension
             [FromQuery] long[]? id = null
         )
         {
+            _logger.LogInformation(
+                "Received request to get regular pension bills for year: {Year}, month: {Month}, categoryId: {CategoryId}, bankId: {BankId}, ids: {Ids}",
+                year,
+                month,
+                categoryId,
+                bankId,
+                id
+            );
             JsonAPIResponse<RegularBillListResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -116,6 +146,15 @@ namespace CTS_BE.Controllers.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while fetching regular pension bills for year: {Year}, month: {Month}, categoryId: {CategoryId}, bankId: {BankId}, ids: {Ids}",
+                    year,
+                    month,
+                    categoryId,
+                    bankId,
+                    id
+                );
                 FillException(response, ex);
                 return response;
             }

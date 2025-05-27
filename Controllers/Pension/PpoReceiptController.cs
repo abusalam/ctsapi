@@ -10,10 +10,12 @@ namespace CTS_BE.Controllers.Pension
     // [Authorize("roles:clerk|permissions:can-receive-bill")]
     public class PpoReceiptController(
         IPpoReceiptService ppoReceiptService,
-        IClaimService claimService
+        IClaimService claimService,
+        ILogger<PpoReceiptController> logger
     ) : ApiBaseController(claimService)
     {
         private readonly IPpoReceiptService _ppoReceiptService = ppoReceiptService;
+        private readonly ILogger<PpoReceiptController> _logger = logger;
 
         [Authorize(
             "roles:Treasury Officer,Admin|permissions:can-bill-check,can-return-memo-generate"
@@ -25,6 +27,10 @@ namespace CTS_BE.Controllers.Pension
             ManualPpoReceiptEntryDTO manualPpoReceiptEntryDTO
         )
         {
+            _logger.LogInformation(
+                "Received request to create PPO Receipt with data: {Data}",
+                manualPpoReceiptEntryDTO
+            );
             JsonAPIResponse<ManualPpoReceiptResponseDTO> response = new();
 
             try
@@ -39,9 +45,18 @@ namespace CTS_BE.Controllers.Pension
                     ),
                     Message = $"PPO Receipt Created Successfully!",
                 };
+                _logger.LogInformation(
+                    "PPO Receipt created successfully with Treasury Receipt No: {TreasuryReceiptNo}",
+                    response.Result.TreasuryReceiptNo
+                );
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while creating PPO Receipt with data: {Data}",
+                    manualPpoReceiptEntryDTO
+                );
                 FillException(response, ex);
                 return response;
             }
@@ -59,6 +74,10 @@ namespace CTS_BE.Controllers.Pension
             JsonAPIResponse<ManualPpoReceiptResponseDTO>
         > GetPpoReceiptByTreasuryReceiptNo(string treasuryReceiptNo)
         {
+            _logger.LogInformation(
+                "Received request to get PPO Receipt by Treasury Receipt No: {TreasuryReceiptNo}",
+                treasuryReceiptNo
+            );
             JsonAPIResponse<ManualPpoReceiptResponseDTO> response = new();
 
             try
@@ -69,9 +88,18 @@ namespace CTS_BE.Controllers.Pension
                     Result = await _ppoReceiptService.GetPpoReceipt(treasuryReceiptNo),
                     Message = $"PPO Receipt Received Successfully!",
                 };
+                _logger.LogInformation(
+                    "PPO Receipt received successfully for Treasury Receipt No: {TreasuryReceiptNo}",
+                    treasuryReceiptNo
+                );
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while fetching PPO Receipt for Treasury Receipt No: {TreasuryReceiptNo}",
+                    treasuryReceiptNo
+                );
                 FillException(response, ex);
                 return response;
             }
@@ -89,6 +117,10 @@ namespace CTS_BE.Controllers.Pension
             long receiptId
         )
         {
+            _logger.LogInformation(
+                "Received request to get PPO Receipt by ID: {ReceiptId}",
+                receiptId
+            );
             JsonAPIResponse<ManualPpoReceiptResponseDTO> response = new();
 
             try
@@ -99,9 +131,18 @@ namespace CTS_BE.Controllers.Pension
                     Result = await _ppoReceiptService.GetPpoReceipt(receiptId),
                     Message = $"PPO Receipt Received Successfully!",
                 };
+                _logger.LogInformation(
+                    "PPO Receipt received successfully for ID: {ReceiptId}",
+                    receiptId
+                );
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while fetching PPO Receipt for ID: {ReceiptId}",
+                    receiptId
+                );
                 FillException(response, ex);
                 return response;
             }
@@ -119,6 +160,7 @@ namespace CTS_BE.Controllers.Pension
             JsonAPIResponse<TableResponseDTO<ListAllPpoReceiptsResponseDTO>>
         > GetPpoReceipts()
         {
+            _logger.LogInformation("Received request to get all PPO Receipts.");
             JsonAPIResponse<TableResponseDTO<ListAllPpoReceiptsResponseDTO>> response = new();
             try
             {
@@ -142,9 +184,11 @@ namespace CTS_BE.Controllers.Pension
                     },
                     Message = $"All PPO Receipts Received Successfully!",
                 };
+                _logger.LogInformation("All PPO Receipts received successfully.");
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error occurred while fetching all PPO Receipts.");
                 FillException(response, ex);
                 return response;
             }
@@ -168,6 +212,11 @@ namespace CTS_BE.Controllers.Pension
             ManualPpoReceiptEntryDTO manualPpoReceiptEntryDTO
         )
         {
+            _logger.LogInformation(
+                "Received request to update PPO Receipt with Treasury Receipt No: {TreasuryReceiptNo} and data: {Data}",
+                treasuryReceiptNo,
+                manualPpoReceiptEntryDTO
+            );
             JsonAPIResponse<ManualPpoReceiptResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -180,9 +229,19 @@ namespace CTS_BE.Controllers.Pension
                     treasuryReceiptNo,
                     manualPpoReceiptEntryDTO
                 );
+                _logger.LogInformation(
+                    "PPO Receipt updated successfully for Treasury Receipt No: {TreasuryReceiptNo}",
+                    treasuryReceiptNo
+                );
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while updating PPO Receipt for Treasury Receipt No: {TreasuryReceiptNo} with data: {Data}",
+                    treasuryReceiptNo,
+                    manualPpoReceiptEntryDTO
+                );
                 FillException(response, ex);
                 return response;
             }
@@ -201,6 +260,11 @@ namespace CTS_BE.Controllers.Pension
             ManualPpoReceiptEntryDTO manualPpoReceiptEntryDTO
         )
         {
+            _logger.LogInformation(
+                "Received request to update PPO Receipt with ID: {ReceiptId} and data: {Data}",
+                receiptId,
+                manualPpoReceiptEntryDTO
+            );
             JsonAPIResponse<ManualPpoReceiptResponseDTO> response = new();
 
             try
@@ -214,9 +278,19 @@ namespace CTS_BE.Controllers.Pension
                     ),
                     Message = $"PPO Receipt Updated Successfully!",
                 };
+                _logger.LogInformation(
+                    "PPO Receipt updated successfully for ID: {ReceiptId}",
+                    receiptId
+                );
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while updating PPO Receipt for ID: {ReceiptId} with data: {Data}",
+                    receiptId,
+                    manualPpoReceiptEntryDTO
+                );
                 FillException(response, ex);
                 return response;
             }
@@ -234,6 +308,7 @@ namespace CTS_BE.Controllers.Pension
             JsonAPIResponse<TableResponseDTO<ManualPpoReceiptResponseDTO>>
         > GetAllUnusedPpoReceipts()
         {
+            _logger.LogInformation("Received request to get all unused PPO Receipts.");
             JsonAPIResponse<TableResponseDTO<ManualPpoReceiptResponseDTO>> response = new();
             try
             {
@@ -263,9 +338,11 @@ namespace CTS_BE.Controllers.Pension
                     },
                     Message = $"All Unused PPO Receipts Received Successfully!",
                 };
+                _logger.LogInformation("All unused PPO Receipts received successfully.");
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error occurred while fetching all unused PPO Receipts.");
                 FillException(response, ex);
                 return response;
             }

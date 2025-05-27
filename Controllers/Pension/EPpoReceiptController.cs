@@ -10,14 +10,17 @@ namespace CTS_BE.Controllers.Pension
     public class EPpoReceiptController : ApiBaseController
     {
         private readonly IEPpoReceiptService _ppoReceiptService;
+        private readonly ILogger<EPpoReceiptController> _logger;
 
         public EPpoReceiptController(
             IEPpoReceiptService ppoReceiptService,
-            IClaimService claimService
+            IClaimService claimService,
+            ILogger<EPpoReceiptController> logger
         )
             : base(claimService)
         {
             _ppoReceiptService = ppoReceiptService;
+            _logger = logger;
         }
 
         [HttpPost("e-ppo/receipt")]
@@ -27,6 +30,10 @@ namespace CTS_BE.Controllers.Pension
             EPpoReceiptEntryDTO ePpoReceiptEntryDTO
         )
         {
+            _logger.LogInformation(
+                "Received request to create ePPO Receipt with data: {Data}",
+                ePpoReceiptEntryDTO
+            );
             JsonAPIResponse<EPpoReceiptResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -40,9 +47,18 @@ namespace CTS_BE.Controllers.Pension
                         GetTreasuryCode(),
                         GetCurrentFyYear()
                     );
+                _logger.LogInformation(
+                    "ePPO Receipt created successfully with PPO ID: {PpoId}",
+                    response.Result
+                );
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while creating ePPO Receipt with data: {Data}",
+                    ePpoReceiptEntryDTO
+                );
                 FillException(response, ex);
                 return response;
             }
@@ -58,6 +74,10 @@ namespace CTS_BE.Controllers.Pension
         [OpenApi]
         public async Task<JsonAPIResponse<EPpoReceiptDetailDTO>> GetEPpoReceiptById(long receiptId)
         {
+            _logger.LogInformation(
+                "Received request to get ePPO Receipt by ID: {ReceiptId}",
+                receiptId
+            );
             JsonAPIResponse<EPpoReceiptDetailDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -70,9 +90,18 @@ namespace CTS_BE.Controllers.Pension
                     GetTreasuryCode(),
                     GetCurrentFyYear()
                 );
+                _logger.LogInformation(
+                    "ePPO Receipt details retrieved successfully for ID: {ReceiptId}",
+                    receiptId
+                );
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while fetching ePPO Receipt details for ID: {ReceiptId}",
+                    receiptId
+                );
                 FillException(response, ex);
                 return response;
             }
@@ -90,6 +119,7 @@ namespace CTS_BE.Controllers.Pension
             JsonAPIResponse<TableResponseDTO<EPpoReceiptDetailDTO>>
         > GetUnusedEPpoReceipts()
         {
+            _logger.LogInformation("Received request to get unused ePPO Receipts.");
             JsonAPIResponse<TableResponseDTO<EPpoReceiptDetailDTO>> response = new();
             try
             {
@@ -112,9 +142,11 @@ namespace CTS_BE.Controllers.Pension
                     },
                     Message = $"ePPO Receipt received sucessfully!",
                 };
+                _logger.LogInformation("Unused ePPO Receipts retrieved successfully.");
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error occurred while fetching unused ePPO Receipts.");
                 FillException(response, ex);
                 return response;
             }
@@ -148,6 +180,11 @@ namespace CTS_BE.Controllers.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while creating ePPO Receipt revision with data: {Data}",
+                    ePpoReceiptRevisionEntryDTO
+                );
                 FillException(response, ex);
                 return response;
             }
@@ -166,6 +203,10 @@ namespace CTS_BE.Controllers.Pension
             string applicationNo
         )
         {
+            _logger.LogInformation(
+                "Received request to get ePPO Receipt by Pension Application No: {ApplicationNo}",
+                applicationNo
+            );
             JsonAPIResponse<EPpoReceiptPpoIdResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -182,6 +223,11 @@ namespace CTS_BE.Controllers.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while fetching ePPO Receipt details for Pension Application No: {ApplicationNo}",
+                    applicationNo
+                );
                 FillException(response, ex);
                 return response;
             }
@@ -200,6 +246,10 @@ namespace CTS_BE.Controllers.Pension
             EPpoReceiptWithdrawlEntryDTO ePpoReceiptWithdrawlEntryDTO
         )
         {
+            _logger.LogInformation(
+                "Received request to withdraw ePPO Receipt for Pension Application No: {PensionApplnNo}",
+                ePpoReceiptWithdrawlEntryDTO.PensionApplnNo
+            );
             JsonAPIResponse<EPpoReceiptWithdrawlResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -217,6 +267,11 @@ namespace CTS_BE.Controllers.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while withdrawing ePPO Receipt for Pension Application No: {PensionApplnNo}",
+                    ePpoReceiptWithdrawlEntryDTO.PensionApplnNo
+                );
                 FillException(response, ex);
                 return response;
             }

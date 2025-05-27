@@ -16,12 +16,14 @@ namespace CTS_BE.BAL.Services.Pension
         private readonly PensionDbContext _pensionDbContext;
         private readonly IMapper _mapper;
         private readonly IClaimService _claimService;
+        private readonly ILogger<PensionBreakupService> _logger;
 
         public PensionBreakupService(
             IBreakupRepository breakupRepository,
             PensionDbContext pensionDbContext,
             IClaimService claimService,
-            IMapper mapper
+            IMapper mapper,
+            ILogger<PensionBreakupService> logger
         )
             : base(claimService)
         {
@@ -30,6 +32,7 @@ namespace CTS_BE.BAL.Services.Pension
             _claimService = claimService;
             _mapper = mapper;
             _userId = _claimService.GetUserId();
+            _logger = logger;
         }
 
         public async Task<TResponse> CreatePensionBreakup<TEntry, TResponse>(
@@ -38,6 +41,10 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
+            _logger.LogInformation(
+                "Received request to create pension breakup with data: {PensionBreakupEntryDTO}",
+                pensionBreakupEntryDTO
+            );
             Breakup breakupEntity = new() { Id = 0 };
             TResponse? response = _mapper.Map<TResponse>(breakupEntity);
 
@@ -51,6 +58,10 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (breakup != null)
                 {
+                    _logger.LogWarning(
+                        "Attempt to create a duplicate breakup for component: {ComponentName}",
+                        breakupEntity.ComponentName
+                    );
                     response.FillErrorInDataSource(breakupEntity, $"Breakup already exists!");
                     return response;
                 }
@@ -60,12 +71,21 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (await _pensionDbContext.SaveChangesAsync() == 0)
                 {
+                    _logger.LogError(
+                        "Failed to save breakup for component: {ComponentName}",
+                        breakupEntity.ComponentName
+                    );
                     response.FillErrorInDataSource(breakupEntity, $"Breakup not saved!");
                     return response;
                 }
             }
             catch (DbUpdateException ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Database update error occurred while creating breakup for component: {ComponentName}",
+                    breakupEntity.ComponentName
+                );
                 response.FillErrorInDataSource(
                     breakupEntity,
                     $"ServiceException: {ex.InnerException?.Message}"

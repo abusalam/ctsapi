@@ -9,10 +9,12 @@ namespace CTS_BE.Controllers.Pension
 {
     public class PensionCategoryController(
         IClaimService claimService,
-        IPensionCategoryService pensionCategoryService
+        IPensionCategoryService pensionCategoryService,
+        ILogger<PensionCategoryController> logger
     ) : ApiBaseController(claimService)
     {
         private readonly IPensionCategoryService _pensionCategoryService = pensionCategoryService;
+        private readonly ILogger<PensionCategoryController> _logger = logger;
 
         [HttpPost("pension/primary-category")]
         [Tags("Pension: Category Master")]
@@ -21,6 +23,10 @@ namespace CTS_BE.Controllers.Pension
             PensionPrimaryCategoryEntryDTO pensionPrimaryCategoryEntryDTO
         )
         {
+            _logger.LogInformation(
+                "Received request to create primary category with details: {PensionPrimaryCategoryEntryDTO}",
+                pensionPrimaryCategoryEntryDTO
+            );
             JsonAPIResponse<PensionPrimaryCategoryResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -35,6 +41,11 @@ namespace CTS_BE.Controllers.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while creating primary category with data: {Data}",
+                    pensionPrimaryCategoryEntryDTO
+                );
                 FillException(response, ex);
                 return response;
             }
@@ -53,6 +64,7 @@ namespace CTS_BE.Controllers.Pension
             JsonAPIResponse<TableResponseDTO<PensionPrimaryCategoryResponseDTO>>
         > GetPrimaryCategories()
         {
+            _logger.LogInformation("Received request to get all primary categories.");
             JsonAPIResponse<TableResponseDTO<PensionPrimaryCategoryResponseDTO>> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -74,9 +86,11 @@ namespace CTS_BE.Controllers.Pension
                             GetTreasuryCode()
                         ),
                 };
+                _logger.LogInformation("Primary categories retrieved successfully.");
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error occurred while fetching primary categories.");
                 FillException(response, ex);
                 return response;
             }
@@ -94,6 +108,10 @@ namespace CTS_BE.Controllers.Pension
             PensionSubCategoryEntryDTO pensionSubCategoryEntryDTO
         )
         {
+            _logger.LogInformation(
+                "Received request to create sub-category with details: {PensionSubCategoryEntryDTO}",
+                pensionSubCategoryEntryDTO
+            );
             JsonAPIResponse<PensionSubCategoryResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -108,6 +126,11 @@ namespace CTS_BE.Controllers.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while creating sub-category with data: {Data}",
+                    pensionSubCategoryEntryDTO
+                );
                 FillException(response, ex);
                 return response;
             }
@@ -126,6 +149,7 @@ namespace CTS_BE.Controllers.Pension
             JsonAPIResponse<TableResponseDTO<PensionSubCategoryResponseDTO>>
         > GetSubCategories()
         {
+            _logger.LogInformation("Received request to get all sub-categories.");
             JsonAPIResponse<TableResponseDTO<PensionSubCategoryResponseDTO>> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -146,9 +170,11 @@ namespace CTS_BE.Controllers.Pension
                             GetTreasuryCode()
                         ),
                 };
+                _logger.LogInformation("Sub-categories retrieved successfully.");
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error occurred while fetching sub-categories.");
                 FillException(response, ex);
                 return response;
             }
@@ -166,6 +192,10 @@ namespace CTS_BE.Controllers.Pension
             PensionCategoryEntryDTO pensionCategoryEntryDTO
         )
         {
+            _logger.LogInformation(
+                "Received request to create category with details: {PensionCategoryEntryDTO}",
+                pensionCategoryEntryDTO
+            );
             JsonAPIResponse<PensionCategoryResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -180,6 +210,11 @@ namespace CTS_BE.Controllers.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while creating category with data: {Data}",
+                    pensionCategoryEntryDTO
+                );
                 FillException(response, ex);
                 return response;
             }
@@ -198,6 +233,10 @@ namespace CTS_BE.Controllers.Pension
             long categoryId
         )
         {
+            _logger.LogInformation(
+                "Received request to get category by ID: {CategoryId}",
+                categoryId
+            );
             JsonAPIResponse<PensionCategoryResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -211,9 +250,18 @@ namespace CTS_BE.Controllers.Pension
                         GetCurrentFyYear(),
                         GetTreasuryCode()
                     );
+                _logger.LogInformation(
+                    "Category with ID {CategoryId} retrieved successfully.",
+                    categoryId
+                );
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while fetching category with ID: {CategoryId}",
+                    categoryId
+                );
                 FillException(response, ex);
                 return response;
             }
@@ -230,6 +278,7 @@ namespace CTS_BE.Controllers.Pension
         [OpenApi]
         public async Task<JsonAPIResponse<TableResponseDTO<PensionCategoryListDTO>>> GetCategories()
         {
+            _logger.LogInformation("Received request to get all pension categories.");
             JsonAPIResponse<TableResponseDTO<PensionCategoryListDTO>> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -252,9 +301,11 @@ namespace CTS_BE.Controllers.Pension
                             GetTreasuryCode()
                         ),
                 };
+                _logger.LogInformation("Pension categories retrieved successfully.");
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error occurred while fetching pension categories.");
                 FillException(response, ex);
                 return response;
             }
@@ -272,6 +323,7 @@ namespace CTS_BE.Controllers.Pension
             JsonAPIResponse<TableResponseDTO<AccountHeadListItemResponseDTO>>
         > GetAccountHeads()
         {
+            _logger.LogInformation("Received request to get all account heads.");
             JsonAPIResponse<TableResponseDTO<AccountHeadListItemResponseDTO>> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -293,9 +345,11 @@ namespace CTS_BE.Controllers.Pension
                             GetTreasuryCode()
                         ),
                 };
+                _logger.LogInformation("Account heads retrieved successfully.");
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error occurred while fetching account heads.");
                 FillException(response, ex);
                 return response;
             }

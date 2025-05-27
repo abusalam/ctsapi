@@ -6,17 +6,26 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Repositories.Pension
 {
-    public class ComponentRateRepository(PensionDbContext context, IMapper mapper)
-        : IComponentRateRepository
+    public class ComponentRateRepository(
+        PensionDbContext context,
+        IMapper mapper,
+        ILogger<ComponentRateRepository> logger
+    ) : IComponentRateRepository
     {
         private readonly PensionDbContext _context = context;
         private readonly IMapper _mapper = mapper;
+        private readonly ILogger<ComponentRateRepository> _logger = logger;
 
         public async Task<List<T>> GetComponentRatesByCategoryId<T>(
             long categoryId,
             Expression<Func<ComponentRate, T>> selectExpression
         )
         {
+            _logger.LogInformation(
+                "Fetching component rates for category ID: {CategoryId}",
+                categoryId
+            );
+
             return await _context
                 .ComponentRates.Where(entity =>
                     entity.ActiveFlag && entity.CategoryId == categoryId
@@ -28,6 +37,7 @@ namespace CTS_BE.DAL.Repositories.Pension
 
         public async Task<List<T>> GetPensionCategoriesWithRatesAsync<T>()
         {
+            _logger.LogInformation("Fetching active pension categories with rates.");
             return await _context
                 .Categories.Where(entity =>
                     entity.ActiveFlag

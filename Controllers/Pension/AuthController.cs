@@ -8,10 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CTS_BE.Controllers.Pension
 {
-    public class AuthController(IClaimService claimService, IConfiguration configuration)
-        : ApiBaseController(claimService)
+    public class AuthController(IClaimService claimService) : ApiBaseController(claimService)
     {
-        private readonly IConfiguration _configuration = configuration;
         private readonly IClaimService _claimService = claimService;
 
         [HttpGet("auth/get-version")]

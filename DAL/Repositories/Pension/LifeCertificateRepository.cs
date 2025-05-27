@@ -7,11 +7,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Repositories.Pension
 {
-    public class LifeCertificateRepository(IMapper mapper, PensionDbContext context)
-        : ILifeCertificateRepository
+    public class LifeCertificateRepository(
+        IMapper mapper,
+        PensionDbContext context,
+        ILogger<LifeCertificateRepository> logger
+    ) : ILifeCertificateRepository
     {
         private readonly IMapper _mapper = mapper;
         private readonly PensionDbContext _context = context;
+        private readonly ILogger<LifeCertificateRepository> _logger = logger;
 
         public async Task<T?> GetLifeCertificateByPpoIdAsync<T>(
             long ppoId,
@@ -31,6 +35,12 @@ namespace CTS_BE.DAL.Repositories.Pension
             string treasuryCode
         )
         {
+            _logger.LogInformation(
+                "Fetching pensioners with life certificates for branchId: {BranchId}, financialYear: {FinancialYear}, treasuryCode: {TreasuryCode}",
+                branchId,
+                financialYear,
+                treasuryCode
+            );
             return await _context
                 .Pensioners.Include(p => p.LifeCertificates)
                 .Where(p =>
@@ -46,6 +56,11 @@ namespace CTS_BE.DAL.Repositories.Pension
             string treasuryCode
         )
         {
+            _logger.LogInformation(
+                "Creating life certificate for PPO ID: {PpoId}, Treasury Code: {TreasuryCode}",
+                lifeCertificate.PpoId,
+                treasuryCode
+            );
             T? response = _mapper.Map<T>(lifeCertificate);
             try
             {
@@ -54,16 +69,32 @@ namespace CTS_BE.DAL.Repositories.Pension
                 _context.LifeCertificates.Add(lifeCertificate);
                 if (await _context.SaveChangesAsync() == 0)
                 {
+                    _logger.LogError(
+                        "Failed to save life certificate for PPO ID: {PpoId}, Treasury Code: {TreasuryCode}",
+                        lifeCertificate.PpoId,
+                        treasuryCode
+                    );
                     response.FillErrorInDataSource(
                         lifeCertificate,
                         "Failed to save data. Please try again after sometime."
                     );
                     return response;
                 }
+                _logger.LogInformation(
+                    "Life certificate created successfully for PPO ID: {PpoId}, Treasury Code: {TreasuryCode}",
+                    lifeCertificate.PpoId,
+                    treasuryCode
+                );
                 return _mapper.Map<T>(lifeCertificate);
             }
             catch (DbUpdateException ex)
             {
+                _logger.LogError(
+                    ex,
+                    "DbUpdateException occurred while creating life certificate for PPO ID: {PpoId}, Treasury Code: {TreasuryCode}",
+                    lifeCertificate.PpoId,
+                    treasuryCode
+                );
                 response.FillErrorInDataSource(
                     lifeCertificate,
                     $"DbException: {ex.InnerException?.Message ?? ex.Message}"
@@ -72,6 +103,12 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Exception occurred while creating life certificate for PPO ID: {PpoId}, Treasury Code: {TreasuryCode}",
+                    lifeCertificate.PpoId,
+                    treasuryCode
+                );
                 response.FillErrorInDataSource(
                     lifeCertificate,
                     $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
@@ -85,6 +122,11 @@ namespace CTS_BE.DAL.Repositories.Pension
             string treasuryCode
         )
         {
+            _logger.LogInformation(
+                "Updating life certificate for PPO ID: {PpoId}, Treasury Code: {TreasuryCode}",
+                lifeCertificateDetailEntity.PpoId,
+                treasuryCode
+            );
             T? response = _mapper.Map<T>(lifeCertificateDetailEntity);
             try
             {
@@ -95,10 +137,16 @@ namespace CTS_BE.DAL.Repositories.Pension
 
                 if (existingEntity == null)
                 {
+                    _logger.LogWarning(
+                        "Life Certificate not found for PPO ID: {PpoId}, Treasury Code: {TreasuryCode}",
+                        lifeCertificateDetailEntity.PpoId,
+                        treasuryCode
+                    );
                     response.FillErrorInDataSource(
                         lifeCertificateDetailEntity,
                         "Life Certificate not found for update."
                     );
+
                     return response;
                 }
 
@@ -113,16 +161,32 @@ namespace CTS_BE.DAL.Repositories.Pension
 
                 if (await _context.SaveChangesAsync() == 0)
                 {
+                    _logger.LogError(
+                        "Failed to update life certificate for PPO ID: {PpoId}, Treasury Code: {TreasuryCode}",
+                        lifeCertificateDetailEntity.PpoId,
+                        treasuryCode
+                    );
                     response.FillErrorInDataSource(
                         lifeCertificateDetailEntity,
                         "Failed to save data. Please try again after sometime."
                     );
                     return response;
                 }
+                _logger.LogInformation(
+                    "Life certificate updated successfully for PPO ID: {PpoId}, Treasury Code: {TreasuryCode}",
+                    lifeCertificateDetailEntity.PpoId,
+                    treasuryCode
+                );
                 return _mapper.Map<T>(existingEntity);
             }
             catch (DbUpdateException ex)
             {
+                _logger.LogError(
+                    ex,
+                    "DbUpdateException occurred while updating life certificate for PPO ID: {PpoId}, Treasury Code: {TreasuryCode}",
+                    lifeCertificateDetailEntity.PpoId,
+                    treasuryCode
+                );
                 response.FillErrorInDataSource(
                     lifeCertificateDetailEntity,
                     $"DbException: {ex.InnerException?.Message ?? ex.Message}"
@@ -131,6 +195,12 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Exception occurred while updating life certificate for PPO ID: {PpoId}, Treasury Code: {TreasuryCode}",
+                    lifeCertificateDetailEntity.PpoId,
+                    treasuryCode
+                );
                 response.FillErrorInDataSource(
                     lifeCertificateDetailEntity,
                     $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"

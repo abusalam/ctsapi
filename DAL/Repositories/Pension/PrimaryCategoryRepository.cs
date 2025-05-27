@@ -7,11 +7,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Repositories.Pension
 {
-    public class PrimaryCategoryRepository(IMapper mapper, PensionDbContext context)
-        : IPrimaryCategoryRepository
+    public class PrimaryCategoryRepository(
+        IMapper mapper,
+        PensionDbContext context,
+        ILogger<PrimaryCategoryRepository> logger
+    ) : IPrimaryCategoryRepository
     {
         private readonly PensionDbContext _context = context;
         private readonly IMapper _mapper = mapper;
+        private readonly ILogger<PrimaryCategoryRepository> _logger = logger;
 
         public async Task<PrimaryCategory?> GetPrimaryCategoryById(long primaryCategoryId)
         {
@@ -37,15 +41,25 @@ namespace CTS_BE.DAL.Repositories.Pension
                 _context.PrimaryCategories.Add(primaryCategory);
                 if (await _context.SaveChangesAsync() == 0)
                 {
+                    _logger.LogError(
+                        "Failed to add Primary Category: {PrimaryCategory}",
+                        primaryCategory
+                    );
                     response.FillErrorInDataSource(
                         primaryCategory,
                         "Failed to add Primary Category!"
                     );
+
                     return response;
                 }
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "RepositoryException occurred while saving Primary Category: {PrimaryCategory}",
+                    primaryCategory
+                );
                 response.FillErrorInDataSource(
                     primaryCategory,
                     $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"

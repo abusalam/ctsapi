@@ -10,14 +10,17 @@ namespace CTS_BE.Controllers.Pension
     public class PpoByTransferAmountController : ApiBaseController
     {
         private readonly IPpoByTransferAmountService _ppobyTransferHeadService;
+        private readonly ILogger<PpoByTransferAmountController> _logger;
 
         public PpoByTransferAmountController(
             IClaimService claimService,
-            IPpoByTransferAmountService ppobyTransferHeadService
+            IPpoByTransferAmountService ppobyTransferHeadService,
+            ILogger<PpoByTransferAmountController> logger
         )
             : base(claimService)
         {
             _ppobyTransferHeadService = ppobyTransferHeadService;
+            _logger = logger;
         }
 
         [Authorize(
@@ -31,6 +34,12 @@ namespace CTS_BE.Controllers.Pension
             PpoByTransferAmountEntryDTO ppoByTransferHeadEntryDTO
         )
         {
+            _logger.LogInformation(
+                "Received request to create PPO By-Transfer with PPO ID: {PpoId} and data: {Data}",
+                ppoId,
+                ppoByTransferHeadEntryDTO
+            );
+
             JsonAPIResponse<PpoByTransferAmountResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -49,6 +58,12 @@ namespace CTS_BE.Controllers.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while creating PPO By-Transfer with PPO ID: {PpoId} and data: {Data}",
+                    ppoId,
+                    ppoByTransferHeadEntryDTO
+                );
                 FillException(response, ex);
                 return response;
             }
@@ -71,6 +86,11 @@ namespace CTS_BE.Controllers.Pension
             PpoByTransferAmountUpdateDTO ppoByTransferUpdateDTO
         )
         {
+            _logger.LogInformation(
+                "Received request to update PPO By-Transfer with ID: {PpoByTransferId} and data: {Data}",
+                ppoByTransferId,
+                ppoByTransferUpdateDTO
+            );
             JsonAPIResponse<PpoByTransferAmountResponseDTO> response =
                 new JsonAPIResponse<PpoByTransferAmountResponseDTO>()
                 {
@@ -88,6 +108,12 @@ namespace CTS_BE.Controllers.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while updating PPO By-Transfer with ID: {PpoByTransferId} and data: {Data}",
+                    ppoByTransferId,
+                    ppoByTransferUpdateDTO
+                );
                 FillException(response, ex);
                 return response;
             }
@@ -107,6 +133,10 @@ namespace CTS_BE.Controllers.Pension
         [OpenApi]
         public async Task<JsonAPIResponse<BaseDTO>> DeletePpoByTransferById(long ppoByTransferId)
         {
+            _logger.LogInformation(
+                "Received request to delete PPO By-Transfer with ID: {PpoByTransferId}",
+                ppoByTransferId
+            );
             JsonAPIResponse<BaseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -121,6 +151,11 @@ namespace CTS_BE.Controllers.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while deleting PPO By-Transfer with ID: {PpoByTransferId}",
+                    ppoByTransferId
+                );
                 FillException(response, ex);
                 return response;
             }
@@ -140,6 +175,10 @@ namespace CTS_BE.Controllers.Pension
             JsonAPIResponse<TableResponseDTO<PpoByTransferAmountResponseListDTO>>
         > GetByTransfersByPpoId(int ppoId)
         {
+            _logger.LogInformation(
+                "Received request to get By-Transfers for PPO ID: {PpoId}",
+                ppoId
+            );
             JsonAPIResponse<TableResponseDTO<PpoByTransferAmountResponseListDTO>> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -168,9 +207,18 @@ namespace CTS_BE.Controllers.Pension
                     ],
                     Data = tableResponse.Data,
                 };
+                _logger.LogInformation(
+                    "By-Transfers for PPO ID {PpoId} retrieved successfully.",
+                    ppoId
+                );
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while fetching By-Transfers for PPO ID: {PpoId}",
+                    ppoId
+                );
                 FillException(response, ex);
                 return response;
             }

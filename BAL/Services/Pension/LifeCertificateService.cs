@@ -15,13 +15,15 @@ namespace CTS_BE.BAL.Services.Pension
         private readonly IPensionerDetailsRepository _pensionerDetailsRepository;
         private readonly IBankBranchRepository _bankBranchRepository;
         private readonly ILifeCertificateRepository _lifeCertificateRepository;
+        private readonly ILogger<LifeCertificateService> _logger;
 
         public LifeCertificateService(
             IMapper mapper,
             IPensionerDetailsRepository pensionerDetailsRepository,
             IBankBranchRepository bankBranchRepository,
             ILifeCertificateRepository lifeCertificateRepository,
-            IClaimService claimService
+            IClaimService claimService,
+            ILogger<LifeCertificateService> logger
         )
             : base(claimService)
         {
@@ -29,6 +31,7 @@ namespace CTS_BE.BAL.Services.Pension
             _pensionerDetailsRepository = pensionerDetailsRepository;
             _bankBranchRepository = bankBranchRepository;
             _lifeCertificateRepository = lifeCertificateRepository;
+            _logger = logger;
         }
 
         public async Task<T> GetLifeCertificateByPpoId<T>(long ppoId, string treasuryCode)
@@ -57,6 +60,11 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (DbUpdateException ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Database update exception occurred while fetching life certificate for PPO Id: {PpoId}",
+                    ppoId
+                );
                 response.FillErrorInDataSource(
                     new LifeCertificate(),
                     $"DbException: {ex.InnerException?.Message ?? ex.Message}"
@@ -65,6 +73,11 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Service exception occurred while fetching life certificate for PPO Id: {PpoId}",
+                    ppoId
+                );
                 response.FillErrorInDataSource(
                     new LifeCertificate(),
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
@@ -126,10 +139,16 @@ namespace CTS_BE.BAL.Services.Pension
                     );
                 });
                 response.LifeCertificates = lifeCertificates;
+
                 return response;
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while fetching life certificates for branch ID: {BranchId}",
+                    branchId
+                );
                 response.FillErrorInDataSource(
                     lifeCertificates,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message} {ex.StackTrace}"
@@ -194,6 +213,11 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (DbUpdateException ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Database update exception occurred while creating life certificate for PPO Id: {PpoId}",
+                    lifeCertificateEntryDTO.PpoId
+                );
                 response.FillErrorInDataSource(
                     lifeCertificateEntity,
                     $"DbException: {ex.InnerException?.Message ?? ex.Message}"
@@ -202,6 +226,11 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Service exception occurred while creating life certificate for PPO Id: {PpoId}",
+                    lifeCertificateEntryDTO.PpoId
+                );
                 response.FillErrorInDataSource(
                     lifeCertificateEntity,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
@@ -283,6 +312,11 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (DbUpdateException ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Database update exception occurred while updating life certificate for PPO Id: {PpoId}",
+                    ppoId
+                );
                 response.FillErrorInDataSource(
                     lifeCertificateEntity,
                     $"DbException: {ex.InnerException?.Message ?? ex.Message}"
@@ -291,6 +325,11 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Service exception occurred while updating life certificate for PPO Id: {PpoId}",
+                    ppoId
+                );
                 response.FillErrorInDataSource(
                     lifeCertificateEntity,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"

@@ -10,11 +10,13 @@ namespace CTS_BE.Controllers.Pension
     //[Authorize("roles:clerk|permissions:can-receive-bill")]
     public class PpoDetailsController(
         IPensionerDetailsService pensionerDetailsService,
-        IClaimService claimService
+        IClaimService claimService,
+        ILogger<PpoDetailsController> logger
     ) : ApiBaseController(claimService)
     {
         private readonly IPensionerDetailsService _pensionerDetailsService =
             pensionerDetailsService;
+        private readonly ILogger<PpoDetailsController> _logger = logger;
 
         [HttpPost("ppo/details")]
         [Tags("Pension: PPO Details")]
@@ -23,6 +25,10 @@ namespace CTS_BE.Controllers.Pension
             PensionerEntryDTO pensionerEntryDTO
         )
         {
+            _logger.LogInformation(
+                "Received request to create pensioner with data: {PensionerEntryDTO}",
+                pensionerEntryDTO
+            );
             JsonAPIResponse<PensionerResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -35,9 +41,18 @@ namespace CTS_BE.Controllers.Pension
                     GetCurrentFyYear(),
                     GetTreasuryCode()
                 );
+                _logger.LogInformation(
+                    "Pensioner created successfully with PPO ID: {PpoId}",
+                    response.Result.PpoId
+                );
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while creating pensioner with data: {Data}",
+                    pensionerEntryDTO
+                );
                 FillException(response, ex);
                 return response;
             }
@@ -57,6 +72,11 @@ namespace CTS_BE.Controllers.Pension
             PensionerEntryDTO pensionerEntryDTO
         )
         {
+            _logger.LogInformation(
+                "Received request to update pensioner with PPO ID: {PpoId} and data: {Data}",
+                ppoId,
+                pensionerEntryDTO
+            );
             JsonAPIResponse<PensionerResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -70,9 +90,19 @@ namespace CTS_BE.Controllers.Pension
                     GetCurrentFyYear(),
                     GetTreasuryCode()
                 );
+                _logger.LogInformation(
+                    "Pensioner with PPO ID: {PpoId} updated successfully",
+                    ppoId
+                );
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while updating pensioner with PPO ID: {PpoId} and data: {Data}",
+                    ppoId,
+                    pensionerEntryDTO
+                );
                 FillException(response, ex);
                 return response;
             }
@@ -89,6 +119,10 @@ namespace CTS_BE.Controllers.Pension
         [OpenApi]
         public async Task<JsonAPIResponse<PensionerResponseDTO>> GetPensionerByPpoId(int ppoId)
         {
+            _logger.LogInformation(
+                "Received request to get pensioner details by PPO ID: {PpoId}",
+                ppoId
+            );
             JsonAPIResponse<PensionerResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -102,9 +136,18 @@ namespace CTS_BE.Controllers.Pension
                     GetCurrentFyYear(),
                     GetTreasuryCode()
                 );
+                _logger.LogInformation(
+                    "Pensioner details for PPO ID: {PpoId} retrieved successfully",
+                    ppoId
+                );
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while fetching pensioner details for PPO ID: {PpoId}",
+                    ppoId
+                );
                 FillException(response, ex);
                 return response;
             }
@@ -121,6 +164,7 @@ namespace CTS_BE.Controllers.Pension
         [OpenApi]
         public async Task<JsonAPIResponse<TableResponseDTO<PensionerListItemDTO>>> GetPensioners()
         {
+            _logger.LogInformation("Received request to get all pensioners.");
             JsonAPIResponse<TableResponseDTO<PensionerListItemDTO>> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -144,9 +188,11 @@ namespace CTS_BE.Controllers.Pension
                         GetTreasuryCode()
                     ),
                 };
+                _logger.LogInformation("All pensioners retrieved successfully.");
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error occurred while fetching all pensioners.");
                 FillException(response, ex);
                 return response;
             }
@@ -164,6 +210,7 @@ namespace CTS_BE.Controllers.Pension
             JsonAPIResponse<TableResponseDTO<PensionerListItemDTO>>
         > GetAllNotApprovedPensioners()
         {
+            _logger.LogInformation("Received request to get all not approved pensioners.");
             JsonAPIResponse<TableResponseDTO<PensionerListItemDTO>> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -187,9 +234,11 @@ namespace CTS_BE.Controllers.Pension
                         GetTreasuryCode()
                     ),
                 };
+                _logger.LogInformation("All not approved pensioners retrieved successfully.");
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error occurred while fetching all not approved pensioners.");
                 FillException(response, ex);
                 return response;
             }
@@ -208,6 +257,10 @@ namespace CTS_BE.Controllers.Pension
             JsonAPIResponse<TableResponseDTO<PpoPaymentHistoryResponseDTO>>
         > GetPensionerPaymentHistoryByPpoId(int PpoId)
         {
+            _logger.LogInformation(
+                "Received request to get payment history for PPO ID: {PpoId}",
+                PpoId
+            );
             JsonAPIResponse<TableResponseDTO<PpoPaymentHistoryResponseDTO>> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -231,9 +284,18 @@ namespace CTS_BE.Controllers.Pension
                         GetTreasuryCode()
                     ),
                 };
+                _logger.LogInformation(
+                    "Payment history for PPO ID: {PpoId} retrieved successfully",
+                    PpoId
+                );
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while fetching payment history for PPO ID: {PpoId}",
+                    PpoId
+                );
                 FillException(response, ex);
                 return response;
             }

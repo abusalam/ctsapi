@@ -4,17 +4,32 @@ using CTS_BE.DAL.Entities.Pension;
 using CTS_BE.DAL.Interfaces.Pension;
 using CTS_BE.DTOs;
 using CTS_BE.Helper;
+using CTS_BE.Helper.Authentication;
 using CTS_BE.PensionEnum;
 using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Repositories.Pension
 {
-    public class PpoRegularBillRepository(PensionDbContext context, IMapper mapper)
-        : PpoBillRepository(context, mapper),
-            IPpoRegularBillRepository
+    public class PpoRegularBillRepository : PpoBillRepository, IPpoRegularBillRepository
     {
-        private readonly PensionDbContext _pensionDbContext = context;
-        private readonly IMapper _mapper = mapper;
+        private readonly PensionDbContext _pensionDbContext;
+        private readonly IMapper _mapper;
+        private readonly IClaimService _claimService;
+        private readonly ILogger<PpoRegularBillRepository> _logger;
+
+        public PpoRegularBillRepository(
+            PensionDbContext context,
+            IMapper mapper,
+            IClaimService claimService,
+            ILogger<PpoRegularBillRepository> logger
+        )
+            : base(context, mapper, logger)
+        {
+            _pensionDbContext = context;
+            _mapper = mapper;
+            _claimService = claimService;
+            _logger = logger;
+        }
 
         public async Task<Bill?> GetExistingBillForRegularBill(
             long hoaId,
@@ -179,6 +194,13 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while calculating PPO bill breakups for PPO ID: {PpoId}, month: {Month}, year: {Year}",
+                    pensioner.PpoId,
+                    ppoBillEntryDTO.Month,
+                    ppoBillEntryDTO.Year
+                );
                 response.FillErrorInDataSource(
                     new
                     {

@@ -14,7 +14,8 @@ namespace CTS_BE.BAL.Services.Pension
         IMapper mapper,
         IPpoByTransferAmountRepository ppoByTransferRepository,
         IPensionerDetailsRepository pensionerDetailsRepository,
-        IByTransferHeadRepository byTransferHeadRepository
+        IByTransferHeadRepository byTransferHeadRepository,
+        ILogger<PpoByTransferAmountService> logger
     ) : BaseService(claimService), IPpoByTransferAmountService
     {
         private readonly IMapper _mapper = mapper;
@@ -24,6 +25,7 @@ namespace CTS_BE.BAL.Services.Pension
             pensionerDetailsRepository;
         private readonly IByTransferHeadRepository _byTransferHeadRepository =
             byTransferHeadRepository;
+        private readonly ILogger<PpoByTransferAmountService> _logger = logger;
 
         public async Task<T> CreatePpoByTransfer<T>(
             int ppoId,
@@ -48,6 +50,12 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (existingPpo != null)
                 {
+                    _logger.LogWarning(
+                        "Ppo By Transfer already exists for PPO ID: {PpoId} with FromDate: {FromDate} and ToDate: {ToDate}",
+                        ppoId,
+                        ppoByTransferEntity.FromDate,
+                        ppoByTransferEntity.ToDate
+                    );
                     responseDTO.FillErrorInDataSource(
                         ppoByTransferEntity,
                         "Ppo By Transfer already exists."
@@ -57,6 +65,12 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (ppoByTransferEntity.FromDate >= ppoByTransferEntity.ToDate)
                 {
+                    _logger.LogWarning(
+                        "Invalid date range for PPO ID: {PpoId} with FromDate: {FromDate} and ToDate: {ToDate}",
+                        ppoId,
+                        ppoByTransferEntity.FromDate,
+                        ppoByTransferEntity.ToDate
+                    );
                     responseDTO.FillErrorInDataSource(
                         ppoByTransferEntity,
                         "FromDate must be earlier than ToDate."
@@ -72,6 +86,12 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (overlappingRecords is not null)
                 {
+                    _logger.LogWarning(
+                        "Date range overlaps for PPO ID: {PpoId} with FromDate: {FromDate} and ToDate: {ToDate}",
+                        ppoId,
+                        ppoByTransferEntity.FromDate,
+                        ppoByTransferEntity.ToDate
+                    );
                     responseDTO.FillErrorInDataSource(
                         ppoByTransferEntity,
                         "Date range overlaps for same PPO Id."
@@ -88,6 +108,7 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (pensioner == null)
                 {
+                    _logger.LogWarning("Pensioner not found for PPO ID: {PpoId}", ppoId);
                     responseDTO.FillErrorInDataSource(
                         ppoByTransferEntity,
                         "Pensioner not found. Please check PPO Id"
@@ -116,6 +137,12 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while creating Ppo By Transfer for PPO ID: {PpoId} with data: {Data}",
+                    ppoId,
+                    ppoByTransferEntryDTO
+                );
                 responseDTO.FillErrorInDataSource(
                     ppoByTransferEntity,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
@@ -127,6 +154,7 @@ namespace CTS_BE.BAL.Services.Pension
 
         public async Task<T> DeletePpoByTransferById<T>(long id)
         {
+            _logger.LogInformation("Received request to delete Ppo By Transfer with ID: {Id}", id);
             T? response = _mapper.Map<T>(new PpoByTransferAmountResponseDTO());
             PpoBytransfer? existingEntity = new();
 
@@ -136,6 +164,7 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (existingEntity is null)
                 {
+                    _logger.LogWarning("Ppo By Transfer not found for ID: {Id}", id);
                     response.FillErrorInDataSource(existingEntity, "Ppo By Transfer not found");
                     return response;
                 }
@@ -146,6 +175,10 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (isUsed)
                 {
+                    _logger.LogWarning(
+                        "Deletion failed for Ppo By Transfer ID: {Id} as it is in use.",
+                        id
+                    );
                     response.FillErrorInDataSource(
                         existingEntity,
                         "Deletion failed: Ppo By Transfer is in used."
@@ -157,6 +190,11 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (DbUpdateException ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Database update exception occurred while deleting Ppo By Transfer with ID: {Id}",
+                    id
+                );
                 response.FillErrorInDataSource(
                     existingEntity,
                     $"DbException: {ex.InnerException?.Message ?? ex.Message}"
@@ -165,12 +203,18 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Service exception occurred while deleting Ppo By Transfer with ID: {Id}",
+                    id
+                );
                 response.FillErrorInDataSource(
                     existingEntity,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );
                 return response;
             }
+            _logger.LogInformation("Ppo By Transfer with ID: {Id} deleted successfully.", id);
 
             return response;
         }
@@ -181,6 +225,12 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
+            _logger.LogInformation(
+                "Received request to get By-Transfers for PPO ID: {PpoId}, Financial Year: {FinancialYear}, Treasury Code: {TreasuryCode}",
+                ppoId,
+                financialYear,
+                treasuryCode
+            );
             TableResponseDTO<PpoByTransferAmountResponseListDTO> tableResponse = new();
             {
                 try
@@ -194,6 +244,10 @@ namespace CTS_BE.BAL.Services.Pension
                         );
                     if (tableResponse.Data.Count == 0)
                     {
+                        _logger.LogWarning(
+                            "No Ppo By Transfer records found for PPO ID: {PpoId}",
+                            ppoId
+                        );
                         tableResponse.FillErrorInDataSource(
                             tableResponse.Data,
                             "Ppo By Transfer not found."
@@ -203,18 +257,28 @@ namespace CTS_BE.BAL.Services.Pension
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogError(
+                        ex,
+                        "Error occurred while fetching By-Transfers for PPO ID: {PpoId}",
+                        ppoId
+                    );
                     tableResponse.FillErrorInDataSource(
                         tableResponse.Data,
                         $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                     );
                 }
 
+                _logger.LogInformation(
+                    "By-Transfers for PPO ID: {PpoId} retrieved successfully.",
+                    ppoId
+                );
                 return _mapper.Map<T>(tableResponse);
             }
         }
 
         public async Task<T> UpdatePpoByTransfer<T>(long id, PpoByTransferAmountUpdateDTO updateDTO)
         {
+            _logger.LogInformation("Received request to update Ppo By Transfer with ID: {Id}", id);
             PpoBytransfer? existingEntity = new();
             T? response = _mapper.Map<T>(existingEntity);
 
@@ -224,6 +288,7 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (existingEntity is null)
                 {
+                    _logger.LogWarning("Ppo By Transfer not found for ID: {Id}", id);
                     response.FillErrorInDataSource(existingEntity, "Ppo By Transfer not found.");
                     return response;
                 }
@@ -233,6 +298,10 @@ namespace CTS_BE.BAL.Services.Pension
                 );
                 if (isUsed)
                 {
+                    _logger.LogWarning(
+                        "Updation failed for Ppo By Transfer ID: {Id} as it is in use.",
+                        id
+                    );
                     response.FillErrorInDataSource(
                         existingEntity,
                         "Updation failed: This Ppo By Transfer is used ."
@@ -247,6 +316,11 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (DbUpdateException ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Database update exception occurred while updating Ppo By Transfer with ID: {Id}",
+                    id
+                );
                 response.FillErrorInDataSource(
                     existingEntity,
                     $"DbException: {ex.InnerException?.Message ?? ex.Message}"
@@ -255,12 +329,18 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Service exception occurred while updating Ppo By Transfer with ID: {Id}",
+                    id
+                );
                 response.FillErrorInDataSource(
                     existingEntity,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );
                 return response;
             }
+            _logger.LogInformation("Ppo By Transfer with ID: {Id} updated successfully.", id);
             return response;
         }
     }

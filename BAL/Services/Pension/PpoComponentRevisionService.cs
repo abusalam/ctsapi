@@ -15,7 +15,8 @@ namespace CTS_BE.BAL.Services.Pension
         IPensionerDetailsRepository pensionerDetailsRepository,
         IMapper mapper,
         PensionDbContext pensionDbContext,
-        IClaimService claimService
+        IClaimService claimService,
+        ILogger<PpoComponentRevisionService> logger
     ) : BaseService(claimService), IPpoComponentRevisionService
     {
         private readonly IPpoComponentRevisionRepository _ppoComponentRevisionRepository =
@@ -24,6 +25,7 @@ namespace CTS_BE.BAL.Services.Pension
             pensionerDetailsRepository;
         private readonly IMapper _mapper = mapper;
         private readonly PensionDbContext _pensionDbContext = pensionDbContext;
+        private readonly ILogger<PpoComponentRevisionService> _logger = logger;
 
         public async Task<T> GetPposForComponentRevisions<T>(
             short financialYear,
@@ -41,6 +43,12 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (tableResponse.Data.Count == 0)
                 {
+                    _logger.LogWarning(
+                        "No PPO Revisions found for financial year: {FinancialYear} and treasury code: {TreasuryCode}",
+                        financialYear,
+                        treasuryCode
+                    );
+
                     tableResponse.FillErrorInDataSource(
                         tableResponse.Data,
                         "No PPO Revisions found"
@@ -59,6 +67,12 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while fetching PPOs for component revisions with financial year: {FinancialYear} and treasury code: {TreasuryCode}",
+                    financialYear,
+                    treasuryCode
+                );
                 tableResponse.FillErrorInDataSource(
                     tableResponse.Data,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
@@ -121,6 +135,11 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (pensionerFound is null)
                 {
+                    _logger.LogWarning(
+                        "Pensioner not found for PPO ID: {PpoId} with treasury code: {TreasuryCode}",
+                        ppoId,
+                        treasuryCode
+                    );
                     response.FillErrorInDataSource(
                         ppoComponentRevisionDTO,
                         $"Pensioner not found!"
@@ -135,6 +154,11 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (await _pensionDbContext.SaveChangesAsync() == 0)
                 {
+                    // If no rows were affected, fill the error in the response
+                    _logger.LogError(
+                        "Failed to save PPO Component Revision for PPO ID: {PpoId}",
+                        ppoId
+                    );
                     response.FillErrorInDataSource(
                         ppoComponentRevision,
                         $"PPO Component Rate not saved!"
@@ -155,6 +179,12 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while creating PPO Component Revision for PPO ID: {PpoId} with data: {Data}",
+                    ppoId,
+                    ppoComponentRevisionDTO
+                );
                 response.FillErrorInDataSource(
                     ppoComponentRevision,
                     $"DbUpdateException: {ex.InnerException?.Message}"
@@ -170,6 +200,11 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
+            _logger.LogInformation(
+                "Creating multiple PPO Component Revisions for PPO ID: {PpoId} with data count: {Count}",
+                ppoId,
+                ppoComponentRevisionDTOs.Count
+            );
             List<PpoComponentRevision> ppoComponentRevisions = new();
             List<TResponse>? response = new List<TResponse>();
 
@@ -191,6 +226,12 @@ namespace CTS_BE.BAL.Services.Pension
                     if (ppoComponentRevisionFound != null)
                     {
                         ppoComponentRevision = ppoComponentRevisionFound;
+                        _logger.LogWarning(
+                            "PPO Component Revision already exists for PPO ID: {PpoId} with Rate ID: {RateId} and From Date: {FromDate}",
+                            ppoId,
+                            ppoComponentRevision.RateId,
+                            ppoComponentRevision.FromDate
+                        );
                         ppoComponentRevisionDTO.FillErrorInDataSource(
                             ppoComponentRevisionFound,
                             $"PPO Component Revision already exists!"
@@ -205,6 +246,11 @@ namespace CTS_BE.BAL.Services.Pension
                         );
                     if (pensionerFound is null)
                     {
+                        _logger.LogWarning(
+                            "Pensioner not found for PPO ID: {PpoId} with treasury code: {TreasuryCode}",
+                            ppoId,
+                            treasuryCode
+                        );
                         ppoComponentRevisionDTO.FillErrorInDataSource(
                             ppoComponentRevision,
                             $"Pensioner not found!"
@@ -218,6 +264,10 @@ namespace CTS_BE.BAL.Services.Pension
                 await _pensionDbContext.PpoComponentRevisions.AddRangeAsync(ppoComponentRevisions);
                 if (await _pensionDbContext.SaveChangesAsync() == 0)
                 {
+                    _logger.LogError(
+                        "Failed to save PPO Component Revisions for PPO ID: {PpoId}",
+                        ppoId
+                    );
                     response.FillErrorInDataSource(
                         ppoComponentRevisions,
                         $"PPO Component Rate not saved!"
@@ -227,6 +277,12 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while creating multiple PPO Component Revisions for PPO ID: {PpoId} with data count: {Count}",
+                    ppoId,
+                    ppoComponentRevisionDTOs.Count
+                );
                 response.FillErrorInDataSource(
                     ppoComponentRevisions,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
@@ -242,6 +298,12 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
+            _logger.LogInformation(
+                "Updating PPO Component Revision with ID: {RevisionId} for financial year: {FinancialYear} and treasury code: {TreasuryCode}",
+                revisionId,
+                financialYear,
+                treasuryCode
+            );
             PpoComponentRevision? ppoComponentRevision = new();
             T? response = _mapper.Map<T>(ppoComponentRevision);
 
@@ -256,6 +318,10 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (ppoComponentRevision == null)
                 {
+                    _logger.LogWarning(
+                        "PPO Component Revision not found for ID: {RevisionId}",
+                        revisionId
+                    );
                     response.FillErrorInDataSource(
                         ppoComponentRevision,
                         $"PPO Component RevisionId({revisionId}) not found!"
@@ -274,11 +340,21 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while updating PPO Component Revision with ID: {RevisionId} and data: {Data}",
+                    revisionId,
+                    ppoComponentRevisionUpdateDTO
+                );
                 response.FillErrorInDataSource(
                     ppoComponentRevision,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );
             }
+            _logger.LogError(
+                "Failed to update PPO Component Revision with ID: {RevisionId}",
+                revisionId
+            );
             return response;
         }
 
@@ -303,6 +379,12 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
+            _logger.LogInformation(
+                "Deleting PPO Component Revision with ID: {RevisionId} for financial year: {FinancialYear} and treasury code: {TreasuryCode}",
+                revisionId,
+                financialYear,
+                treasuryCode
+            );
             PpoComponentRevision? ppoComponentRevision = new();
             T? response = _mapper.Map<T>(ppoComponentRevision);
 
@@ -317,6 +399,10 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (ppoComponentRevision == null)
                 {
+                    _logger.LogWarning(
+                        "PPO Component Revision not found for ID: {RevisionId}",
+                        revisionId
+                    );
                     response.FillErrorInDataSource(
                         ppoComponentRevision,
                         $"PPO Component RevisionId({revisionId}) not found!"
@@ -335,11 +421,20 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while deleting PPO Component Revision with ID: {RevisionId}",
+                    revisionId
+                );
                 response.FillErrorInDataSource(
                     ppoComponentRevision,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );
             }
+            _logger.LogError(
+                "Failed to delete PPO Component Revision with ID: {RevisionId}",
+                revisionId
+            );
             return response;
         }
     }

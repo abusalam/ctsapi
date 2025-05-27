@@ -17,6 +17,7 @@ namespace CTS_BE.BAL.Services.Pension
         private readonly ISubCategoryRepository _subCategoryRepository;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
+        private readonly ILogger<PensionCategoryService> _logger;
 
         public PensionCategoryService(
             PensionDbContext pensionDbContext,
@@ -24,7 +25,8 @@ namespace CTS_BE.BAL.Services.Pension
             ISubCategoryRepository subCategoryRepository,
             ICategoryRepository categoryRepository,
             IClaimService claimService,
-            IMapper mapper
+            IMapper mapper,
+            ILogger<PensionCategoryService> logger
         )
             : base(claimService)
         {
@@ -33,6 +35,7 @@ namespace CTS_BE.BAL.Services.Pension
             _subCategoryRepository = subCategoryRepository;
             _categoryRepository = categoryRepository;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<TResponse> CreatePensionPrimaryCategory<TEntry, TResponse>(
@@ -53,6 +56,10 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (PrimaryCategoryExists)
                 {
+                    _logger.LogWarning(
+                        "Primary Category already exists: {PrimaryCategoryName}",
+                        primaryCategoryEntity.PrimaryCategoryName
+                    );
                     response.FillErrorInDataSource(
                         primaryCategoryEntity,
                         $"Primary Category '{primaryCategoryEntity.PrimaryCategoryName}' already exists!"
@@ -67,6 +74,11 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while creating primary category with data: {Data}",
+                    pensionPrimaryCategoryEntryDTO
+                );
                 response.FillErrorInDataSource(
                     primaryCategoryEntity,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
@@ -94,11 +106,18 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while fetching primary categories for financial year {FinancialYear} and treasury code {TreasuryCode}",
+                    financialYear,
+                    treasuryCode
+                );
                 response.FillErrorInDataSource(
                     primaryCategories,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
                 );
             }
+
             return response;
         }
 
@@ -108,6 +127,10 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
+            _logger.LogInformation(
+                "Creating Pension SubCategory with data: {PensionSubCategoryEntryDTO}",
+                pensionSubCategoryEntryDTO
+            );
             SubCategory subCategoryEntity = new() { Id = 0 };
             TResponse? response = _mapper.Map<TResponse>(subCategoryEntity);
 
@@ -123,6 +146,10 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (subCategory != null)
                 {
+                    _logger.LogWarning(
+                        "Sub Category already exists: {SubCategoryName}",
+                        subCategoryEntity.SubCategoryName
+                    );
                     response.FillErrorInDataSource(
                         subCategoryEntity,
                         $"Sub Category already exists!"
@@ -137,12 +164,21 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (await _pensionDbContext.SaveChangesAsync() == 0)
                 {
+                    _logger.LogError(
+                        "Failed to save SubCategory: {SubCategoryName}",
+                        subCategoryEntity.SubCategoryName
+                    );
                     response.FillErrorInDataSource(subCategoryEntity, $"Sub Category not saved!");
                     return response;
                 }
             }
             catch (DbUpdateException ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Database update exception occurred while creating sub category with data: {Data}",
+                    pensionSubCategoryEntryDTO
+                );
                 response.FillErrorInDataSource(
                     subCategoryEntity,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"

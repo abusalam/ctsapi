@@ -16,12 +16,14 @@ namespace CTS_BE.BAL.Services.Pension
         private readonly IComponentRateRepository _pensionRateRepository;
         private readonly IClaimService _claimService;
         private readonly IMapper _mapper;
+        private readonly ILogger<ComponentRateService> _logger;
 
         public ComponentRateService(
             IComponentRateRepository pensionRateRepository,
             PensionDbContext context,
             IClaimService claimService,
-            IMapper mapper
+            IMapper mapper,
+            ILogger<ComponentRateService> logger
         )
             : base(claimService)
         {
@@ -29,6 +31,7 @@ namespace CTS_BE.BAL.Services.Pension
             _claimService = claimService;
             _mapper = mapper;
             _pensionRateRepository = pensionRateRepository;
+            _logger = logger;
         }
 
         public async Task<TResponse> CreateComponentRates<TEntry, TResponse>(
@@ -37,6 +40,12 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
+            _logger.LogInformation(
+                "Creating component rate with data: {PensionRateEntryDTO}, Financial Year: {FinancialYear}, Treasury Code: {TreasuryCode}",
+                pensionRateEntryDTO,
+                financialYear,
+                treasuryCode
+            );
             ComponentRate componentRateEntity = new() { Id = 0 };
             TResponse? response = _mapper.Map<TResponse>(componentRateEntity);
 
@@ -50,15 +59,28 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (await _context.SaveChangesAsync() == 0)
                 {
+                    _logger.LogError(
+                        "Failed to save component rate entity: {ComponentRateEntity}",
+                        componentRateEntity
+                    );
                     response.FillErrorInDataSource(
                         componentRateEntity,
                         $"Component Rate not saved!"
                     );
                     return response;
                 }
+                _logger.LogInformation(
+                    "Component rate created successfully with ID: {Id}",
+                    componentRateEntity.Id
+                );
             }
             catch (DbUpdateException ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Database update exception occurred while creating component rate with data: {Data}",
+                    pensionRateEntryDTO
+                );
                 response.FillErrorInDataSource(
                     componentRateEntity,
                     $"ServiceException: {ex.InnerException?.Message}"
@@ -76,6 +98,11 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
+            _logger.LogInformation(
+                "Listing component rates for financial year: {FinancialYear}, Treasury Code: {TreasuryCode}",
+                financialYear,
+                treasuryCode
+            );
             return await _context
                 .Set<ComponentRate>()
                 .Where(entity => entity.ActiveFlag)

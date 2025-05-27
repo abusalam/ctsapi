@@ -16,13 +16,15 @@ namespace CTS_BE.BAL.Services.Pension
         IClaimService claimService,
         IMapper mapper,
         IPpoRegularBillRepository ppoRegularBillRepository,
-        ITreasuryRepository treasuryRepository
+        ITreasuryRepository treasuryRepository,
+        ILogger<PpoRegularBillService> logger
     ) : PpoBillService(claimService), IPpoRegularBillService
     {
         private readonly IMapper _mapper = mapper;
         private readonly IPpoRegularBillRepository _ppoRegularBillRepository =
             ppoRegularBillRepository;
         private readonly ITreasuryRepository _treasuryRepository = treasuryRepository;
+        private readonly ILogger<PpoRegularBillService> _logger = logger;
 
         public async Task<RegularBillListResponseDTO> GetRegularPensionBills(
             short year,
@@ -34,6 +36,13 @@ namespace CTS_BE.BAL.Services.Pension
             long[]? branchIds = null
         )
         {
+            _logger.LogInformation(
+                "Received request to get regular pension bills for year: {Year}, month: {Month}, financialYear: {FinancialYear}, treasuryCode: {TreasuryCode}",
+                year,
+                month,
+                financialYear,
+                treasuryCode
+            );
             RegularBillListResponseDTO billListResponseDTO = new();
             List<Bill>? bills = null;
             Dictionary<string, string>? treasuryNameCache = []; // Cache for treasury names
@@ -145,6 +154,14 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while fetching regular pension bills for year: {Year}, month: {Month}, financialYear: {FinancialYear}, treasuryCode: {TreasuryCode}",
+                    year,
+                    month,
+                    financialYear,
+                    treasuryCode
+                );
                 billListResponseDTO.FillErrorInDataSource(new { }, "ServiceException: ", ex);
                 return billListResponseDTO;
             }
@@ -159,6 +176,13 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
+            _logger.LogInformation(
+                "Received request to get PPOs for regular bill generation for year: {Year}, month: {Month}, financialYear: {FinancialYear}, treasuryCode: {TreasuryCode}",
+                year,
+                month,
+                financialYear,
+                treasuryCode
+            );
             PpoListResponseDTO ppoListResponseDTO = new();
 
             try
@@ -175,10 +199,25 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while fetching PPOs for regular bill generation for year: {Year}, month: {Month}, financialYear: {FinancialYear}, treasuryCode: {TreasuryCode}",
+                    year,
+                    month,
+                    financialYear,
+                    treasuryCode
+                );
                 T? ppoBillResponseDTO = _mapper.Map<T>(ppoListResponseDTO);
                 ppoBillResponseDTO.FillErrorInDataSource(new { }, "ServiceException: ", ex);
                 return ppoBillResponseDTO;
             }
+            _logger.LogInformation(
+                "Successfully fetched PPOs for regular bill generation for year: {Year}, month: {Month}, financialYear: {FinancialYear}, treasuryCode: {TreasuryCode}",
+                year,
+                month,
+                financialYear,
+                treasuryCode
+            );
 
             return _mapper.Map<T>(ppoListResponseDTO);
         }
@@ -189,6 +228,12 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
+            _logger.LogInformation(
+                "Received request to save regular pension bill with data: {PpoBillEntryDTO}, financialYear: {FinancialYear}, treasuryCode: {TreasuryCode}",
+                ppoBillEntryDTO,
+                financialYear,
+                treasuryCode
+            );
             PpoBillSaveResponseDTO response = new();
             try
             {
@@ -200,6 +245,12 @@ namespace CTS_BE.BAL.Services.Pension
                     )
                 )
                 {
+                    _logger.LogWarning(
+                        "First bill not generated for PPO ID: {PpoId}, financialYear: {FinancialYear}, treasuryCode: {TreasuryCode}",
+                        ppoBillEntryDTO.PpoId,
+                        financialYear,
+                        treasuryCode
+                    );
                     response.FillErrorInDataSource(
                         new
                         {
@@ -247,6 +298,14 @@ namespace CTS_BE.BAL.Services.Pension
                     )
                 )
                 {
+                    _logger.LogWarning(
+                        "Regular bill already exists for PPO ID: {PpoId}, month: {Month}, year: {Year}, financialYear: {FinancialYear}, treasuryCode: {TreasuryCode}",
+                        ppoBillEntryDTO.PpoId,
+                        ppoBillEntryDTO.Month,
+                        ppoBillEntryDTO.Year,
+                        financialYear,
+                        treasuryCode
+                    );
                     response.FillErrorInDataSource(
                         new
                         {
@@ -266,6 +325,12 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (pensioner == null)
                 {
+                    _logger.LogWarning(
+                        "Pensioner not found for PPO ID: {PpoId}, financialYear: {FinancialYear}, treasuryCode: {TreasuryCode}",
+                        ppoBillEntryDTO.PpoId,
+                        financialYear,
+                        treasuryCode
+                    );
                     response.FillErrorInDataSource(
                         new
                         {
@@ -393,6 +458,13 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while saving regular pension bill for PPO ID: {PpoId}, financialYear: {FinancialYear}, treasuryCode: {TreasuryCode}",
+                    ppoBillEntryDTO.PpoId,
+                    financialYear,
+                    treasuryCode
+                );
                 response.FillErrorInDataSource(
                     new
                     {
@@ -405,6 +477,12 @@ namespace CTS_BE.BAL.Services.Pension
                 );
                 return _mapper.Map<T>(response);
             }
+            _logger.LogInformation(
+                "Successfully saved regular pension bill for PPO ID: {PpoId}, financialYear: {FinancialYear}, treasuryCode: {TreasuryCode}",
+                ppoBillEntryDTO.PpoId,
+                financialYear,
+                treasuryCode
+            );
             return _mapper.Map<T>(response);
         }
     }

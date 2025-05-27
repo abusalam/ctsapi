@@ -13,7 +13,8 @@ namespace CTS_BE.BAL.Services.Pension
         IMapper mapper,
         IPensionerDetailsRepository pensionerDetailsRepository,
         IPpoSanctionDetailsRepository ppoSanctionDetailsRepository,
-        IClaimService claimService
+        IClaimService claimService,
+        ILogger<PpoSanctionDetailsService> logger
     ) : BaseService(claimService), IPpoSanctionDetailsService
     {
         private readonly IMapper _mapper = mapper;
@@ -21,6 +22,7 @@ namespace CTS_BE.BAL.Services.Pension
             pensionerDetailsRepository;
         private readonly IPpoSanctionDetailsRepository _ppoSanctionDetailsRepository =
             ppoSanctionDetailsRepository;
+        private readonly ILogger<PpoSanctionDetailsService> _logger = logger;
 
         public async Task<T> GetSanctionDetailsById<T>(long sanctionDetailsId, string treasuryCode)
         {
@@ -35,6 +37,11 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (sanctionDetails is null)
                 {
+                    _logger.LogWarning(
+                        "Sanction details with ID {SanctionDetailsId} not found in treasury {TreasuryCode}.",
+                        sanctionDetailsId,
+                        treasuryCode
+                    );
                     response.FillErrorInDataSource(
                         sanctionDetails,
                         "Sanction details does not exist. Please check Id. and try again."
@@ -43,10 +50,17 @@ namespace CTS_BE.BAL.Services.Pension
                 }
 
                 response = _mapper.Map<T>(sanctionDetails);
+
                 return response;
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while fetching sanction details with ID {SanctionDetailsId} in treasury {TreasuryCode}.",
+                    sanctionDetailsId,
+                    treasuryCode
+                );
                 response.FillErrorInDataSource(
                     sanctionDetails,
                     $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
@@ -61,6 +75,12 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
+            _logger.LogInformation(
+                "Creating sanction details for PPO ID {PpoId} in financial year {FinancialYear} and treasury {TreasuryCode}.",
+                ppoSanctionDetailsEntryDTO.PpoId,
+                financialYear,
+                treasuryCode
+            );
             PpoSanctionDetail sanctionDetailsEntity = _mapper.Map<PpoSanctionDetail>(
                 ppoSanctionDetailsEntryDTO
             );
@@ -77,6 +97,12 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (pensioner is null)
                 {
+                    _logger.LogWarning(
+                        "Pensioner with PPO ID {PpoId} not found in financial year {FinancialYear} and treasury {TreasuryCode}.",
+                        ppoSanctionDetailsEntryDTO.PpoId,
+                        financialYear,
+                        treasuryCode
+                    );
                     response.FillErrorInDataSource(
                         pensioner,
                         "Pensioner not found. Please check PPO Id. and try again."
@@ -92,6 +118,11 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (sanctionDetails is not null)
                 {
+                    _logger.LogWarning(
+                        "Sanction details for PPO ID {PpoId} already exist in treasury {TreasuryCode}.",
+                        ppoSanctionDetailsEntryDTO.PpoId,
+                        treasuryCode
+                    );
                     response.FillErrorInDataSource(
                         sanctionDetails,
                         "Sanction details already exist. Please check PPO Id. and try again."
@@ -110,6 +141,13 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while creating sanction details for PPO ID {PpoId} in financial year {FinancialYear} and treasury {TreasuryCode}.",
+                    ppoSanctionDetailsEntryDTO.PpoId,
+                    financialYear,
+                    treasuryCode
+                );
                 response.FillErrorInDataSource(
                     sanctionDetailsEntity,
                     $"ServiceException: {ex.InnerException?.Message}"
@@ -125,6 +163,13 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
+            _logger.LogInformation(
+                "Updating sanction details with ID {SanctionDetailsId} for PPO ID {PpoId} in financial year {FinancialYear} and treasury {TreasuryCode}.",
+                sanctionDetailsId,
+                ppoSanctionDetailsEntryDTO.PpoId,
+                financialYear,
+                treasuryCode
+            );
             PpoSanctionDetail sanctionDetailsEntity = _mapper.Map<PpoSanctionDetail>(
                 ppoSanctionDetailsEntryDTO
             );
@@ -139,6 +184,11 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (sanctionDetails is null)
                 {
+                    _logger.LogWarning(
+                        "Sanction details with ID {SanctionDetailsId} not found in treasury {TreasuryCode}.",
+                        sanctionDetailsId,
+                        treasuryCode
+                    );
                     response.FillErrorInDataSource(
                         sanctionDetails,
                         "Sanction details does not exist. Please check Id. and try again."
@@ -174,6 +224,14 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while updating sanction details with ID {SanctionDetailsId} for PPO ID {PpoId} in financial year {FinancialYear} and treasury {TreasuryCode}.",
+                    sanctionDetailsId,
+                    ppoSanctionDetailsEntryDTO.PpoId,
+                    financialYear,
+                    treasuryCode
+                );
                 response.FillErrorInDataSource(
                     sanctionDetailsEntity,
                     $"ServiceException: {ex.InnerException?.Message}"

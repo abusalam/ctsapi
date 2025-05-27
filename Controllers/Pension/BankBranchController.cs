@@ -9,16 +9,20 @@ namespace CTS_BE.Controllers.Pension
 {
     public class BankBranchController(
         IClaimService claimService,
-        IBankBranchService bankBranchService
+        IBankBranchService bankBranchService,
+        ILogger<BankBranchController> logger
     ) : ApiBaseController(claimService)
     {
         private readonly IBankBranchService _bankBranchService = bankBranchService;
+        private readonly ILogger<BankBranchController> _logger = logger;
 
         [HttpGet("banks")]
         [Tags("Pension: Bank Branch")]
         [OpenApi]
         public async Task<JsonAPIResponse<BankListResponseDTO>> GetBanks()
         {
+            _logger.LogInformation("Received request to get all banks.");
+
             JsonAPIResponse<BankListResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -30,6 +34,7 @@ namespace CTS_BE.Controllers.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error occurred while fetching banks.");
                 FillException(response, ex);
                 return response;
             }
@@ -46,6 +51,10 @@ namespace CTS_BE.Controllers.Pension
         [OpenApi]
         public async Task<JsonAPIResponse<BranchListResponseDTO>> GetBranchesByBankId(long bankId)
         {
+            _logger.LogInformation(
+                "Received request to get branches for bank ID: {BankId}",
+                bankId
+            );
             JsonAPIResponse<BranchListResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -57,9 +66,18 @@ namespace CTS_BE.Controllers.Pension
                     GetTreasuryCode(),
                     bankId
                 );
+                _logger.LogInformation(
+                    "Branches for bank ID {BankId} retrieved successfully.",
+                    bankId
+                );
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while fetching branches for bank ID: {BankId}",
+                    bankId
+                );
                 FillException(response, ex);
                 return response;
             }

@@ -14,11 +14,13 @@ namespace CTS_BE.BAL.Services.Pension
     public class EPpoReceiptService(
         IEPpoReceiptRepository ePpoReceiptRepository,
         IMapper mapper,
-        IClaimService claimService
+        IClaimService claimService,
+        ILogger<EPpoReceiptService> logger
     ) : BaseService(claimService), IEPpoReceiptService
     {
         private readonly IEPpoReceiptRepository _ePpoReceiptRepository = ePpoReceiptRepository;
         private readonly IMapper _mapper = mapper;
+        private readonly ILogger<EPpoReceiptService> _logger = logger;
 
         public async Task<T> CreateEPpoReceipt<T>(
             EPpoReceiptEntryDTO ePpoReceiptEntryDTO,
@@ -44,6 +46,10 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (existingEppoReceipt != null)
                 {
+                    _logger.LogWarning(
+                        "EppoReceipt already exists for Pension Application No: {PensionApplnNo}",
+                        eppoReceipt.PensionApplnNo
+                    );
                     response.FillErrorInDataSource(
                         existingEppoReceipt,
                         "eppoReceipt already exists for Pension Application No: "
@@ -61,6 +67,11 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while creating EPPO Receipt for Pension Application No: {PensionApplnNo}",
+                    eppoReceipt.PensionApplnNo
+                );
                 response.FillErrorInDataSource(
                     eppoReceipt,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
@@ -75,6 +86,8 @@ namespace CTS_BE.BAL.Services.Pension
             short financialYear
         )
         {
+            // Check if the revision entry DTO is valid
+
             EppoRevision eppoRevision = _mapper.Map<EppoRevision>(ePpoReceiptRevisionEntryDTO);
             T response = _mapper.Map<T>(eppoRevision);
 
@@ -91,6 +104,11 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while creating EPPO Receipt Revision for Pension Application No: {PensionApplnNo}",
+                    eppoRevision.PensionApplnNo
+                );
                 response.FillErrorInDataSource(
                     eppoRevision,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
@@ -117,6 +135,7 @@ namespace CTS_BE.BAL.Services.Pension
                 if (eppoReceipt is null)
                 {
                     response = _mapper.Map<T>(new EPpoReceiptDetailDTO());
+
                     response.FillErrorInDataSource(
                         eppoReceipt,
                         $"No record found for Receipt ID: {receiptId}"
@@ -125,10 +144,16 @@ namespace CTS_BE.BAL.Services.Pension
                 }
 
                 response = _mapper.Map<T>(eppoReceipt);
+
                 return response;
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while retrieving EPPO Receipt by ID: {ReceiptId}",
+                    receiptId
+                );
                 response = _mapper.Map<T>(new EPpoReceiptDetailDTO());
                 response.FillErrorInDataSource(
                     new EppoReceipt(),
@@ -168,6 +193,11 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while retrieving EPPO Receipt for Pension Application No: {PensionApplnNo}",
+                    pensionApplnNo
+                );
                 response.FillErrorInDataSource(
                     new EppoReceipt(),
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
@@ -241,6 +271,11 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while registering EPPO Receipt withdrawal for Pension Application No: {PensionApplnNo}",
+                    pensionApplnNo
+                );
                 response.FillErrorInDataSource(
                     eppoReceipt,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"

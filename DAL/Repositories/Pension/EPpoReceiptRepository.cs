@@ -8,11 +8,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Repositories.Pension
 {
-    public class EPpoReceiptRepository(IMapper mapper, PensionDbContext context)
-        : IEPpoReceiptRepository
+    public class EPpoReceiptRepository(
+        IMapper mapper,
+        PensionDbContext context,
+        ILogger<EPpoReceiptRepository> logger
+    ) : IEPpoReceiptRepository
     {
         private readonly IMapper _mapper = mapper;
         private readonly PensionDbContext _context = context;
+        private readonly ILogger<EPpoReceiptRepository> _logger = logger;
 
         public async Task<EppoReceipt?> GetEPpoReceiptById(
             long receiptId,
@@ -20,6 +24,12 @@ namespace CTS_BE.DAL.Repositories.Pension
             short financialYear
         )
         {
+            _logger.LogInformation(
+                "Fetching EPPO Receipt by Id: {ReceiptId}, Treasury Code: {TreasuryCode}, Financial Year: {FinancialYear}",
+                receiptId,
+                treasuryCode,
+                financialYear
+            );
             return await _context
                 .EppoReceipts.Include(e => e.PhotoFile)
                 .Include(e => e.SignatureFile)
@@ -37,6 +47,11 @@ namespace CTS_BE.DAL.Repositories.Pension
             Expression<Func<EppoReceipt, T>> selectExpression
         )
         {
+            _logger.LogInformation(
+                "Fetching unused EPPO Receipts for Treasury Code: {TreasuryCode}, Financial Year: {FinancialYear}",
+                treasuryCode,
+                financialYear
+            );
             return await _context
                 .EppoReceipts.Where(e =>
                     e.TreasuryCode == treasuryCode
@@ -58,6 +73,12 @@ namespace CTS_BE.DAL.Repositories.Pension
             Expression<Func<EppoReceipt, T>> selectExpression
         )
         {
+            _logger.LogInformation(
+                "Saving EPPO Receipt for Pension Application No: {PensionApplnNo}, Treasury Code: {TreasuryCode}, Financial Year: {FinancialYear}",
+                eppoReceiptEntity.PensionApplnNo,
+                treasuryCode,
+                financialYear
+            );
             var response = _mapper.Map<T>(eppoReceiptEntity);
             try
             {
@@ -69,6 +90,10 @@ namespace CTS_BE.DAL.Repositories.Pension
 
                 if (eppoReceiptExists != null)
                 {
+                    _logger.LogWarning(
+                        "EPPO Receipt already exists for Pension Application No: {PensionApplnNo}",
+                        eppoReceiptEntity.PensionApplnNo
+                    );
                     response.FillErrorInDataSource(
                         eppoReceiptExists,
                         "eppoReceipt already exists for Pension Application No: "
@@ -138,6 +163,10 @@ namespace CTS_BE.DAL.Repositories.Pension
 
                 if (await _context.SaveChangesAsync() == 0)
                 {
+                    _logger.LogError(
+                        "Failed to save PpoReceipt data for Pension Application No: {PensionApplnNo}",
+                        eppoReceiptEntity.PensionApplnNo
+                    );
                     response.FillErrorInDataSource(
                         eppoReceiptEntity,
                         "Failed to save PpoReceipt data. Please try again after sometime."
@@ -149,6 +178,11 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             catch (DbUpdateException ex)
             {
+                _logger.LogError(
+                    ex,
+                    "DbUpdateException occurred while saving EPPO Receipt for Pension Application No: {PensionApplnNo}",
+                    eppoReceiptEntity.PensionApplnNo
+                );
                 response.FillErrorInDataSource(
                     eppoReceiptEntity,
                     $"DbException: {ex.InnerException?.Message ?? ex.Message}"
@@ -156,6 +190,11 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Exception occurred while saving EPPO Receipt for Pension Application No: {PensionApplnNo}",
+                    eppoReceiptEntity.PensionApplnNo
+                );
                 response.FillErrorInDataSource(
                     eppoReceiptEntity,
                     $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
@@ -170,6 +209,12 @@ namespace CTS_BE.DAL.Repositories.Pension
             short financialYear
         )
         {
+            _logger.LogInformation(
+                "Fetching EPPO Receipt by Pension Application No: {PensionApplnNo}, Treasury Code: {TreasuryCode}, Financial Year: {FinancialYear}",
+                pensionApplnNo,
+                treasuryCode,
+                financialYear
+            );
             return await _context.EppoReceipts.FirstOrDefaultAsync(e =>
                 e.PensionApplnNo == pensionApplnNo
                 && e.TreasuryCode == treasuryCode
@@ -183,6 +228,12 @@ namespace CTS_BE.DAL.Repositories.Pension
             short financialYear
         )
         {
+            _logger.LogInformation(
+                "Fetching EPPO Receipt by PPO No: {PpoNo}, Treasury Code: {TreasuryCode}, Financial Year: {FinancialYear}",
+                ppoNo,
+                treasuryCode,
+                financialYear
+            );
             return await _context.EppoReceipts.FirstOrDefaultAsync(e =>
                 e.PpoNo == ppoNo
                 && e.TreasuryCode == treasuryCode
@@ -195,6 +246,10 @@ namespace CTS_BE.DAL.Repositories.Pension
             Expression<Func<EppoReceipt, T>> selectExpression
         )
         {
+            _logger.LogInformation(
+                "Saving revised EPPO Receipt for Pension Application No: {PensionApplnNo}",
+                entity.PensionApplnNo
+            );
             var response = _mapper.Map<T>(entity);
 
             try
@@ -203,17 +258,30 @@ namespace CTS_BE.DAL.Repositories.Pension
 
                 if (await _context.SaveChangesAsync() == 0)
                 {
+                    _logger.LogError(
+                        "Failed to save revised PPO for Pension Application No: {PensionApplnNo}",
+                        entity.PensionApplnNo
+                    );
                     response.FillErrorInDataSource(
                         entity,
                         "Failed to save revised PPO. Please try again."
                     );
                     return response;
                 }
+                _logger.LogInformation(
+                    "Successfully saved revised EPPO Receipt for Pension Application No: {PensionApplnNo}",
+                    entity.PensionApplnNo
+                );
 
                 return _mapper.Map<T>(entity);
             }
             catch (DbUpdateException ex)
             {
+                _logger.LogError(
+                    ex,
+                    "DbUpdateException occurred while saving revised EPPO Receipt for Pension Application No: {PensionApplnNo}",
+                    entity.PensionApplnNo
+                );
                 response.FillErrorInDataSource(
                     entity,
                     $"DbException: {ex.InnerException?.Message ?? ex.Message}"
@@ -221,6 +289,11 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Exception occurred while saving revised EPPO Receipt for Pension Application No: {PensionApplnNo}",
+                    entity.PensionApplnNo
+                );
                 response.FillErrorInDataSource(
                     entity,
                     $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
@@ -240,6 +313,12 @@ namespace CTS_BE.DAL.Repositories.Pension
             Expression<Func<EppoReceipt, T>> selectExpression
         )
         {
+            _logger.LogInformation(
+                "Withdrawing EPPO Receipt for Pension Application No: {PensionApplnNo}, Reason: {Reason}, Flag: {Flag}",
+                pensionApplnNo,
+                reason,
+                flag
+            );
             T? response = _mapper.Map<T>(entity);
             try
             {
@@ -247,17 +326,30 @@ namespace CTS_BE.DAL.Repositories.Pension
 
                 if (await _context.SaveChangesAsync() == 0)
                 {
+                    _logger.LogError(
+                        "Failed to withdraw EPPO Receipt for Pension Application No: {PensionApplnNo}",
+                        pensionApplnNo
+                    );
                     response.FillErrorInDataSource(
                         entity,
                         "Failed to save data. Please try again after sometime."
                     );
                     return response;
                 }
+                _logger.LogInformation(
+                    "Successfully withdrew EPPO Receipt for Pension Application No: {PensionApplnNo}",
+                    pensionApplnNo
+                );
 
                 return _mapper.Map<T>(entity);
             }
             catch (DbUpdateException ex)
             {
+                _logger.LogError(
+                    ex,
+                    "DbUpdateException occurred while withdrawing EPPO Receipt for Pension Application No: {PensionApplnNo}",
+                    pensionApplnNo
+                );
                 response.FillErrorInDataSource(
                     entity,
                     $"DbException: {ex.InnerException?.Message ?? ex.Message}"
@@ -266,6 +358,11 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Exception occurred while withdrawing EPPO Receipt for Pension Application No: {PensionApplnNo}",
+                    pensionApplnNo
+                );
                 response.FillErrorInDataSource(
                     entity,
                     $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"

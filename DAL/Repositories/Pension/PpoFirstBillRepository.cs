@@ -9,12 +9,23 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Repositories.Pension
 {
-    public class PpoFirstBillRepository(PensionDbContext context, IMapper mapper)
-        : PpoBillRepository(context, mapper),
-            IPpoFirstBillRepository
+    public class PpoFirstBillRepository : PpoBillRepository, IPpoFirstBillRepository
     {
-        private readonly PensionDbContext _pensionDbContext = context;
-        private readonly IMapper _mapper = mapper;
+        private readonly PensionDbContext _pensionDbContext;
+        private readonly IMapper _mapper;
+        private readonly ILogger<PpoFirstBillRepository> _logger;
+
+        public PpoFirstBillRepository(
+            PensionDbContext context,
+            IMapper mapper,
+            ILogger<PpoFirstBillRepository> logger
+        )
+            : base(context, mapper, logger)
+        {
+            _pensionDbContext = context;
+            _mapper = mapper;
+            _logger = logger;
+        }
 
         public async Task<T> GetPpoFirstBillByPpoId<T>(
             int ppoId,
@@ -73,6 +84,13 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while fetching PPO first bill for PPO ID: {PpoId}, financial year: {FinancialYear}, treasury code: {TreasuryCode}",
+                    ppoId,
+                    financialYear,
+                    treasuryCode
+                );
                 response.FillErrorInDataSource(
                     new
                     {
@@ -203,6 +221,13 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while generating first pension bill for PPO ID: {PpoId}, financial year: {FinancialYear}, treasury code: {TreasuryCode}",
+                    ppoFirstBillEntryDTO.PpoId,
+                    financialYear,
+                    treasuryCode
+                );
                 response.FillErrorInDataSource(
                     new
                     {

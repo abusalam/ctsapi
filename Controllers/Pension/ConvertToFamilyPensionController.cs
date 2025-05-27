@@ -9,11 +9,13 @@ namespace CTS_BE.Controllers.Pension
 {
     public class ConvertToFamilyPensionController(
         IConvertToFamilyPensionService convertToFamilyPensionService,
-        IClaimService claimService
+        IClaimService claimService,
+        ILogger<ConvertToFamilyPensionController> logger
     ) : ApiBaseController(claimService)
     {
         private readonly IConvertToFamilyPensionService _convertToFamilyPensionService =
             convertToFamilyPensionService;
+        private readonly ILogger<ConvertToFamilyPensionController> _logger = logger;
 
         [HttpGet("convert-to-family-pension-list")]
         [Tags("Pension: Convert To Family Pension")]
@@ -22,6 +24,9 @@ namespace CTS_BE.Controllers.Pension
             JsonAPIResponse<TableResponseDTO<PensionerListItemDTO>>
         > GetPensionersToConvert()
         {
+            _logger.LogInformation(
+                "Received request to get pensioners for conversion to family pension."
+            );
             JsonAPIResponse<TableResponseDTO<PensionerListItemDTO>> response = new();
             try
             {
@@ -49,6 +54,10 @@ namespace CTS_BE.Controllers.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while fetching pensioners for conversion to family pension."
+                );
                 FillException(response, ex);
                 return response;
             }

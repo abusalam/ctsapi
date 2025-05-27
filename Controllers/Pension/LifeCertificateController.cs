@@ -10,14 +10,17 @@ namespace CTS_BE.Controllers.Pension
     public class LifeCertificateController : ApiBaseController
     {
         private readonly ILifeCertificateService _lifeCertificateService;
+        private readonly ILogger<LifeCertificateController> _logger;
 
         public LifeCertificateController(
             ILifeCertificateService lifeCertificateService,
-            IClaimService claimService
+            IClaimService claimService,
+            ILogger<LifeCertificateController> logger
         )
             : base(claimService)
         {
             _lifeCertificateService = lifeCertificateService;
+            _logger = logger;
         }
 
         [HttpPost("lifecertificate")]
@@ -43,6 +46,11 @@ namespace CTS_BE.Controllers.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while submitting life certificate with data: {Data}",
+                    lifeCertificateEntryDTO
+                );
                 FillException(response, ex);
                 return response;
             }
@@ -61,6 +69,10 @@ namespace CTS_BE.Controllers.Pension
             int ppoId
         )
         {
+            _logger.LogInformation(
+                "Received request to get life certificate for PPO ID: {PpoId}",
+                ppoId
+            );
             JsonAPIResponse<LifeCertificateResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -76,6 +88,11 @@ namespace CTS_BE.Controllers.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while fetching life certificate for PPO ID: {PpoId}",
+                    ppoId
+                );
                 FillException(response, ex);
                 return response;
             }
@@ -95,6 +112,11 @@ namespace CTS_BE.Controllers.Pension
             LifeCertificateEntryDTO lifeCertificateEntryDTO
         )
         {
+            _logger.LogInformation(
+                "Received request to update life certificate for PPO ID: {PpoId} with data: {Data}",
+                ppoId,
+                lifeCertificateEntryDTO
+            );
             JsonAPIResponse<LifeCertificateResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -112,6 +134,12 @@ namespace CTS_BE.Controllers.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while updating life certificate for PPO ID: {PpoId} with data: {Data}",
+                    ppoId,
+                    lifeCertificateEntryDTO
+                );
                 FillException(response, ex);
                 return response;
             }
@@ -130,6 +158,10 @@ namespace CTS_BE.Controllers.Pension
             JsonAPIResponse<LifeCertificateListResponseDTO>
         > GetLifeCertificatesByBranchId(long branchId)
         {
+            _logger.LogInformation(
+                "Received request to get life certificates for branch ID: {BranchId}",
+                branchId
+            );
             JsonAPIResponse<LifeCertificateListResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -146,6 +178,11 @@ namespace CTS_BE.Controllers.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while fetching life certificates for branch ID: {BranchId}",
+                    branchId
+                );
                 FillException(response, ex);
                 return response;
             }

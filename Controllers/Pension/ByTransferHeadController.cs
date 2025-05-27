@@ -10,14 +10,17 @@ namespace CTS_BE.Controllers.Pension
     public class ByTransferHeadController : ApiBaseController
     {
         private readonly IByTransferHeadService _byTransferHeadService;
+        private readonly ILogger<ByTransferHeadController> _logger;
 
         public ByTransferHeadController(
             IClaimService claimService,
-            IByTransferHeadService byTransferHeadService
+            IByTransferHeadService byTransferHeadService,
+            ILogger<ByTransferHeadController> logger
         )
             : base(claimService)
         {
             _byTransferHeadService = byTransferHeadService;
+            _logger = logger;
         }
 
         [HttpPost("by-transfer-headmap")]
@@ -27,6 +30,8 @@ namespace CTS_BE.Controllers.Pension
             ByTransferHeadEntryDTO byTransferHeadEntryDTO
         )
         {
+            _logger.LogInformation("Received request to fetch By-Transfer Heads.");
+
             JsonAPIResponse<ByTransferHeadResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -42,6 +47,11 @@ namespace CTS_BE.Controllers.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while creating By-Transfer Head map with data: {Data}",
+                    byTransferHeadEntryDTO
+                );
                 FillException(response, ex);
                 return response;
             }
@@ -61,6 +71,10 @@ namespace CTS_BE.Controllers.Pension
             ByTransferHeadUpdateDTO byTransferHeadUpdateDTO
         )
         {
+            _logger.LogInformation(
+                "Received request to update By-Transfer Head map with ID: {ByTransferHeadId}",
+                byTransferHeadId
+            );
             JsonAPIResponse<ByTransferHeadResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -77,6 +91,12 @@ namespace CTS_BE.Controllers.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while updating By-Transfer Head map with ID: {ByTransferHeadId} and data: {Data}",
+                    byTransferHeadId,
+                    byTransferHeadUpdateDTO
+                );
                 FillException(response, ex);
                 return response;
             }
@@ -95,6 +115,10 @@ namespace CTS_BE.Controllers.Pension
             long byTransferHeadId
         )
         {
+            _logger.LogInformation(
+                "Received request to delete By-Transfer Head map with ID: {ByTransferHeadId}",
+                byTransferHeadId
+            );
             JsonAPIResponse<BaseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -109,6 +133,11 @@ namespace CTS_BE.Controllers.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while deleting By-Transfer Head map with ID: {ByTransferHeadId}",
+                    byTransferHeadId
+                );
                 FillException(response, ex);
                 return response;
             }
@@ -128,6 +157,11 @@ namespace CTS_BE.Controllers.Pension
             long byTransferHeadId
         )
         {
+            _logger.LogInformation(
+                "Received request to fetch By-Transfer Head map with ID: {ByTransferHeadId}",
+                byTransferHeadId
+            );
+
             JsonAPIResponse<ByTransferHeadResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -136,13 +170,36 @@ namespace CTS_BE.Controllers.Pension
 
             try
             {
-                response.Result =
+                var result =
                     await _byTransferHeadService.GetByTransferHeadMapById<ByTransferHeadResponseDTO>(
                         byTransferHeadId
                     );
+
+                if (result == null)
+                {
+                    _logger.LogWarning(
+                        "No By-Transfer Head found for ID: {ByTransferHeadId}",
+                        byTransferHeadId
+                    );
+                    response.ApiResponseStatus = Enum.APIResponseStatus.Error;
+                    response.Message = "No data found for the given ID.";
+                }
+                else
+                {
+                    response.Result = result;
+                    _logger.LogInformation(
+                        "Successfully fetched By-Transfer Head map: {@ByTransferHead}",
+                        result
+                    );
+                }
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while fetching By-Transfer Head map with ID: {ByTransferHeadId}",
+                    byTransferHeadId
+                );
                 FillException(response, ex);
                 return response;
             }
@@ -163,6 +220,7 @@ namespace CTS_BE.Controllers.Pension
             JsonAPIResponse<TableResponseDTO<ByTransferHeadResponseDTO>>
         > GetByTransferHeadMaps()
         {
+            _logger.LogInformation("Received request to fetch all By-Transfer Head maps.");
             JsonAPIResponse<TableResponseDTO<ByTransferHeadResponseDTO>> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -190,6 +248,7 @@ namespace CTS_BE.Controllers.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error occurred while fetching all By-Transfer Head maps.");
                 FillException(response, ex);
                 return response;
             }

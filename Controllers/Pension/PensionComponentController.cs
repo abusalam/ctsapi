@@ -10,11 +10,13 @@ namespace CTS_BE.Controllers.Pension
     public class PensionComponentController(
         IPensionBreakupService pensionBreakupService,
         IComponentRateService pensionRateService,
-        IClaimService claimService
+        IClaimService claimService,
+        ILogger<PensionComponentController> logger
     ) : ApiBaseController(claimService)
     {
         private readonly IPensionBreakupService _pensionBreakupService = pensionBreakupService;
         private readonly IComponentRateService _pensionRateService = pensionRateService;
+        private readonly ILogger<PensionComponentController> _logger = logger;
 
         [HttpPost("pension-component")]
         [Tags("Pension: Component")]
@@ -23,6 +25,10 @@ namespace CTS_BE.Controllers.Pension
             PensionBreakupEntryDTO pensionBreakupEntryDTO
         )
         {
+            _logger.LogInformation(
+                "Received request to create pension component with data: {PensionBreakupEntryDTO}",
+                pensionBreakupEntryDTO
+            );
             JsonAPIResponse<PensionBreakupResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -34,9 +40,18 @@ namespace CTS_BE.Controllers.Pension
                     PensionBreakupEntryDTO,
                     PensionBreakupResponseDTO
                 >(pensionBreakupEntryDTO, GetCurrentFyYear(), GetTreasuryCode());
+                _logger.LogInformation(
+                    "Pension component created successfully with ID: {ComponentId}",
+                    response.Result.Id
+                );
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while creating pension component with data: {Data}",
+                    pensionBreakupEntryDTO
+                );
                 FillException(response, ex);
                 return response;
             }
@@ -55,6 +70,7 @@ namespace CTS_BE.Controllers.Pension
             JsonAPIResponse<TableResponseDTO<PensionBreakupResponseDTO>>
         > GetComponents()
         {
+            _logger.LogInformation("Received request to get all pension components.");
             JsonAPIResponse<TableResponseDTO<PensionBreakupResponseDTO>> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -76,9 +92,11 @@ namespace CTS_BE.Controllers.Pension
                         GetTreasuryCode()
                     ),
                 };
+                _logger.LogInformation("Pension components retrieved successfully.");
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error occurred while fetching pension components.");
                 FillException(response, ex);
                 return response;
             }
@@ -96,6 +114,10 @@ namespace CTS_BE.Controllers.Pension
             ComponentRateEntryDTO pensionRatesEntryDTO
         )
         {
+            _logger.LogInformation(
+                "Received request to create component rate with data: {PensionRatesEntryDTO}",
+                pensionRatesEntryDTO
+            );
             JsonAPIResponse<ComponentRateResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -110,6 +132,11 @@ namespace CTS_BE.Controllers.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while creating component rate with data: {Data}",
+                    pensionRatesEntryDTO
+                );
                 FillException(response, ex);
                 return response;
             }
@@ -153,6 +180,11 @@ namespace CTS_BE.Controllers.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while fetching component rates for category ID: {CategoryId}",
+                    categoryId
+                );
                 FillException(response, ex);
                 return response;
             }
@@ -170,6 +202,9 @@ namespace CTS_BE.Controllers.Pension
             JsonAPIResponse<TableResponseDTO<PensionCategoryListDTO>>
         > GetCategoriesWithRates()
         {
+            _logger.LogInformation(
+                "Received request to get all pension categories with component rates."
+            );
             JsonAPIResponse<TableResponseDTO<PensionCategoryListDTO>> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -192,9 +227,16 @@ namespace CTS_BE.Controllers.Pension
                             GetTreasuryCode()
                         ),
                 };
+                _logger.LogInformation(
+                    "Pension categories with component rates retrieved successfully."
+                );
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while fetching pension categories with component rates."
+                );
                 FillException(response, ex);
                 return response;
             }

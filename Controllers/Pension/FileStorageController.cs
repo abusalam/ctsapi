@@ -10,17 +10,23 @@ namespace CTS_BE.Controllers.Pension
     public class FileStorageController(
         IFileStorageService ppoReceiptService,
         IFileStorageService fileStorageService,
-        IClaimService claimService
+        IClaimService claimService,
+        ILogger<FileStorageController> logger
     ) : ApiBaseController(claimService)
     {
         private readonly IFileStorageService _ppoReceiptService = ppoReceiptService;
         private readonly IFileStorageService _fileStorageService = fileStorageService;
+        private readonly ILogger<FileStorageController> _logger = logger;
 
         [HttpPost("storage/file")]
         [Tags("Pension: File Storage")]
         [OpenApi]
         public async Task<JsonAPIResponse<FileResponseDTO>> StoreFile(FileEntryDTO fileEntryDTO)
         {
+            _logger.LogInformation(
+                "Received request to store file with details: {FileEntryDTO}",
+                fileEntryDTO
+            );
             JsonAPIResponse<FileResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -52,6 +58,7 @@ namespace CTS_BE.Controllers.Pension
         [OpenApi]
         public async Task<JsonAPIResponse<FileResponseDTO>> GetFileById(int fileId)
         {
+            _logger.LogInformation("Received request to get file by ID: {FileId}", fileId);
             JsonAPIResponse<FileResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -66,6 +73,11 @@ namespace CTS_BE.Controllers.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while fetching file with ID: {FileId}",
+                    fileId
+                );
                 FillException(response, ex);
                 return response;
             }

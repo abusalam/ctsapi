@@ -8,11 +8,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Repositories.Pension
 {
-    public class ManualPpoReceiptRepository(IMapper mapper, PensionDbContext context)
-        : IManualPpoReceiptRepository
+    public class ManualPpoReceiptRepository(
+        IMapper mapper,
+        PensionDbContext context,
+        ILogger<ManualPpoReceiptRepository> logger
+    ) : IManualPpoReceiptRepository
     {
         protected readonly PensionDbContext _context = context;
         protected readonly IMapper _mapper = mapper;
+        protected readonly ILogger<ManualPpoReceiptRepository> _logger = logger;
 
         public async Task<List<T>> GetAllUnusedPpoReceipts<T>(
             short financialYear,
@@ -20,6 +24,11 @@ namespace CTS_BE.DAL.Repositories.Pension
             Expression<Func<PpoReceipt, T>> selectExpression
         )
         {
+            _logger.LogInformation(
+                "Fetching all unused PPO receipts for financial year: {FinancialYear}, treasury code: {TreasuryCode}",
+                financialYear,
+                treasuryCode
+            );
             return await _context
                 .PpoReceipts.Where(entity =>
                     entity.ActiveFlag
@@ -38,6 +47,11 @@ namespace CTS_BE.DAL.Repositories.Pension
             Expression<Func<PpoReceipt, T>> selectExpression
         )
         {
+            _logger.LogInformation(
+                "Fetching PPO receipts for financial year: {FinancialYear}, treasury code: {TreasuryCode}",
+                financialYear,
+                treasuryCode
+            );
             return await _context
                 .PpoReceipts.Where(entity =>
                     entity.ActiveFlag
@@ -55,6 +69,11 @@ namespace CTS_BE.DAL.Repositories.Pension
         )
             where T : BaseDTO
         {
+            _logger.LogInformation(
+                "Creating PPO receipt with treasury receipt number for financial year: {FinancialYear}, treasury code: {TreasuryCode}",
+                finYear,
+                treasuryCode
+            );
             T result = _mapper.Map<T>(ppoReceiptEntity);
             try
             {
@@ -90,13 +109,30 @@ namespace CTS_BE.DAL.Repositories.Pension
 
                 if (await _context.SaveChangesAsync() == 0)
                 {
+                    _logger.LogError(
+                        "Failed to save PPO receipt with treasury receipt number for financial year: {FinancialYear}, treasury code: {TreasuryCode}",
+                        finYear,
+                        treasuryCode
+                    );
                     result.FillErrorInDataSource(ppoReceiptEntity, "Failed to add PPO Receipt");
                     return result;
                 }
+
                 result = _mapper.Map<T>(ppoReceiptEntity);
+                _logger.LogInformation(
+                    "Successfully created PPO receipt with treasury receipt number for financial year: {FinancialYear}, treasury code: {TreasuryCode}",
+                    finYear,
+                    treasuryCode
+                );
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while creating PPO receipt with treasury receipt number for financial year: {FinancialYear}, treasury code: {TreasuryCode}",
+                    finYear,
+                    treasuryCode
+                );
                 result.FillErrorInDataSource(
                     ppoReceiptEntity,
                     "Repository Exception: " + ex.InnerException?.Message ?? ex.Message
@@ -113,6 +149,11 @@ namespace CTS_BE.DAL.Repositories.Pension
 
         public string GenerateTreasuryReceiptNo(short finYear, string treasuryCode)
         {
+            _logger.LogInformation(
+                "Generating treasury receipt number for financial year: {FinancialYear}, treasury code: {TreasuryCode}",
+                finYear,
+                treasuryCode
+            );
             PpoReceiptSequence? ppoReceiptSequence = _context
                 .PpoReceiptSequences.Where(entity =>
                     entity.ActiveFlag == true

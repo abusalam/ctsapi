@@ -8,14 +8,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTS_BE.DAL.Repositories.Pension
 {
-    public class PpoByTransferAmountRepository(PensionDbContext context, IMapper mapper)
-        : IPpoByTransferAmountRepository
+    public class PpoByTransferAmountRepository(
+        PensionDbContext context,
+        IMapper mapper,
+        ILogger<PpoByTransferAmountRepository> logger
+    ) : IPpoByTransferAmountRepository
     {
         private readonly PensionDbContext _pensionDbContext = context;
         private readonly IMapper _mapper = mapper;
+        private readonly ILogger<PpoByTransferAmountRepository> _logger = logger;
 
         public async Task<PpoBytransfer?> GetPpoByTransferByIdAsync(long id)
         {
+            _logger.LogInformation("Fetching PpoByTransfer with ID: {Id}", id);
             var ppoByTransfer = await _pensionDbContext
                 .PpoBytransfers.Where(entity => entity.Id == id && entity.ActiveFlag)
                 .FirstOrDefaultAsync();
@@ -25,6 +30,10 @@ namespace CTS_BE.DAL.Repositories.Pension
 
         public async Task<T> CreatePpoByTransfer<T>(PpoBytransfer ppobyTransferHeadEntity)
         {
+            _logger.LogInformation(
+                "Creating PpoByTransfer with details: {PpoByTransfer}",
+                ppobyTransferHeadEntity
+            );
             T responseDTO = _mapper.Map<T>(ppobyTransferHeadEntity);
 
             try
@@ -45,6 +54,10 @@ namespace CTS_BE.DAL.Repositories.Pension
                     .Load();
 
                 responseDTO = _mapper.Map<T>(ppobyTransferHeadEntity);
+                _logger.LogInformation(
+                    "PpoByTransfer created successfully with ID: {Id}",
+                    ppobyTransferHeadEntity.Id
+                );
             }
             catch (Exception ex)
             {
@@ -59,6 +72,7 @@ namespace CTS_BE.DAL.Repositories.Pension
 
         public async Task<T> UpdatePpoByTransfer<T>(PpoBytransfer ppoByTransferEntity)
         {
+            _logger.LogInformation("Updating PpoByTransfer with ID: {Id}", ppoByTransferEntity.Id);
             T responseDTO = _mapper.Map<T>(ppoByTransferEntity);
 
             try
@@ -79,9 +93,18 @@ namespace CTS_BE.DAL.Repositories.Pension
                     .Load();
 
                 responseDTO = _mapper.Map<T>(ppoByTransferEntity);
+                _logger.LogInformation(
+                    "PpoByTransfer updated successfully with ID: {Id}",
+                    ppoByTransferEntity.Id
+                );
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while updating PpoByTransfer with ID: {Id}",
+                    ppoByTransferEntity.Id
+                );
                 responseDTO.FillErrorInDataSource(
                     responseDTO,
                     $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
@@ -98,6 +121,12 @@ namespace CTS_BE.DAL.Repositories.Pension
             string treasuryCode
         )
         {
+            _logger.LogInformation(
+                "Fetching all PpoByTransfer records for PPO ID: {PpoId}, Financial Year: {FinancialYear}, Treasury Code: {TreasuryCode}",
+                ppoId,
+                financialYear,
+                treasuryCode
+            );
             return await _pensionDbContext
                 .PpoBytransfers.Where(entity =>
                     entity.ActiveFlag
@@ -113,6 +142,10 @@ namespace CTS_BE.DAL.Repositories.Pension
 
         public async Task<bool> IsUsedInOtherTables(long byTransferHeadId)
         {
+            _logger.LogInformation(
+                "Checking if ByTransferHead ID: {ByTransferHeadId} is used in other tables",
+                byTransferHeadId
+            );
             bool isUsed = await _pensionDbContext.BillBytransfers.AnyAsync(b =>
                 b.BytransferHeadId == byTransferHeadId
             );
@@ -122,6 +155,7 @@ namespace CTS_BE.DAL.Repositories.Pension
 
         public async Task<T> RemovePpoByTransferAsync<T>(long id)
         {
+            _logger.LogInformation("Removing PpoByTransfer with ID: {Id}", id);
             T responseDTO = _mapper.Map<T>(new PpoByTransferAmountResponseDTO());
 
             try
@@ -130,6 +164,7 @@ namespace CTS_BE.DAL.Repositories.Pension
 
                 if (existingEntity == null)
                 {
+                    _logger.LogWarning("PpoByTransfer with ID: {Id} not found", id);
                     responseDTO.FillErrorInDataSource(existingEntity, "PpoByTransfer not found!");
                 }
                 else
@@ -137,6 +172,7 @@ namespace CTS_BE.DAL.Repositories.Pension
                     _pensionDbContext.PpoBytransfers.Remove(existingEntity);
                     if (await _pensionDbContext.SaveChangesAsync() == 0)
                     {
+                        _logger.LogError("Failed to delete PpoByTransfer with ID: {Id}", id);
                         responseDTO.FillErrorInDataSource(
                             existingEntity,
                             "Failed to Delete record!"
@@ -146,6 +182,11 @@ namespace CTS_BE.DAL.Repositories.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while removing PpoByTransfer with ID: {Id}",
+                    id
+                );
                 responseDTO.FillErrorInDataSource(
                     responseDTO,
                     $"RepositoryException: {ex.InnerException?.Message ?? ex.Message}"
@@ -159,6 +200,14 @@ namespace CTS_BE.DAL.Repositories.Pension
             PpoBytransfer ppoByTransferEntity
         )
         {
+            _logger.LogInformation(
+                "Validating existing PpoByTransfer for Pensioner ID: {PensionerId}, Bytransfer Head ID: {BytransferHeadId}, From Date: {FromDate}, To Date: {ToDate}",
+                ppoByTransferEntity.PensionerId,
+                ppoByTransferEntity.BytransferHeadId,
+                ppoByTransferEntity.FromDate,
+                ppoByTransferEntity.ToDate
+            );
+
             return await _pensionDbContext.PpoBytransfers.FirstOrDefaultAsync(entity =>
                 entity.ActiveFlag
                 && entity.PensionerId == ppoByTransferEntity.PensionerId
@@ -173,6 +222,12 @@ namespace CTS_BE.DAL.Repositories.Pension
             int ppoId
         )
         {
+            _logger.LogInformation(
+                "Validating PpoByTransfer overlap for PPO ID: {PpoId}, From Date: {FromDate}, To Date: {ToDate}",
+                ppoId,
+                ppoByTransferEntity.FromDate,
+                ppoByTransferEntity.ToDate
+            );
             return await _pensionDbContext.PpoBytransfers.FirstOrDefaultAsync(entity =>
                 entity.ActiveFlag
                 && entity.PpoId == ppoId

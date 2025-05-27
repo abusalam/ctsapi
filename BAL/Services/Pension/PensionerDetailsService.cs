@@ -18,13 +18,15 @@ namespace CTS_BE.BAL.Services.Pension
         private readonly IPpoIdSequenceRepository _ppoIdSequenceRepository;
         private readonly IClaimService _claimService;
         private readonly IMapper _mapper;
+        private readonly ILogger<PensionerDetailsService> _logger;
 
         public PensionerDetailsService(
             PensionDbContext pensionDbContext,
             IPensionerDetailsRepository pensionerDetailsRepository,
             IPpoIdSequenceRepository ppoIdSequenceRepository,
             IClaimService claimService,
-            IMapper mapper
+            IMapper mapper,
+            ILogger<PensionerDetailsService> logger
         )
             : base(claimService)
         {
@@ -34,6 +36,7 @@ namespace CTS_BE.BAL.Services.Pension
             _claimService = claimService;
             _mapper = mapper;
             _userId = claimService.GetUserId();
+            _logger = logger;
         }
 
         public async Task<PensionerResponseDTO> CreatePensioner(
@@ -43,7 +46,9 @@ namespace CTS_BE.BAL.Services.Pension
         )
         {
             Pensioner pensionerEntity = _mapper.Map<Pensioner>(pensionerEntryDTO);
+
             PensionerResponseDTO response = _mapper.Map<PensionerResponseDTO>(pensionerEntity);
+
             try
             {
                 Category? category = await _pensionDbContext
@@ -54,6 +59,10 @@ namespace CTS_BE.BAL.Services.Pension
                     .FirstOrDefaultAsync();
                 if (category == null)
                 {
+                    _logger.LogError(
+                        "Category not found for Id: {CategoryId}",
+                        pensionerEntryDTO.CategoryId
+                    );
                     response.FillErrorInDataSource(
                         category,
                         "Pension category not found. Please check category Id. and try again."
@@ -69,6 +78,10 @@ namespace CTS_BE.BAL.Services.Pension
                     .FirstOrDefaultAsync();
                 if (branch == null)
                 {
+                    _logger.LogError(
+                        "Bank branch not found for Id: {BranchId}",
+                        pensionerEntryDTO.BranchId
+                    );
                     response.FillErrorInDataSource(
                         branch,
                         "Bank branch not found. Please check branch Id. and try again."
@@ -81,6 +94,10 @@ namespace CTS_BE.BAL.Services.Pension
                     .FirstOrDefaultAsync();
                 if (ppoReceipt == null)
                 {
+                    _logger.LogError(
+                        "PPO Receipt not found for PPO No: {PpoNo}",
+                        pensionerEntryDTO.PpoNo
+                    );
                     response.FillErrorInDataSource(
                         ppoReceipt,
                         "PPO Receipt not found. Please check PPO No. and try again."
@@ -90,6 +107,12 @@ namespace CTS_BE.BAL.Services.Pension
 
                 if (pensionerEntity.DateOfCommencement != ppoReceipt.DateOfCommencement)
                 {
+                    _logger.LogError(
+                        "Date of Commencement mismatch for PPO No: {PpoNo}. Expected: {ExpectedDate}, Actual: {ActualDate}",
+                        pensionerEntryDTO.PpoNo,
+                        ppoReceipt.DateOfCommencement,
+                        pensionerEntity.DateOfCommencement
+                    );
                     response.FillErrorInDataSource(
                         ppoReceipt,
                         "Date of Commencement does not match with PPO Receipt. Please check PPO No. and try again."
@@ -116,9 +139,27 @@ namespace CTS_BE.BAL.Services.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while creating pensioner with PPO No: {PpoNo}",
+                    pensionerEntryDTO.PpoNo
+                );
                 response.FillErrorInDataSource(
                     pensionerEntity,
                     $"ServiceException: {ex.InnerException?.Message ?? ex.Message}"
+                );
+                return response;
+            }
+            if (response.PpoId <= 0)
+            {
+                _logger.LogError(
+                    "Failed to create pensioner with PPO No: {PpoNo}. PpoId: {PpoId}",
+                    pensionerEntryDTO.PpoNo,
+                    response.PpoId
+                );
+                response.FillErrorInDataSource(
+                    pensionerEntity,
+                    "Failed to create pensioner. Please try again."
                 );
                 return response;
             }

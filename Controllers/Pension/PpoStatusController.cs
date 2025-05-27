@@ -17,14 +17,17 @@ namespace CTS_BE.Controllers.Pension
     public class PpoStatusController : ApiBaseController
     {
         private readonly IPensionStatusService _pensionStatusService;
+        private readonly ILogger<PpoStatusController> _logger;
 
         public PpoStatusController(
             IPensionStatusService pensionStatusService,
-            IClaimService claimService
+            IClaimService claimService,
+            ILogger<PpoStatusController> logger
         )
             : base(claimService)
         {
             _pensionStatusService = pensionStatusService;
+            _logger = logger;
         }
 
         [HttpPost("status")]
@@ -48,6 +51,7 @@ namespace CTS_BE.Controllers.Pension
                             GetTreasuryCode()
                         ),
                 };
+
                 // if(System.Enum.TryParse<PensionStatusFlag>(
                 //         $"{pensionStatusEntryDTO.StatusFlag}",
                 //         out PensionStatusFlag pensionStatus
@@ -91,6 +95,11 @@ namespace CTS_BE.Controllers.Pension
             PensionStatusFlag statusFlag
         )
         {
+            _logger.LogInformation(
+                "Received request to clear PPO status flag for PPO ID: {PpoId}, Status Flag: {StatusFlag}",
+                ppoId,
+                statusFlag
+            );
             JsonAPIResponse<PensionStatusDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -105,6 +114,7 @@ namespace CTS_BE.Controllers.Pension
                     GetCurrentFyYear(),
                     GetTreasuryCode()
                 );
+
                 // if(System.Enum.TryParse<PensionStatusFlag>(
                 //         $"{response.Result.StatusFlag}",
                 //         out PensionStatusFlag pensionStatus
@@ -131,6 +141,12 @@ namespace CTS_BE.Controllers.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while clearing PPO status flag for PPO ID: {PpoId}, Status Flag: {StatusFlag}",
+                    ppoId,
+                    statusFlag
+                );
                 FillException(response, ex);
                 return response;
             }
@@ -150,6 +166,11 @@ namespace CTS_BE.Controllers.Pension
             PensionStatusFlag statusFlag
         )
         {
+            _logger.LogInformation(
+                "Received request to get PPO status flag for PPO ID: {PpoId}, Status Flag: {StatusFlag}",
+                ppoId,
+                statusFlag
+            );
             JsonAPIResponse<PensionStatusDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -190,6 +211,12 @@ namespace CTS_BE.Controllers.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while retrieving PPO status flag for PPO ID: {PpoId}, Status Flag: {StatusFlag}",
+                    ppoId,
+                    statusFlag
+                );
                 FillException(response, ex);
                 return response;
             }

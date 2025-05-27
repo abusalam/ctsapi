@@ -10,10 +10,12 @@ namespace CTS_BE.Controllers.Pension
     // [Authorize("roles:clerk|permissions:can-receive-bill")]
     public class PpoFirstBillController(
         IPpoFirstBillService ppoFirstBillService,
-        IClaimService claimService
+        IClaimService claimService,
+        ILogger<PpoFirstBillController> logger
     ) : ApiBaseController(claimService)
     {
         private readonly IPpoFirstBillService _ppoFirstBillService = ppoFirstBillService;
+        private readonly ILogger<PpoFirstBillController> _logger = logger;
 
         [HttpGet("first-bill/ppos")]
         [Tags("Pension: First Bill")]
@@ -22,6 +24,7 @@ namespace CTS_BE.Controllers.Pension
             JsonAPIResponse<TableResponseDTO<PensionerListItemDTO>>
         > GetAllPposForFirstBill()
         {
+            _logger.LogInformation("Received request to get all PPOs for first bill generation.");
             JsonAPIResponse<TableResponseDTO<PensionerListItemDTO>> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -49,9 +52,17 @@ namespace CTS_BE.Controllers.Pension
                     ],
                     Data = ppoList.PpoList,
                 };
+                _logger.LogInformation(
+                    "PPO List for first bill received successfully with {Count} records.",
+                    ppoList.PpoList.Count
+                );
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while fetching PPOs for first bill generation."
+                );
                 FillException(response, ex);
                 return response;
             }
@@ -71,6 +82,7 @@ namespace CTS_BE.Controllers.Pension
             JsonAPIResponse<TableResponseDTO<PensionerListItemDTO>>
         > GetPposForFirstBillPrint()
         {
+            _logger.LogInformation("Received request to get PPOs for first bill print.");
             JsonAPIResponse<TableResponseDTO<PensionerListItemDTO>> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -98,9 +110,14 @@ namespace CTS_BE.Controllers.Pension
                     ],
                     Data = ppoList.PpoList,
                 };
+                _logger.LogInformation(
+                    "PPO List for first bill print received successfully with {Count} records.",
+                    ppoList.PpoList.Count
+                );
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error occurred while fetching PPOs for first bill print.");
                 FillException(response, ex);
                 return response;
             }
@@ -122,6 +139,10 @@ namespace CTS_BE.Controllers.Pension
             JsonAPIResponse<InitiateFirstPensionBillResponseDTO>
         > GenerateFirstPensionBill(InitiateFirstPensionBillEntryDTO initiateFirstPensionBillDTO)
         {
+            _logger.LogInformation(
+                "Received request to generate first pension bill with data: {InitiateFirstPensionBillDTO}",
+                initiateFirstPensionBillDTO
+            );
             JsonAPIResponse<InitiateFirstPensionBillResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -138,6 +159,11 @@ namespace CTS_BE.Controllers.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while generating first pension bill with data: {Data}",
+                    initiateFirstPensionBillDTO
+                );
                 FillException(response, ex);
                 return response;
             }
@@ -159,6 +185,10 @@ namespace CTS_BE.Controllers.Pension
             InitiateFirstPensionBillEntryDTO initiateFirstPensionBillEntryDTO
         )
         {
+            _logger.LogInformation(
+                "Received request to save first pension bill with data: {InitiateFirstPensionBillEntryDTO}",
+                initiateFirstPensionBillEntryDTO
+            );
             JsonAPIResponse<PpoBillSaveResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -175,6 +205,11 @@ namespace CTS_BE.Controllers.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while saving first pension bill with data: {Data}",
+                    initiateFirstPensionBillEntryDTO
+                );
                 FillException(response, ex);
                 return response;
             }
@@ -191,6 +226,10 @@ namespace CTS_BE.Controllers.Pension
         [OpenApi]
         public async Task<JsonAPIResponse<PpoBillResponseDTO>> GetFirstPensionBillByPpoId(int ppoId)
         {
+            _logger.LogInformation(
+                "Received request to get first pension bill by PPO ID: {PpoId}",
+                ppoId
+            );
             JsonAPIResponse<PpoBillResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -203,9 +242,18 @@ namespace CTS_BE.Controllers.Pension
                     GetCurrentFyYear(),
                     GetTreasuryCode()
                 );
+                _logger.LogInformation(
+                    "First pension bill for PPO ID {PpoId} retrieved successfully.",
+                    ppoId
+                );
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while fetching first pension bill for PPO ID: {PpoId}",
+                    ppoId
+                );
                 FillException(response, ex);
                 return response;
             }

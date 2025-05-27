@@ -9,11 +9,13 @@ namespace CTS_BE.Controllers.Pension
 {
     public class PpoComponentRevisionController(
         IPpoComponentRevisionService ppoComponentRevisionService,
-        IClaimService claimService
+        IClaimService claimService,
+        ILogger<PpoComponentRevisionController> logger
     ) : ApiBaseController(claimService)
     {
         private readonly IPpoComponentRevisionService _ppoComponentRevisionService =
             ppoComponentRevisionService;
+        private readonly ILogger<PpoComponentRevisionController> _logger = logger;
 
         [HttpGet("ppo-component-revision/ppos")]
         [Tags("Pension: Component Revision")]
@@ -22,6 +24,7 @@ namespace CTS_BE.Controllers.Pension
             JsonAPIResponse<TableResponseDTO<PpoComponentRevisionPpoListItemDTO>>
         > GetAllPposForComponentRevisions()
         {
+            _logger.LogInformation("Received request to get all PPOs for component revisions.");
             JsonAPIResponse<TableResponseDTO<PpoComponentRevisionPpoListItemDTO>> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -50,6 +53,7 @@ namespace CTS_BE.Controllers.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error occurred while fetching PPOs for component revisions.");
                 FillException(response, ex);
                 return response;
             }
@@ -77,6 +81,11 @@ namespace CTS_BE.Controllers.Pension
             PpoComponentRevisionEntryDTO ppoComponentRevisionEntryDTO
         )
         {
+            _logger.LogInformation(
+                "Received request to create PPO component revision for PPO ID: {PpoId} with data: {Data}",
+                ppoId,
+                ppoComponentRevisionEntryDTO
+            );
             JsonAPIResponse<PpoComponentRevisionResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -94,6 +103,11 @@ namespace CTS_BE.Controllers.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while creating PPO component revision with data: {Data}",
+                    ppoComponentRevisionEntryDTO
+                );
                 FillException(response, ex);
                 return response;
             }
@@ -118,6 +132,10 @@ namespace CTS_BE.Controllers.Pension
             JsonAPIResponse<TableResponseDTO<PpoComponentRevisionResponseDTO>>
         > GetPpoComponentRevisionsByPpoId(int ppoId)
         {
+            _logger.LogInformation(
+                "Received request to get component revisions for PPO ID: {PpoId}",
+                ppoId
+            );
             JsonAPIResponse<TableResponseDTO<PpoComponentRevisionResponseDTO>> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -150,6 +168,11 @@ namespace CTS_BE.Controllers.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while fetching component revisions for PPO ID: {PpoId}",
+                    ppoId
+                );
                 FillException(response, ex);
                 return response;
             }
@@ -170,6 +193,11 @@ namespace CTS_BE.Controllers.Pension
             PpoComponentRevisionUpdateDTO ppoComponentRevisionUpdateDTO
         )
         {
+            _logger.LogInformation(
+                "Received request to update PPO component revision with ID: {RevisionId} and data: {Data}",
+                revisionId,
+                ppoComponentRevisionUpdateDTO
+            );
             JsonAPIResponse<PpoComponentRevisionResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -187,6 +215,12 @@ namespace CTS_BE.Controllers.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while updating PPO component revision with ID: {RevisionId} and data: {Data}",
+                    revisionId,
+                    ppoComponentRevisionUpdateDTO
+                );
                 FillException(response, ex);
                 return response;
             }
@@ -204,6 +238,10 @@ namespace CTS_BE.Controllers.Pension
             JsonAPIResponse<PpoComponentRevisionResponseDTO>
         > DeletePpoComponentRevisionById(long revisionId)
         {
+            _logger.LogInformation(
+                "Received request to delete PPO component revision with ID: {RevisionId}",
+                revisionId
+            );
             JsonAPIResponse<PpoComponentRevisionResponseDTO> response = new()
             {
                 ApiResponseStatus = Enum.APIResponseStatus.Success,
@@ -220,6 +258,11 @@ namespace CTS_BE.Controllers.Pension
             }
             catch (Exception ex)
             {
+                _logger.LogError(
+                    ex,
+                    "Error occurred while deleting PPO component revision with ID: {RevisionId}",
+                    revisionId
+                );
                 FillException(response, ex);
                 return response;
             }
