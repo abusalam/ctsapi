@@ -1,4 +1,6 @@
-﻿using CTS_BE.DTOs;
+﻿using System.Diagnostics;
+using System.Reflection;
+using CTS_BE.DTOs;
 using CTS_BE.Filters;
 using CTS_BE.Helper;
 using CTS_BE.Helper.Authentication;
@@ -11,6 +13,21 @@ namespace CTS_BE.Controllers.Pension
     {
         private readonly IConfiguration _configuration = configuration;
         private readonly IClaimService _claimService = claimService;
+
+        [HttpGet("auth/get-version")]
+        [Tags("Pension: Auth")]
+        [OpenApi]
+        public JsonAPIResponse<string> GetVersion()
+        {
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
+            return new()
+            {
+                ApiResponseStatus = Enum.APIResponseStatus.Success,
+                Message = "Version: v" + fileVersionInfo.ProductVersion,
+                Result = fileVersionInfo.ProductVersion,
+            };
+        }
 
         [Authorize("RequiredRoleOrPermission")]
         [HttpGet("auth/login")]
